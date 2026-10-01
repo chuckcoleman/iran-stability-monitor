@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "updates": [
+    {
+      "date": "2026-09-20",
+      "summary": "Economic and energy stress remained severe while the coercive apparatus showed no evidence of systemic fracture.",
+      "metrics": {
+        "regional_escalation_90d": 30,
+        "regime_end_12m": 10,
+        "fx_crisis_12m": 84,
+        "hormuz": "Severely restricted",
+        "energy_stress": "High",
+        "houthi_support_12m": 76,
+        "china_oil_credit_haircut": 38
+      },
+      "status": {
+        "regional": "amber",
+        "regime": "amber",
+        "fx": "red",
+        "hormuz": "red",
+        "energy": "red",
+        "houthi": "amber",
+        "china": "amber"
+      },
+      "regional": [
+        {
+          "name": "Negotiated de-escalation / partial reopening",
+          "p": 28
+        },
+        {
+          "name": "Prolonged militarized standoff",
+          "p": 42
+        },
+        {
+          "name": "Wider regional escalation",
+          "p": 30
+        }
+      ],
+      "political": [
+        {
+          "name": "Hardline/security continuity",
+          "p": 58
+        },
+        {
+          "name": "Continuity + external stabilization",
+          "p": 19
+        },
+        {
+          "name": "Major internal reconfiguration",
+          "p": 13
+        },
+        {
+          "name": "Regime-ending transition",
+          "p": 10
+        }
+      ],
+      "warning": {},
+      "news": []
+    },
+    {
+      "date": "2026-09-27",
+      "summary": "Diplomacy suffered a setback while fiscal and energy stress worsened; managed oil transit through Hormuz improved for Gulf producers without restoring Iran's own export position.",
+      "metrics": {
+        "regional_escalation_90d": 36,
+        "regime_end_12m": 12,
+        "fx_crisis_12m": 87,
+        "hormuz": "Severely restricted",
+        "energy_stress": "High / worsening",
+        "houthi_support_12m": 76,
+        "china_oil_credit_haircut": 40
+      },
+      "status": {
+        "regional": "red",
+        "regime": "amber",
+        "fx": "red",
+        "hormuz": "red",
+        "energy": "red",
+        "houthi": "amber",
+        "china": "amber"
+      },
+      "regional": [
+        {
+          "name": "Negotiated de-escalation / partial reopening",
+          "p": 20
+        },
+        {
+          "name": "Prolonged militarized standoff",
+          "p": 44
+        },
+        {
+          "name": "Wider regional escalation",
+          "p": 36
+        }
+      ],
+      "political": [
+        {
+          "name": "Hardline/security continuity",
+          "p": 57
+        },
+        {
+          "name": "Continuity + external stabilization",
+          "p": 17
+        },
+        {
+          "name": "Major internal reconfiguration",
+          "p": 14
+        },
+        {
+          "name": "Regime-ending transition",
+          "p": 12
+        }
+      ],
+      "warning": {
+        "Monetary / FX": {
+          "level": "red",
+          "text": "Rial remains very weak; liquidity growth and the managed/free-market spread keep medium-term crisis risk elevated."
+        },
+        "Fiscal": {
+          "level": "red",
+          "text": "Weak sovereign financing demand and high yields add to pressure from lost oil revenue."
+        },
+        "Banking / payments": {
+          "level": "red",
+          "text": "Alternative payment rails remain under sanctions pressure."
+        },
+        "Food / medicine": {
+          "level": "red",
+          "text": "Medicine shortages and imported-input constraints remain severe."
+        },
+        "Energy / industrial": {
+          "level": "red",
+          "text": "Remote work and transport conservation are implemented; the gasoline deficit persists."
+        },
+        "Social / protest": {
+          "level": "amber",
+          "text": "Economic protests broadened but remain fragmented."
+        },
+        "Coercive apparatus": {
+          "level": "amber",
+          "text": "No corroborated systemic pay failure, refusal, desertion or defection."
+        },
+        "Elite cohesion": {
+          "level": "amber",
+          "text": "No high-level institutional split is visible."
+        },
+        "External support": {
+          "level": "amber",
+          "text": "China and Russia cushion isolation but do not replace lost oil FX."
+        }
+      },
+      "news": [
+        {
+          "date": "2026-09-26",
+          "type": "Diplomacy",
+          "title": "Tehran's initial Hormuz proposal was rejected",
+          "impact": "Reduced the negotiated-de-escalation scenario and raised prolonged-standoff and escalation cases.",
+          "url": "https://www.reuters.com/"
+        },
+        {
+          "date": "2026-09-23",
+          "type": "Maritime",
+          "title": "Managed crude flows through Hormuz increased",
+          "impact": "Lowered physical-delivery risk slightly, but flows principally benefited Saudi and Iraqi exports rather than restoring Iranian oil revenue.",
+          "url": "https://www.reuters.com/"
+        },
+        {
+          "date": "2026-09-23",
+          "type": "Energy",
+          "title": "Emergency demand-management measures took effect",
+          "impact": "Remote work, public-transport incentives and fuel-conservation measures strengthened evidence of a binding domestic energy imbalance.",
+          "url": "https://www.reuters.com/"
+        }
+      ]
+    }
+  ]
+}
