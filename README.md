@@ -7,7 +7,12 @@ Public, timestamped scenario estimates and early-warning indicators for Iran.
 - `data/history.json` — machine-readable, append-only forecast history
 - `about.html` — definitions, evidence classes, source and revision policy
 - `special-reports.html` — longer event-driven analyses
+- `protocol-v1.html` — frozen prospective forecasting protocol
+- `history.html` — full immutable forecast history
 - `assets/` — static CSS/JS
+
+## Protocol
+Protocol v1.0 was frozen on 2026-10-03 and applies prospectively beginning with the 2026-10-04 forecast. Substantive methodological changes require a new numbered protocol and are never retroactively applied.
 
 ## Publication rule
 Historical forecasts should not be silently rewritten. Append a new dated record for each Sunday update. Corrections to factual errors should be explicitly identified.
