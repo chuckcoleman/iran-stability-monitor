@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "updates": [
     {
       "date": "2026-09-20",
@@ -67,7 +67,10 @@
         "hormuz": "Severely restricted",
         "energy_stress": "High / worsening",
         "houthi_support_12m": 76,
-        "china_oil_credit_haircut": 40
+        "china_oil_credit_haircut": 40,
+        "currency_crisis_12m": 68,
+        "external_payments_crisis_12m": 72,
+        "fx_crisis_12m_legacy_composite": true
       },
       "status": {
         "regional": "red",
@@ -140,11 +143,11 @@
           "text": "Warning: medicine and imported-input shortages are material; evidence does not establish generalized essential-food failure."
         },
         "Energy / industrial": {
-          "level": "critical",
+          "level": "warning-level",
           "direction": "up",
           "coverage": "High",
           "role": "leading/coincident",
-          "text": "Critical: rationing and conservation are now affecting work patterns and industrial/logistics activity; priority allocations are not yet known to be failing."
+          "text": "Warning: rationing and conservation are affecting work patterns and industrial/logistics activity; evidence does not yet show self-reinforcing allocation failure or failure of priority users."
         },
         "Social / protest": {
           "level": "watch",
@@ -227,7 +230,7 @@
             25,
             48
           ],
-          "event_definition": "Renewed sustained major interstate strikes or material geographic widening",
+          "event_definition": "Yes if, before the horizon, sustained major interstate strikes resume for at least 72 hours or major combat materially expands to an additional state/operational theater; isolated interceptions or one-off strikes do not qualify.",
           "raise": "Repeated major US–Iran strikes, broader Saudi–Houthi war, or failure of active mediation.",
           "lower": "Verified ceasefire implementation, sustained Hormuz normalization, or direct negotiations producing enforceable constraints."
         },
@@ -240,22 +243,35 @@
             7,
             20
           ],
-          "event_definition": "Loss or replacement of the Islamic Republic governing order",
+          "event_definition": "Yes if the Islamic Republic's governing constitutional-institutional order is replaced or loses effective national governing authority; leadership replacement within the same order is No.",
           "raise": "Verified elite fracture, security-force compensation failure, refusal to enforce orders, defections, or sustained coordinated nationwide unrest.",
           "lower": "Oil/FX stabilization, declining protest coordination, durable elite cohesion, and continued reliable coercive-system compensation."
         },
         {
-          "label": "FX crisis",
-          "p": 87,
+          "label": "Currency crisis",
+          "p": 68,
           "horizon": "within 12 months",
-          "confidence": "Medium-high",
+          "confidence": "Medium",
           "range": [
-            78,
-            93
+            55,
+            80
           ],
-          "event_definition": "Disorderly depreciation or payment shortage requiring broad emergency controls",
-          "raise": "Renewed rapid parallel-rate depreciation, failed intervention, further oil/payment-channel loss, import-payment breakdown, or accelerating monetary financing.",
-          "lower": "Sustained rial stabilization alongside restored oil receipts/payment access and narrowing official–parallel FX spread."
+          "event_definition": "Yes if the parallel-market rial loses at least 25% against the US dollar over any rolling 30-day period after this forecast, excluding a one-day quote anomaly.",
+          "raise": "Renewed rapid parallel-rate depreciation, failed intervention, accelerating monetary financing or shortening price/wage intervals.",
+          "lower": "Sustained rial stabilization, narrowing official–parallel spread and slower liquidity growth."
+        },
+        {
+          "label": "External-payments crisis",
+          "p": 72,
+          "horizon": "within 12 months",
+          "confidence": "Medium",
+          "range": [
+            58,
+            84
+          ],
+          "event_definition": "Yes if FX/payment scarcity causes broad emergency import/payment restrictions or documented material inability to settle essential imports through normal or established alternative channels.",
+          "raise": "Further oil/payment-channel loss, import-payment breakdown, supplier prepayment demands or broad LC/settlement failure.",
+          "lower": "Restored oil receipts/payment access, improved import settlement and durable alternative payment channels."
         }
       ],
       "chains": [
@@ -272,7 +288,8 @@
             "Fiscal monetization"
           ],
           "confirmed": 1,
-          "current": 1
+          "current": 1,
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism."
         },
         {
           "name": "Energy / real economy",
@@ -287,7 +304,8 @@
             "Priority-allocation failure"
           ],
           "confirmed": 2,
-          "current": 2
+          "current": 2,
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism."
         },
         {
           "name": "Regime / coercion",
@@ -302,7 +320,8 @@
             "Defections"
           ],
           "confirmed": 1,
-          "current": 1
+          "current": 1,
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism."
         }
       ],
       "haircut": {
@@ -310,18 +329,58 @@
           27,
           57
         ],
-        "note": "Risk adjustment may appear through price, tenor, collateral or payment timing rather than an explicit discount."
+        "note": "Risk adjustment may appear through price, tenor, collateral or payment timing rather than an explicit discount.",
+        "method": {
+          "label": "Model estimate",
+          "rule": "Central haircut = sum of six bounded component haircuts: physical delivery/blockade 0–25 pp; sanctions/payment channels 0–15; sovereign/counterparty 0–10; oil-price/basis 0–8; illiquidity/enforcement 0–8; political/secondary-sanctions tail 0–8. Each component is assigned from documented weekly evidence using Low/Mid/High anchors at 25/50/75% of its cap; the central estimate is the sum rounded to the nearest percentage point. The judgmental range is formed by moving each uncertain component one anchor step down/up, bounded at zero/cap. This is not an observed contract price.",
+          "components": [
+            [
+              "Physical delivery/blockade",
+              15,
+              25
+            ],
+            [
+              "Sanctions/payment channels",
+              8,
+              15
+            ],
+            [
+              "Sovereign/counterparty",
+              6,
+              10
+            ],
+            [
+              "Oil-price/basis",
+              3,
+              8
+            ],
+            [
+              "Illiquidity/enforcement",
+              4,
+              8
+            ],
+            [
+              "Political/secondary-sanctions tail",
+              4,
+              8
+            ]
+          ]
+        }
       },
       "houthi": {
         "m6": 88,
-        "m24": 55
+        "m24": 55,
+        "definition": "Strategically meaningful Houthi support is decomposed into Iranian matériel flow, Iranian technical/financial assistance, and Houthi independent/local capability. The headline support-continuity probability refers only to continued Iranian technical/financial or material support sufficient to measurably sustain advanced missile/UAV or maritime capability; local capability alone does not resolve it Yes.",
+        "material_support_12m": 62,
+        "technical_financial_support_12m": 82,
+        "independent_capability_12m": 86
       },
       "absence_indicators": [
         {
           "label": "Security-force defections",
-          "status": "normal",
+          "status": "unknown",
           "coverage": "Medium",
-          "text": "No verified consequential defections or unit-level refusal in current reporting."
+          "text": "No verified consequential defections or unit-level refusal, but reporting coverage is insufficient for affirmative Normal status."
         },
         {
           "label": "Nationwide bazaar shutdown",
@@ -337,15 +396,72 @@
         },
         {
           "label": "Economy-wide high-frequency wage indexation",
-          "status": "normal",
+          "status": "unknown",
           "coverage": "Medium",
-          "text": "No evidence yet of generalized high-frequency automatic wage repricing characteristic of advanced inflationary breakdown."
+          "text": "No generalized high-frequency automatic wage repricing is verified, but observation coverage is insufficient for affirmative Normal status."
         },
         {
           "label": "Systemically important Chinese-bank cutoff",
           "status": "normal",
           "coverage": "Medium-high",
           "text": "No verified cutoff by a major Chinese bank; Chinese support remains conditional but material."
+        }
+      ],
+      "data_checked_through": "2026-09-27T09:00:00-04:00",
+      "next_scheduled_update": "2026-10-04T09:00:00-04:00",
+      "binary_political": [
+        {
+          "label": "Islamic Republic governing order survives 12 months",
+          "p": 88
+        },
+        {
+          "label": "Material elite/institutional restructuring within 12 months",
+          "p": 26
+        },
+        {
+          "label": "Negotiated external stabilization within 12 months",
+          "p": 34
+        }
+      ],
+      "regional_resolution_note": "Scenario buckets are descriptive legacy partitions. Scored forecasting uses the binary sustained-major-escalation definition above; future scenario partitions must include explicit mutually exclusive resolution rules.",
+      "political_resolution_note": "Political outcome buckets are retained as a legacy descriptive partition. Scored forecasting uses separate binary events because institutional restructuring and external stabilization can co-occur.",
+      "limitations": "Iranian economic, military and political data are incomplete, delayed, sometimes contradictory and strategically manipulated. Open-source visibility is asymmetric across institutions and regions. Probabilities therefore reflect the stated public information set, not complete knowledge.",
+      "corrections": [],
+      "evidence": [
+        {
+          "id": "E-20260927-01",
+          "date": "2026-09-26",
+          "category": "Diplomacy",
+          "observation": "US rejection of Tehran's initial Hormuz proposal was reported.",
+          "source": "https://www.reuters.com/world/middle-east/iran-awaits-us-move-after-wsj-report-says-trump-rejects-peace-plan-2026-09-26/",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation"
+          ]
+        },
+        {
+          "id": "E-20260927-02",
+          "date": "2026-09-21",
+          "category": "Maritime",
+          "observation": "Reuters/Kpler reported continued managed Saudi/Iraqi crude movement despite severely depressed ordinary Hormuz traffic.",
+          "source": "https://www.reuters.com/world/middle-east/vessels-trickle-through-strait-hormuz-mideast-tension-persists-2026-09-21/",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation",
+            "External-payments crisis",
+            "Iran–China oil-credit haircut"
+          ]
+        },
+        {
+          "id": "E-20260927-03",
+          "date": "2026-09-21",
+          "category": "Energy",
+          "observation": "Government office-hour, remote-work and public-transport measures were reported as fuel-saving measures beginning September 23.",
+          "source": "https://www.aljazeera.com/economy/2026/9/21/how-an-economic-squeeze-is-changing-everyday-life-and-work-for-iranians",
+          "reliability": "Medium-high",
+          "affects": [
+            "Energy / industrial warning"
+          ]
         }
       ]
     }
@@ -361,5 +477,10 @@
     "sources",
     "resolution_date",
     "outcome"
-  ]
+  ],
+  "uncertainty_rule": {
+    "name": "Reasonable-analyst interval",
+    "definition": "The displayed judgmental uncertainty range is the interval within which the assessor judges that roughly 80% of independent, well-informed analysts using the same public information, event definition and horizon would place their point probability. It measures model/analyst disagreement, not sampling error, a Bayesian credible interval, or the probability that the true probability lies in the interval.",
+    "elicitation": "Set the point forecast first. Then estimate the 10th and 90th percentiles of the distribution of reasonable analysts' point forecasts without changing the point forecast to center the range."
+  }
 }
