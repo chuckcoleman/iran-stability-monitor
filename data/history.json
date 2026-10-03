@@ -714,7 +714,10 @@
       "resolution": "Resolution records must reference forecast_id."
     },
     "uncertainty_display": "Display the reasonable-analyst interval less prominently than the point forecast and evidence confidence until external forecaster dispersion can be compared with it.",
-    "future_research_note": "The v1.1 candidate register is non-operative research backlog only. None of its items changes Protocol v1.0, forecast definitions, warning thresholds, scoring, or the 2026-10-04 workflow unless adopted prospectively in a later numbered protocol."
+    "future_research_note": "The v1.1 candidate register is non-operative research backlog only. None of its items changes Protocol v1.0, forecast definitions, warning thresholds, scoring, or the 2026-10-04 workflow unless adopted prospectively in a later numbered protocol.",
+    "deadline_convention": "Protocol v1 horizons use local-calendar time: 90-day forecasts resolve 90 local calendar days after forecast_open at the same local clock time; 12-month forecasts resolve on the same local calendar date and clock time one year later (Feb 29 maps to Feb 28). Offset may change with daylight-saving time. This convention is executable in the validator.",
+    "validation_policy": "Errors block validation: malformed core records, wrong deadlines/timestamp ordering, post-cutoff evidence with known publication time, arithmetic failures, or unauthorized historical mutation. Missing precise source publication time is a validation warning and must remain explicitly recorded as unknown.",
+    "publication_architecture": "Current Pages source is main. Protocol v1 publication procedure validates the proposed record before commit and CI validates again after push. A future candidate-branch/merge gate is preferred for stronger pre-main atomicity; until implemented, a failed CI run must not be represented as validated."
   },
   "protocol_v1_1_candidate_register": [
     "Empirically estimate dependence/overlap in the Iran–China oil-credit haircut rather than using the v1 20% convention.",
