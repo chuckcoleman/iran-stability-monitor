@@ -8,12 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install JSON Schema validator
-        run: python -m pip install --disable-pip-version-check jsonschema
+        run: python -m pip install --disable-pip-version-check 'jsonschema==4.25.1'
       - name: Validate JSON Schema
         run: python -m jsonschema -i data/history.json schema/history.schema.json
+      - name: Validate JavaScript syntax
+        run: node --check assets/app.js
       - name: Validate history and Protocol v1 conformance
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: python scripts/validate_history.py
