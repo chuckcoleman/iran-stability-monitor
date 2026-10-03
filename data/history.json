@@ -237,7 +237,10 @@
           "created_date": "2026-09-27",
           "provenance": "Prospective forecast issued with 2026-09-27 assessment",
           "original_issue_definition": "30–90 day regional scenario: wider regional escalation",
-          "current_resolution_rule_status": "Later operationalization adopted 2026-10-03; use only if consistent with the original forecast meaning. Any material ambiguity at resolution must be disclosed and sensitivity-scored rather than silently resolved."
+          "current_resolution_rule_status": "Later operationalization adopted 2026-10-03; use only if consistent with the original forecast meaning. Any material ambiguity at resolution must be disclosed and sensitivity-scored rather than silently resolved.",
+          "forecast_id": "regional_escalation_90d_20260927",
+          "forecast_open": "2026-09-27T09:00:00-04:00",
+          "resolution_deadline": "2026-12-26T09:00:00-05:00"
         },
         {
           "label": "Regime-ending transition",
@@ -255,7 +258,10 @@
           "created_date": "2026-09-27",
           "provenance": "Prospective forecast issued with 2026-09-27 assessment",
           "original_issue_definition": "12-month political outcome: regime-ending transition",
-          "current_resolution_rule_status": "Later operationalization adopted 2026-10-03; use only if consistent with the original forecast meaning. Any material ambiguity at resolution must be disclosed and sensitivity-scored rather than silently resolved."
+          "current_resolution_rule_status": "Later operationalization adopted 2026-10-03; use only if consistent with the original forecast meaning. Any material ambiguity at resolution must be disclosed and sensitivity-scored rather than silently resolved.",
+          "forecast_id": "regime_end_12m_20260927",
+          "forecast_open": "2026-09-27T09:00:00-04:00",
+          "resolution_deadline": "2027-09-27T09:00:00-04:00"
         },
         {
           "label": "Currency crisis",
@@ -461,7 +467,10 @@
           "reliability": "High",
           "affects": [
             "Sustained major regional escalation"
-          ]
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "ambiguous"
         },
         {
           "id": "E-20260927-02",
@@ -474,7 +483,10 @@
             "Sustained major regional escalation",
             "External-payments crisis",
             "Iran–China oil-credit haircut"
-          ]
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "ambiguous"
         },
         {
           "id": "E-20260927-03",
@@ -485,7 +497,10 @@
           "reliability": "Medium-high",
           "affects": [
             "Energy / industrial warning"
-          ]
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "ambiguous"
         }
       ],
       "assessment_evidence_cutoff": "2026-09-27T09:00:00-04:00",
@@ -493,7 +508,8 @@
       "protocol_version_for_assessment": "pre-v1 / legacy",
       "methodology_notes": [
         "Protocol v1.0 was frozen on 2026-10-03 for prospective forecasts beginning 2026-10-04. It is not retroactively applied to the 2026-09-27 forecast."
-      ]
+      ],
+      "revision_attribution_status": "Not reconstructed retrospectively; signed contribution accounting begins prospectively under Protocol v1 on 2026-10-04."
     }
   ],
   "ledger_fields": [
@@ -660,7 +676,9 @@
           "mid": "Credible secondary-sanctions/political tail",
           "high": "Acute escalation/secondary-sanctions exposure"
         }
-      }
+      },
+      "sensitivity": "Alongside the v1 20% overlap convention, report sensitivity using 0%, 20%, and 40% overlap deductions. The 20% case remains the Protocol v1 headline; sensitivity cases are diagnostic and do not change the frozen rule.",
+      "overlap_status": "The 20% overlap factor is an explicit Protocol v1 convention, not an empirically estimated correlation parameter. It is a candidate for empirical revision only in a future protocol version."
     },
     "houthi_protocol": {
       "headline_resolution": "Yes only if Iranian matériel or Iranian technical/financial support remains sufficient to measurably sustain advanced Houthi missile/UAV or maritime capability. Houthi independent/local capability alone cannot resolve Iranian-support continuity Yes.",
@@ -676,6 +694,32 @@
       "elicitation": "Assess matériel and technical/financial support separately from local capability; headline probability is a judgment conditioned on at least one Iranian-support channel remaining strategically meaningful."
     },
     "calibration_policy": "Report Brier scores for all resolved core forecasts and separately by event family and comparable horizon only when sample size is adequate; never imply meaningful calibration from very small cells.",
-    "evidence_balance_policy": "For each core forecast, preserve material evidence that raises, lowers, or is genuinely ambiguous/neutral. A zero probability revision may be labeled 'offsetting evidence' when meaningful opposing evidence changed but net probability did not."
-  }
+    "evidence_balance_policy": "For each core forecast, preserve material evidence that raises, lowers, or is genuinely ambiguous/neutral. A zero probability revision may be labeled 'offsetting evidence' when meaningful opposing evidence changed but net probability did not.",
+    "resolution_policy": {
+      "authority": "Resolve from the pre-specified event rule using the archived public evidence record. Ambiguous cases require a written resolution note citing the decisive evidence and rule clause.",
+      "indeterminate": "If reliable public evidence is insufficient to determine Yes or No by the resolution review date, code outcome='indeterminate'. Indeterminate forecasts are excluded from Brier/calibration scoring; the exclusion and reason remain public. Never choose a resolution based on which result improves the score.",
+      "review_timing": "Perform resolution review promptly after the forecast deadline; later evidence may establish what happened before the deadline only if it directly documents the pre-deadline state."
+    },
+    "serial_dependence_caveat": "Weekly forecasts with overlapping horizons are strongly serially dependent. Per-forecast Brier scores may be reported, but counts of overlapping forecasts must not be interpreted as independent sample size; calibration uncertainty and comparative claims must account for clustering/overlap.",
+    "display_clarification": "Warning colors describe the current state of a diagnostic failure pathway. Forecast probabilities describe the chance of a defined future event by a stated deadline. A severe current warning and a lower future-event probability, or vice versa, are not inherently inconsistent.",
+    "evidence_impact_scale": {
+      "minor": "Credible evidence that modestly updates one input but does not alter the central mechanism or threshold state.",
+      "moderate": "Corroborated evidence that materially changes a key driver, threshold state, or one core forecast's assessment.",
+      "major": "High-quality evidence of a structural break, threshold crossing, major military/political/economic event, or failure/restoration of a critical mechanism."
+    },
+    "revision_attribution_rule": "At forecast time, record approximate signed percentage-point contributions for material new evidence/reassessment sufficient to reconcile the prior point forecast to the new point forecast. These are an audit decomposition of judgment, not causal estimates or a statistical model. If effects offset, label offsetting evidence.",
+    "id_policy": {
+      "forecast_id": "core event id + '_' + forecast date YYYYMMDD; immutable once issued.",
+      "evidence_id": "Persistent event/source identifier. Reuse the same evidence_id when evidence is carried forward; mark evidence_status='new' or 'carried_forward' rather than creating a duplicate observation.",
+      "resolution": "Resolution records must reference forecast_id."
+    },
+    "uncertainty_display": "Display the reasonable-analyst interval less prominently than the point forecast and evidence confidence until external forecaster dispersion can be compared with it."
+  },
+  "protocol_v1_1_candidate_register": [
+    "Empirically estimate dependence/overlap in the Iran–China oil-credit haircut rather than using the v1 20% convention.",
+    "Replace qualitative haircut Low/Mid/High anchors with more observable quantitative thresholds where reliable data permit.",
+    "Validate reasonable-analyst uncertainty intervals against actual external-forecaster dispersion when a comparable sample becomes available.",
+    "Evaluate whether the 90-day escalation rule needs a prospectively defined high-severity alternative to the 72-hour criterion.",
+    "Evaluate resolution-authority procedures for fragmented or contested national control using experience from resolved forecasts."
+  ]
 }
