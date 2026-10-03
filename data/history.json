@@ -258,7 +258,10 @@
           ],
           "event_definition": "Yes if the parallel-market rial loses at least 25% against the US dollar over any rolling 30-day period after this forecast, excluding a one-day quote anomaly.",
           "raise": "Renewed rapid parallel-rate depreciation, failed intervention, accelerating monetary financing or shortening price/wage intervals.",
-          "lower": "Sustained rial stabilization, narrowing official–parallel spread and slower liquidity growth."
+          "lower": "Sustained rial stabilization, narrowing official–parallel spread and slower liquidity growth.",
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
         },
         {
           "label": "External-payments crisis",
@@ -271,7 +274,10 @@
           ],
           "event_definition": "Yes if FX/payment scarcity causes broad emergency import/payment restrictions or documented material inability to settle essential imports through normal or established alternative channels.",
           "raise": "Further oil/payment-channel loss, import-payment breakdown, supplier prepayment demands or broad LC/settlement failure.",
-          "lower": "Restored oil receipts/payment access, improved import settlement and durable alternative payment channels."
+          "lower": "Restored oil receipts/payment access, improved import settlement and durable alternative payment channels.",
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
         }
       ],
       "chains": [
@@ -407,20 +413,28 @@
           "text": "No verified cutoff by a major Chinese bank; Chinese support remains conditional but material."
         }
       ],
-      "data_checked_through": "2026-09-27T09:00:00-04:00",
       "next_scheduled_update": "2026-10-04T09:00:00-04:00",
       "binary_political": [
         {
           "label": "Islamic Republic governing order survives 12 months",
-          "p": 88
+          "p": 88,
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
         },
         {
           "label": "Material elite/institutional restructuring within 12 months",
-          "p": 26
+          "p": 26,
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
         },
         {
           "label": "Negotiated external stabilization within 12 months",
-          "p": 34
+          "p": 34,
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
         }
       ],
       "regional_resolution_note": "Scenario buckets are descriptive legacy partitions. Scored forecasting uses the binary sustained-major-escalation definition above; future scenario partitions must include explicit mutually exclusive resolution rules.",
@@ -463,7 +477,9 @@
             "Energy / industrial warning"
           ]
         }
-      ]
+      ],
+      "assessment_evidence_cutoff": "2026-09-27T09:00:00-04:00",
+      "methodology_revision_date": "2026-10-03"
     }
   ],
   "ledger_fields": [
@@ -482,5 +498,6 @@
     "name": "Reasonable-analyst interval",
     "definition": "The displayed judgmental uncertainty range is the interval within which the assessor judges that roughly 80% of independent, well-informed analysts using the same public information, event definition and horizon would place their point probability. It measures model/analyst disagreement, not sampling error, a Bayesian credible interval, or the probability that the true probability lies in the interval.",
     "elicitation": "Set the point forecast first. Then estimate the 10th and 90th percentiles of the distribution of reasonable analysts' point forecasts without changing the point forecast to center the range."
-  }
+  },
+  "prospective_scoring_rule": "A forecast is eligible for scoring only if scored=true and its created_date is on or before its forecast publication date. Retrospective decompositions are preserved for methodological transparency but excluded from Brier scores and calibration."
 }
