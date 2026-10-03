@@ -220,7 +220,9 @@
             25,
             48
           ],
-          "event_definition": "Renewed sustained major interstate strikes or material geographic widening"
+          "event_definition": "Renewed sustained major interstate strikes or material geographic widening",
+          "raise": "Repeated major US–Iran strikes, broader Saudi–Houthi war, or failure of active mediation.",
+          "lower": "Verified ceasefire implementation, sustained Hormuz normalization, or direct negotiations producing enforceable constraints."
         },
         {
           "label": "Regime-ending transition",
@@ -231,7 +233,9 @@
             7,
             20
           ],
-          "event_definition": "Loss or replacement of the Islamic Republic governing order"
+          "event_definition": "Loss or replacement of the Islamic Republic governing order",
+          "raise": "Verified elite fracture, security-force compensation failure, refusal to enforce orders, defections, or sustained coordinated nationwide unrest.",
+          "lower": "Oil/FX stabilization, declining protest coordination, durable elite cohesion, and continued reliable coercive-system compensation."
         },
         {
           "label": "FX crisis",
@@ -242,7 +246,9 @@
             78,
             93
           ],
-          "event_definition": "Disorderly depreciation or payment shortage requiring broad emergency controls"
+          "event_definition": "Disorderly depreciation or payment shortage requiring broad emergency controls",
+          "raise": "Renewed rapid parallel-rate depreciation, failed intervention, further oil/payment-channel loss, import-payment breakdown, or accelerating monetary financing.",
+          "lower": "Sustained rial stabilization alongside restored oil receipts/payment access and narrowing official–parallel FX spread."
         }
       ],
       "chains": [
@@ -296,7 +302,39 @@
       "houthi": {
         "m6": 88,
         "m24": 55
-      }
+      },
+      "absence_indicators": [
+        {
+          "label": "Security-force defections",
+          "status": "normal",
+          "coverage": "Medium",
+          "text": "No verified consequential defections or unit-level refusal in current reporting."
+        },
+        {
+          "label": "Nationwide bazaar shutdown",
+          "status": "normal",
+          "coverage": "Medium",
+          "text": "No verified nationwide coordinated bazaar closure."
+        },
+        {
+          "label": "Priority military/security fuel failure",
+          "status": "unknown",
+          "coverage": "Low",
+          "text": "No failure is reported, but public observation is too weak to treat absence as affirmative reassurance."
+        },
+        {
+          "label": "Economy-wide high-frequency wage indexation",
+          "status": "normal",
+          "coverage": "Medium",
+          "text": "No evidence yet of generalized high-frequency automatic wage repricing characteristic of advanced inflationary breakdown."
+        },
+        {
+          "label": "Systemically important Chinese-bank cutoff",
+          "status": "normal",
+          "coverage": "Medium-high",
+          "text": "No verified cutoff by a major Chinese bank; Chinese support remains conditional but material."
+        }
+      ]
     }
   ],
   "ledger_fields": [
