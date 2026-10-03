@@ -181,15 +181,15 @@
           "type": "Diplomacy",
           "title": "Tehran's initial Hormuz proposal was rejected",
           "impact": "Reduced the negotiated-de-escalation scenario and raised prolonged-standoff and escalation cases.",
-          "url": "https://www.reuters.com/",
+          "url": "https://www.reuters.com/world/middle-east/iran-awaits-us-move-after-wsj-report-says-trump-rejects-peace-plan-2026-09-26/",
           "revision_type": "New event"
         },
         {
           "date": "2026-09-23",
           "type": "Maritime",
-          "title": "Managed crude flows through Hormuz increased",
-          "impact": "Lowered physical-delivery risk slightly, but flows principally benefited Saudi and Iraqi exports rather than restoring Iranian oil revenue.",
-          "url": "https://www.reuters.com/",
+          "title": "Hormuz crude shuttles and managed flows increased despite severely depressed ordinary traffic",
+          "impact": "Reuters/Kpler reporting documented continuing Saudi and Iraqi crude movement and ship-to-ship workarounds despite very low visible commercial traffic, lowering physical-delivery risk slightly without restoring Iranian oil revenue.",
+          "url": "https://www.reuters.com/world/middle-east/vessels-trickle-through-strait-hormuz-mideast-tension-persists-2026-09-21/",
           "revision_type": "New event"
         },
         {
@@ -197,8 +197,9 @@
           "type": "Energy",
           "title": "Emergency demand-management measures took effect",
           "impact": "Remote work, public-transport incentives and fuel-conservation measures strengthened evidence of a binding domestic energy imbalance.",
-          "url": "https://www.reuters.com/",
-          "revision_type": "New event"
+          "url": "",
+          "revision_type": "New event",
+          "source_note": "Exact Reuters article URL not recovered; do not substitute a generic Reuters homepage."
         }
       ],
       "what_changed": "Diplomacy deteriorated while fiscal and energy evidence worsened; managed Hormuz crude movement improved without restoring Iran's own oil-export position.",
