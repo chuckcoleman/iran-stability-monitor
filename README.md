@@ -9,6 +9,9 @@ Public, timestamped scenario estimates and early-warning indicators for Iran.
 - `special-reports.html` — longer event-driven analyses
 - `protocol-v1.html` — frozen prospective forecasting protocol
 - `history.html` — full immutable forecast history
+- `scripts/validate_history.py` — Protocol v1 publication validator
+- `schema/history.schema.json` — machine-readable structural schema
+- `.github/workflows/validate.yml` — automatic validation on repository changes
 - `assets/` — static CSS/JS
 
 ## Protocol
