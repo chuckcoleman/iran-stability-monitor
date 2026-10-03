@@ -11,5 +11,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install JSON Schema validator
+        run: python -m pip install --disable-pip-version-check jsonschema
+      - name: Validate JSON Schema
+        run: python -m jsonschema -i data/history.json schema/history.schema.json
       - name: Validate history and Protocol v1 conformance
         run: python scripts/validate_history.py
