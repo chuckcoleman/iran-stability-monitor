@@ -182,7 +182,9 @@
           "title": "Tehran's initial Hormuz proposal was rejected",
           "impact": "Reduced the negotiated-de-escalation scenario and raised prolonged-standoff and escalation cases.",
           "url": "https://www.reuters.com/world/middle-east/iran-awaits-us-move-after-wsj-report-says-trump-rejects-peace-plan-2026-09-26/",
-          "revision_type": "New event"
+          "revision_type": "New event",
+          "revision_date": "2026-09-27",
+          "event_date": "2026-09-26"
         },
         {
           "date": "2026-09-23",
@@ -190,7 +192,9 @@
           "title": "Hormuz crude shuttles and managed flows increased despite severely depressed ordinary traffic",
           "impact": "Reuters/Kpler reporting documented continuing Saudi and Iraqi crude movement and ship-to-ship workarounds despite very low visible commercial traffic, lowering physical-delivery risk slightly without restoring Iranian oil revenue.",
           "url": "https://www.reuters.com/world/middle-east/vessels-trickle-through-strait-hormuz-mideast-tension-persists-2026-09-21/",
-          "revision_type": "New event"
+          "revision_type": "New event",
+          "revision_date": "2026-09-27",
+          "event_date": "2026-09-21"
         },
         {
           "date": "2026-09-23",
@@ -199,7 +203,9 @@
           "impact": "Remote work, public-transport incentives and fuel-conservation measures strengthened evidence of a binding domestic energy imbalance.",
           "url": "https://www.aljazeera.com/economy/2026/9/21/how-an-economic-squeeze-is-changing-everyday-life-and-work-for-iranians",
           "revision_type": "New event",
-          "source_note": "Al Jazeera reported the government set 8am–1pm office attendance from September 23 with remaining hours remote, weekly public-transport days, and temporarily free metro/BRT as fuel-saving measures."
+          "source_note": "Al Jazeera reported the government set 8am–1pm office attendance from September 23 with remaining hours remote, weekly public-transport days, and temporarily free metro/BRT as fuel-saving measures.",
+          "revision_date": "2026-09-27",
+          "event_date": "2026-09-21"
         }
       ],
       "what_changed": "Diplomacy deteriorated while fiscal and energy evidence worsened; managed Hormuz crude movement improved without restoring Iran's own oil-export position.",
@@ -257,40 +263,46 @@
           "name": "FX / fiscal",
           "stage": 2,
           "level": "warning",
-          "note": "Depreciation and administrative intervention are clear; generalized high-frequency repricing and runaway monetization are not yet established.",
+          "note": "Depreciation is confirmed; intervention is under strain but not established as failed. Generalized high-frequency repricing and runaway monetization are not established.",
           "steps": [
             "Depreciation",
             "Intervention strain",
             "Currency substitution",
             "Rapid repricing/indexation",
             "Fiscal monetization"
-          ]
+          ],
+          "confirmed": 1,
+          "current": 1
         },
         {
           "name": "Energy / real economy",
           "stage": 3,
           "level": "critical",
-          "note": "Rationing/conservation, industrial/freight disruption and essential-goods stress are present; failure of priority allocations remains absent.",
+          "note": "Rationing/conservation and industrial/freight disruption are confirmed; essential-goods stress is present but not yet a generalized shortage threshold. Failure of priority allocations remains absent.",
           "steps": [
             "Rationing",
             "Industrial/freight disruption",
             "Essential-goods shortages",
             "State arrears",
             "Priority-allocation failure"
-          ]
+          ],
+          "confirmed": 2,
+          "current": 2
         },
         {
           "name": "Regime / coercion",
           "stage": 1,
           "level": "watch",
-          "note": "Economic protest is recurrent, but coordinated national protest, elite fracture and coercive refusal are not established.",
+          "note": "Economic protest is confirmed; movement toward coordinated national protest is being watched, while elite fracture and coercive refusal are not established.",
           "steps": [
             "Economic protest",
             "Coordinated national protest",
             "Elite fracture",
             "Coercive refusal",
             "Defections"
-          ]
+          ],
+          "confirmed": 1,
+          "current": 1
         }
       ],
       "haircut": {
