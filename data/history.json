@@ -713,13 +713,28 @@
       "evidence_id": "Persistent event/source identifier. Reuse the same evidence_id when evidence is carried forward; mark evidence_status='new' or 'carried_forward' rather than creating a duplicate observation.",
       "resolution": "Resolution records must reference forecast_id."
     },
-    "uncertainty_display": "Display the reasonable-analyst interval less prominently than the point forecast and evidence confidence until external forecaster dispersion can be compared with it."
+    "uncertainty_display": "Display the reasonable-analyst interval less prominently than the point forecast and evidence confidence until external forecaster dispersion can be compared with it.",
+    "future_research_note": "The v1.1 candidate register is non-operative research backlog only. None of its items changes Protocol v1.0, forecast definitions, warning thresholds, scoring, or the 2026-10-04 workflow unless adopted prospectively in a later numbered protocol."
   },
   "protocol_v1_1_candidate_register": [
     "Empirically estimate dependence/overlap in the Iran–China oil-credit haircut rather than using the v1 20% convention.",
     "Replace qualitative haircut Low/Mid/High anchors with more observable quantitative thresholds where reliable data permit.",
     "Validate reasonable-analyst uncertainty intervals against actual external-forecaster dispersion when a comparable sample becomes available.",
     "Evaluate whether the 90-day escalation rule needs a prospectively defined high-severity alternative to the 72-hour criterion.",
-    "Evaluate resolution-authority procedures for fragmented or contested national control using experience from resolved forecasts."
+    "Evaluate resolution-authority procedures for fragmented or contested national control using experience from resolved forecasts.",
+    "Revision attribution: require an explicit residual 'other/model judgment' term and coarse contribution increments so exact reconciliation is not misread as causal precision.",
+    "Performance aggregation: account for correlation among core outcomes; report event-family results separately and avoid naive equal-weight aggregate scores that overweight a common crisis process.",
+    "Benchmarking: when sample size permits, compare Brier performance with simple benchmarks such as prior-week probability, defensible base rates, and no-change forecasts before claiming skill.",
+    "Overlapping-horizon resolution: one qualifying event should resolve every still-open forecast whose event definition and window include it, using the same decisive evidence rather than treating weekly forecasts as independent events.",
+    "Resolution records: store outcome, resolution_date, resolved_at, decisive_evidence_ids, and resolution_note for every resolved forecast.",
+    "Evidence architecture: consider moving persistent evidence into a global immutable evidence.json with weekly records referencing evidence IDs if carried-forward evidence makes history.json unwieldy.",
+    "China oil-credit terminology: evaluate 'equivalent haircut' terminology because risk may be priced through tenor, collateral, quantity, counterparty selection, or payment timing rather than only an explicit price discount.",
+    "China haircut uncertainty: separate component/parameter uncertainty from dependence-overlap sensitivity; do not imply overlap is the dominant source of uncertainty.",
+    "Houthi quantification: develop diagnostic stock-flow accounting using expenditure/launch rates, replenishment evidence, indigenous-production share, component bottlenecks, and interdiction rates before considering Houthi probabilities for scored status.",
+    "Warning-system validation: measure state duration, transition frequency, lead/lag relationship to core forecasts, and whether persistent warning states retain predictive discrimination.",
+    "Missingness: distinguish ordinary data gaps from endogenous information suppression such as communications shutdowns or deliberate reporting restrictions.",
+    "Source independence: distinguish publisher count from independent underlying information streams and track common-source dependence.",
+    "Track prospective-validation maturity explicitly so polished presentation is not mistaken for demonstrated forecast skill; disclose that Protocol v1 initially has little or no resolved prospective record.",
+    "Protocol discipline: evaluate the ability to run v1 unchanged for a sustained period, preserve disconfirming evidence, and resolve poor-performing forecasts without retrospective rule changes."
   ]
 }
