@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "updates": [
     {
       "date": "2026-09-20",
@@ -112,40 +112,67 @@
       ],
       "warning": {
         "Monetary / FX": {
-          "level": "red",
-          "text": "Rial remains very weak; liquidity growth and the managed/free-market spread keep medium-term crisis risk elevated."
+          "level": "warning-level",
+          "direction": "up",
+          "coverage": "Medium-high",
+          "role": "leading",
+          "text": "Warning: depreciation, liquidity growth and a large managed/free-market spread show substantial movement toward an acute FX threshold."
         },
         "Fiscal": {
-          "level": "red",
-          "text": "Weak sovereign financing demand and high yields add to pressure from lost oil revenue."
+          "level": "warning-level",
+          "direction": "up",
+          "coverage": "Medium",
+          "role": "leading",
+          "text": "Warning: weak sovereign financing demand, high yields and impaired oil revenue increase financing stress; ordinary financing has not clearly failed."
         },
         "Banking / payments": {
-          "level": "red",
-          "text": "Alternative payment rails remain under sanctions pressure."
+          "level": "warning-level",
+          "direction": "flat",
+          "coverage": "Medium",
+          "role": "leading",
+          "text": "Warning: alternative payment rails and import settlement face material sanctions friction, but nationwide payment-system failure is not established."
         },
         "Food / medicine": {
-          "level": "red",
-          "text": "Medicine shortages and imported-input constraints remain severe."
+          "level": "warning-level",
+          "direction": "flat",
+          "coverage": "Medium",
+          "role": "coincident",
+          "text": "Warning: medicine and imported-input shortages are material; evidence does not establish generalized essential-food failure."
         },
         "Energy / industrial": {
-          "level": "red",
-          "text": "Remote work and transport conservation are implemented; the gasoline deficit persists."
+          "level": "critical",
+          "direction": "up",
+          "coverage": "High",
+          "role": "leading/coincident",
+          "text": "Critical: rationing and conservation are now affecting work patterns and industrial/logistics activity; priority allocations are not yet known to be failing."
         },
         "Social / protest": {
-          "level": "amber",
-          "text": "Economic protests broadened but remain fragmented."
+          "level": "watch",
+          "direction": "up",
+          "coverage": "Medium",
+          "role": "coincident",
+          "text": "Watch: economic protests have broadened but remain fragmented rather than sustained nationwide coordinated unrest."
         },
         "Coercive apparatus": {
-          "level": "amber",
-          "text": "No corroborated systemic pay failure, refusal, desertion or defection."
+          "level": "unknown",
+          "direction": "flat",
+          "coverage": "Low",
+          "role": "leading",
+          "text": "Insufficient data on pay and benefits. Available reporting shows no verified refusal, desertion or defection, but absence of evidence is not coded green."
         },
         "Elite cohesion": {
-          "level": "amber",
-          "text": "No high-level institutional split is visible."
+          "level": "watch",
+          "direction": "flat",
+          "coverage": "Medium",
+          "role": "leading",
+          "text": "Watch: policy disagreement exists, but no open institutional fracture affecting command or governance is visible."
         },
         "External support": {
-          "level": "amber",
-          "text": "China and Russia cushion isolation but do not replace lost oil FX."
+          "level": "watch",
+          "direction": "flat",
+          "coverage": "Medium-high",
+          "role": "leading",
+          "text": "Watch: China and Russia cushion isolation but do not replace lost oil FX and have incentives to limit destabilizing escalation."
         }
       },
       "news": [
@@ -154,23 +181,134 @@
           "type": "Diplomacy",
           "title": "Tehran's initial Hormuz proposal was rejected",
           "impact": "Reduced the negotiated-de-escalation scenario and raised prolonged-standoff and escalation cases.",
-          "url": "https://www.reuters.com/"
+          "url": "https://www.reuters.com/",
+          "revision_type": "New event"
         },
         {
           "date": "2026-09-23",
           "type": "Maritime",
           "title": "Managed crude flows through Hormuz increased",
           "impact": "Lowered physical-delivery risk slightly, but flows principally benefited Saudi and Iraqi exports rather than restoring Iranian oil revenue.",
-          "url": "https://www.reuters.com/"
+          "url": "https://www.reuters.com/",
+          "revision_type": "New event"
         },
         {
           "date": "2026-09-23",
           "type": "Energy",
           "title": "Emergency demand-management measures took effect",
           "impact": "Remote work, public-transport incentives and fuel-conservation measures strengthened evidence of a binding domestic energy imbalance.",
-          "url": "https://www.reuters.com/"
+          "url": "https://www.reuters.com/",
+          "revision_type": "New event"
         }
-      ]
+      ],
+      "what_changed": "Diplomacy deteriorated while fiscal and energy evidence worsened; managed Hormuz crude movement improved without restoring Iran's own oil-export position.",
+      "stabilizer": "No verified coercive-system fracture or failure of priority military/security allocations.",
+      "next_threshold": "Whether economic and energy stress begins impairing priority state allocations or coercive-system compensation.",
+      "conditions": {
+        "hormuz": "Observation: commercial traffic remains severely restricted despite managed crude movements.",
+        "energy": "Inference, high confidence: binding product and power constraints are producing active demand management.",
+        "elite": "Strained but institutionally intact",
+        "coercion": "No verified systemic compensation or discipline failure"
+      },
+      "forecasts": [
+        {
+          "label": "Sustained major regional escalation",
+          "p": 36,
+          "horizon": "within 90 days",
+          "confidence": "Medium",
+          "range": [
+            25,
+            48
+          ],
+          "event_definition": "Renewed sustained major interstate strikes or material geographic widening"
+        },
+        {
+          "label": "Regime-ending transition",
+          "p": 12,
+          "horizon": "within 12 months",
+          "confidence": "Medium",
+          "range": [
+            7,
+            20
+          ],
+          "event_definition": "Loss or replacement of the Islamic Republic governing order"
+        },
+        {
+          "label": "FX crisis",
+          "p": 87,
+          "horizon": "within 12 months",
+          "confidence": "Medium-high",
+          "range": [
+            78,
+            93
+          ],
+          "event_definition": "Disorderly depreciation or payment shortage requiring broad emergency controls"
+        }
+      ],
+      "chains": [
+        {
+          "name": "FX / fiscal",
+          "stage": 2,
+          "level": "warning",
+          "note": "Depreciation and administrative intervention are clear; generalized high-frequency repricing and runaway monetization are not yet established.",
+          "steps": [
+            "Depreciation",
+            "Intervention strain",
+            "Currency substitution",
+            "Rapid repricing/indexation",
+            "Fiscal monetization"
+          ]
+        },
+        {
+          "name": "Energy / real economy",
+          "stage": 3,
+          "level": "critical",
+          "note": "Rationing/conservation, industrial/freight disruption and essential-goods stress are present; failure of priority allocations remains absent.",
+          "steps": [
+            "Rationing",
+            "Industrial/freight disruption",
+            "Essential-goods shortages",
+            "State arrears",
+            "Priority-allocation failure"
+          ]
+        },
+        {
+          "name": "Regime / coercion",
+          "stage": 1,
+          "level": "watch",
+          "note": "Economic protest is recurrent, but coordinated national protest, elite fracture and coercive refusal are not established.",
+          "steps": [
+            "Economic protest",
+            "Coordinated national protest",
+            "Elite fracture",
+            "Coercive refusal",
+            "Defections"
+          ]
+        }
+      ],
+      "haircut": {
+        "range": [
+          27,
+          57
+        ],
+        "note": "Risk adjustment may appear through price, tenor, collateral or payment timing rather than an explicit discount."
+      },
+      "houthi": {
+        "m6": 88,
+        "m24": 55
+      }
     }
+  ],
+  "ledger_fields": [
+    "forecast_date",
+    "event_definition",
+    "horizon",
+    "probability",
+    "uncertainty_range",
+    "confidence",
+    "revision_type",
+    "sources",
+    "resolution_date",
+    "outcome"
   ]
 }
