@@ -235,7 +235,9 @@
           "lower": "Verified ceasefire implementation, sustained Hormuz normalization, or direct negotiations producing enforceable constraints.",
           "scored": true,
           "created_date": "2026-09-27",
-          "provenance": "Prospective forecast issued with 2026-09-27 assessment"
+          "provenance": "Prospective forecast issued with 2026-09-27 assessment",
+          "original_issue_definition": "30–90 day regional scenario: wider regional escalation",
+          "current_resolution_rule_status": "Later operationalization adopted 2026-10-03; use only if consistent with the original forecast meaning. Any material ambiguity at resolution must be disclosed and sensitivity-scored rather than silently resolved."
         },
         {
           "label": "Regime-ending transition",
@@ -251,7 +253,9 @@
           "lower": "Oil/FX stabilization, declining protest coordination, durable elite cohesion, and continued reliable coercive-system compensation.",
           "scored": true,
           "created_date": "2026-09-27",
-          "provenance": "Prospective forecast issued with 2026-09-27 assessment"
+          "provenance": "Prospective forecast issued with 2026-09-27 assessment",
+          "original_issue_definition": "12-month political outcome: regime-ending transition",
+          "current_resolution_rule_status": "Later operationalization adopted 2026-10-03; use only if consistent with the original forecast meaning. Any material ambiguity at resolution must be disclosed and sensitivity-scored rather than silently resolved."
         },
         {
           "label": "Currency crisis",
@@ -485,7 +489,11 @@
         }
       ],
       "assessment_evidence_cutoff": "2026-09-27T09:00:00-04:00",
-      "methodology_revision_date": "2026-10-03"
+      "methodology_revision_date": "2026-10-03",
+      "protocol_version_for_assessment": "pre-v1 / legacy",
+      "methodology_notes": [
+        "Protocol v1.0 was frozen on 2026-10-03 for prospective forecasts beginning 2026-10-04. It is not retroactively applied to the 2026-09-27 forecast."
+      ]
     }
   ],
   "ledger_fields": [
@@ -505,5 +513,169 @@
     "definition": "The displayed judgmental uncertainty range is the interval within which the assessor judges that roughly 80% of independent, well-informed analysts using the same public information, event definition and horizon would place their point probability. It measures model/analyst disagreement, not sampling error, a Bayesian credible interval, or the probability that the true probability lies in the interval.",
     "elicitation": "Set the point forecast first. Then estimate the 10th and 90th percentiles of the distribution of reasonable analysts' point forecasts without changing the point forecast to center the range."
   },
-  "prospective_scoring_rule": "A forecast is eligible for scoring only if scored=true and its created_date is on or before its forecast publication date. Retrospective decompositions are preserved for methodological transparency but excluded from Brier scores and calibration."
+  "prospective_scoring_rule": "A forecast is eligible for scoring only if scored=true and its created_date is on or before its forecast publication date. Retrospective decompositions are preserved for methodological transparency but excluded from Brier scores and calibration.",
+  "protocol": {
+    "version": "1.0",
+    "frozen_on": "2026-10-03",
+    "effective_for_forecasts_on_or_after": "2026-10-04",
+    "change_policy": "Protocol v1 is frozen for prospective use. Substantive changes require a new numbered protocol version, an effective date, a change log, and no retroactive application to already-issued forecasts.",
+    "timestamp_policy": "Evidence collection closes before forecast elicitation. Each update records evidence_cutoff as the actual last evidence timestamp used and publication_time as the actual commit/publication timestamp. Material information first available after evidence_cutoff is excluded from that forecast and may enter only the next forecast or an explicitly labeled interim update.",
+    "core_scored_set": [
+      {
+        "id": "regional_escalation_90d",
+        "event": "Sustained major regional escalation",
+        "horizon_days": 90,
+        "resolution": "Yes if sustained major interstate strikes occur for at least 72 consecutive hours, or major combat materially expands to an additional sovereign state/operational theater. One-off strikes, interceptions, isolated proxy attacks, or rhetoric alone are No unless they initiate the qualifying sustained episode."
+      },
+      {
+        "id": "regime_end_12m",
+        "event": "Regime-ending transition",
+        "horizon_days": 365,
+        "resolution": "Yes if the Islamic Republic's governing constitutional-institutional order is replaced or loses effective national governing authority. Leadership succession, cabinet change, or factional turnover within the same governing order is No."
+      },
+      {
+        "id": "currency_crisis_12m",
+        "event": "Currency crisis",
+        "horizon_days": 365,
+        "resolution": "Yes if the parallel-market rial depreciates at least 25% against the US dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.",
+        "threshold_note": "The 25%/30-day threshold is a monitoring convention chosen ex ante for Protocol v1 for scoreability and sensitivity to acute depreciation; it is not claimed to be a universal economic definition. Sensitivity at 20% and 30% will be reported when resolving."
+      },
+      {
+        "id": "external_payments_crisis_12m",
+        "event": "External-payments crisis",
+        "horizon_days": 365,
+        "resolution": "Yes if at least two essential-import categories (food/grain, medicine/medical inputs, or critical energy/industrial inputs) show corroborated settlement disruption lasting at least 14 days AND the government imposes broad emergency FX/import/payment restrictions or suppliers materially shift to prepayment/cash because established settlement channels are failing. Evidence must come from at least two independent source streams."
+      }
+    ],
+    "noncore_policy": "Other probabilities may be published as diagnostic estimates but are not part of the permanent core scored set unless added prospectively in a later protocol version.",
+    "uncertainty_rule": {
+      "name": "Reasonable-analyst interval",
+      "definition": "The displayed judgmental uncertainty range is the interval within which the assessor judges that roughly 80% of independent, well-informed analysts using the same public information, event definition and horizon would place their point probability. It measures model/analyst disagreement, not sampling error, a Bayesian credible interval, or the probability that the true probability lies in the interval.",
+      "elicitation": "Set the point forecast first. Then estimate the 10th and 90th percentiles of the distribution of reasonable analysts' point forecasts without changing the point forecast to center the range."
+    },
+    "evidence_reliability": {
+      "dimensions": [
+        "source credibility",
+        "directness",
+        "independent corroboration",
+        "temporal relevance"
+      ],
+      "High": "Primary/direct evidence or multiple independent highly credible sources; direct and current; no material contradiction.",
+      "Medium-high": "Credible and substantially direct evidence with at least one corroborating stream, or exceptionally strong single-source evidence.",
+      "Medium": "Credible but indirect, incompletely corroborated, or subject to meaningful measurement/reporting uncertainty.",
+      "Low": "Single-source, materially indirect, stale, contested, or weakly observable evidence. Low evidence cannot by itself trigger Critical."
+    },
+    "warning_transition_rules": {
+      "Monetary / FX": {
+        "green": "Stable parallel rate/spread and functioning intervention/payment access on affirmative evidence.",
+        "yellow": "Persistent depreciation/spread widening or rising dollarization without intervention failure.",
+        "orange": "Multiple signals: accelerating depreciation plus ineffective intervention/payment strain or shortening quote validity.",
+        "red": "Self-reinforcing substitution/repricing dynamics or qualifying currency crisis already operating."
+      },
+      "Fiscal": {
+        "green": "Routine financing clears without extraordinary coercion/monetization.",
+        "yellow": "Rising yields, arrears pressure or weaker auctions.",
+        "orange": "Repeated weak/failed financing plus forced lending, fund drawdown or material monetization.",
+        "red": "Routine financing failure with accelerating monetization/arrears threatening priority obligations."
+      },
+      "Banking / payments": {
+        "green": "Affirmative evidence normal settlement/liquidity.",
+        "yellow": "Localized delays, higher prepayment or channel friction.",
+        "orange": "Multiple sectors/channels show persistent settlement failure or material deposit/dollarization stress.",
+        "red": "Broad payment impairment or bank/liquidity dysfunction disrupting essential commerce."
+      },
+      "Food / medicine": {
+        "green": "Affirmative normal availability across essentials.",
+        "yellow": "Localized/persistent shortages or affordability stress.",
+        "orange": "Multiple essential categories materially disrupted across regions.",
+        "red": "Generalized essential-goods failure with rationing/queues and logistics/payment feedback."
+      },
+      "Energy / industrial": {
+        "green": "Normal reserve margins/supply with no emergency curtailment.",
+        "yellow": "Conservation appeals, localized curtailment or seasonal stress.",
+        "orange": "Rationing/load shedding materially disrupts industry, freight or work patterns.",
+        "red": "Priority allocations fail or energy disruption becomes self-reinforcing across essential logistics/production."
+      },
+      "Social / protest": {
+        "green": "Affirmative low protest activity and normal commerce.",
+        "yellow": "Recurrent localized/sectoral protests or closures.",
+        "orange": "Sustained multi-city coordination, major sectoral convergence or nationwide commercial disruption.",
+        "red": "Nationwide sustained unrest materially impairing governance or coercive control."
+      },
+      "Coercive apparatus": {
+        "green": "Affirmative evidence timely compensation, attendance and command compliance.",
+        "yellow": "Verified localized pay/benefit or morale problems.",
+        "orange": "Repeated arrears/absenteeism/refusal across units or services.",
+        "red": "Material command noncompliance, unit-level refusal, defections or inability to protect priority state functions."
+      },
+      "Elite cohesion": {
+        "green": "Affirmative coordinated command/policy behavior.",
+        "yellow": "Public blame, unusual clerical/business criticism or personnel churn.",
+        "orange": "Open institutional conflict affecting policy implementation or command.",
+        "red": "Competing centers of authority or elite fracture impairing national command."
+      },
+      "External support": {
+        "green": "Affirmative stable external trade/finance/security lifelines.",
+        "yellow": "Support continues but with rising discounts/frictions.",
+        "orange": "Major channels materially impaired or partners visibly reduce exposure.",
+        "red": "External lifelines fail across multiple critical channels with no adequate substitute."
+      }
+    },
+    "haircut_protocol": {
+      "dependence_rule": "Component contributions are not simply interpreted as independent risks. Protocol v1 applies a 20% overlap deduction to the combined delivery + sanctions/payment + political-tail subtotal above 20 percentage points, rounded to the nearest point, to reduce double counting of a common geopolitical shock.",
+      "anchors": {
+        "Physical delivery/blockade": {
+          "cap": 25,
+          "low": "Routine evasion/managed delivery with limited disruption",
+          "mid": "Persistent disruption/workarounds and meaningful delivery uncertainty",
+          "high": "Severe route denial/blockade or repeated delivery failure"
+        },
+        "Sanctions/payment channels": {
+          "cap": 15,
+          "low": "Usable channels with modest friction",
+          "mid": "Material channel restrictions/prepayment/discounting",
+          "high": "Broad settlement-channel impairment"
+        },
+        "Sovereign/counterparty": {
+          "cap": 10,
+          "low": "Reliable performance despite stress",
+          "mid": "Material arrears/renegotiation or counterparty opacity",
+          "high": "Repeated nonperformance or acute sovereign stress"
+        },
+        "Oil-price/basis": {
+          "cap": 8,
+          "low": "Low basis/price mismatch",
+          "mid": "Material volatility/basis exposure",
+          "high": "Extreme mismatch or hedge difficulty"
+        },
+        "Illiquidity/enforcement": {
+          "cap": 8,
+          "low": "Transferable/enforceable arrangements",
+          "mid": "Material illiquidity/enforcement limits",
+          "high": "Highly bespoke/illiquid with weak recourse"
+        },
+        "Political/secondary-sanctions tail": {
+          "cap": 8,
+          "low": "Limited incremental tail exposure",
+          "mid": "Credible secondary-sanctions/political tail",
+          "high": "Acute escalation/secondary-sanctions exposure"
+        }
+      }
+    },
+    "houthi_protocol": {
+      "headline_resolution": "Yes only if Iranian matériel or Iranian technical/financial support remains sufficient to measurably sustain advanced Houthi missile/UAV or maritime capability. Houthi independent/local capability alone cannot resolve Iranian-support continuity Yes.",
+      "inputs": [
+        "interdictions",
+        "launch/operational tempo",
+        "identified Iranian-origin components",
+        "local production/assembly evidence",
+        "Iranian advisory/technical evidence",
+        "finance/logistics evidence",
+        "inventory depletion/replenishment indicators"
+      ],
+      "elicitation": "Assess matériel and technical/financial support separately from local capability; headline probability is a judgment conditioned on at least one Iranian-support channel remaining strategically meaningful."
+    },
+    "calibration_policy": "Report Brier scores for all resolved core forecasts and separately by event family and comparable horizon only when sample size is adequate; never imply meaningful calibration from very small cells.",
+    "evidence_balance_policy": "For each core forecast, preserve material evidence that raises, lowers, or is genuinely ambiguous/neutral. A zero probability revision may be labeled 'offsetting evidence' when meaningful opposing evidence changed but net probability did not."
+  }
 }
