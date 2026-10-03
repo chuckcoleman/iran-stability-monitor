@@ -230,7 +230,7 @@
             25,
             48
           ],
-          "event_definition": "before the horizon, sustained major interstate strikes resume for at least 72 hours or major combat materially expands to an additional state/operational theater; isolated interceptions or one-off strikes do not qualify.",
+          "event_definition": "Sustained major interstate strikes lasting at least 72 hours, or a material expansion of major combat to an additional sovereign state or operational theater. Isolated interceptions, one-off strikes, proxy attacks, and rhetoric alone are excluded unless they initiate the qualifying sustained episode.",
           "raise": "Repeated major US–Iran strikes, broader Saudi–Houthi war, or failure of active mediation.",
           "lower": "Verified ceasefire implementation, sustained Hormuz normalization, or direct negotiations producing enforceable constraints.",
           "scored": true,
@@ -251,7 +251,7 @@
             7,
             20
           ],
-          "event_definition": "the Islamic Republic's governing constitutional-institutional order is replaced or loses effective national governing authority; leadership replacement within the same order is No.",
+          "event_definition": "Replacement of the Islamic Republic's governing constitutional-institutional order, or loss of its effective national governing authority. Leadership succession, cabinet changes, and factional turnover within the same governing order are excluded.",
           "raise": "Verified elite fracture, security-force compensation failure, refusal to enforce orders, defections, or sustained coordinated nationwide unrest.",
           "lower": "Oil/FX stabilization, declining protest coordination, durable elite cohesion, and continued reliable coercive-system compensation.",
           "scored": true,
@@ -272,7 +272,7 @@
             55,
             80
           ],
-          "event_definition": "the parallel-market rial loses at least 25% against the US dollar over any rolling 30-day period after this forecast, excluding a one-day quote anomaly.",
+          "event_definition": "Depreciation of the parallel-market rial by at least 25% against the U.S. dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.",
           "raise": "Renewed rapid parallel-rate depreciation, failed intervention, accelerating monetary financing or shortening price/wage intervals.",
           "lower": "Sustained rial stabilization, narrowing official–parallel spread and slower liquidity growth.",
           "provenance": "Retrospective methodological decomposition",
@@ -288,7 +288,7 @@
             58,
             84
           ],
-          "event_definition": "FX/payment scarcity causes broad emergency import/payment restrictions or documented material inability to settle essential imports through normal or established alternative channels.",
+          "event_definition": "Corroborated settlement disruption lasting at least 14 days in at least two essential-import categories—food or grain, medicine or medical inputs, or critical energy or industrial inputs—combined with broad emergency foreign-exchange, import, or payment restrictions or a material shift by suppliers to prepayment or cash because established settlement channels are failing. Evidence must come from at least two independent source streams.",
           "raise": "Further oil/payment-channel loss, import-payment breakdown, supplier prepayment demands or broad LC/settlement failure.",
           "lower": "Restored oil receipts/payment access, improved import settlement and durable alternative payment channels.",
           "provenance": "Retrospective methodological decomposition",
@@ -541,26 +541,26 @@
         "id": "regional_escalation_90d",
         "event": "Sustained major regional escalation",
         "horizon_days": 90,
-        "resolution": "sustained major interstate strikes occur for at least 72 consecutive hours, or major combat materially expands to an additional sovereign state/operational theater. One-off strikes, interceptions, isolated proxy attacks, or rhetoric alone are No unless they initiate the qualifying sustained episode."
+        "resolution": "Sustained major interstate strikes lasting at least 72 hours, or a material expansion of major combat to an additional sovereign state or operational theater. Isolated interceptions, one-off strikes, proxy attacks, and rhetoric alone are excluded unless they initiate the qualifying sustained episode."
       },
       {
         "id": "regime_end_12m",
         "event": "Regime-ending transition",
         "horizon_days": 365,
-        "resolution": "the Islamic Republic's governing constitutional-institutional order is replaced or loses effective national governing authority. Leadership succession, cabinet change, or factional turnover within the same governing order is No."
+        "resolution": "Replacement of the Islamic Republic's governing constitutional-institutional order, or loss of its effective national governing authority. Leadership succession, cabinet changes, and factional turnover within the same governing order are excluded."
       },
       {
         "id": "currency_crisis_12m",
         "event": "Currency crisis",
         "horizon_days": 365,
-        "resolution": "the parallel-market rial depreciates at least 25% against the US dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.",
+        "resolution": "Depreciation of the parallel-market rial by at least 25% against the U.S. dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.",
         "threshold_note": "The 25%/30-day threshold is a monitoring convention chosen ex ante for Protocol v1 for scoreability and sensitivity to acute depreciation; it is not claimed to be a universal economic definition. Sensitivity at 20% and 30% will be reported when resolving."
       },
       {
         "id": "external_payments_crisis_12m",
         "event": "External-payments crisis",
         "horizon_days": 365,
-        "resolution": "at least two essential-import categories (food/grain, medicine/medical inputs, or critical energy/industrial inputs) show corroborated settlement disruption lasting at least 14 days AND the government imposes broad emergency FX/import/payment restrictions or suppliers materially shift to prepayment/cash because established settlement channels are failing. Evidence must come from at least two independent source streams."
+        "resolution": "Corroborated settlement disruption lasting at least 14 days in at least two essential-import categories—food or grain, medicine or medical inputs, or critical energy or industrial inputs—combined with broad emergency foreign-exchange, import, or payment restrictions or a material shift by suppliers to prepayment or cash because established settlement channels are failing. Evidence must come from at least two independent source streams."
       }
     ],
     "noncore_policy": "Other probabilities may be published as diagnostic estimates but are not part of the permanent core scored set unless added prospectively in a later protocol version.",
