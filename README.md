@@ -1,4 +1,4 @@
-# Iran Stability & Escalation Monitor
+# Iran Stability Monitor
 
 Public, timestamped scenario estimates and early-warning indicators for Iran.
 
