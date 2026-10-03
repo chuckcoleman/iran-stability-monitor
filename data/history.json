@@ -232,7 +232,10 @@
           ],
           "event_definition": "Yes if, before the horizon, sustained major interstate strikes resume for at least 72 hours or major combat materially expands to an additional state/operational theater; isolated interceptions or one-off strikes do not qualify.",
           "raise": "Repeated major US–Iran strikes, broader Saudi–Houthi war, or failure of active mediation.",
-          "lower": "Verified ceasefire implementation, sustained Hormuz normalization, or direct negotiations producing enforceable constraints."
+          "lower": "Verified ceasefire implementation, sustained Hormuz normalization, or direct negotiations producing enforceable constraints.",
+          "scored": true,
+          "created_date": "2026-09-27",
+          "provenance": "Prospective forecast issued with 2026-09-27 assessment"
         },
         {
           "label": "Regime-ending transition",
@@ -245,7 +248,10 @@
           ],
           "event_definition": "Yes if the Islamic Republic's governing constitutional-institutional order is replaced or loses effective national governing authority; leadership replacement within the same order is No.",
           "raise": "Verified elite fracture, security-force compensation failure, refusal to enforce orders, defections, or sustained coordinated nationwide unrest.",
-          "lower": "Oil/FX stabilization, declining protest coordination, durable elite cohesion, and continued reliable coercive-system compensation."
+          "lower": "Oil/FX stabilization, declining protest coordination, durable elite cohesion, and continued reliable coercive-system compensation.",
+          "scored": true,
+          "created_date": "2026-09-27",
+          "provenance": "Prospective forecast issued with 2026-09-27 assessment"
         },
         {
           "label": "Currency crisis",
