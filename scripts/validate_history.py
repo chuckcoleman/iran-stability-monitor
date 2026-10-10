@@ -5,6 +5,7 @@ Run: python scripts/validate_history.py
 Tests: python -m unittest discover -s tests -v
 Requires IANA timezone data (on Windows: pip install tzdata).
 """
+import argparse
 import datetime as _dt
 import json
 import math
@@ -16,6 +17,8 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 HISTORY_PATH = Path("data/history.json")
 LOCAL_ZONE = "America/New_York"
+PROTOCOL_EFFECTIVE_DATE = _dt.date(2026, 10, 4)
+ALLOWED_OUTCOMES = frozenset({"Yes", "No", "indeterminate"})
 CORE_EVENTS = frozenset({
     "regional_escalation_90d", "regime_end_12m",
     "currency_crisis_12m", "external_payments_crisis_12m",
@@ -116,6 +119,45 @@ def expected_deadline(opening, event_id):
     return _dt.datetime.combine(day, opening.time().replace(tzinfo=None))
 
 
+def validate_resolution(forecast, label):
+    """Validate optional resolution additions without modifying issued forecasts."""
+    fields = set(forecast) & RESOLUTION_FIELDS
+    if not fields:
+        return
+    unsupported = fields - {
+        "outcome", "resolution_date", "resolution_note",
+        "resolution_evidence", "resolved_at"
+    }
+    require(not unsupported,
+            f"{label}: unsupported resolution fields: {sorted(unsupported)}")
+    for key in ("outcome", "resolution_date", "resolution_note", "resolution_evidence"):
+        require(key in forecast, f"{label}: resolution missing {key}")
+    require(forecast["outcome"] in ALLOWED_OUTCOMES,
+            f"{label}: outcome must be Yes, No, or indeterminate")
+    resolution_day = parse_date(forecast["resolution_date"],
+                                f"{label}: resolution_date")
+    deadline = parse_timestamp(forecast["resolution_deadline"],
+                               f"{label}: resolution_deadline")
+    require(resolution_day >= deadline.date(),
+            f"{label}: resolution_date precedes forecast deadline")
+    require(isinstance(forecast["resolution_note"], str)
+            and forecast["resolution_note"].strip(),
+            f"{label}: resolution_note must explain the outcome")
+    evidence = forecast["resolution_evidence"]
+    require(isinstance(evidence, list) and evidence,
+            f"{label}: resolution_evidence must be a nonempty list")
+    for citation in evidence:
+        require(isinstance(citation, str) and citation.strip(),
+                f"{label}: resolution_evidence entries must be nonempty citations")
+    if "resolved_at" in forecast:
+        reviewed = parse_timestamp(forecast["resolved_at"],
+                                   f"{label}: resolved_at")
+        require(reviewed >= deadline,
+                f"{label}: resolved_at precedes forecast deadline")
+        require(reviewed.date() == resolution_day,
+                f"{label}: resolved_at differs from resolution_date")
+
+
 def validate_protocol_record(update, protocol, zone):
     date = update["date"]
     for field in ("evidence_cutoff", "publication_time", "forecasts", "warning", "evidence"):
@@ -158,6 +200,7 @@ def validate_protocol_record(update, protocol, zone):
         require(deadline.replace(tzinfo=None) == expected_deadline(opening, event_id),
                 f"{label}: resolution deadline local calendar date/time mismatch")
         require(deadline > opening, f"{label}: resolution deadline must follow opening")
+        validate_resolution(forecast, label)
 
     if cutoff == publication and all(
             parse_timestamp(f["forecast_open"], "forecast_open") == cutoff for f in core):
@@ -204,22 +247,67 @@ def validate_protocol_record(update, protocol, zone):
                 and raw - deduction == calc["adjusted_headline"],
                 f"{date}: haircut overlap arithmetic mismatch")
 
-    require(isinstance(update.get("revision_attribution", []), list),
-            f"{date}: revision_attribution must be an array")
+    attributions = update.get("revision_attribution")
+    require(isinstance(attributions, list) and len(attributions) == len(CORE_EVENTS),
+            f"{date}: exactly four core revision-attribution records required")
     points = {f["event_id"]: f["p"] for f in core}
-    for row in update.get("revision_attribution", []):
+    seen = set()
+    for row in attributions:
+        require(isinstance(row, dict), f"{date}: revision attribution must be an object")
         event_id = row.get("event_id")
-        require(event_id in points, f"{date}: unknown revision event_id {event_id}")
+        require(event_id in points and event_id not in seen,
+                f"{date}: missing, repeated, or unknown revision event_id {event_id}")
+        seen.add(event_id)
+        check_probability(row.get("prior_p"), f"{date}: {event_id}: prior_p")
+        check_probability(row.get("new_p"), f"{date}: {event_id}: new_p")
         require("residual_pp" in row, f"{date}: {event_id}: missing residual_pp")
-        revised = row["prior_p"] + sum(c["pp"] for c in row.get("contributions", [])) + row["residual_pp"]
-        require(round(revised, 8) == round(row["new_p"], 8),
+        residual = row["residual_pp"]
+        require(type(residual) in (int, float) and math.isfinite(residual),
+                f"{date}: {event_id}: residual_pp must be finite")
+        contributions = row.get("contributions", [])
+        require(isinstance(contributions, list),
+                f"{date}: {event_id}: contributions must be an array")
+        total = row["prior_p"] + residual
+        for contribution in contributions:
+            require(isinstance(contribution, dict)
+                    and isinstance(contribution.get("label"), str)
+                    and contribution["label"].strip(),
+                    f"{date}: {event_id}: contribution requires a label")
+            pp = contribution.get("pp")
+            require(type(pp) in (int, float) and math.isfinite(pp),
+                    f"{date}: {event_id}: contribution pp must be finite")
+            total += pp
+        require(round(total, 8) == round(row["new_p"], 8),
                 f"{date}: {event_id}: revision contributions do not reconcile")
         require(row["new_p"] == points[event_id],
                 f"{date}: {event_id}: revision new_p differs from actual forecast")
 
 
+def validate_consecutive_baselines(previous_update, current_update):
+    """Require new revisions to start from the preceding Protocol-v1 forecast.
+
+    The inaugural 2026-10-04 assessment retains its clearly labeled
+    pre-v1/retrospective comparators without reclassifying them as scored.
+    """
+    earlier = {
+        f["event_id"]: f["p"] for f in previous_update["forecasts"]
+        if f.get("scored") is True
+    }
+    for row in current_update["revision_attribution"]:
+        event_id = row["event_id"]
+        require(event_id in earlier and row["prior_p"] == earlier[event_id],
+                f"{current_update['date']}: {event_id}: prior_p differs "
+                "from preceding prospective core forecast")
+
+
 def check_history_immutability(previous, current):
     """Only append records, correction notes, or resolution metadata to archived history."""
+    require(set(current) == set(previous),
+            "historical root structure was changed; use a separate documented schema migration")
+    for key in previous:
+        if key != "updates":
+            require(previous[key] == current.get(key),
+                    f"historical root metadata changed: {key}")
     require(previous.get("protocol") == current.get("protocol"),
             "frozen Protocol v1 was modified; use a prospectively versioned protocol instead")
     before, after = previous.get("updates", []), current.get("updates", [])
@@ -267,7 +355,11 @@ def validate_history(data, previous=None):
     updates = data.get("updates")
     require(isinstance(updates, list) and updates, "no updates")
     zone = local_zone()
+    require(protocol.get("effective_for_forecasts_on_or_after") in
+            (None, PROTOCOL_EFFECTIVE_DATE.isoformat()),
+            "frozen Protocol v1 effective date was changed")
     last_date = None
+    previous_v1 = None
     forecast_ids = set()
     for index, update in enumerate(updates):
         require(isinstance(update, dict), f"updates[{index}] must be an object")
@@ -284,10 +376,27 @@ def validate_history(data, previous=None):
                 require(forecast_id not in forecast_ids, f"duplicate forecast_id {forecast_id}")
                 forecast_ids.add(forecast_id)
             check_numbers(forecast, f"{date}: {forecast_id or forecast.get('label', 'unidentified')}")
-        if update.get("protocol_version") == "1.0":
+        if date >= PROTOCOL_EFFECTIVE_DATE:
+            require(update.get("protocol_version") == "1.0",
+                    f"{date}: missing/invalid protocol_version; Protocol v1 is mandatory "
+                    "for all assessments from 2026-10-04 onward")
             validate_protocol_record(update, protocol, zone)
+            if previous_v1 is not None:
+                validate_consecutive_baselines(previous_v1, update)
+            previous_v1 = update
+        else:
+            require(update.get("protocol_version") in (None, "pre-v1"),
+                    f"{date}: Protocol v1 must not be retroactively applied")
     if previous is not None:
         check_history_immutability(previous, data)
+
+
+def load_baseline_file(path):
+    try:
+        with open(path, encoding="utf-8") as source:
+            return json.load(source)
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValidationError(f"cannot read baseline file {path}: {exc}") from exc
 
 
 def load_previous_history(base):
@@ -304,11 +413,22 @@ def load_previous_history(base):
                               "refusing to bypass immutability check") from exc
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    baselines = parser.add_mutually_exclusive_group()
+    baselines.add_argument("--baseline", metavar="FILE",
+                           help="prior history.json file for strict archival comparison")
+    baselines.add_argument("--baseline-ref", metavar="GIT_REF",
+                           help="Git revision containing prior data/history.json")
+    args = parser.parse_args(argv)
     try:
         with HISTORY_PATH.open(encoding="utf-8") as fh:
             data = json.load(fh)
-        previous = load_previous_history(os.environ.get("GITHUB_EVENT_BEFORE"))
+        base = args.baseline_ref or os.environ.get("GITHUB_EVENT_BEFORE")
+        previous = (load_baseline_file(args.baseline) if args.baseline
+                    else load_previous_history(base))
+        if previous is None:
+            warn("no historical baseline supplied; archival immutability not checked")
         validate_history(data, previous)
     except (OSError, json.JSONDecodeError, ValidationError) as exc:
         print("VALIDATION ERROR:", exc, file=sys.stderr)
