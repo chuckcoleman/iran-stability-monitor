@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -19,7 +19,9 @@ jobs:
         run: python -m jsonschema -i data/history.json schema/history.schema.json
       - name: Validate JavaScript syntax
         run: node --check assets/app.js
+      - name: Run validator regression tests
+        run: python -m unittest discover -s tests -v
       - name: Validate history and Protocol v1 conformance
         env:
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: python scripts/validate_history.py
