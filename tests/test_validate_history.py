@@ -377,5 +377,48 @@ class ValidatorRegressionTests(unittest.TestCase):
         self.rejects(changed, "unauthorized historical mutation of metrics", original)
 
 
+    def test_legacy_forecast_resolution_is_validated(self):
+        path = Path(__file__).resolve().parents[1] / "data" / "history.json"
+        with path.open(encoding="utf-8") as fh:
+            history = json.load(fh)
+        forecast = history["updates"][1]["forecasts"][0]
+        forecast.update(outcome="No", resolution_date="2026-12-27",
+                        resolution_note="Reviewed at deadline",
+                        resolution_evidence=["https://example.com/independent-source"])
+        validate_history(history)
+
+    def test_legacy_forecast_invalid_resolution_fails(self):
+        path = Path(__file__).resolve().parents[1] / "data" / "history.json"
+        with path.open(encoding="utf-8") as fh:
+            history = json.load(fh)
+        forecast = history["updates"][1]["forecasts"][0]
+        forecast.update(outcome="undecided", resolution_date="2026-12-27",
+                        resolution_note="Reviewed at deadline",
+                        resolution_evidence=["https://example.com/independent-source"])
+        self.rejects(history, "outcome must be Yes, No, or indeterminate")
+
+    def test_resolved_at_date_uses_eastern_not_utc(self):
+        history = fixture()
+        forecast = history["updates"][0]["forecasts"][0]
+        forecast.update(
+            outcome="No", resolution_date="2027-01-03",
+            resolution_note="Reviewed after deadline",
+            resolution_evidence=["https://example.com/evidence"],
+            resolved_at="2027-01-04T03:00:00+00:00"
+        )
+        validate_history(history)
+
+    def test_resolved_at_before_deadline_fails(self):
+        history = fixture()
+        forecast = history["updates"][0]["forecasts"][0]
+        forecast.update(
+            outcome="No", resolution_date="2027-01-02",
+            resolution_note="Premature judgment",
+            resolution_evidence=["https://example.com/evidence"],
+            resolved_at="2027-01-02T12:00:00-05:00"
+        )
+        self.rejects(history, "resolved_at precedes forecast deadline")
+
+
 if __name__ == "__main__":
     unittest.main()
