@@ -1,5 +1,6 @@
 """Protocol-v1 validator regression tests: temporal, arithmetic and archive integrity."""
 import copy
+import json
 import datetime as dt
 import sys
 import unittest
@@ -79,9 +80,12 @@ def fixture(day="2026-10-04", hour=14, minute=0):
             "raw_sum": 44, "overlap_deduction_20pct": 2, "adjusted_headline": 42
         }},
         "revision_attribution": [{
-            "event_id": EVENTS[0], "prior_p": 36, "new_p": 56,
-            "contributions": [{"label": "Escalation", "pp": 15}], "residual_pp": 5
-        }],
+            "event_id": event, "prior_p": prior, "new_p": probabilities[i],
+            "contributions": [{"label": "New evidence", "pp": increment}],
+            "residual_pp": 0
+        } for i, (event, prior, increment) in enumerate(zip(
+            EVENTS, [36, 12, 68, 72], [20, 2, 10, 8]
+        ))],
         "corrections": [],
     }
     return {"schema_version": 3, "protocol": protocol, "updates": [record]}
@@ -187,7 +191,16 @@ class ValidatorRegressionTests(unittest.TestCase):
     def test_append_new_assessment(self):
         old = fixture()
         current = copy.deepcopy(old)
-        current["updates"].append(fixture("2026-10-11")["updates"][0])
+        next_update = fixture("2026-10-11")["updates"][0]
+        for row in next_update["revision_attribution"]:
+            row["prior_p"] = next(
+                f["p"] for f in old["updates"][0]["forecasts"]
+                if f["event_id"] == row["event_id"]
+            )
+            row["new_p"] = row["prior_p"]
+            row["contributions"] = []
+            row["residual_pp"] = 0
+        current["updates"].append(next_update)
         validate_history(current, old)
 
     def test_historical_warning_edit_forbidden(self):
@@ -204,16 +217,20 @@ class ValidatorRegressionTests(unittest.TestCase):
 
     def test_historical_probability_edit_forbidden(self):
         old = fixture()
-        old["updates"][0]["revision_attribution"] = []
         current = copy.deepcopy(old)
         current["updates"][0]["forecasts"][0]["p"] = 58
+        current["updates"][0]["revision_attribution"][0]["new_p"] = 58
+        current["updates"][0]["revision_attribution"][0]["residual_pp"] = 2
         self.rejects(current, "unauthorized change to p", old)
 
     def test_add_resolution_to_historical_forecast(self):
         old = fixture()
         current = copy.deepcopy(old)
-        current["updates"][0]["forecasts"][0]["outcome"] = "Yes"
-        current["updates"][0]["forecasts"][0]["resolution_note"] = "Archived evidence"
+        forecast = current["updates"][0]["forecasts"][0]
+        forecast["outcome"] = "Yes"
+        forecast["resolution_date"] = "2027-01-03"
+        forecast["resolution_note"] = "Archived evidence"
+        forecast["resolution_evidence"] = ["https://example.com/archive"]
         validate_history(current, old)
 
     def test_append_correction_with_reason(self):
@@ -244,6 +261,113 @@ class ValidatorRegressionTests(unittest.TestCase):
         current = copy.deepcopy(old)
         current["protocol"]["warning_transition_rules"]["Monetary / FX"]["green"] = "Changed"
         self.rejects(current, "frozen Protocol v1 was modified", old)
+
+
+    def test_real_archived_history_passes(self):
+        path = Path(__file__).resolve().parents[1] / "data" / "history.json"
+        with path.open(encoding="utf-8") as fh:
+            validate_history(json.load(fh))
+
+    def test_missing_protocol_version_after_freeze_fails(self):
+        history = fixture()
+        del history["updates"][0]["protocol_version"]
+        self.rejects(history, "Protocol v1 is mandatory")
+
+    def test_invalid_protocol_version_after_freeze_fails(self):
+        history = fixture()
+        history["updates"][0]["protocol_version"] = "0.9"
+        self.rejects(history, "Protocol v1 is mandatory")
+
+    def test_attributions_are_required(self):
+        history = fixture()
+        del history["updates"][0]["revision_attribution"]
+        self.rejects(history, "exactly four core revision-attribution")
+
+    def test_missing_one_attribution_fails(self):
+        history = fixture()
+        history["updates"][0]["revision_attribution"].pop()
+        self.rejects(history, "exactly four core revision-attribution")
+
+    def test_duplicate_attribution_fails(self):
+        history = fixture()
+        history["updates"][0]["revision_attribution"][1]["event_id"] = EVENTS[0]
+        self.rejects(history, "repeated, or unknown revision event_id")
+
+    def test_unreconciled_attribution_fails(self):
+        history = fixture()
+        history["updates"][0]["revision_attribution"][0]["residual_pp"] = 99
+        self.rejects(history, "contributions do not reconcile")
+
+    def test_attribution_nan_fails(self):
+        history = fixture()
+        history["updates"][0]["revision_attribution"][0]["residual_pp"] = float("nan")
+        self.rejects(history, "residual_pp must be finite")
+
+    def test_prior_does_not_match_preceding_forecast(self):
+        history = fixture()
+        later = fixture("2026-10-11")["updates"][0]
+        # Each revision reconciles internally but uses unrelated older probabilities.
+        history["updates"].append(later)
+        self.rejects(history, "prior_p differs from preceding prospective core forecast")
+
+    def test_invalid_resolution_outcome_fails(self):
+        history = fixture()
+        fc = history["updates"][0]["forecasts"][0]
+        fc.update(outcome="Probably", resolution_date="2027-01-03",
+                  resolution_note="Decided with sources",
+                  resolution_evidence=["https://example.com/evidence"])
+        self.rejects(history, "outcome must be Yes, No, or indeterminate")
+
+    def test_resolution_before_deadline_fails(self):
+        history = fixture()
+        fc = history["updates"][0]["forecasts"][0]
+        fc.update(outcome="No", resolution_date="2026-12-01",
+                  resolution_note="Checked", resolution_evidence=["https://example.com"])
+        self.rejects(history, "precedes forecast deadline")
+
+    def test_missing_resolution_sources_fails(self):
+        history = fixture()
+        fc = history["updates"][0]["forecasts"][0]
+        fc.update(outcome="indeterminate", resolution_date="2027-01-03",
+                  resolution_note="No reliable evidence", resolution_evidence=[])
+        self.rejects(history, "nonempty list")
+
+    def test_missing_resolution_note_fails(self):
+        history = fixture()
+        fc = history["updates"][0]["forecasts"][0]
+        fc.update(outcome="No", resolution_date="2027-01-03",
+                  resolution_note="", resolution_evidence=["https://example.com"])
+        self.rejects(history, "resolution_note must explain")
+
+    def test_root_metadata_is_immutable(self):
+        old = fixture()
+        old["metadata"] = {"source": "archived"}
+        current = copy.deepcopy(old)
+        current["metadata"]["source"] = "changed"
+        self.rejects(current, "historical root metadata changed", old)
+
+    def test_real_archive_timestamp_mutation_fails(self):
+        path = Path(__file__).resolve().parents[1] / "data" / "history.json"
+        with path.open(encoding="utf-8") as fh:
+            history = json.load(fh)
+        history["updates"][-1]["forecasts"][3]["forecast_open"] = \
+            "2026-10-04T18:00:00-04:00"
+        self.rejects(history, "external_payments_crisis_12m.*forecast_open")
+
+    def test_real_archive_protocol_bypass_fails(self):
+        path = Path(__file__).resolve().parents[1] / "data" / "history.json"
+        with path.open(encoding="utf-8") as fh:
+            history = json.load(fh)
+        history["updates"][-1].pop("protocol_version")
+        self.rejects(history, "Protocol v1 is mandatory")
+
+    def test_real_archive_probability_change_fails(self):
+        path = Path(__file__).resolve().parents[1] / "data" / "history.json"
+        with path.open(encoding="utf-8") as fh:
+            original = json.load(fh)
+        changed = copy.deepcopy(original)
+        changed["updates"][-1]["metrics"]["regime_end_12m"] = 99
+        self.rejects(changed, "unauthorized historical mutation of metrics", original)
 
 
 if __name__ == "__main__":
