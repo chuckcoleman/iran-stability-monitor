@@ -302,14 +302,14 @@ def validate_consecutive_baselines(previous_update, current_update):
 
 def check_history_immutability(previous, current):
     """Only append records, correction notes, or resolution metadata to archived history."""
+    require(previous.get("protocol") == current.get("protocol"),
+            "frozen Protocol v1 was modified; use a prospectively versioned protocol instead")
     require(set(current) == set(previous),
             "historical root structure was changed; use a separate documented schema migration")
     for key in previous:
-        if key != "updates":
+        if key not in ("protocol", "updates"):
             require(previous[key] == current.get(key),
                     f"historical root metadata changed: {key}")
-    require(previous.get("protocol") == current.get("protocol"),
-            "frozen Protocol v1 was modified; use a prospectively versioned protocol instead")
     before, after = previous.get("updates", []), current.get("updates", [])
     require(len(after) >= len(before), "historical updates were deleted")
     for index, old in enumerate(before):
