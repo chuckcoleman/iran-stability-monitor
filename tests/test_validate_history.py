@@ -8,7 +8,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from validate_history import ValidationError, validate_history
+from validate_history import ValidationError, validate_history, check_history_immutability
 
 ZONE = ZoneInfo("America/New_York")
 EVENTS = [
@@ -180,7 +180,7 @@ class ValidatorRegressionTests(unittest.TestCase):
     def test_revision_probability_must_match(self):
         history = fixture()
         row = history["updates"][0]["revision_attribution"][0]
-        row["new_p"], row["residual_pp"] = 60, 9
+        row["new_p"], row["residual_pp"] = 60, 4
         self.rejects(history, "differs from actual forecast")
 
     def test_duplicate_assessment_date(self):
@@ -219,9 +219,16 @@ class ValidatorRegressionTests(unittest.TestCase):
         old = fixture()
         current = copy.deepcopy(old)
         current["updates"][0]["forecasts"][0]["p"] = 58
+        with self.assertRaisesRegex(ValidationError, "unauthorized change to p"):
+            check_history_immutability(old, current)
+
+    def test_consistent_historical_rewrite_still_forbidden(self):
+        old = fixture()
+        current = copy.deepcopy(old)
+        current["updates"][0]["forecasts"][0]["p"] = 58
         current["updates"][0]["revision_attribution"][0]["new_p"] = 58
         current["updates"][0]["revision_attribution"][0]["residual_pp"] = 2
-        self.rejects(current, "unauthorized change to p", old)
+        self.rejects(current, "unauthorized historical mutation of revision_attribution", old)
 
     def test_add_resolution_to_historical_forecast(self):
         old = fixture()
