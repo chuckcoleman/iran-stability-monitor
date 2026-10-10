@@ -154,8 +154,8 @@ def validate_resolution(forecast, label):
                                    f"{label}: resolved_at")
         require(reviewed >= deadline,
                 f"{label}: resolved_at precedes forecast deadline")
-        require(reviewed.date() == resolution_day,
-                f"{label}: resolved_at differs from resolution_date")
+        require(reviewed.astimezone(local_zone()).date() == resolution_day,
+                f"{label}: resolved_at differs from resolution_date in Eastern Time")
 
 
 def validate_protocol_record(update, protocol, zone):
@@ -200,7 +200,6 @@ def validate_protocol_record(update, protocol, zone):
         require(deadline.replace(tzinfo=None) == expected_deadline(opening, event_id),
                 f"{label}: resolution deadline local calendar date/time mismatch")
         require(deadline > opening, f"{label}: resolution deadline must follow opening")
-        validate_resolution(forecast, label)
 
     if cutoff == publication and all(
             parse_timestamp(f["forecast_open"], "forecast_open") == cutoff for f in core):
@@ -375,7 +374,12 @@ def validate_history(data, previous=None):
             if forecast_id:
                 require(forecast_id not in forecast_ids, f"duplicate forecast_id {forecast_id}")
                 forecast_ids.add(forecast_id)
-            check_numbers(forecast, f"{date}: {forecast_id or forecast.get('label', 'unidentified')}")
+            label = f"{date}: {forecast_id or forecast.get('label', 'unidentified')}"
+            check_numbers(forecast, label)
+            # Archived pre-v1 forecasts may later receive resolution information.
+            # Never leave these outside the resolution-value checks.
+            if set(forecast) & RESOLUTION_FIELDS:
+                validate_resolution(forecast, label)
         if date >= PROTOCOL_EFFECTIVE_DATE:
             require(update.get("protocol_version") == "1.0",
                     f"{date}: missing/invalid protocol_version; Protocol v1 is mandatory "
