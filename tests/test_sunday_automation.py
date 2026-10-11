@@ -37,6 +37,14 @@ class SundayPipelineTests(unittest.TestCase):
             with patch.dict(os.environ,{"GITHUB_EVENT_SCHEDULE":"0 14 * * 0"}):
                 self.assertTrue(scheduler.schedule_slot())
 
+    def test_missing_prior_sunday_aborts_before_search(self):
+        history=json.loads((ROOT/"data/history.json").read_text())
+        history["updates"].pop()  # Most recent is Oct 4, so Oct 18 is a gap.
+        now=lambda: dt.datetime(2026,10,18,9,11,tzinfo=EDT)
+        with patch.object(a,"llm",side_effect=AssertionError("Must not call model")):
+            with self.assertRaisesRegex(ValueError,"Preceding Sunday"):
+                a.produce(history,now=now)
+
     def test_page_source_gate_is_fail_closed(self):
         with patch.object(scheduler,"gh_json",return_value={"build_type":"legacy"}):
             with self.assertRaisesRegex(RuntimeError,"Pages"):
