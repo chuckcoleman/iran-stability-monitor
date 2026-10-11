@@ -113,6 +113,8 @@ def prepare_and_merge():
     date=eastern_now().date().isoformat()
     with (ROOT/"data/history.json").open(encoding="utf-8") as f: history=json.load(f)
     check(history["updates"][-1]["date"]<date,"Assessment exists already")
+    check((dt.date.fromisoformat(date)-dt.date.fromisoformat(history["updates"][-1]["date"])).days==7,
+          "Missed prior Sunday record; manual audit required before prospective update")
     branch="sunday-auto-"+date.replace("-","")
     remote=run("git","ls-remote","--heads","origin",branch).stdout
     check(not remote.strip(),"An automation branch already exists; manual reconciliation required")
