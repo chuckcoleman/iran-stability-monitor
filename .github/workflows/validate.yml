@@ -30,6 +30,24 @@ jobs:
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: python scripts/validate_history.py
+      - name: Retain reproducible review source snapshot
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-review-source
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            scripts/*.py
+            tests/*.py
+            schema/*.json
+            data/history.json
+            assets/app.js
+            *.html
+            README.md
+            AUTOMATION.md
+            CNAME
+            .github/workflows/*.yml
 
   deploy:
     name: Deploy validated website
