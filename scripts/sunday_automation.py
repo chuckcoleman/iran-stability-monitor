@@ -64,7 +64,10 @@ def verify_repository_gate(repo):
     active=[]
     for entry in rules:
         if entry.get("enforcement")=="active":
-            active.append(gh_json("repos/"+repo+"/rulesets/"+str(entry["id"])))
+            detail=gh_json("repos/"+repo+"/rulesets/"+str(entry["id"]))
+            includes=detail.get("conditions",{}).get("ref_name",{}).get("include",[])
+            if "~DEFAULT_BRANCH" in includes or "refs/heads/main" in includes:
+                active.append(detail)
     check(any(any(x.get("type")=="pull_request" for x in rule.get("rules",[])) and
               any(x.get("type")=="required_status_checks" and
                   any(c.get("context")=="validate" for c in
