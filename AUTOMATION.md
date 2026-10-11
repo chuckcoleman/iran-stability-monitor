@@ -34,6 +34,12 @@ GitHub **Settings → Pages → Build and deployment → Source** must remain **
 
 **Native GitHub auto-merge is NOT required:** the workflow itself waits for the required PR `validate` job to succeed and merges using a SHA guard without an administrative bypass. This avoids enabling repository-wide auto-merge.
 
+### Read-only readiness test (before turning automation on)
+
+After adding all three secrets above, open **GitHub → Actions → Prepare Sunday Iran assessment → Run workflow**, select **healthcheck** (the default), and start the workflow. This tests GitHub Pages source, the enforced PR ruleset, authentication with the OpenAI Models API, and Metricool calendar read access. It creates **no forecast, branch, PR, website change, issue claim, or X post**, and works while both enabling variables are unset. A pass verifies authentication and read permissions only; the first live Sunday run must still prove OpenAI web-search model access and GitHub write/merge rights.
+
+Only after the readiness test succeeds should you set `ASSESSMENT_AUTOMATION_ENABLED=true`. Set `AUTO_X_ENABLED=true` when Metricool posting is also authorized. If X posting fails, the website assessment must remain intact.
+
 ### Weekly execution
 
 1. Check date and source configuration, confirm the previous assessment is on `main`, and lock against simultaneous runs.
