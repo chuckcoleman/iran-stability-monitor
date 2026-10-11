@@ -1,18 +1,19 @@
 name: Prepare Sunday Iran assessment
 on:
   schedule:
-    # 09:00 New York in daylight time and standard time. Script discards wrong slot.
     - cron: '0 13 * * 0'
     - cron: '0 14 * * 0'
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Read-only credential healthcheck or live Sunday publication'
-        type: choice
+        description: 'Read-only checks, unpublishable paid dry-run, or enabled Sunday publication'
         required: true
         default: healthcheck
+        type: choice
         options:
           - healthcheck
+          - check-services
+          - dry-run
           - run
 permissions:
   contents: read
@@ -21,31 +22,45 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
-    if: ${{ github.event_name == 'workflow_dispatch' || vars.ASSESSMENT_AUTOMATION_ENABLED == 'true' }}
+    if: github.event_name == 'workflow_dispatch' || vars.ASSESSMENT_AUTOMATION_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.AUTOMATION_GH_TOKEN }}
+          token: ${{ secrets.AUTOMATION_GH_TOKEN || github.token }}
           persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Install schema dependency
         run: python -m pip install --disable-pip-version-check 'jsonschema==4.25.1'
-      - name: Check script syntax
-        run: python -m compileall -q scripts
-      - name: Run audited Sunday pipeline (disabled unless explicitly activated)
+      - name: Offline readiness tests
+        run: |
+          python -m compileall -q scripts tests
+          python -m unittest discover -s tests -v
+          node --check assets/app.js
+      - name: Selected operation (scheduled publication remains opt-in)
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          AUTOMATION_MODE: ${{ github.event.inputs.mode || 'run' }}
+          OPERATION: ${{ github.event_name == 'schedule' && 'run' || inputs.mode }}
           GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
           ASSESSMENT_AUTOMATION_ENABLED: ${{ vars.ASSESSMENT_AUTOMATION_ENABLED }}
           IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           AUTOMATION_GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
           GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
-        run: python scripts/sunday_automation.py "${AUTOMATION_MODE}"
+          METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
+        run: python scripts/sunday_automation.py "$OPERATION"
+      - name: Preserve issuance, evidence, and result audit (no keys)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sunday-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .automation-audit/*.json
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 30
+      - name: Failure summary
+        if: failure()
+        run: echo 'Automation stopped at a failed guard. Inspect this run; do not bypass validation or blindly retry a social POST.' >> "$GITHUB_STEP_SUMMARY"

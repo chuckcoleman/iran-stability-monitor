@@ -1,76 +1,163 @@
-# Sunday unattended publication — installation and audit
+# Sunday unattended publication
 
-## Deployment state
+## Installation state
 
-The code implements **two workflows** plus an audited generator and social adapter. It is OFF by default. Do not set the enabling variables until all required credentials, billing, permissions and live smoke tests are complete. No live forecasts or X posts are created merely by merging this configuration.
+The repository implementation covers live research, frozen evidence, four prospective
+forecasts, a protected pull request and merge, validation-gated Pages publication,
+canonical-site verification, and a single deduplicated X scheduling attempt.
+**Both production switches remain off unless the owner explicitly enables them.**
+Merging this installation does not issue a forecast, replace history, or post to X.
 
-The frozen Protocol v1.0, previous forecast probabilities, and existing `data/history.json` records remain untouched.
+Offline tests exercise the code with synthetic inputs and mocked services. They do
+not establish that the owner's API keys, subscription, permissions, billing, model
+access, or live API response formats work. The read-only readiness run and the
+unpublishable live dry-run exist to establish those boundaries before activation.
+No new live assessment or social post is part of installation testing.
 
-### Schedule
+Frozen Protocol v1.0, all existing history, root metadata, and resolution rules are
+unchanged. Additional operational safety checks stop a run; they do not redefine
+any scored event or retrospectively change a forecast.
 
-`.github/workflows/sunday-assessment.yml` schedules both 13:00 and 14:00 UTC each Sunday. Runtime rejects the occurrence that is not 09:00 in `America/New_York`, covering DST without manual date conversion. A GitHub Actions scheduled job may begin later than its nominal time due to runner capacity. `workflow_dispatch` supports an authorized manual live run after setup.
+## Owner setup: the remaining external boundary
 
-### Credentials and variables (repository → Settings → Secrets and variables → Actions)
+Use repository **Settings → Secrets and variables → Actions**. Never paste a key
+into an issue, pull request, source file, public artifact, or ChatGPT message.
 
-Create the following **repository secrets**, never committed to Git.
-
-| Name | Purpose |
+| Repository secret | Required access |
 |---|---|
-| `OPENAI_API_KEY` | Paid OpenAI API project key with Responses API and `web_search` access, not the ChatGPT subscription token |
-| `AUTOMATION_GH_TOKEN` | Fine-grained GitHub PAT, repository-scoped; metadata read; Contents read/write; Pull requests read/write; Actions read; Pages read; repository rulesets read, plus permission to merge under existing protection |
-| `METRICOOL_API_TOKEN` | Metricool REST API token, with API access on an Advanced or Custom plan, linked to the Iran Stability Monitor brand |
+| `OPENAI_API_KEY` | An OpenAI API project with billing and access to the configured Responses model and live web search |
+| `AUTOMATION_GH_TOKEN` | A repository-scoped fine-grained token or GitHub App token: Contents read/write, Pull requests read/write, Actions read, Pages read, Issues read, and sufficient read access to inspect repository rulesets; it must be able to merge without bypassing protections |
+| `METRICOOL_API_TOKEN` | Metricool REST API access for userId `5607453`, brand/blogId `7254821`, X `@IranStabilityMo` |
 
-Create the following **repository variables**:
+Metricool documents REST API access for Advanced or Custom accounts. The existing
+connected Metricool ChatGPT app is not an exportable REST API token for Actions.
+Do not purchase or enable anything merely because an offline test passed: verify
+account access with the read-only check described below.
 
-| Name | Value |
+| Repository variable | Initial value |
 |---|---|
-| `IRAN_FORECAST_MODEL` | `gpt-5.5` (or another web-search-capable Responses model tested in the project) |
-| `ASSESSMENT_AUTOMATION_ENABLED` | `true` **only after** credentials and research pipeline are live-tested |
-| `AUTO_X_ENABLED` | `true` **only after** Metricool GET/POST and deduplication are tested using the actual account |
+| `IRAN_FORECAST_MODEL` | `gpt-6.1-sol`, or a Responses/web-search model explicitly tested in this API project |
+| `ASSESSMENT_AUTOMATION_ENABLED` | `false` |
+| `AUTO_X_ENABLED` | `false` |
 
-The connected Metricool account uses **userId 5607453**, Iran Stability Monitor **blogId 7254821**, X **@IranStabilityMo**, timezone **America/New_York**.
+In **Settings → Rules → Rulesets → Protect validated forecasts**, keep all existing
+protections and enable **Require branches to be up to date before merging** under
+the required status check. Keep required pull requests, the Actions `validate`
+check, no bypass actors, no force pushes, and no deletion. This installation checks
+that strict up-to-date requirement; a missing check stops the pipeline. It prevents
+publishing a candidate validated against an out-of-date `main`.
 
-GitHub **Settings → Pages → Build and deployment → Source** must remain **GitHub Actions**, not Deploy from a branch. The preflight checks GitHub's Pages `build_type=workflow` before proposing a forecast. Main must remain protected by a required pull request and the `validate` job; no bypass actors are acceptable.
+**Pages Source must remain GitHub Actions**, with canonical CNAME
+`iranstabilitymonitor.org`. No branch-source deployment is permitted.
+**Native repository auto-merge is not needed.** The orchestrator waits for CI and
+performs a normal, SHA-guarded merge, never an administrative bypass.
 
-**Native GitHub auto-merge is NOT required:** the workflow itself waits for the required PR `validate` job to succeed and merges using a SHA guard without an administrative bypass. This avoids enabling repository-wide auto-merge.
+An optional owner-run helper, `scripts/configure_automation.py`, accepts hidden
+credential entry and can strengthen the existing strict-check setting. It requires
+an authenticated GitHub CLI administrator. Its `--store-secrets` and
+`--strict-protection` options are explicit actions, and it leaves both live switches
+off. Running it is optional; the same steps can be done in GitHub Settings.
 
-### Read-only readiness test (before turning automation on)
+## Readiness and activation
 
-After adding all three secrets above, open **GitHub → Actions → Prepare Sunday Iran assessment → Run workflow**, select **healthcheck** (the default), and start the workflow. This tests GitHub Pages source, the enforced PR ruleset, authentication with the OpenAI Models API, and Metricool calendar read access. It creates **no forecast, branch, PR, website change, issue claim, or X post**, and works while both enabling variables are unset. A pass verifies authentication and read permissions only; the first live Sunday run must still prove OpenAI web-search model access and GitHub write/merge rights.
+After installation is merged, open **Actions → Prepare Sunday Iran assessment →
+Run workflow**. Choose the operation from the dropdown:
 
-Only after the readiness test succeeds should you set `ASSESSMENT_AUTOMATION_ENABLED=true`. Set `AUTO_X_ENABLED=true` when Metricool posting is also authorized. If X posting fails, the website assessment must remain intact.
+1. **`healthcheck`** (compatible alias: `check-services`) — read-only GitHub safeguards, OpenAI key/model GET access,
+   Metricool brand identity, scheduled calendar, and published-X CSV. It creates no
+   forecast, pull request, merge, or post, and does not call paid model inference.
+   A pass verifies reads, not Metricool POST delivery or model forecasting quality.
+2. **`dry-run`** — real, potentially billable web research, source-metadata capture,
+   prospective elicitation and no-web review, then all data checks. Output is marked
+   **UNPUBLISHABLE_DRY_RUN** and stored only in a run artifact. Production history,
+   branches, PRs, website, and X remain unchanged. This output is never promotable
+   into a later live forecast: a live run must capture its own actual evidence times.
+3. Inspect the evidence and diagnostic output. After both runs pass and the live
+   response formats are verified, set `ASSESSMENT_AUTOMATION_ENABLED=true`.
+   Set `AUTO_X_ENABLED=true` only when the brand and both duplicate checks pass.
+   The first actual scheduling attempt is checked by readback; it is not falsely
+   represented as tested before a real authorized post is made.
 
-### Weekly execution
+`run` is an explicit live operation, allowed only on Sunday while enabled. The
+scheduled workflow normally starts at **09:00 America/New_York**. Two UTC cron
+entries cover daylight and standard time; the nominal cron is checked against the
+Eastern date, so a same-day delayed runner does not accidentally miss the right
+slot or run the second slot. GitHub scheduling is not an exact-time guarantee.
 
-1. Check date and source configuration, confirm the previous assessment is on `main`, and lock against simultaneous runs.
-2. Use the OpenAI Responses API with live web search to collect source-linked observations. Enforce source-citation URLs, at least three publishers and raising, lowering and ambiguous evidence. Carried-forward evidence retains IDs. Missing original source publication times are recorded as **unknown**, never fabricated.
-3. Capture the real evidence cutoff **after** research and **before** a second, web-disabled probability elicitation. Capture the four prospective forecasts at completion and record a later issuance timestamp.
-4. Freeze the four Protocol-v1 definitions, derive deadlines from Eastern local calendar time, maintain prior prospective `prior_p`, reconcile signed attributions, compute oil-credit 20% overlap and 0/20/40 sensitivity, update nine warning categories and Houthi diagnostics. First-Sunday Hanke probabilities receive monthly treatment.
-5. Run JSON Schema, the Protocol v1 validator against the **exact pre-update file**, the full regression suite, and Python syntax checking. No historical record or root field may change.
-6. Commit **only** `data/history.json` to a unique Sunday candidate branch, push with a separately authorized PAT (not the default `GITHUB_TOKEN`), and open a PR.
-7. Wait for the **actual required `validate` CI job** associated with that SHA. Abort on failure, missing checks, timeout or changed branch. Squash-merge without using admin bypass, only after success.
-8. GitHub's existing `Validate and publish monitor` workflow deploys from `main` **only after validation**. A separate `workflow_run` checks both actual jobs succeeded, verifies a single new Sunday record and the entire published `https://iranstabilitymonitor.org/data/history.json` equals the validated commit.
-9. If `AUTO_X_ENABLED` is true and the assessment is fresh, check the Metricool calendar for already published/scheduled X announcements. Reserve a persistent one-per-date GitHub issue **before** the non-idempotent POST to Metricool. Schedule a single X post fifteen minutes into the future, at most 280 characters, using the two core probabilities and preceding Sunday comparisons. On uncertain API response, never retry automatically; inspect Metricool manually.
+The existing ChatGPT Sunday task must not be a second independent writer after
+GitHub scheduling is enabled. Use it as a supervisor or disable its publication
+path. The GitHub orchestrator refuses a date already present on `main`, a concurrent
+run, or an existing dated candidate branch. It never re-elicits already-issued
+candidate probabilities to get a more convenient result.
 
-### Failure behavior
+## What a live run does
 
-- Missing API secret, missing model access, unsupported Metricool API plan, GitHub permissions failure, missing Pages source confirmation, unverified evidence, bad JSON, unexpected earlier history changes, API timeouts, missing CI check, failed CI or deployment, stale or unmatched public site, or existing social posting claim **stops at that boundary**.
-- A failed **candidate** never reaches `main`. If a gated Pages deployment fails after the merge, the last successfully deployed site remains public and X is suppressed. That new merge is still in `main`; assess the error before a later attempt.
-- A Metricool failure does not roll back the validated site. No repeated X post attempts occur automatically after a possibly successful POST.
+- Retains exact original history bytes and hashes the frozen inputs. Uses actual
+  current reporting, captures accessible article `datePublished` metadata before
+  cutoff, and retains source hashes and retrieval times. Model-inferred publication
+  clocks are never substituted for verified metadata. Missing or contradictory
+  precise times remain unknown; known later sources block the record. Citation
+  presence is a provenance check, not independent proof that every claim is true.
+- Closes research, records the real cutoff, then elicits exactly four core forecasts
+  with web access disabled. A separate no-web review may reject but cannot silently
+  revise them. Complete diagnostic scenario partitions are elicited, not generated
+  from arbitrary multipliers. Genuine zero revisions may use explained zero
+  contributions rather than invented offsets. Declared residuals must reconcile.
+- Reuses persistent evidence identities across the archive; applies the frozen
+  warning rubric, Houthi rule, six oil-credit components and 0/20/40 sensitivity.
+  Monthly Hanke analysis retains a separately identified underlying observation
+  date; intermediate Sundays carry the monthly diagnostic forward.
+- Requires schema, Protocol validator, offline tests, JavaScript syntax, and
+  dashboard-field consistency. No old record or root field may change. Only the
+  new, not-yet-committed record receives a captured issuance time; that time equals
+  the candidate Git commit's author/committer timestamp. Actual later public
+  deployment is independently attested, not backdated.
+- Commits only `data/history.json` on a dated branch, opens a PR, waits for the
+  correct Actions `validate` job at its exact head SHA, checks `main` again, then
+  merges without bypass. A separate authorized automation token is used so the
+  subsequent CI/deployment events are not suppressed or left awaiting approval.
+- Requires successful `validate` and **Deploy validated website** jobs from the
+  correct main push workflow and SHA. Checks that the full canonical public JSON
+  matches and is not superseded. An attestation records date, SHA, run ID and
+  history hash. A code-only merge does not announce a new assessment.
+- Re-verifies before X; checks **scheduled posts and the separate published-X CSV**.
+  A unique Git tag `x-announcement-YYYY-MM-DD` atomically reserves the date before
+  the non-idempotent Metricool POST. Old issue-based claims remain respected.
+  A single future, unoccupied minute is chosen; one ≤280-character post contains
+  the assessment date, principal change, two probabilities and dated prior
+  comparisons, linking only to `https://iranstabilitymonitor.org`. The returned
+  post ID, text, auto-publish status, network and future time must read back exactly.
 
-### Before switching to unattended production
+## Failure and recovery
 
-- Review a dry-run PR, confirm the API reports evidence-rich, plausible source-grounded forecasts and warning language; automated grammar checking is a model task, not an independent proof of truth.
-- Exercise tests for the 90-day daylight saving boundary, Feb 29, post-cutoff data, no source citations, duplicate forecasts, baseline mismatch, failed CI, duplicate X post, and failed Metricool response. Offline invariants are covered by `tests/test_sunday_automation.py`; live third-party flows cannot be tested without keys.
-- Prefer setting reasonable API usage and spending limits on the OpenAI API project and reviewing the running costs.
-- Ensure GitHub repository Issues are enabled; the X deduplication claim uses issues. Do not close/delete claim issues for already scheduled/published assessments.
-- If Metricool REST API is not included in your plan, do not set `AUTO_X_ENABLED` until API access exists. The connected Metricool ChatGPT app is **not** a GitHub Actions secret or API token.
+A failed evidence, clock, arithmetic, archival, CI, permission, source or merge-base
+check leaves the candidate unmerged. A failed gated deployment leaves the previous
+successful site in place, although the new merge remains in `main`. A social error
+does not roll back a validated site.
 
-### References
+If a Metricool POST times out or returns an uncertain acknowledgment, the persistent
+Git claim remains and automatic retries stop. This is **at-most-one automatic
+attempt**, not a claim of exactly-once external delivery. Reconcile the brand's
+scheduled and published posts before any manual retry. Do not delete a successful
+or uncertain posting tag to silence an error.
 
-- [OpenAI web-search Responses API](https://developers.openai.com/api/docs/guides/tools-web-search)
-- [GitHub automation token rules](https://docs.github.com/en/actions/concepts/security/github_token)
-- [Metricool REST API setup](https://help.metricool.com/basic-guide-for-api-integration-r97af)
-- [Canonical site](https://iranstabilitymonitor.org)
+Source/issuance artifacts retain 30 days; publication receipts retain 90 days; PR
+review-source artifacts retain 7 days. Public history remains in Git. Audit artifacts
+contain public evidence and generated judgments, not API keys or full news articles.
+Do not publish artifacts from a dry-run as scored forecasts.
 
-**Not a Protocol revision:** Any future methodology proposals belong only in the nonoperative v1.1 research register.
+Unfamiliar API response schemas fail closed rather than treating missing fields as
+success. Readiness detects many permissions/format issues, but subscription or
+service changes may still require maintenance. No software can guarantee the truth
+of automated geopolitical judgments solely from schema tests or model review.
+
+## References
+
+- [OpenAI Responses web search](https://developers.openai.com/api/docs/guides/tools-web-search)
+- [OpenAI model catalog](https://developers.openai.com/api/docs/models)
+- [GitHub workflow triggering and automation tokens](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)
+- [Metricool API setup](https://help.metricool.com/basic-guide-for-api-integration-r97af)
+- [Metricool OpenAPI specification](https://app.metricool.com/api/swagger.json)
+
+Methodology proposals belong only in the non-operative v1.1 research register; this
+installation does not activate or amend that register.
