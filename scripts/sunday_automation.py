@@ -39,7 +39,12 @@ def eastern_now():
 
 def schedule_slot():
     now=eastern_now()
-    return now.weekday()==6 and now.hour==9
+    if now.weekday()!=6:
+        return False
+    local_nine=dt.datetime.combine(now.date(),dt.time(9),ZONE)
+    expected=("0 13 * * 0" if local_nine.utcoffset()==dt.timedelta(hours=-4)
+              else "0 14 * * 0")
+    return os.getenv("GITHUB_EVENT_SCHEDULE")==expected
 
 def ready():
     if os.getenv("ASSESSMENT_AUTOMATION_ENABLED")!="true":
