@@ -48,7 +48,7 @@ def ready():
     if os.getenv("GITHUB_EVENT_NAME")=="schedule" and not schedule_slot():
         print("UTC cron not currently 09:00 Eastern; safely skipped")
         return False
-    for secret in ("OPENAI_API_KEY","AUTOMATION_GH_TOKEN","METRICOOL_API_TOKEN"):
+    for secret in ("OPENAI_API_KEY","AUTOMATION_GH_TOKEN"):
         check(os.getenv(secret), "Required secret missing: "+secret)
     check(os.getenv("GH_TOKEN")==os.getenv("AUTOMATION_GH_TOKEN"),
           "Authenticated gh token mismatch")
