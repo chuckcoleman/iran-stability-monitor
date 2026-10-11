@@ -77,7 +77,7 @@ def wait_checks(repo,branch,sha,seconds=1800):
     stop=time.monotonic()+seconds
     while time.monotonic()<stop:
         results=gh_json("repos/"+repo+"/actions/runs",
-                        "-f","event=pull_request",
+                        "-X","GET","-f","event=pull_request",
                         "-f","branch="+branch,
                         "-f","per_page=30")
         runs=[x for x in results.get("workflow_runs",[]) if
