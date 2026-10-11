@@ -1,0 +1,33 @@
+name: Prepare Sunday Iran assessment
+on:
+  schedule:
+    # 09:00 America/New_York, both standard and daylight time; guard below rejects the wrong UTC hour.
+    - cron: '0 13 * * 0'
+    - cron: '0 14 * * 0'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: iran-sunday-preparation
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify Eastern schedule and readiness
+        env:
+          RESEARCH_API_KEY: ${{ secrets.IRAN_RESEARCH_API_KEY }}
+          FORECAST_API_KEY: ${{ secrets.IRAN_FORECAST_API_KEY }}
+          ASSESSMENT_AUTOMATION_ENABLED: ${{ vars.ASSESSMENT_AUTOMATION_ENABLED }}
+        run: python scripts/sunday_automation.py preflight
+      - name: Prepare Sunday candidate
+        env:
+          RESEARCH_API_KEY: ${{ secrets.IRAN_RESEARCH_API_KEY }}
+          FORECAST_API_KEY: ${{ secrets.IRAN_FORECAST_API_KEY }}
+        run: python scripts/sunday_automation.py prepare
