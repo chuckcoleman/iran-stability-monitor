@@ -32,6 +32,7 @@ jobs:
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
           ASSESSMENT_AUTOMATION_ENABLED: ${{ vars.ASSESSMENT_AUTOMATION_ENABLED }}
           IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
