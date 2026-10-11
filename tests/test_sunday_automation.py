@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -46,11 +47,16 @@ class SundayPipelineTests(unittest.TestCase):
                 "reliability":"Medium","impact_magnitude":"moderate",
                 "direction":("raises","lowers","ambiguous")[i%3],
                 "evidence_status":"new","affects":["Sustained major regional escalation"]})
-        result=a.freeze_evidence({"evidence":evidence},set(refs),past,day,cutoff)
-        self.assertEqual(len(result),6)
-        self.assertTrue(all(e["source_publication_time"] is None for e in result))
-        with self.assertRaisesRegex(ValueError,"not verified"):
-            a.freeze_evidence({"evidence":evidence},set(refs[:-1]),past,day,cutoff)
+        with patch.object(a,"article_publication_time",return_value=None):
+            result=a.freeze_evidence({"evidence":evidence},set(refs),past,day,cutoff)
+            self.assertEqual(len(result),6)
+            self.assertTrue(all(e["source_publication_time"] is None for e in result))
+            with self.assertRaisesRegex(ValueError,"not verified"):
+                a.freeze_evidence({"evidence":evidence},set(refs[:-1]),past,day,cutoff)
+        with patch.object(a,"article_publication_time",
+                          return_value=dt.datetime(2026,10,19,tzinfo=EDT)):
+            with self.assertRaisesRegex(ValueError,"post-cutoff"):
+                a.freeze_evidence({"evidence":evidence},set(refs),past,day,cutoff)
 
     def test_exact_history_immutability_and_scored_record(self):
         history=json.loads((ROOT/"data/history.json").read_text())
