@@ -33,6 +33,8 @@ def date_key(history):
 def draft_text(history):
     latest=history["updates"][-1]
     prior=history["updates"][-2]
+    assert_true((dt.date.fromisoformat(latest["date"])-dt.date.fromisoformat(prior["date"])).days==7,
+                "Cannot truthfully claim prior-Sunday comparison after missing assessment")
     fs={f["event_id"]:f["p"] for f in latest["forecasts"] if f.get("scored")}
     old={f["event_id"]:f["p"] for f in prior["forecasts"] if f.get("scored")}
     a="regional_escalation_90d";b="regime_end_12m"
