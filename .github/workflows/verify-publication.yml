@@ -1,18 +1,17 @@
 name: Verify published Sunday assessment and announce
 on:
   workflow_run:
-    workflows: ["Validate and publish monitor"]
+    workflows: ['Validate and publish monitor']
     types: [completed]
 permissions:
   contents: read
   actions: read
-  issues: write
 concurrency:
   group: iran-verified-x-announcement
   cancel-in-progress: false
 jobs:
   verify-and-announce:
-    if: ${{ github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success' }}
+    if: github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -24,17 +23,30 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Confirm gated CI, Pages job, newly appended Sunday record, and exact public JSON
+      - name: Confirm gated commit and canonical publication
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
-          GH_TOKEN: ${{ github.token }}
+          SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN || github.token }}
         run: python scripts/verify_publication.py
-      - name: Schedule one auto-published X announcement only for newly verified assessment
-        if: ${{ hashFiles('.verified-assessment-date') != '' && vars.AUTO_X_ENABLED == 'true' }}
+      - name: Verify again, deduplicate, reserve, and schedule one X announcement
+        if: hashFiles('.verified-publication.json') != '' && vars.AUTO_X_ENABLED == 'true'
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GH_TOKEN: ${{ github.token }}
+          SOURCE_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
           AUTO_X_ENABLED: ${{ vars.AUTO_X_ENABLED }}
           METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
         run: python scripts/metricool_publish.py
+      - name: Preserve publication and posting receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-receipts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .automation-audit/*.json
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 90
+      - name: Failure summary
+        if: failure()
+        run: echo 'Publication verification or X scheduling stopped. The validated site is not rolled back. Preserve any x-announcement tag and reconcile Metricool before retrying.' >> "$GITHUB_STEP_SUMMARY"

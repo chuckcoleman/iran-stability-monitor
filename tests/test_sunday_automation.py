@@ -1,145 +1,233 @@
-"""Offline invariants for unattended Sunday assessment. No network or credentials."""
+"""Offline tests; no inference, GitHub writes, or publication."""
 import copy
 import datetime as dt
 import json
-import os
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
-
-ROOT=Path(__file__).resolve().parent.parent
-sys.path.insert(0,str(ROOT/"scripts"))
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
 import assessment_pipeline as a
-import sunday_automation as scheduler
+import candidate_checks as c
+import sunday_automation as s
 from validate_history import validate_history
+from automation_fixtures import fixture, ZONE
 
-EDT=ZoneInfo("America/New_York")
 
 class SundayPipelineTests(unittest.TestCase):
-    def test_reject_unsafe_generated_html(self):
-        with self.assertRaisesRegex(ValueError,"Unsafe"):
-            a.reject_unsafe_generated_text({"summary":"<img src=x onerror=alert(1)>"})
-        with self.assertRaisesRegex(ValueError,"Unsafe"):
-            a.reject_unsafe_generated_text({"url":"javascript:alert(1)"})
-        a.reject_unsafe_generated_text({"summary":"Valid Iran and Hormuz assessment"})
+    def setUp(self):
+        self.h, self.analysis, self.e, self.opened = fixture()
+        self.cutoff = self.opened - dt.timedelta(seconds=10)
+        self.date = self.opened.date().isoformat()
+        self.sources = {x["source"] for x in self.e}
 
-    def test_eastern_cron_identity(self):
-        summer=dt.datetime(2026,10,18,11,15,tzinfo=EDT)
-        winter=dt.datetime(2026,11,1,11,15,tzinfo=EDT)
-        with patch.object(scheduler,"eastern_now",return_value=summer):
-            with patch.dict(os.environ,{"GITHUB_EVENT_SCHEDULE":"0 13 * * 0"}):
-                self.assertTrue(scheduler.schedule_slot())
-            with patch.dict(os.environ,{"GITHUB_EVENT_SCHEDULE":"0 14 * * 0"}):
-                self.assertFalse(scheduler.schedule_slot())
-        with patch.object(scheduler,"eastern_now",return_value=winter):
-            with patch.dict(os.environ,{"GITHUB_EVENT_SCHEDULE":"0 14 * * 0"}):
-                self.assertTrue(scheduler.schedule_slot())
+    def frozen(self, metadata=None):
+        return a.freeze_evidence({"evidence": self.e}, self.sources, self.h["updates"][-1], self.date, self.cutoff, metadata)
 
-    def test_missing_prior_sunday_aborts_before_search(self):
-        history=json.loads((ROOT/"data/history.json").read_text())
-        history["updates"].pop()  # Most recent is Oct 4, so Oct 18 is a gap.
-        now=lambda: dt.datetime(2026,10,18,9,11,tzinfo=EDT)
-        with patch.object(a,"llm",side_effect=AssertionError("Must not call model")):
-            with self.assertRaisesRegex(ValueError,"Preceding Sunday"):
-                a.produce(history,now=now)
+    def record(self):
+        return a.assemble(self.h, self.analysis, self.frozen(), self.cutoff, self.opened, self.opened + dt.timedelta(seconds=1))
 
-    def test_page_source_gate_is_fail_closed(self):
-        with patch.object(scheduler,"gh_json",return_value={"build_type":"legacy"}):
-            with self.assertRaisesRegex(RuntimeError,"Pages"):
-                scheduler.verify_repository_gate("owner/repo")
-
-    def test_deadline_dst_and_calendar(self):
-        t=dt.datetime(2026,10,18,9,0,0,tzinfo=EDT)
-        self.assertEqual(a.deadline(t,a.IDS[0]),"2027-01-16T09:00:00-05:00")
-        self.assertEqual(a.deadline(t,a.IDS[1]),"2027-10-18T09:00:00-04:00")
-        leap=dt.datetime(2028,2,29,13,21,0,tzinfo=EDT)
-        self.assertEqual(a.deadline(leap,a.IDS[1]),"2029-02-28T13:21:00-05:00")
+    def test_deadline_dst_and_leap(self):
+        x = dt.datetime(2026, 10, 18, 9, tzinfo=ZONE)
+        self.assertEqual(a.deadline(x, a.IDS[0]), "2027-01-16T09:00:00-05:00")
+        self.assertEqual(a.deadline(dt.datetime(2028, 2, 29, 13, 21, tzinfo=ZONE), a.IDS[1]), "2029-02-28T13:21:00-05:00")
 
     def test_oil_credit_overlap(self):
-        result=a.haircut({key:({25:18,15:12,10:6,8:5}.get(cap,4)
-                          if key!="Political/secondary-sanctions tail" else 7)
-                          for key,cap in a.CAPS})
-        self.assertEqual(result["raw_sum"],53)
-        self.assertEqual(result["overlap_deduction_20pct"],3)
-        self.assertEqual(result["adjusted_headline"],50)
-        self.assertEqual(result["sensitivity"]["overlap_40pct"],46)
+        vals = [18, 12, 6, 5, 5, 7]
+        out = a.haircut(dict(zip([k for k, cap in a.CAPS], vals)))
+        self.assertEqual((out["raw_sum"], out["adjusted_headline"], out["sensitivity"]["overlap_40pct"]), (53, 50, 46))
+        with self.assertRaises(ValueError):
+            a.haircut({k: cap + 1 for k, cap in a.CAPS})
 
-    def test_source_balance_citation_and_unknown_publication_time(self):
-        day="2026-10-18";cutoff=dt.datetime(2026,10,18,10,2,tzinfo=EDT)
-        past={"evidence":[]}
-        evidence=[]
-        refs=[]
-        for i in range(6):
-            url=f"https://independent{i%3}.example.org/report/{i}"
-            refs.append(url)
-            evidence.append({
-                "source":url,"source_title":"Credible source headline",
-                "publisher":f"Publisher {i%3}","event_date":"2026-10-17",
-                "category":"Iran stability","observation":"A dated public statement about regional risks",
-                "reliability":"Medium","impact_magnitude":"moderate",
-                "direction":("raises","lowers","ambiguous")[i%3],
-                "evidence_status":"new","affects":["Sustained major regional escalation"]})
-        with patch.object(a,"article_publication_time",return_value=None):
-            result=a.freeze_evidence({"evidence":evidence},set(refs),past,day,cutoff)
-            self.assertEqual(len(result),6)
-            self.assertTrue(all(e["source_publication_time"] is None for e in result))
-            with self.assertRaisesRegex(ValueError,"not verified"):
-                a.freeze_evidence({"evidence":evidence},set(refs[:-1]),past,day,cutoff)
-        with patch.object(a,"article_publication_time",
-                          return_value=dt.datetime(2026,10,19,tzinfo=EDT)):
-            with self.assertRaisesRegex(ValueError,"post-cutoff"):
-                a.freeze_evidence({"evidence":evidence},set(refs),past,day,cutoff)
+    def test_unknown_time_is_not_fabricated(self):
+        self.assertTrue(all(x["source_publication_time"] is None for x in self.frozen()))
 
-    def test_exact_history_immutability_and_scored_record(self):
-        history=json.loads((ROOT/"data/history.json").read_text())
-        old=copy.deepcopy(history)
-        prior=history["updates"][-1]
-        date="2026-10-18"
-        opened=dt.datetime(2026,10,18,9,10,5,tzinfo=EDT)
-        cutoff=dt.datetime(2026,10,18,9,10,0,tzinfo=EDT)
-        issued=dt.datetime(2026,10,18,9,10,7,tzinfo=EDT)
-        forecasts=[]
-        revisions=[]
-        for f in prior["forecasts"]:
-            if f.get("scored") is True:
-                forecasts.append({"event_id":f["event_id"],"p":f["p"],
-                    "range":[max(0,f["p"]-12),min(100,f["p"]+12)],
-                    "confidence":"Medium"})
-                revisions.append({"event_id":f["event_id"],
-                    "contributions":[{"label":"Raising evidence","pp":1},
-                                     {"label":"Offsetting evidence","pp":-1}]})
-        warnings={k:{"level":v["level"],"direction":v["direction"],
-                     "coverage":v["coverage"],"text":v["text"]}
-                  for k,v in prior["warning"].items()}
-        h={
-            "summary":"A cautious stress-test forecast record with no numeric forecast revisions.",
-            "what_changed":"A diagnostic baseline exercise using wholly synthetic stable judgments.",
-            "stabilizer":"Testing verifies continued adherence to the original Protocol v1 constraints.",
-            "next_threshold":"All real event thresholds remain unaltered throughout this test harness.",
-            "limitations":"This fixture is synthetic and never permitted to be published to the public website.",
-            "forecasts":forecasts,"revision_attribution":revisions,
-            "regional_remaining_weights":[35,65],
-            "political_remaining_weights":[65,18,17],
-            "warning":warnings,"conditions":prior["conditions"],
-            "haircut_components":{k:p for k,p,c in prior["haircut"]["calculation"]["components"]},
-            "haircut_range":prior["haircut"]["range"],
-            "houthi":{
-               "headline_support_12m":prior["metrics"]["houthi_support_12m"],
-               "material_support_12m":prior["houthi"]["material_support_12m"],
-               "technical_financial_support_12m":prior["houthi"]["technical_financial_support_12m"],
-               "independent_capability_12m":prior["houthi"]["independent_capability_12m"]},
-            "status":prior["status"]
-        }
-        record=a.assemble(history,h,copy.deepcopy(prior["evidence"]),cutoff,opened,issued)
-        new=copy.deepcopy(history);new["updates"].append(record)
-        validate_history(new,history)
-        self.assertEqual(old,history)
-        self.assertEqual([f["forecast_id"] for f in record["forecasts"]],
-            [f"{key}_20261018" for key in a.IDS])
-        self.assertEqual(record["revision_attribution"][0]["prior_p"],
-                         prior["forecasts"][0]["p"])
+    def test_uncited_source_blocks(self):
+        self.sources.pop()
+        with self.assertRaisesRegex(ValueError, "not verified"):
+            self.frozen()
 
-if __name__=="__main__":
+    def test_known_metadata_time_is_retained(self):
+        value = (self.cutoff - dt.timedelta(hours=1)).isoformat()
+        out = self.frozen({self.e[0]["source"]: {"source_publication_time": value,
+                            "publication_candidates": [value], "metadata_status": "verified article metadata"}})
+        self.assertEqual(out[0]["source_publication_time"], value)
+
+    def test_future_metadata_blocks(self):
+        stamp = (self.cutoff + dt.timedelta(seconds=1)).isoformat()
+        with self.assertRaisesRegex(ValueError, "post-cutoff"):
+            self.frozen({self.e[0]["source"]: {"publication_candidates": [stamp]}})
+
+    def test_future_claim_cannot_be_hidden_as_unknown(self):
+        self.e[0]["source_publication_time"] = (self.cutoff + dt.timedelta(seconds=1)).isoformat()
+        with self.assertRaisesRegex(ValueError, "post-cutoff"):
+            self.frozen()
+
+    def test_metadata_must_finish_before_cutoff(self):
+        with self.assertRaisesRegex(ValueError, "retrieved after cutoff"):
+            self.frozen({self.e[0]["source"]: {"source_retrieved_at": (self.cutoff + dt.timedelta(seconds=1)).isoformat()}})
+
+    def test_duplicate_source_reuses_persistent_id(self):
+        prior = {"evidence": [self.frozen()[0]]}
+        out = a.freeze_evidence({"evidence": self.e}, self.sources, prior, self.date, self.cutoff)
+        self.assertEqual(out[0]["evidence_status"], "carried_forward")
+        self.assertEqual(out[0]["id"], prior["evidence"][0]["id"])
+
+    def test_exact_append_and_prospective_baselines(self):
+        before = copy.deepcopy(self.h)
+        new = copy.deepcopy(self.h)
+        new["updates"].append(self.record())
+        c.one_append(self.h, new)
+        validate_history(new, self.h)
+        self.assertEqual(self.h, before)
+        for f, r in zip(new["updates"][-1]["forecasts"], new["updates"][-1]["revision_attribution"]):
+            self.assertEqual(f["forecast_id"], f["event_id"] + "_" + self.date.replace("-", ""))
+            self.assertEqual(r["prior_p"], f["p"])
+
+    def test_core_count_and_probabilities_block_invalid(self):
+        self.analysis["forecasts"].pop()
+        with self.assertRaisesRegex(ValueError, "Exactly four"):
+            self.record()
+
+    def test_zero_revision_does_not_require_invented_offsets(self):
+        self.assertTrue(all(r["contributions"][0]["pp"] == 0 for r in self.record()["revision_attribution"]))
+
+    def test_no_auto_residual(self):
+        self.analysis["revision_attribution"][0]["contributions"][0]["pp"] = 3
+        with self.assertRaisesRegex(ValueError, "does not reconcile"):
+            self.record()
+
+    def test_declared_residual_is_accepted(self):
+        self.analysis["revision_attribution"][0]["contributions"][0]["pp"] = 3
+        self.analysis["revision_attribution"][0]["residual_pp"] = -3
+        self.assertEqual(self.record()["revision_attribution"][0]["residual_pp"], -3)
+
+    def test_no_fabricated_scenario_partition(self):
+        del self.analysis["regional"]
+        with self.assertRaisesRegex(ValueError, "refreshed dashboard"):
+            self.record()
+
+    def test_no_stale_houthi_horizons(self):
+        del self.analysis["houthi"]["m24"]
+        with self.assertRaisesRegex(ValueError, "m24"):
+            self.record()
+
+    def test_html_and_attribute_injection_blocked(self):
+        self.analysis["summary"] = '<script>alert("bad")</script>' + 'x' * 50
+        with self.assertRaisesRegex(ValueError, "Unsafe HTML"):
+            self.record()
+        self.analysis["summary"] = 'A' * 50
+        self.analysis["chains"][0]["level"] = '" onclick="bad'
+        with self.assertRaisesRegex(ValueError, "Unsafe chain"):
+            self.record()
+
+    def test_full_pipeline_phase_order_and_reviewer(self):
+        calls = []
+        times = iter([self.cutoff - dt.timedelta(seconds=5), self.cutoff, self.opened,
+                      self.opened + dt.timedelta(seconds=4)])
+        def research(prompt, search):
+            calls.append("research")
+            self.assertTrue(search)
+            return {"evidence": self.e}, self.sources
+        def metadata(url):
+            calls.append("metadata")
+            return {"source_retrieved_at": (self.cutoff - dt.timedelta(seconds=1)).isoformat()}
+        def assess(prompt, search):
+            calls.append("assess")
+            self.assertFalse(search)
+            return self.analysis, set()
+        def review(prompt, search):
+            calls.append("review")
+            self.assertFalse(search)
+            return {"approved": True, "issues": []}, set()
+        out = a.produce(self.h, research, assess, lambda: next(times), metadata, review)
+        validate_history(out, self.h)
+        self.assertEqual(calls, ["research"] + ["metadata"] * 6 + ["assess", "review"])
+        self.assertEqual(len(out["updates"][-1]["forecasts"]), 4)
+
+    def test_rejected_review_never_produces_candidate(self):
+        times = iter([self.cutoff, self.cutoff, self.opened])
+        with self.assertRaisesRegex(ValueError, "review rejected"):
+            a.produce(self.h, lambda p, s: ({"evidence": self.e}, self.sources),
+                      lambda p, s: (self.analysis, set()), lambda: next(times),
+                      lambda u: {}, lambda p, s: ({"approved": False, "issues": ["unsupported"]}, set()))
+
+    def test_commit_issue_time_only_new_record(self):
+        out = copy.deepcopy(self.h)
+        out["updates"].append(self.record())
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "history.json"
+            path.write_text(json.dumps(out))
+            stamp = self.opened + dt.timedelta(seconds=20)
+            c.issue_time(path, self.h, stamp)
+            result = json.loads(path.read_text())
+            self.assertEqual(result["updates"][:-1], self.h["updates"])
+            self.assertEqual(result["updates"][-1]["publication_time"], stamp.isoformat())
+
+    def test_multiple_sundays_including_first_of_month(self):
+        history = copy.deepcopy(self.h)
+        stamp = self.opened
+        for week in range(5):
+            items = copy.deepcopy(self.e)
+            for item in items:
+                item["event_date"] = (stamp.date() - dt.timedelta(days=1)).isoformat()
+            ledger = a.freeze_evidence({"evidence": items}, self.sources, history["updates"][-1],
+                                       stamp.date().isoformat(), stamp - dt.timedelta(seconds=5))
+            record = a.assemble(history, self.analysis, ledger, stamp - dt.timedelta(seconds=5), stamp,
+                                stamp + dt.timedelta(seconds=1))
+            candidate = copy.deepcopy(history); candidate["updates"].append(record)
+            validate_history(candidate, history)
+            c.one_append(history, candidate)
+            history = candidate
+            stamp += dt.timedelta(days=7)
+        self.assertEqual(len(history["updates"]), len(self.h["updates"]) + 5)
+
+    def test_all_historical_and_root_mutations_block(self):
+        out = copy.deepcopy(self.h)
+        out["updates"].append(self.record())
+        out["updates"][0]["summary"] += "silently revised"
+        with self.assertRaisesRegex(ValueError, "Historical"):
+            c.one_append(self.h, out)
+
+
+class OrchestrationTests(unittest.TestCase):
+    def test_schedule_nominal_dst_and_delays(self):
+        summer = dt.datetime(2026, 10, 18, 11, 30, tzinfo=ZONE)
+        winter = dt.datetime(2026, 11, 1, 10, 30, tzinfo=ZONE)
+        self.assertTrue(s.schedule_slot(summer, "0 13 * * 0"))
+        self.assertFalse(s.schedule_slot(summer, "0 14 * * 0"))
+        self.assertTrue(s.schedule_slot(winter, "0 14 * * 0"))
+        self.assertFalse(s.schedule_slot(winter, "0 13 * * 0"))
+
+    def rule(self):
+        return {"enforcement": "active", "bypass_actors": [], "conditions": {"ref_name": {"include": ["~DEFAULT_BRANCH"], "exclude": []}},
+           "rules": [{"type": "pull_request"}, {"type": "deletion"}, {"type": "non_fast_forward"},
+                     {"type": "required_status_checks", "parameters": {"strict_required_status_checks_policy": True,
+                           "required_status_checks": [{"context": "validate", "integration_id": 15368}]}}]}
+
+    def test_main_gate_requires_strict_no_bypass(self):
+        r = self.rule()
+        self.assertTrue(s.protects_main(r))
+        r["rules"][-1]["parameters"]["strict_required_status_checks_policy"] = False
+        self.assertFalse(s.protects_main(r))
+        r = self.rule(); r["bypass_actors"] = [{"actor_id": 1}]
+        self.assertFalse(s.protects_main(r))
+        r = self.rule(); r["conditions"]["ref_name"]["exclude"] = ["refs/heads/main"]
+        self.assertFalse(s.protects_main(r))
+
+    def test_failed_ci_cannot_merge(self):
+        data = {"workflow_runs": [{"id": 1, "head_sha": "abc", "path": ".github/workflows/validate.yml", "status": "completed", "conclusion": "failure"}]}
+        with patch.object(s, "gh_json", return_value=data):
+            with self.assertRaisesRegex(RuntimeError, "CI failed"):
+                s.wait_checks("owner/repo", "branch", "abc")
+
+    def test_disabled_run_does_not_require_secrets(self):
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertFalse(s.ready())
+
+
+if __name__ == "__main__":
     unittest.main()

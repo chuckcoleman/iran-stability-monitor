@@ -47,6 +47,7 @@ jobs:
             README.md
             AUTOMATION.md
             CNAME
+            .gitignore
             .github/workflows/*.yml
 
   deploy:
