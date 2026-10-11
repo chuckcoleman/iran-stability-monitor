@@ -402,6 +402,8 @@ def produce(history,researcher=llm,assessor=llm,now=clock):
     today=now().date().isoformat()
     check(history["updates"][-1]["date"]<today,"Sunday assessment already exists")
     previous=history["updates"][-1]
+    check((dt.date.fromisoformat(today)-dt.date.fromisoformat(previous["date"])).days==7,
+          "Preceding Sunday forecast absent; do not mislabel older assessment as prior Sunday")
     result,sources=researcher(RESEARCH.format(date=today,prior=json.dumps(previous.get("evidence",[]))),True)
     reject_unsafe_generated_text(result)
     research_complete=now()
