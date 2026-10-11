@@ -298,10 +298,15 @@ def assemble(history,assessment,evidence,cutoff,opened,issued):
       "publication_time denotes the observed assessment issuance before commit; validated web deployment is separately checked."]
     u["revision_attribution_status"]="Prospective Protocol-v1 signed judgment audit; not causal estimates"
     u["corrections"]=[]
-    if opened.day<=7:
+    if opened.day<=7 and not any(
+            "hanke" in (e.get("publisher","")+" "+e.get("source_title","")+" "+e.get("category","")).lower()
+            and e.get("evidence_status")=="new" for e in evidence):
+        u["hanke_hyperinflation"]["status"]=(
+          "First Sunday: no newly verified Hanke source; previous monthly diagnostic carried forward; unscored")
+    elif opened.day<=7:
         hv=assessment.get("hanke_hyperinflation")
         check(isinstance(hv,dict) and isinstance(hv.get("probabilities"),dict),
-              "First-Sunday monthly Hanke analysis required")
+              "New Hanke evidence requires complete first-Sunday monthly analysis")
         vals=hv["probabilities"]
         check(all(type(vals.get(k)) in (int,float) and 0<=vals[k]<=100 for k in ("m3","m6","m12")),
               "Missing monthly Hanke diagnostic probabilities")
