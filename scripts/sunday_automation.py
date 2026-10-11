@@ -117,6 +117,7 @@ def prepare_and_merge():
     remote=run("git","ls-remote","--heads","origin",branch).stdout
     check(not remote.strip(),"An automation branch already exists; manual reconciliation required")
     check(not run("git","status","--porcelain").stdout.strip(),"Working tree not clean")
+    base_sha=run("git","rev-parse","HEAD").stdout.strip()
     run("git","config","user.name","Iran Stability Monitor Automation")
     run("git","config","user.email","automation@users.noreply.github.com")
     run("git","checkout","-b",branch)
@@ -141,6 +142,8 @@ def prepare_and_merge():
                      "ruleset-compliant merge. No bypass permitted.")
     print("Candidate PR created: "+url)
     wait_checks(repo,branch,sha)
+    current_main=gh_json("repos/"+repo+"/git/ref/heads/main").get("object",{}).get("sha")
+    check(current_main==base_sha,"Main changed after candidate baseline: do not merge stale record")
     # No --admin bypass and no blind --auto; checks have already succeeded.
     gh("pr","merge",url,"-R",repo,"--squash",
        "--match-head-commit",sha)
