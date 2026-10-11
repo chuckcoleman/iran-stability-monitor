@@ -33,7 +33,8 @@ def deadline(opened,key):
 
 def llm(prompt,search):
     payload={"model":os.getenv("IRAN_FORECAST_MODEL","gpt-5.5"),"input":prompt,
-             "store":False,"max_output_tokens":14000}
+             "store":False,"max_output_tokens":14000,
+             "text":{"format":{"type":"json_object"}}}
     if search:
         payload.update({"tools":[{"type":"web_search","external_web_access":True}],
                         "tool_choice":"required","include":["web_search_call.action.sources"]})
