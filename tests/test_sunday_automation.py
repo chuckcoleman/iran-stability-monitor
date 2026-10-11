@@ -2,6 +2,7 @@
 import copy
 import datetime as dt
 import json
+import os
 from pathlib import Path
 import sys
 import unittest
@@ -11,11 +12,29 @@ from zoneinfo import ZoneInfo
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/"scripts"))
 import assessment_pipeline as a
+import sunday_automation as scheduler
 from validate_history import validate_history
 
 EDT=ZoneInfo("America/New_York")
 
 class SundayPipelineTests(unittest.TestCase):
+    def test_eastern_cron_identity(self):
+        summer=dt.datetime(2026,10,18,11,15,tzinfo=EDT)
+        winter=dt.datetime(2026,11,1,11,15,tzinfo=EDT)
+        with patch.object(scheduler,"eastern_now",return_value=summer):
+            with patch.dict(os.environ,{"GITHUB_EVENT_SCHEDULE":"0 13 * * 0"}):
+                self.assertTrue(scheduler.schedule_slot())
+            with patch.dict(os.environ,{"GITHUB_EVENT_SCHEDULE":"0 14 * * 0"}):
+                self.assertFalse(scheduler.schedule_slot())
+        with patch.object(scheduler,"eastern_now",return_value=winter):
+            with patch.dict(os.environ,{"GITHUB_EVENT_SCHEDULE":"0 14 * * 0"}):
+                self.assertTrue(scheduler.schedule_slot())
+
+    def test_page_source_gate_is_fail_closed(self):
+        with patch.object(scheduler,"gh_json",return_value={"build_type":"legacy"}):
+            with self.assertRaisesRegex(RuntimeError,"Pages"):
+                scheduler.verify_repository_gate("owner/repo")
+
     def test_deadline_dst_and_calendar(self):
         t=dt.datetime(2026,10,18,9,0,0,tzinfo=EDT)
         self.assertEqual(a.deadline(t,a.IDS[0]),"2027-01-16T09:00:00-05:00")
