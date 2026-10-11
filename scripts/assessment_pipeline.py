@@ -4,6 +4,9 @@ import copy
 import datetime as dt
 import json
 import os
+import ipaddress
+import re
+from html.parser import HTMLParser
 from pathlib import Path
 import sys
 import urllib.request
@@ -69,9 +72,44 @@ def urlkey(url):
     try:
         u=urlsplit(url)
         if u.scheme!="https" or not u.hostname or "." not in u.hostname or u.username or u.password: return None
+        try:
+            ipaddress.ip_address(u.hostname)
+            return None  # Reject literal IP targets, including private/loopback addresses.
+        except ValueError:
+            pass
         if u.hostname.endswith((".localhost",".local",".internal")): return None
         return u.hostname.lower()+u.path.rstrip("/")
     except (ValueError,TypeError): return None
+
+class _PublicationMetadata(HTMLParser):
+    def __init__(self):
+        super().__init__();self.times=[]
+    def handle_starttag(self,tag,attrs):
+        if tag.lower()!="meta":return
+        a=dict(attrs)
+        key=(a.get("property") or a.get("name") or "").lower()
+        if key in ("article:published_time","datepublished","pubdate","publication_date"):
+            if a.get("content"):self.times.append(a["content"])
+
+def article_publication_time(url):
+    """Use direct article metadata only; lack of precise time is nonfatal."""
+    try:
+        req=urllib.request.Request(url,headers={"User-Agent":"IranStabilityMonitor-evidence/1.0"})
+        with urllib.request.urlopen(req,timeout=10) as response:
+            html=response.read(180000).decode("utf-8",errors="replace")
+        parser=_PublicationMetadata();parser.feed(html)
+        matches=parser.times
+        if not matches:
+            matches=re.findall(r'["\x27]datePublished["\x27]\s*:\s*["\x27]([^"\x27]+)',html)
+        for raw in matches:
+            try:
+                stamp=dt.datetime.fromisoformat(raw.strip().replace("Z","+00:00"))
+                if stamp.tzinfo is not None and stamp.utcoffset() is not None:
+                    return stamp
+            except ValueError:pass
+    except (OSError,ValueError,UnicodeError):
+        pass
+    return None
 
 def freeze_evidence(obj,citations,previous,date,cutoff):
     new=obj.get("evidence")
@@ -98,11 +136,15 @@ def freeze_evidence(obj,citations,previous,date,cutoff):
             check(item.get("reliability") in ("High","Medium-high","Medium","Low"),"Invalid reliability")
             check(item.get("direction") in ("raises","lowers","ambiguous"),"Invalid direction")
             check(item.get("impact_magnitude") in ("minor","moderate","major"),"Invalid impact")
+            published_at=article_publication_time(u)
+            if published_at is not None:
+                check(published_at<=cutoff,"Directly verified post-cutoff publication; exclude source")
             entry={"id":f"E-{date.replace('-','')}-{i:02d}","date":date,
                    "event_date":item["event_date"],"category":item["category"],
                    "observation":item["observation"],"source":u,"source_title":item["source_title"],
-                   "publisher":item["publisher"],"source_publication_time":None,
-                   "source_publication_status":"unknown precise time; source independently cited",
+                   "publisher":item["publisher"],
+                   "source_publication_time":published_at.isoformat() if published_at else None,
+                   "source_publication_status":"verified article metadata" if published_at else "unknown precise time; source independently cited",
                    "reliability":item["reliability"],"affects":item.get("affects",[]),
                    "evidence_status":"new","impact_magnitude":item["impact_magnitude"],
                    "direction":item["direction"]}
@@ -321,8 +363,9 @@ def produce(history,researcher=llm,assessor=llm,now=clock):
     check(history["updates"][-1]["date"]<today,"Sunday assessment already exists")
     previous=history["updates"][-1]
     result,sources=researcher(RESEARCH.format(date=today,prior=json.dumps(previous.get("evidence",[]))),True)
-    cutoff=now() # capture actual closed-evidence timestamp before asking for judgments
-    evidence=freeze_evidence(result,sources,previous,today,cutoff)
+    research_complete=now()
+    evidence=freeze_evidence(result,sources,previous,today,research_complete)
+    cutoff=now() # actual closure AFTER checking primary-source publication metadata
     input=ASSESS.format(protocol=json.dumps(history["protocol"]),prior=json.dumps(
        [{"event_id":f["event_id"],"p":f["p"]} for f in previous["forecasts"] if f.get("scored")]),
        evidence=json.dumps(evidence))
