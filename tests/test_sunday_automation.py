@@ -18,6 +18,13 @@ from validate_history import validate_history
 EDT=ZoneInfo("America/New_York")
 
 class SundayPipelineTests(unittest.TestCase):
+    def test_reject_unsafe_generated_html(self):
+        with self.assertRaisesRegex(ValueError,"Unsafe"):
+            a.reject_unsafe_generated_text({"summary":"<img src=x onerror=alert(1)>"})
+        with self.assertRaisesRegex(ValueError,"Unsafe"):
+            a.reject_unsafe_generated_text({"url":"javascript:alert(1)"})
+        a.reject_unsafe_generated_text({"summary":"Valid Iran and Hormuz assessment"})
+
     def test_eastern_cron_identity(self):
         summer=dt.datetime(2026,10,18,11,15,tzinfo=EDT)
         winter=dt.datetime(2026,11,1,11,15,tzinfo=EDT)
@@ -105,6 +112,8 @@ class SundayPipelineTests(unittest.TestCase):
             "next_threshold":"All real event thresholds remain unaltered throughout this test harness.",
             "limitations":"This fixture is synthetic and never permitted to be published to the public website.",
             "forecasts":forecasts,"revision_attribution":revisions,
+            "regional_remaining_weights":[35,65],
+            "political_remaining_weights":[65,18,17],
             "warning":warnings,"conditions":prior["conditions"],
             "haircut_components":{k:p for k,p,c in prior["haircut"]["calculation"]["components"]},
             "haircut_range":prior["haircut"]["range"],
