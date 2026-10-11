@@ -12,6 +12,8 @@ import subprocess
 import sys
 import tempfile
 import time
+import urllib.request
+import urllib.parse
 from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -152,10 +154,41 @@ def prepare_and_merge():
     print("Validated PR merged; gated main-branch CI and Pages deployment must follow.")
     # The workflow_run publication verifier will separately check the deployed site.
 
+def read_only_healthcheck():
+    """Credential readiness only: NEVER write GitHub data or create a social post."""
+    repo=os.environ.get("GITHUB_REPOSITORY","chuckcoleman/iran-stability-monitor")
+    for secret in ("OPENAI_API_KEY","AUTOMATION_GH_TOKEN","METRICOOL_API_TOKEN"):
+        check(os.getenv(secret),"Missing secret "+secret)
+    check(os.getenv("GH_TOKEN")==os.getenv("AUTOMATION_GH_TOKEN"),
+          "GitHub automation token not connected")
+    verify_repository_gate(repo)
+    req=urllib.request.Request("https://api.openai.com/v1/models",
+        headers={"Authorization":"Bearer "+os.environ["OPENAI_API_KEY"]})
+    with urllib.request.urlopen(req,timeout=25) as response:
+        models=json.load(response)
+    check(isinstance(models.get("data"),list),"Cannot read OpenAI API model access")
+    # Read Metricool calendar only. No POST, no social post and no ledger mutation.
+    q=urllib.parse.urlencode({"blogId":"7254821","userId":"5607453",
+        "start":eastern_now().date().isoformat()+"T00:00:00",
+        "end":eastern_now().date().isoformat()+"T23:59:59",
+        "timezone":"America/New_York","extendedRange":"false"})
+    req=urllib.request.Request("https://app.metricool.com/api/v2/scheduler/posts?"+q,
+        headers={"X-Mc-Auth":os.environ["METRICOOL_API_TOKEN"]})
+    with urllib.request.urlopen(req,timeout=25) as response:
+        calendar=json.load(response)
+    check(isinstance(calendar,list) or
+          (isinstance(calendar,dict) and isinstance(calendar.get("data"),list)),
+          "Metricool calendar API returned an unsupported shape")
+    print("Read-only readiness PASS: GitHub source/ruleset, OpenAI API, Metricool API.")
+    print("This is not a paid web-search, forecast, PR, deployment or X publishing test.")
+
 def main():
     cmd=sys.argv[1] if len(sys.argv)==2 else ""
     if cmd=="preflight":
         return 0 if ready() else 3
+    if cmd=="healthcheck":
+        read_only_healthcheck()
+        return 0
     if cmd=="run":
         if ready():prepare_and_merge()
         return 0
