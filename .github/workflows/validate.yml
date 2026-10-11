@@ -20,6 +20,8 @@ jobs:
         run: python -m pip install --disable-pip-version-check 'jsonschema==4.25.1'
       - name: Validate JSON Schema
         run: python -m jsonschema -i data/history.json schema/history.schema.json
+      - name: Compile all Python automation modules
+        run: python -m compileall -q scripts tests
       - name: Validate JavaScript syntax
         run: node --check assets/app.js
       - name: Run validator regression tests
@@ -28,6 +30,24 @@ jobs:
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: python scripts/validate_history.py
+      - name: Retain reproducible review source snapshot
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: automation-review-source
+          retention-days: 7
+          include-hidden-files: true
+          path: |
+            scripts/*.py
+            tests/*.py
+            schema/*.json
+            data/history.json
+            assets/app.js
+            *.html
+            README.md
+            AUTOMATION.md
+            CNAME
+            .github/workflows/*.yml
 
   deploy:
     name: Deploy validated website
