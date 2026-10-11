@@ -1206,6 +1206,789 @@
           "residual_pp": 4
         }
       ]
+    },
+    {
+      "date": "2026-10-11",
+      "summary": "Deadly Houthi attacks on Riyadh airport and Saudi retaliation threats increased the risk of sustained regional escalation. New oil-shipping sanctions and Hormuz threats increased external payments risk, partly offset by diplomacy and surviving transit/credit mechanisms.",
+      "metrics": {
+        "regional_escalation_90d": 73,
+        "regime_end_12m": 16,
+        "fx_crisis_12m": 82,
+        "hormuz": "Severely restricted; managed transit improving",
+        "energy_stress": "High",
+        "houthi_support_12m": 77,
+        "china_oil_credit_haircut": 50,
+        "currency_crisis_12m": 78,
+        "external_payments_crisis_12m": 84,
+        "fx_crisis_12m_legacy_composite": true
+      },
+      "status": {
+        "regional": "red",
+        "regime": "amber",
+        "fx": "red",
+        "hormuz": "red",
+        "energy": "red",
+        "houthi": "red",
+        "china": "red"
+      },
+      "regional": [
+        {
+          "name": "Negotiated de-escalation / partial reopening",
+          "p": 8
+        },
+        {
+          "name": "Prolonged militarized standoff",
+          "p": 19
+        },
+        {
+          "name": "Wider regional escalation",
+          "p": 73
+        }
+      ],
+      "political": [
+        {
+          "name": "Hardline/security continuity",
+          "p": 54
+        },
+        {
+          "name": "Continuity + external stabilization",
+          "p": 15
+        },
+        {
+          "name": "Major internal reconfiguration",
+          "p": 15
+        },
+        {
+          "name": "Regime-ending transition",
+          "p": 16
+        }
+      ],
+      "warning": {
+        "Monetary / FX": {
+          "level": "warning-level",
+          "direction": "flat",
+          "coverage": "High",
+          "role": "leading/coincident",
+          "text": "The parallel-market rial remains under severe pressure; a consistent rolling 30-day rate series has not verified the frozen crisis threshold."
+        },
+        "Fiscal": {
+          "level": "warning-level",
+          "direction": "up",
+          "coverage": "Medium-high",
+          "role": "leading/coincident",
+          "text": "Oil-receipt shortfalls, the oil-minister departure and contested revenue remittances raise sovereign financing concerns; generalized priority-obligation failure is unverified."
+        },
+        "Banking / payments": {
+          "level": "warning-level",
+          "direction": "up",
+          "coverage": "Medium-high",
+          "role": "leading/coincident",
+          "text": "New sanctions on shadow-fleet vessels and blockade enforcement threaten foreign-exchange settlement, but sustained two-category essential-import settlement failures are not established."
+        },
+        "Food / medicine": {
+          "level": "warning-level",
+          "direction": "flat",
+          "coverage": "Medium-high",
+          "role": "leading/coincident",
+          "text": "Previously documented pharmacy shortages and high medicine costs persist as a material concern; new nationwide essential-goods failure is not independently verified."
+        },
+        "Energy / industrial": {
+          "level": "warning-level",
+          "direction": "flat",
+          "coverage": "Medium",
+          "role": "leading/coincident",
+          "text": "Domestic conservation and industry constraints continue; no verified collapse of priority energy allocations."
+        },
+        "Social / protest": {
+          "level": "watch",
+          "direction": "flat",
+          "coverage": "Medium",
+          "role": "leading/coincident",
+          "text": "High prices and employment/earnings pressure increase grievances, but durable coordinated nationwide protest is not verified."
+        },
+        "Coercive apparatus": {
+          "level": "unknown",
+          "direction": "flat",
+          "coverage": "Low",
+          "role": "leading/coincident",
+          "text": "Reporting does not establish materially reliable compensation/compliance or significant refusals/defections; unknown is not green."
+        },
+        "Elite cohesion": {
+          "level": "watch",
+          "direction": "up",
+          "coverage": "Medium",
+          "role": "leading/coincident",
+          "text": "The oil minister resigned amid oil-receipt controversy; ministerial turnover does not itself demonstrate competing centers of authority."
+        },
+        "External support": {
+          "level": "watch",
+          "direction": "up",
+          "coverage": "Medium-high",
+          "role": "leading/coincident",
+          "text": "Chinese oil-credit and possible Russian assistance continue to cushion isolation, but observable payment and shipping routes face intensified constraints."
+        }
+      },
+      "news": [
+        {
+          "date": "2026-10-11",
+          "event_date": "2026-10-10",
+          "type": "Yemen / Saudi Arabia",
+          "title": "Houthi attack on Riyadh airport killed 12; Saudi retaliation threatened",
+          "impact": "Raises risk of sustained interstate escalation, but proxy strikes alone are not proof the Protocol v1 resolution threshold has occurred.",
+          "url": "https://www.reuters.com/world/middle-east/yemens-houthis-renew-warning-over-saudi-airports-after-deadly-riyadh-attack-2026-10-11/",
+          "revision_type": "New event",
+          "revision_date": "2026-10-11"
+        },
+        {
+          "date": "2026-10-11",
+          "event_date": "2026-10-10",
+          "type": "Blockade enforcement",
+          "title": "US military disabled cargo vessel attempting to breach Iran blockade",
+          "impact": "Raises risk of miscalculation and tightens physical shipment constraints.",
+          "url": "https://www.reuters.com/world/us-military-says-it-disabled-cargo-vessel-trying-run-iran-blockade-2026-10-11/",
+          "revision_type": "New event",
+          "revision_date": "2026-10-11"
+        },
+        {
+          "date": "2026-10-08",
+          "event_date": "2026-10-08",
+          "type": "Sanctions / oil",
+          "title": "US targets individuals, networks and 17 Iran-linked ships",
+          "impact": "Increases prospective payment and export friction; immediate effect may be limited given already completed oil deliveries.",
+          "url": "https://www.reuters.com/world/middle-east/us-imposes-fresh-iran-related-sanctions-2026-10-08/",
+          "revision_type": "New event",
+          "revision_date": "2026-10-11"
+        },
+        {
+          "date": "2026-10-08",
+          "event_date": "2026-10-08",
+          "type": "Maritime / Hormuz",
+          "title": "Iran threatens to block more Hormuz routes",
+          "impact": "Raises tanker risk and risks to restricted alternative shipping channels.",
+          "url": "https://www.reuters.com/world/asia-pacific/attack-risks-rise-tankers-iran-vows-block-more-hormuz-routes-2026-10-08/",
+          "revision_type": "New event",
+          "revision_date": "2026-10-11"
+        },
+        {
+          "date": "2026-10-05",
+          "event_date": "2026-10-04",
+          "type": "Political / fiscal",
+          "title": "Oil minister resigns amid accusations about missing export receipts",
+          "impact": "Adds fiscal stress and elite-policy-friction evidence without establishing government breakdown.",
+          "url": "https://www.theguardian.com/world/2026/oct/05/iran-oil-minister-resigns-economic-crisis",
+          "revision_type": "New reporting",
+          "revision_date": "2026-10-11"
+        }
+      ],
+      "what_changed": "Escalation risk increased after strikes killed 12 at Riyadh airport and Houthis threatened additional Saudi airports. US blockade enforcement, Iran Hormuz route threats, and sanctions on 17 vessels worsen maritime and payment risks; indirect US-Iran discussions and remaining China-linked channels partly offset them.",
+      "stabilizer": "US-Iran talks were publicly described as productive on October 8, and Washington stated it would not attack Iran before November 3; constrained transit and indirect oil-credit remain possible.",
+      "next_threshold": "Whether repeated strikes satisfy the 72-hour frozen interstate-escalation rule; whether external settlements fail in two essential import categories for 14 days; whether rial depreciation reaches 25% in a rolling 30-day window.",
+      "conditions": {
+        "hormuz": "Severely restricted: reported attacks on tankers rose and US blockade enforcement disabled a cargo ship; limited managed transit continues.",
+        "energy": "Severe economic and logistical strain; no independently verified failure of essential state priority allocations.",
+        "elite": "Oil-minister departure amid oil receipts controversy; institutional fracture not verified.",
+        "coercion": "No confirmed consequential security-force defections; evidence coverage remains low."
+      },
+      "forecasts": [
+        {
+          "label": "Sustained major regional escalation",
+          "p": 73,
+          "horizon": "within 90 days",
+          "confidence": "Medium-high",
+          "range": [
+            59,
+            86
+          ],
+          "event_definition": "Sustained major interstate strikes lasting at least 72 hours, or a material expansion of major combat to an additional sovereign state or operational theater. Isolated interceptions, one-off strikes, proxy attacks, and rhetoric alone are excluded unless they initiate the qualifying sustained episode.",
+          "raise": "Further qualifying deterioration in the event's principal drivers.",
+          "lower": "Verified stabilization or reversal in the event's principal drivers.",
+          "scored": true,
+          "created_date": "2026-10-11",
+          "provenance": "Prospective Protocol v1.0, proposed for review; not published until gated deployment",
+          "forecast_id": "regional_escalation_90d_20261011",
+          "event_id": "regional_escalation_90d",
+          "forecast_open": "2026-10-11T10:41:56-04:00",
+          "resolution_deadline": "2027-01-09T10:41:56-05:00"
+        },
+        {
+          "label": "Regime-ending transition",
+          "p": 16,
+          "horizon": "within 12 months",
+          "confidence": "Medium",
+          "range": [
+            9,
+            27
+          ],
+          "event_definition": "Replacement of the Islamic Republic's governing constitutional-institutional order, or loss of its effective national governing authority. Leadership succession, cabinet changes, and factional turnover within the same governing order are excluded.",
+          "raise": "Further qualifying deterioration in the event's principal drivers.",
+          "lower": "Verified stabilization or reversal in the event's principal drivers.",
+          "scored": true,
+          "created_date": "2026-10-11",
+          "provenance": "Prospective Protocol v1.0, proposed for review; not published until gated deployment",
+          "forecast_id": "regime_end_12m_20261011",
+          "event_id": "regime_end_12m",
+          "forecast_open": "2026-10-11T10:41:56-04:00",
+          "resolution_deadline": "2027-10-11T10:41:56-04:00"
+        },
+        {
+          "label": "Currency crisis",
+          "p": 78,
+          "horizon": "within 12 months",
+          "confidence": "Medium",
+          "range": [
+            64,
+            89
+          ],
+          "event_definition": "Depreciation of the parallel-market rial by at least 25% against the U.S. dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.",
+          "raise": "Further qualifying deterioration in the event's principal drivers.",
+          "lower": "Verified stabilization or reversal in the event's principal drivers.",
+          "scored": true,
+          "created_date": "2026-10-11",
+          "provenance": "Prospective Protocol v1.0, proposed for review; not published until gated deployment",
+          "forecast_id": "currency_crisis_12m_20261011",
+          "event_id": "currency_crisis_12m",
+          "forecast_open": "2026-10-11T10:41:56-04:00",
+          "resolution_deadline": "2027-10-11T10:41:56-04:00"
+        },
+        {
+          "label": "External-payments crisis",
+          "p": 84,
+          "horizon": "within 12 months",
+          "confidence": "Medium-high",
+          "range": [
+            69,
+            93
+          ],
+          "event_definition": "Corroborated settlement disruption lasting at least 14 days in at least two essential-import categories—food or grain, medicine or medical inputs, or critical energy or industrial inputs—combined with broad emergency foreign-exchange, import, or payment restrictions or a material shift by suppliers to prepayment or cash because established settlement channels are failing. Evidence must come from at least two independent source streams.",
+          "raise": "Further qualifying deterioration in the event's principal drivers.",
+          "lower": "Verified stabilization or reversal in the event's principal drivers.",
+          "scored": true,
+          "created_date": "2026-10-11",
+          "provenance": "Prospective Protocol v1.0, proposed for review; not published until gated deployment",
+          "forecast_id": "external_payments_crisis_12m_20261011",
+          "event_id": "external_payments_crisis_12m",
+          "forecast_open": "2026-10-11T10:41:56-04:00",
+          "resolution_deadline": "2027-10-11T10:41:56-04:00"
+        }
+      ],
+      "chains": [
+        {
+          "name": "FX / fiscal",
+          "stage": 2,
+          "level": "warning",
+          "note": "Depreciation is confirmed; intervention is under strain but not established as failed. Generalized high-frequency repricing and runaway monetization are not established.",
+          "steps": [
+            "Depreciation",
+            "Intervention strain",
+            "Currency substitution",
+            "Rapid repricing/indexation",
+            "Fiscal monetization"
+          ],
+          "confirmed": 1,
+          "current": 1,
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism."
+        },
+        {
+          "name": "Energy / real economy",
+          "stage": 3,
+          "level": "critical",
+          "note": "Rationing/conservation and industrial/freight disruption are confirmed; essential-goods stress is present but not yet a generalized shortage threshold. Failure of priority allocations remains absent.",
+          "steps": [
+            "Rationing",
+            "Industrial/freight disruption",
+            "Essential-goods shortages",
+            "State arrears",
+            "Priority-allocation failure"
+          ],
+          "confirmed": 2,
+          "current": 2,
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism."
+        },
+        {
+          "name": "Regime / coercion",
+          "stage": 1,
+          "level": "watch",
+          "note": "Economic protest is confirmed; movement toward coordinated national protest is being watched, while elite fracture and coercive refusal are not established.",
+          "steps": [
+            "Economic protest",
+            "Coordinated national protest",
+            "Elite fracture",
+            "Coercive refusal",
+            "Defections"
+          ],
+          "confirmed": 1,
+          "current": 1,
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism."
+        }
+      ],
+      "haircut": {
+        "range": [
+          36,
+          66
+        ],
+        "note": "Protocol-v1 modeled risk-equivalent adjustment, not observed transaction discount; see 0/20/40 sensitivity.",
+        "method": {
+          "label": "Protocol v1 model estimate",
+          "rule": "Component contributions are not simply interpreted as independent risks. Protocol v1 applies a 20% overlap deduction to the combined delivery + sanctions/payment + political-tail subtotal above 20 percentage points, rounded to the nearest point, to reduce double counting of a common geopolitical shock.",
+          "components": [
+            [
+              "Physical delivery/blockade",
+              18,
+              25
+            ],
+            [
+              "Sanctions/payment channels",
+              12,
+              15
+            ],
+            [
+              "Sovereign/counterparty",
+              6,
+              10
+            ],
+            [
+              "Oil-price/basis",
+              5,
+              8
+            ],
+            [
+              "Illiquidity/enforcement",
+              5,
+              8
+            ],
+            [
+              "Political/secondary-sanctions tail",
+              7,
+              8
+            ]
+          ]
+        },
+        "calculation": {
+          "components": [
+            [
+              "Physical delivery/blockade",
+              18,
+              25
+            ],
+            [
+              "Sanctions/payment channels",
+              12,
+              15
+            ],
+            [
+              "Sovereign/counterparty",
+              6,
+              10
+            ],
+            [
+              "Oil-price/basis",
+              5,
+              8
+            ],
+            [
+              "Illiquidity/enforcement",
+              5,
+              8
+            ],
+            [
+              "Political/secondary-sanctions tail",
+              7,
+              8
+            ]
+          ],
+          "raw_sum": 53,
+          "overlap_deduction_20pct": 3,
+          "adjusted_headline": 50,
+          "sensitivity": {
+            "overlap_0pct": 53,
+            "overlap_20pct": 50,
+            "overlap_40pct": 46
+          }
+        }
+      },
+      "houthi": {
+        "m6": 90,
+        "m24": 58,
+        "definition": "Strategically meaningful Iranian support continues when Iranian matériel assistance or technical and financial support is sufficient to sustain advanced Houthi missile, drone, or maritime capabilities to a measurable degree. Independent Houthi production and locally maintained capabilities, without continuing Iranian assistance, do not qualify as continued Iranian support.",
+        "material_support_12m": 62,
+        "technical_financial_support_12m": 83,
+        "independent_capability_12m": 91,
+        "diagnostic_note": "Unscored, distinguish continuing Iranian material/technical/financial aid from independent Houthi capability; the Riyadh attack does not by itself establish fresh Iranian resupply."
+      },
+      "absence_indicators": [
+        {
+          "label": "Security-force defections",
+          "status": "unknown",
+          "coverage": "Medium",
+          "text": "No verified consequential defections or unit-level refusal, but reporting coverage is insufficient for affirmative Normal status."
+        },
+        {
+          "label": "Nationwide bazaar shutdown",
+          "status": "normal",
+          "coverage": "Medium",
+          "text": "No verified nationwide coordinated bazaar closure."
+        },
+        {
+          "label": "Priority military/security fuel failure",
+          "status": "unknown",
+          "coverage": "Low",
+          "text": "No failure is reported, but public observation is too weak to treat absence as affirmative reassurance."
+        },
+        {
+          "label": "Economy-wide high-frequency wage indexation",
+          "status": "unknown",
+          "coverage": "Medium",
+          "text": "No generalized high-frequency automatic wage repricing is verified, but observation coverage is insufficient for affirmative Normal status."
+        },
+        {
+          "label": "Systemically important Chinese-bank cutoff",
+          "status": "normal",
+          "coverage": "Medium-high",
+          "text": "No verified cutoff by a major Chinese bank; Chinese support remains conditional but material."
+        }
+      ],
+      "next_scheduled_update": "2026-10-18T09:00:00-04:00",
+      "binary_political": [
+        {
+          "label": "Islamic Republic governing order survives 12 months",
+          "p": 88,
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
+        },
+        {
+          "label": "Material elite/institutional restructuring within 12 months",
+          "p": 26,
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
+        },
+        {
+          "label": "Negotiated external stabilization within 12 months",
+          "p": 34,
+          "provenance": "Retrospective methodological decomposition",
+          "scored": false,
+          "created_date": "2026-10-03"
+        }
+      ],
+      "regional_resolution_note": "Scenario buckets are descriptive legacy partitions. Scored forecasting uses the binary sustained-major-escalation definition above; future scenario partitions must include explicit mutually exclusive resolution rules.",
+      "political_resolution_note": "Political outcome buckets are retained as a legacy descriptive partition. Scored forecasting uses separate binary events because institutional restructuring and external stabilization can co-occur.",
+      "limitations": "Open-source evidence is incomplete and sometimes strategically manipulated. Source dates differ from event dates. This draft was frozen after the actual reported evidence cutoff and forecast-opening observation; its numerical judgments remain proposals until validation and gated publication. No verified regime defections, broad essential payment threshold, or currency 25%-in-30-days threshold is inferred.",
+      "corrections": [],
+      "evidence": [
+        {
+          "id": "E-20261011-01",
+          "date": "2026-10-11",
+          "event_date": "2026-10-10",
+          "category": "Yemen / regional escalation",
+          "observation": "Riyadh airport strike killed 12 and injured more than 300; Houthi statements warned further Saudi air traffic targets, with Saudi retaliation expected.",
+          "source": "https://www.reuters.com/world/middle-east/yemens-houthis-renew-warning-over-saudi-airports-after-deadly-riyadh-attack-2026-10-11/",
+          "source_title": "Yemen’s Houthis renew warning over Saudi airports after deadly Riyadh attack",
+          "publisher": "Reuters",
+          "source_publication_time": "2026-10-11T10:23:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation",
+            "Houthi support diagnostic"
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "major",
+          "direction": "raises"
+        },
+        {
+          "id": "E-20261011-02",
+          "date": "2026-10-11",
+          "event_date": "2026-10-10",
+          "category": "Military / shipping",
+          "observation": "US CENTCOM reported disabling a cargo ship by precision strike during Iran blockade enforcement.",
+          "source": "https://www.reuters.com/world/us-military-says-it-disabled-cargo-vessel-trying-run-iran-blockade-2026-10-11/",
+          "source_title": "US military says it disabled cargo vessel trying to run Iran blockade",
+          "publisher": "Reuters",
+          "source_publication_time": "2026-10-11T01:35:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation",
+            "External-payments crisis"
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "raises"
+        },
+        {
+          "id": "E-20261011-03",
+          "date": "2026-10-08",
+          "event_date": "2026-10-08",
+          "category": "Sanctions / oil exports",
+          "observation": "US Treasury targeted 17 tankers; an independent analyst judged direct effect muted because deliveries of oil already afloat were largely completed.",
+          "source": "https://www.reuters.com/world/middle-east/us-imposes-fresh-iran-related-sanctions-2026-10-08/",
+          "source_title": "US imposes fresh sanctions on Iran’s shadow fleet",
+          "publisher": "Reuters",
+          "source_publication_time": "2026-10-08T16:58:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "External-payments crisis",
+            "Iran–China oil-credit haircut"
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "raises"
+        },
+        {
+          "id": "E-20261011-04",
+          "date": "2026-10-08",
+          "event_date": "2026-10-08",
+          "category": "Diplomatic offset",
+          "observation": "US president publicly described discussions with Iran as productive and stated no new US attack before November 3.",
+          "source": "https://www.reuters.com/world/middle-east/us-imposes-fresh-iran-related-sanctions-2026-10-08/",
+          "source_title": "US imposes fresh sanctions on Iran’s shadow fleet",
+          "publisher": "Reuters",
+          "source_publication_time": "2026-10-08T16:58:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation",
+            "Regime-ending transition"
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "lowers"
+        },
+        {
+          "id": "E-20261011-05",
+          "date": "2026-10-08",
+          "event_date": "2026-10-08",
+          "category": "Maritime / Hormuz",
+          "observation": "Iran threatened routes outside its authorization as ship attacks reached high levels, discouraging vessel transit.",
+          "source": "https://www.reuters.com/world/asia-pacific/attack-risks-rise-tankers-iran-vows-block-more-hormuz-routes-2026-10-08/",
+          "source_title": "Attack risks rise for tankers as Iran vows to block more Hormuz routes",
+          "publisher": "Reuters",
+          "source_publication_time": "2026-10-08T13:17:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation",
+            "External-payments crisis"
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "raises"
+        },
+        {
+          "id": "E-20261011-06",
+          "date": "2026-10-05",
+          "event_date": "2026-10-04",
+          "category": "Fiscal / elite",
+          "observation": "The oil minister resigned amid questions about repayment of export receipts, amid severe economic pressure; reasons given officially were personal.",
+          "source": "https://www.theguardian.com/world/2026/oct/05/iran-oil-minister-resigns-economic-crisis",
+          "source_title": "Iran’s oil minister resigns as country’s economic crisis worsens",
+          "publisher": "The Guardian",
+          "source_publication_time": "2026-10-05T14:16:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "Medium-high",
+          "affects": [
+            "Regime-ending transition",
+            "External-payments crisis"
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "raises"
+        },
+        {
+          "id": "E-20261011-07",
+          "date": "2026-10-11",
+          "event_date": "2026-10-10",
+          "category": "Saudi retaliation / regional risk",
+          "observation": "Saudi coalition vowed decisive response; US involvement was being weighed but not yet reported as underway.",
+          "source": "https://www.washingtonpost.com/world/2026/10/11/saudi-arabia-vows-retaliation-against-houthis-after-riyadh-airport-strike/",
+          "source_title": "Saudi Arabia vows major response after Houthi strike on airport kills 12, injures 309",
+          "publisher": "Washington Post",
+          "source_publication_time": "2026-10-11T12:19:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation"
+          ],
+          "evidence_status": "new",
+          "impact_magnitude": "moderate",
+          "direction": "raises"
+        },
+        {
+          "id": "E-20261004-04",
+          "date": "2026-09-30",
+          "event_date": "2026-09-30",
+          "category": "Maritime",
+          "observation": "September LNG Hormuz transits reached their highest monthly level since the war began, still well below pre-war normal.",
+          "source": "https://www.reuters.com/business/energy/september-lng-shipments-through-hormuz-hit-highest-since-start-us-iran-war-2026-10-02/",
+          "source_title": "September LNG shipments through Hormuz hit highest since start of US-Iran war",
+          "publisher": "Reuters",
+          "source_publication_time": "2026-10-02T07:47:00+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "Sustained major regional escalation",
+            "External-payments crisis",
+            "Iran–China oil-credit haircut"
+          ],
+          "evidence_status": "carried_forward",
+          "impact_magnitude": "moderate",
+          "direction": "lowers"
+        },
+        {
+          "id": "E-20261004-05",
+          "date": "2026-09-30",
+          "event_date": "2026-09-30",
+          "category": "Food / medicine",
+          "observation": "AP reported sharply higher medicine prices and pharmacy shortages amid import, blockade and payment friction.",
+          "source": "https://apnews.com/article/iran-war-blockade-medicine-pharmaceutical-prices-a66f60e950ec47b518a9a8856683ee75",
+          "source_title": "Iranians face soaring prices for medicine as the US blockade and sanctions hit hard",
+          "publisher": "Associated Press",
+          "source_publication_time": null,
+          "source_publication_status": "unknown precise time",
+          "reliability": "High",
+          "affects": [
+            "External-payments crisis",
+            "Food / medicine warning"
+          ],
+          "evidence_status": "carried_forward",
+          "impact_magnitude": "moderate",
+          "direction": "raises"
+        },
+        {
+          "id": "E-20261004-06",
+          "date": "2026-09-10",
+          "event_date": "2026-09-10",
+          "category": "China / external support",
+          "observation": "Reuters documented a China-based oil-credit mechanism but reported blockade constraints on Iranian crude transit to China.",
+          "source": "https://www.reuters.com/world/asia-pacific/how-billion-dollar-sanctions-dodge-kept-chinese-goods-flowing-iran-2026-09-10/",
+          "source_title": "How a billion-dollar sanctions dodge kept Chinese goods flowing to Iran",
+          "publisher": "Reuters",
+          "source_publication_time": "2026-09-10T06:05:01+00:00",
+          "source_publication_status": "known",
+          "reliability": "High",
+          "affects": [
+            "External-payments crisis",
+            "Iran–China oil-credit haircut"
+          ],
+          "evidence_status": "carried_forward",
+          "impact_magnitude": "moderate",
+          "direction": "ambiguous"
+        },
+        {
+          "id": "E-20261004-07",
+          "date": "2026-10-04",
+          "event_date": "2026-10-04",
+          "category": "Inflation diagnostic",
+          "observation": "Latest recoverable Hanke estimate was 79.1% annual inflation; precise original publication time was unavailable.",
+          "source": "https://www.binance.com/en/square/post/293977348485185",
+          "source_title": "Today, I measure Iran's annual inflation at a crushing 79.1%",
+          "publisher": "Steve Hanke repost on Binance Square",
+          "source_publication_time": null,
+          "source_publication_status": "unknown precise time",
+          "reliability": "Medium",
+          "affects": [
+            "Currency crisis",
+            "Hanke diagnostic"
+          ],
+          "evidence_status": "carried_forward",
+          "impact_magnitude": "minor",
+          "direction": "ambiguous"
+        }
+      ],
+      "assessment_evidence_cutoff": "2026-10-11T10:41:39-04:00",
+      "methodology_revision_date": "2026-10-11",
+      "protocol_version_for_assessment": "1.0",
+      "methodology_notes": [
+        "Prospective Protocol v1; draft-only record prepared October 11, no public deployment. The publication_time is the captured assessment-draft timestamp, not a claim of live site publication. The Pages source gate must be confirmed before release."
+      ],
+      "revision_attribution_status": "Prospective Protocol v1 judgmental signed-contribution audit; prior_p from October 4 prospective core forecast; no historical revisions.",
+      "hanke_hyperinflation": {
+        "analysis_date": "2026-10-04",
+        "latest_recoverable_annual_inflation_pct": 79.1,
+        "source_publication_time_status": "unknown",
+        "assessment": "Severe inflation, but not evidence that the Hanke-Cagan hyperinflation threshold of 50% per month is currently met.",
+        "hyperinflation_probability": {
+          "m3": 10,
+          "m6": 18,
+          "m12": 30
+        },
+        "status": "October 4 first-Sunday diagnostic carried forward; no new verified Hanke estimate on October 11; unscored"
+      },
+      "evidence_cutoff": "2026-10-11T10:41:39-04:00",
+      "publication_time": "2026-10-11T10:41:56-04:00",
+      "protocol_version": "1.0",
+      "revision_attribution": [
+        {
+          "event_id": "regional_escalation_90d",
+          "prior_p": 56,
+          "new_p": 73,
+          "contributions": [
+            {
+              "label": "Riyadh airport strikes / Saudi retaliation",
+              "pp": 18
+            },
+            {
+              "label": "Hormuz attacks / US blockade enforcement",
+              "pp": 5
+            },
+            {
+              "label": "US-Iran diplomatic statements, offsetting",
+              "pp": -6
+            }
+          ],
+          "residual_pp": 0
+        },
+        {
+          "event_id": "regime_end_12m",
+          "prior_p": 14,
+          "new_p": 16,
+          "contributions": [
+            {
+              "label": "Fiscal turmoil / oil receipts",
+              "pp": 4
+            },
+            {
+              "label": "Institutional continuity / no confirmed defections, offsetting",
+              "pp": -2
+            }
+          ],
+          "residual_pp": 0
+        },
+        {
+          "event_id": "currency_crisis_12m",
+          "prior_p": 78,
+          "new_p": 78,
+          "contributions": [
+            {
+              "label": "Continued fiscal/exchange pressure",
+              "pp": 4
+            },
+            {
+              "label": "No verified new threshold crossing / continuing intervention, offsetting",
+              "pp": -4
+            }
+          ],
+          "residual_pp": 0
+        },
+        {
+          "event_id": "external_payments_crisis_12m",
+          "prior_p": 80,
+          "new_p": 84,
+          "contributions": [
+            {
+              "label": "New vessel sanctions / Hormuz and medicine settlement pressures",
+              "pp": 8
+            },
+            {
+              "label": "China-linked trade mechanisms / diplomacy, offsetting",
+              "pp": -4
+            }
+          ],
+          "residual_pp": 0
+        }
+      ]
     }
   ],
   "ledger_fields": [
