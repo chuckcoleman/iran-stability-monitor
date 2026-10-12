@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Two-stage append-only Protocol-v1 research and prospective assessment generator."""
+import base64
+import binascii
 import copy
 import datetime as dt
 import json
@@ -34,6 +36,35 @@ def clock():
 _OPENAI_WIF_CACHE={"access_token":None,"expires_at":0.0}
 
 
+def _public_oidc_claims(token):
+    """Decode ONLY non-secret GitHub identity selectors for a read-only audit.
+
+    This is an identity-claim diagnostic, not a JWT signature validator: the JWT
+    was just obtained from GitHub's authenticated Actions OIDC request endpoint.
+    Never print the subject JWT, bearer token, its header, or arbitrary claims.
+    """
+    chunks=token.split(".")
+    check(len(chunks)==3, "GitHub OIDC response was not a JWT")
+    blob=chunks[1]
+    try:
+        claims=json.loads(base64.urlsafe_b64decode(blob+"="*(-len(blob)%4)))
+    except (ValueError,UnicodeDecodeError,binascii.Error):
+        raise ValueError("GitHub OIDC JWT claims could not be decoded") from None
+    check(isinstance(claims,dict), "GitHub OIDC JWT claims were not an object")
+    names=("iss","aud","sub","repository","ref","workflow_ref",
+           "repository_id","repository_owner_id")
+    public={}
+    for name in names:
+        value=claims.get(name)
+        if (isinstance(value,str) and len(value)<=320 and
+                re.fullmatch(r"[A-Za-z0-9@:_./%+-]+",value)):
+            public[name]=value
+        else:
+            public[name]="[missing or unsupported]"
+    return public
+
+
+
 def openai_bearer_token():
     """Return a short-lived WIF bearer when configured; API-key fallback is local-only."""
     provider_id=os.getenv("OPENAI_IDENTITY_PROVIDER_ID")
@@ -62,6 +93,9 @@ def openai_bearer_token():
             raise RuntimeError("GitHub OIDC token request HTTP " + str(exc.code)) from None
         subject=oidc.get("value")
         check(subject,"GitHub OIDC token response missing value")
+        if os.getenv("OPENAI_WIF_AUDIT_CLAIMS")=="true":
+            print("GitHub OIDC identity claims (public selectors only): "+
+                  json.dumps(_public_oidc_claims(subject),sort_keys=True),flush=True)
         exchange_payload={
             "grant_type":"urn:ietf:params:oauth:grant-type:token-exchange",
             "subject_token_type":"urn:ietf:params:oauth:token-type:jwt",

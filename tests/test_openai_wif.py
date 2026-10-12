@@ -1,4 +1,5 @@
 """Offline tests for OpenAI GitHub Actions workload identity federation."""
+import base64
 import json
 import io
 import urllib.error
@@ -94,6 +95,32 @@ class WIFTests(unittest.TestCase):
              patch.object(a.urllib.request, "urlopen", side_effect=denied):
             with self.assertRaisesRegex(RuntimeError, "GitHub OIDC token request HTTP 403"):
                 a.openai_bearer_token()
+
+    def test_public_oidc_claims_never_include_signed_jwt_or_unlisted_secrets(self):
+        values = {
+            "iss": "https://token.actions.githubusercontent.com",
+            "aud": "https://api.openai.com/v1",
+            "sub": "repo:chuckcoleman@25271226/iran-stability-monitor@1373559199:ref:refs/heads/main",
+            "repository": "chuckcoleman/iran-stability-monitor",
+            "repository_id": "1373559199",
+            "repository_owner_id": "25271226",
+            "ref": "refs/heads/main",
+            "workflow_ref": "chuckcoleman/iran-stability-monitor/.github/workflows/sunday-assessment.yml@refs/heads/main",
+            "raw_jwt_claim_that_must_not_appear": "DO_NOT_OUTPUT_PRIVATE_CLAIM",
+        }
+        payload = base64.urlsafe_b64encode(json.dumps(values).encode()).decode().rstrip("=")
+        jwt = "SECRET_HEADER." + payload + ".SECRET_SIGNATURE"
+        public = a._public_oidc_claims(jwt)
+        self.assertEqual(public["sub"], values["sub"])
+        self.assertEqual(public["workflow_ref"], values["workflow_ref"])
+        self.assertNotIn("raw_jwt_claim_that_must_not_appear", public)
+        self.assertNotIn("DO_NOT_OUTPUT_PRIVATE_CLAIM", json.dumps(public))
+        self.assertNotIn("SECRET_HEADER", json.dumps(public))
+        self.assertNotIn("SECRET_SIGNATURE", json.dumps(public))
+
+    def test_malformed_oidc_payload_is_not_echoed(self):
+        with self.assertRaisesRegex(ValueError, "GitHub OIDC"):
+            a._public_oidc_claims("SECRET_HEADER.not_base64~.SECRET_SIGNATURE")
 
     def test_api_key_fallback_still_works_outside_github(self):
         with patch.dict(os.environ,{"OPENAI_API_KEY":"local-key"},clear=True):
