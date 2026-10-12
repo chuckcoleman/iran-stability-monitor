@@ -6,9 +6,11 @@ import json
 import hashlib
 import math
 import os
+import re
 from pathlib import Path
 import sys
 import urllib.request
+import urllib.error
 import urllib.parse
 import time
 from urllib.parse import urlsplit
@@ -53,8 +55,11 @@ def openai_bearer_token():
         oidc_url=urllib.parse.urlunparse(parsed._replace(query=urllib.parse.urlencode(query)))
         oidc_req=urllib.request.Request(
             oidc_url,headers={"Authorization":"bearer "+request_token})
-        with urllib.request.urlopen(oidc_req,timeout=30) as response:
-            oidc=json.load(response)
+        try:
+            with urllib.request.urlopen(oidc_req,timeout=30) as response:
+                oidc=json.load(response)
+        except urllib.error.HTTPError as exc:
+            raise RuntimeError("GitHub OIDC token request HTTP " + str(exc.code)) from None
         subject=oidc.get("value")
         check(subject,"GitHub OIDC token response missing value")
         exchange_payload={
@@ -68,8 +73,23 @@ def openai_bearer_token():
             "https://auth.openai.com/oauth/token",
             data=json.dumps(exchange_payload).encode(),method="POST",
             headers={"Content-Type":"application/json"})
-        with urllib.request.urlopen(exchange_req,timeout=30) as response:
-            token_data=json.load(response)
+        try:
+            with urllib.request.urlopen(exchange_req,timeout=30) as response:
+                token_data=json.load(response)
+        except urllib.error.HTTPError as exc:
+            # Only emit the HTTP code and a validated OAuth error identifier.
+            # Never log bearer tokens, OIDC JWTs, error descriptions or raw bodies.
+            suffix=""
+            try:
+                payload=json.loads(exc.read(4096))
+                code=payload.get("error") if isinstance(payload,dict) else None
+                if isinstance(code,dict):
+                    code=code.get("code")
+                if isinstance(code,str) and re.fullmatch(r"[A-Za-z0-9_-]{1,48}",code):
+                    suffix=" ("+code+")"
+            except (ValueError,OSError,TypeError):
+                pass
+            raise RuntimeError("OpenAI token exchange HTTP "+str(exc.code)+suffix) from None
         access=token_data.get("access_token")
         check(access,"OpenAI WIF exchange returned no access_token")
         expires_at=token_data.get("expires_at")

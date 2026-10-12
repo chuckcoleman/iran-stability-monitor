@@ -18,6 +18,30 @@ Frozen Protocol v1.0, all existing history, root metadata, and resolution rules 
 unchanged. Additional operational safety checks stop a run; they do not redefine
 any scored event or retrospectively change a forecast.
 
+## Live healthcheck lessons (October 12, 2026)
+
+- The GitHub App successfully minted a short-lived installation token after the
+  installation owner accepted the updated permissions. Do not create a PAT or
+  replace the App key.
+- The old readiness guard wrongly used repository metadata
+  `permissions.push`, which represents user-style access and can be
+  false/absent for an installation token with an explicit write grant. The
+  healthcheck now checks the authenticated App's
+  `GET /installation/repositories` scope and insists it
+  contains exactly the intended repository. The official App-token action itself
+  must successfully mint `contents:write` and `pull_requests:write` tokens before
+  the script runs. Main ruleset protections still fail closed.
+- OpenAI diagnostics now distinguish a failed GitHub OIDC token request, a failed
+  exchange at OpenAI's OAuth endpoint, and a failed read of the configured
+  model. Only safe stage/status and a validated OAuth **error code** appear in
+  logs; neither JWTs nor API tokens nor raw error descriptions are recorded.
+- The initial healthcheck exposed a missing GitHub Actions repository secret
+  `METRICOOL_API_TOKEN`. Save the owner's actual API token as that exact
+  **secret**, not a repository variable, before expecting full readiness.
+- The app still does **not** publish unless the independent production switches
+  are set to true. Do not enable them before a passing read-only healthcheck and
+  unpublishable dry-run.
+
 ## Owner setup: the remaining external boundary
 
 Use repository **Settings → Secrets and variables → Actions**. Never paste a key

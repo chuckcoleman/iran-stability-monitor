@@ -79,6 +79,67 @@ class GithubAppAuthTests(unittest.TestCase):
                 api.assert_not_called()
                 commands.assert_not_called()
 
+    def test_gate_accepts_installation_token_without_user_push_boolean(self):
+        """A GitHub App's repo permissions.push is not authoritative."""
+        repo = 'chuckcoleman/iran-stability-monitor'
+        rule = {
+            'enforcement': 'active', 'bypass_actors': [],
+            'conditions': {'ref_name': {'include': ['~DEFAULT_BRANCH'], 'exclude': []}},
+            'rules': [
+                {'type': 'deletion'}, {'type': 'non_fast_forward'},
+                {'type': 'pull_request'},
+                {'type': 'required_status_checks', 'parameters': {
+                    'strict_required_status_checks_policy': True,
+                    'required_status_checks': [{'context': 'validate', 'integration_id': 15368}]
+                }}
+            ]
+        }
+        def api(*args):
+            if args == ('repos/' + repo + '/pages',):
+                return {'build_type': 'workflow'}
+            if args == ('repos/' + repo,):
+                return {'default_branch': 'main', 'permissions': {'push': False}}
+            if args == ('--paginate', '--slurp', 'installation/repositories?per_page=100'):
+                return [{'total_count': 1, 'repositories': [{'full_name': repo}]}]
+            if args == ('--paginate', '--slurp', 'repos/' + repo + '/rulesets?per_page=100'):
+                return [[{'id': 5, 'enforcement': 'active'}]]
+            if args == ('repos/' + repo + '/rulesets/5',):
+                return rule
+            raise AssertionError('Unexpected endpoint: ' + str(args))
+        with patch.object(s, 'gh_json', side_effect=api):
+            s.verify_repository_gate(repo)
+
+    def test_gate_rejects_extra_installation_repository(self):
+        repo = 'chuckcoleman/iran-stability-monitor'
+        def api(*args):
+            if args == ('repos/' + repo + '/pages',):
+                return {'build_type': 'workflow'}
+            if args == ('repos/' + repo,):
+                return {'default_branch': 'main'}
+            if args == ('--paginate', '--slurp', 'installation/repositories?per_page=100'):
+                return [{'total_count': 2, 'repositories': [
+                    {'full_name': repo}, {'full_name': 'chuckcoleman/other-repository'}]}]
+            raise AssertionError('No other API request is allowed here')
+        with patch.object(s, 'gh_json', side_effect=api):
+            with self.assertRaisesRegex(RuntimeError, 'exactly the expected repository'):
+                s.verify_repository_gate(repo)
+
+    def test_readiness_reports_missing_metricool_without_leaking_tokens(self):
+        import assessment_pipeline as a
+        env = {'OPENAI_IDENTITY_PROVIDER_ID': 'idp_fake',
+               'OPENAI_SERVICE_ACCOUNT_ID': 'user_fake', 'GH_TOKEN': 'secret-tok'}
+        with patch.dict(os.environ, env, clear=True), \
+             patch.object(s, 'verify_repository_gate'), \
+             patch.object(a, 'openai_bearer_token',
+                          side_effect=RuntimeError('OpenAI token exchange HTTP 400 (invalid_subject_token)')):
+            with self.assertRaises(RuntimeError) as result:
+                s.service_checks()
+        message = str(result.exception)
+        self.assertIn('OpenAI OIDC/token exchange', message)
+        self.assertIn('invalid_subject_token', message)
+        self.assertIn('Metricool: missing METRICOOL_API_TOKEN', message)
+        self.assertNotIn('secret-tok', message)
+
     def test_owner_helper_stores_app_not_personal_access_token(self):
         helper = self.workflow('scripts/configure_automation.py')
         self.assertIn('IRAN_GITHUB_APP_PRIVATE_KEY', helper)
