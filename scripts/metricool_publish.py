@@ -95,7 +95,9 @@ def brand_identity_audit(profile):
 
 
 def check_brand(healthcheck=False):
-    brands = list_data(metricool("/admin/simpleProfiles"))
+    # v2 brands returns BrandLite.networksData.twitterData per official Swagger.
+    # Legacy /admin/simpleProfiles (PublicBlog) omits networksData entirely.
+    brands = list_data(metricool("/v2/settings/brands"))
     found = [b for b in brands if str(b.get("id")) == BRAND]
     check(len(found) == 1, "Iran Stability Monitor brand not accessible")
     b = found[0]

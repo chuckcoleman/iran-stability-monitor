@@ -98,6 +98,26 @@ schema. It never logs raw connected-account fields, arbitrary profile values,
 user secrets, response bodies, or API tokens. Do not weaken the exact
 `IranStabilityMo` match or schedule any posts until reconciliation.
 
+## October 12: supported Metricool X identity lookup
+
+The Oct 12 read-only healthcheck confirmed that the legacy endpoint
+`GET /admin/simpleProfiles` returns the correct brand, owner, and timezone
+but **does not provide** the connected X account in `networksData`. This
+is expected: the [Metricool OpenAPI specification](https://app.metricool.com/api/swagger.json)
+defines that endpoint's response as `PublicBlog`, which has no
+`networksData` field. The documented `GET /v2/settings/brands` returns
+`JsonOkListResponseBrandLite`; `BrandLite.networksData.twitterData`
+is explicitly documented as a string username. The code now queries that
+endpoint for both read-only readiness and actual pre-scheduling verification,
+keeps the brand ID/user ID/timezone checks, and requires an exact
+`IranStabilityMo` identity. **An absent or unexpected X account still blocks
+posting.** The change makes no social POST and does not enable production.
+
+The OpenAI WIF exchange remains a separate issue (`HTTP 401 invalid_grant`).
+GitHub OIDC `sub` and mapping `iss` have been compared; check the
+**provider-level OIDC Issuer URL**, enabled status, mapping selection and
+service-account target separately, without disclosing any JWT or credentials.
+
 ## Owner setup: the remaining external boundary
 
 Use repository **Settings → Secrets and variables → Actions**. Never paste a key
