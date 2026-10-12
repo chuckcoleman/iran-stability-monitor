@@ -323,20 +323,10 @@ live switches OFF**. Running it is optional; GitHub Settings works on iPhone.
 After installation is merged, open **Actions → Prepare Sunday Iran assessment →
 Run workflow**. Choose the operation from the dropdown:
 
-1. **`healthcheck`** (compatible alias: `check-services`) — mints a temporary GitHub App token to perform read-only safeguards, and checks OpenAI WIF/model GET access,
-   Metricool brand identity, scheduled calendar, and published-X CSV. It creates no
-   forecast, pull request, merge, or post, and does not call paid model inference.
-   A pass verifies reads, not Metricool POST delivery or model forecasting quality.
-2. **`dry-run`** — real, potentially billable web research, source-metadata capture,
-   prospective elicitation and no-web review, then all data checks. Output is marked
-   **UNPUBLISHABLE_DRY_RUN** and stored only in a run artifact. Production history,
-   branches, PRs, website, and X remain unchanged. This output is never promotable
-   into a later live forecast: a live run must capture its own actual evidence times.
-3. Inspect the evidence and diagnostic output. After both runs pass and the live
-   response formats are verified, set `ASSESSMENT_AUTOMATION_ENABLED=true`.
-   Set `AUTO_X_ENABLED=true` only when the brand and both duplicate checks pass.
-   The first actual scheduling attempt is checked by readback; it is not falsely
-   represented as tested before a real authorized post is made.
+1. **`healthcheck`** (compatible alias: `check-services`) — mints a temporary GitHub App token and verifies read-only Pages and branch safeguards, OpenAI WIF and model GET, and Metricool brand, scheduled-post, and published-X **JSON** reads. No forecasts, writes, or paid model inference occur.
+2. **`api-probe`** — makes two small, paid live Responses API calls (a live web-search query and a separate non-search JSON-mode query), with no forecast, PR, website or social side effects. Any 400 rejection reports only non-secret API error identifiers. Run this mode before the full dry-run.
+3. **`dry-run`** — real, billable Iran web research, frozen source-metadata capture, prospective elicitation, independent no-web review, and all validation gates. Output is marked **UNPUBLISHABLE_DRY_RUN**, saved only in run artifacts and never promoted into a live forecast. History, PRs, website and X remain unchanged.
+4. Review the returned evidence and audit after both paid modes succeed, then set `ASSESSMENT_AUTOMATION_ENABLED=true` only when satisfied. Enable `AUTO_X_ENABLED=true` only after the brand, calendar and published-post checks pass, recognizing that an actual POST and readback remain untested until the first authorized announcement.
 
 `run` is an explicit live operation, allowed only on Sunday while enabled. The
 scheduled workflow normally starts at **09:00 America/New_York**. Two UTC cron
