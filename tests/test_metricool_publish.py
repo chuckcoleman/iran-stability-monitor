@@ -60,6 +60,36 @@ class MetricoolTests(unittest.TestCase):
         with patch.object(x, 'metricool', return_value=[brand]):
             with self.assertRaisesRegex(RuntimeError, 'timezone'): x.check_brand()
 
+    def test_brand_schema_audit_does_not_log_untrusted_fields(self):
+        brand = {'id': 7254821, 'userId': 5607453,
+                 'timezone': 'America/New_York',
+                 'private_api_token': 'SECRET_DO_NOT_LOG',
+                 'networksData': {'twitterData': {
+                     'username': 'IranStabilityMo', 'accessToken': 'SECRET_DO_NOT_LOG'}}}
+        indicators = x.brand_identity_audit(brand)
+        self.assertTrue(indicators['twitter_username_matches_expected'])
+        self.assertEqual(indicators['twitterData_type'], 'dict')
+        self.assertEqual(indicators['twitter_public_username_keys'], ['username'])
+        self.assertNotIn('SECRET_DO_NOT_LOG', json.dumps(indicators))
+        self.assertNotIn('IranStabilityMo', json.dumps(indicators))
+        with patch.object(x, 'metricool', return_value={'data': [brand]}), \
+             patch('sys.stdout', new_callable=io.StringIO) as out:
+            x.check_brand(healthcheck=True)
+        self.assertIn('non-secret indicators only', out.getvalue())
+        self.assertNotIn('SECRET_DO_NOT_LOG', out.getvalue())
+        self.assertNotIn('IranStabilityMo', out.getvalue())
+
+    def test_bad_brand_identity_never_permits_post(self):
+        brand = {'id': 7254821, 'userId': 5607453,
+                 'timezone': 'America/New_York',
+                 'networksData': {'twitterData': {'other_key': 'UNTRUSTED'}}}
+        with patch.object(x, 'metricool', return_value=[brand]), \
+             patch('sys.stdout', new_callable=io.StringIO) as out:
+            with self.assertRaisesRegex(RuntimeError, 'connected X identity'):
+                x.check_brand(healthcheck=True)
+        self.assertIn('"twitterData_type": "dict"', out.getvalue())
+        self.assertNotIn('UNTRUSTED', out.getvalue())
+
     def test_next_future_unoccupied_minute(self):
         now = self.now.replace(second=5)
         post = {'providers': [{'network': 'twitter'}], 'publicationDate': {

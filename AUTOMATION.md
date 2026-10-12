@@ -79,6 +79,25 @@ stages verify as intended. Avoid retrying an ambiguous social POST.
 Neither auth diagnostic changes the canonical site, frozen Protocol v1,
 existing forecast records, nor live production switches.
 
+## October 12 follow-up: confirmed claims and Metricool profile shape
+
+A read-only `healthcheck` run at 20:50 UTC confirmed that the OpenAI exchange
+still returns `401 invalid_grant`, but the actual GitHub OIDC subject is
+`repo:chuckcoleman@25271226/iran-stability-monitor@1373559199:ref:refs/heads/main`.
+The asserted `iss`, `aud`, `repository`, `ref` and `workflow_ref` match
+the intended provider restrictions. Compare **every configured key/value**
+on the OpenAI `iran-monitor-main` mapping, especially `sub`; the older
+name-only `sub` cannot match this repository's immutable subject.
+
+The Metricool REST API now passes brand lookup and timezone checks, but fails
+the exact X account identity check. A separate connected Metricool account
+inspection shows the intended `IranStabilityMo` handle; the REST response
+structure may differ. The read-only healthcheck emits only a fixed set of
+booleans/types/known field-presence markers to establish the actual REST
+schema. It never logs raw connected-account fields, arbitrary profile values,
+user secrets, response bodies, or API tokens. Do not weaken the exact
+`IranStabilityMo` match or schedule any posts until reconciliation.
+
 ## Owner setup: the remaining external boundary
 
 Use repository **Settings → Secrets and variables → Actions**. Never paste a key

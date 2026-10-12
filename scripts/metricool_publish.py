@@ -68,13 +68,44 @@ def list_data(response):
     return data
 
 
-def check_brand():
+def brand_identity_audit(profile):
+    """Only emit structural, non-secret indicators for one known brand.
+
+    Never print raw user-profile fields, connected social account metadata,
+    tokens, or untrusted API error bodies.
+    """
+    networks = profile.get("networksData")
+    twitter = networks.get("twitterData") if isinstance(networks, dict) else None
+    keys = ("username", "screenName")
+    fields = [k for k in keys if isinstance(twitter, dict) and k in twitter]
+    candidate = (twitter.get("username") or twitter.get("screenName")
+                 if isinstance(twitter, dict) else twitter)
+    return {
+        "brand_id_matches": str(profile.get("id")) == BRAND,
+        "timezone_matches": profile.get("timezone") == "America/New_York",
+        "account_id_matches": str(profile.get("userId", USER)) == USER,
+        "networksData_type": type(networks).__name__,
+        "twitterData_type": type(twitter).__name__,
+        "twitter_public_username_keys": fields,
+        "twitter_username_present": isinstance(candidate, str) and bool(candidate),
+        "twitter_username_matches_expected": (
+            isinstance(candidate, str) and
+            candidate.lstrip("@").lower() == "iranstabilitymo"),
+    }
+
+
+def check_brand(healthcheck=False):
     brands = list_data(metricool("/admin/simpleProfiles"))
     found = [b for b in brands if str(b.get("id")) == BRAND]
     check(len(found) == 1, "Iran Stability Monitor brand not accessible")
     b = found[0]
+    if healthcheck:
+        print("Metricool brand schema (non-secret indicators only): " +
+              json.dumps(brand_identity_audit(b), sort_keys=True), flush=True)
     check(b.get("timezone") == "America/New_York", "Brand timezone mismatch")
-    identity = (b.get("networksData") or {}).get("twitterData")
+    networks = b.get("networksData") or {}
+    check(isinstance(networks, dict), "Malformed Metricool network metadata")
+    identity = networks.get("twitterData")
     if isinstance(identity, dict):
         identity = identity.get("username") or identity.get("screenName")
     check(isinstance(identity, str) and identity.lstrip("@").lower() == "iranstabilitymo",
