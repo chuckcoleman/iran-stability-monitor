@@ -6,6 +6,7 @@ on:
 permissions:
   contents: read
   actions: read
+  pages: read
 concurrency:
   group: iran-verified-x-announcement
   cancel-in-progress: false
@@ -23,18 +24,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Confirm gated commit and canonical publication
+      - name: Confirm gated commit and canonical publication (read-only)
         env:
           SOURCE_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
           SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: python scripts/verify_publication.py
+      - name: Mint short-lived GitHub App token for ONE deduplicated social attempt
+        id: app-social
+        if: hashFiles('.verified-publication.json') != '' && vars.AUTO_X_ENABLED == 'true'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.IRAN_GITHUB_APP_CLIENT_ID }}
+          private-key: ${{ secrets.IRAN_GITHUB_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-actions: read
+          permission-pages: read
+          permission-issues: read
       - name: Verify again, deduplicate, reserve, and schedule one X announcement
         if: hashFiles('.verified-publication.json') != '' && vars.AUTO_X_ENABLED == 'true'
         env:
           SOURCE_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
           SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
+          GH_TOKEN: ${{ steps.app-social.outputs.token }}
           AUTO_X_ENABLED: ${{ vars.AUTO_X_ENABLED }}
           METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
         run: python scripts/metricool_publish.py
