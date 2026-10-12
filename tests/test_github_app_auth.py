@@ -140,6 +140,32 @@ class GithubAppAuthTests(unittest.TestCase):
         self.assertIn('Metricool: missing METRICOOL_API_TOKEN', message)
         self.assertNotIn('secret-tok', message)
 
+    def test_metricool_stages_identified_without_leaking_error_body(self):
+        import assessment_pipeline as a
+        import metricool_publish as mp
+        env = {'GH_TOKEN':'safe-dummy', 'METRICOOL_API_TOKEN':'SECRET_NEVER_LOG',
+               'OPENAI_IDENTITY_PROVIDER_ID':'idp_fake',
+               'OPENAI_SERVICE_ACCOUNT_ID':'user_fake'}
+        with patch.dict(os.environ,env,clear=True), \
+             patch.object(s,'verify_repository_gate'), \
+             patch.object(a,'openai_bearer_token',
+                          side_effect=RuntimeError('OpenAI token exchange HTTP 401 (invalid_grant)')), \
+             patch.object(mp,'check_brand'), \
+             patch.object(mp,'scheduled_posts',side_effect=RuntimeError('Unrecognized Metricool list response')), \
+             patch.object(mp,'published_posts',side_effect=RuntimeError('Published CSV lacks a recognized post-text column')):
+            with self.assertRaises(RuntimeError) as result:
+                s.service_checks()
+        message=str(result.exception)
+        self.assertIn('OpenAI token exchange HTTP 401 (invalid_grant)',message)
+        self.assertIn('Metricool scheduled posts: Unrecognized Metricool list response',message)
+        self.assertIn('Metricool published X export: Published CSV lacks a recognized post-text column',message)
+        self.assertNotIn('SECRET_NEVER_LOG',message)
+
+    def test_metricool_unknown_failure_does_not_echo_arbitrary_text(self):
+        msg = s._metricool_read_failure('Metricool brand lookup',
+                                        RuntimeError('private-token-secret-value'))
+        self.assertEqual(msg, 'Metricool brand lookup: RuntimeError')
+
     def test_owner_helper_stores_app_not_personal_access_token(self):
         helper = self.workflow('scripts/configure_automation.py')
         self.assertIn('IRAN_GITHUB_APP_PRIVATE_KEY', helper)
