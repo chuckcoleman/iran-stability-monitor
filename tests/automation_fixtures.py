@@ -31,8 +31,8 @@ def fixture():
     analysis = {k: "Synthetic test narrative, not live evidence or a publishable assessment. " + k
                 for k in ("summary", "what_changed", "stabilizer", "next_threshold", "limitations")}
     analysis["next_threshold"] = (
-        "We are monitoring whether any hypothetical threshold becomes observable. "
-        "This is synthetic test wording, not an actual forecast."
+        "A hypothetical 14-day settlement failure would be one monitored event. "
+        "A separate currency shock could occur in this synthetic test."
     )
     analysis.update({"forecasts": forecasts, "revision_attribution": revisions,
                     "warning": copy.deepcopy(prev["warning"]), "conditions": copy.deepcopy(prev["conditions"]),
