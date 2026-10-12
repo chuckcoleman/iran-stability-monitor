@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Two-stage append-only Protocol-v1 research and prospective assessment generator."""
 import base64
+import binascii
 import copy
 import datetime as dt
 import json
@@ -47,7 +48,7 @@ def _public_oidc_claims(token):
     blob=chunks[1]
     try:
         claims=json.loads(base64.urlsafe_b64decode(blob+"="*(-len(blob)%4)))
-    except (ValueError,UnicodeDecodeError):
+    except (ValueError,UnicodeDecodeError,binascii.Error):
         raise ValueError("GitHub OIDC JWT claims could not be decoded") from None
     check(isinstance(claims,dict), "GitHub OIDC JWT claims were not an object")
     names=("iss","aud","sub","repository","ref","workflow_ref",
