@@ -35,7 +35,7 @@ jobs:
         if: hashFiles('.verified-publication.json') != '' && vars.AUTO_X_ENABLED == 'true'
         uses: actions/create-github-app-token@v3
         with:
-          client-id: ${{ vars.IRAN_GITHUB_APP_CLIENT_ID }}
+          client-id: ${{ vars.IRAN_GITHUB_APP_CLIENT_ID || 'Iv23liGgGQPahqYbv6in' }}
           private-key: ${{ secrets.IRAN_GITHUB_APP_PRIVATE_KEY }}
           permission-contents: write
           permission-actions: read

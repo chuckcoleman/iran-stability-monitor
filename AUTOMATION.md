@@ -46,7 +46,7 @@ account access with the read-only check described below.
 
 | Repository variable | Initial value |
 |---|---|
-| `IRAN_GITHUB_APP_CLIENT_ID` | The **Client ID** shown in your new GitHub App's settings; usually starts with `Iv1` |
+| `IRAN_GITHUB_APP_CLIENT_ID` | Optional override: the current non-secret App Client ID (`Iv23liGgGQPahqYbv6in`) is already configured as a workflow default |
 | `OPENAI_IDENTITY_PROVIDER_ID` | Optional override; the workflow already contains the current non-secret provider ID |
 | `OPENAI_SERVICE_ACCOUNT_ID` | Optional override; the workflow already contains the current non-secret mapped service-account User ID |
 | `IRAN_FORECAST_MODEL` | `gpt-6.1-sol`, or a Responses/web-search model explicitly tested in this API project |
@@ -67,9 +67,9 @@ account access with the read-only check described below.
 3. Restrict **Where can this GitHub App be installed?** to **Only on this account**.
    Create the App, then use its **Install App** page to install it on account
    `chuckcoleman` with **Only select repositories → iran-stability-monitor**.
-4. On the App settings page, copy **Client ID** (typically `Iv1...`) to the GitHub
-   repository **variable** `IRAN_GITHUB_APP_CLIENT_ID` under **Settings → Secrets
-   and variables → Actions → Variables**. Use the Client ID, not the App numeric ID.
+4. The Client ID `Iv23liGgGQPahqYbv6in` is already configured as a non-secret
+   default in both workflows. No GitHub Actions variable is needed for this App.
+   An optional `IRAN_GITHUB_APP_CLIENT_ID` variable can override it if replacing the App.
 5. Select **Generate a private key** from the App's settings. A `.pem` file downloads.
    Open the file privately, copy the **entire PEM including BEGIN/END lines**, and
    store it as the GitHub repository **secret** `IRAN_GITHUB_APP_PRIVATE_KEY` under
