@@ -147,6 +147,54 @@ class ResponsesContractTests(unittest.TestCase):
             self.assertEqual([s for _,s in calls],[True,False])
             self.assertEqual((root/"data/history.json").read_bytes(),original)
 
+    def test_api_probe_rejects_uncited_or_nonpublic_article_links(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            (root/"data").mkdir()
+            original=b'{"updates":[{"date":"2026-10-11"}]}'
+            (root/"data/history.json").write_bytes(original)
+            cases=[
+                ({"title":"An Iran report","url":"https://news.example.org/iran"},
+                 {"https://unrelated.example.org/article"}),
+                ({"title":"   ","url":"https://news.example.org/iran"},
+                 {"https://news.example.org/iran"}),
+                ({"title":"An Iran report","url":"http://news.example.org/iran"},
+                 {"http://news.example.org/iran"}),
+            ]
+            for article,citations in cases:
+                with self.subTest(article=article,citations=citations):
+                    calls=[]
+                    def fake_llm(prompt,search):
+                        calls.append(search)
+                        return article,citations
+                    with patch.object(sunday,"ROOT",root), \
+                         patch.object(sunday,"ready",return_value=True), \
+                         patch.object(a,"llm",side_effect=fake_llm), \
+                         patch.object(sunday,"gh") as github:
+                        with self.assertRaisesRegex(RuntimeError,
+                                                    "did not return a cited public-HTTPS article"):
+                            sunday.api_probe()
+                        github.assert_not_called()
+                    self.assertEqual(calls,[True])
+                    self.assertEqual((root/"data/history.json").read_bytes(),original)
+
+    def test_api_probe_accepts_normalized_source_citation(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            (root/"data").mkdir()
+            (root/"data/history.json").write_bytes(b'{"updates":[{"date":"2026-10-11"}]}')
+            def fake_llm(prompt,search):
+                if search:
+                    return {"title":"An Iran report",
+                            "url":"https://news.example.org/iran?utm_source=probe"}, \
+                           {"https://news.example.org/iran"}
+                return {"probe":True},set()
+            with patch.object(sunday,"ROOT",root), \
+                 patch.object(sunday,"ready",return_value=True), \
+                 patch.object(a,"llm",side_effect=fake_llm), \
+                 patch("sys.stdout",new_callable=io.StringIO):
+                sunday.api_probe()
+
     def test_api_probe_is_separate_from_live_publication_steps(self):
         workflow=(ROOT/".github/workflows/sunday-assessment.yml").read_text()
         self.assertIn("          - api-probe",workflow)
