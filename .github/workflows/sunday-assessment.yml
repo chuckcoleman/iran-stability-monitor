@@ -17,6 +17,8 @@ on:
           - run
 permissions:
   contents: read
+  actions: read
+  pages: read
   id-token: write
 concurrency:
   group: iran-sunday-single-run
@@ -26,12 +28,19 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || vars.ASSESSMENT_AUTOMATION_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 90
+    env:
+      GITHUB_EVENT_NAME: ${{ github.event_name }}
+      GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
+      ASSESSMENT_AUTOMATION_ENABLED: ${{ vars.ASSESSMENT_AUTOMATION_ENABLED }}
+      IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
+      OPENAI_WIF_AUDIENCE: https://api.openai.com/v1
+      OPENAI_IDENTITY_PROVIDER_ID: ${{ vars.OPENAI_IDENTITY_PROVIDER_ID || 'idp_e9927fe00cb77ede0705b70c' }}
+      OPENAI_SERVICE_ACCOUNT_ID: ${{ vars.OPENAI_SERVICE_ACCOUNT_ID || 'user-1e07e217b5a1' }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.AUTOMATION_GH_TOKEN || github.token }}
-          persist-credentials: true
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -42,19 +51,58 @@ jobs:
           python -m compileall -q scripts tests
           python -m unittest discover -s tests -v
           node --check assets/app.js
-      - name: Selected operation (scheduled publication remains opt-in)
+      - name: Determine whether a new Sunday candidate is permitted
+        id: eligibility
+        if: github.event_name == 'schedule' || inputs.mode == 'run'
+        run: python scripts/sunday_automation.py eligible
+      - name: Mint short-lived GitHub App preflight token
+        id: app-preflight
+        if: steps.eligibility.outputs.eligible == 'true' || inputs.mode == 'healthcheck' || inputs.mode == 'check-services'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.IRAN_GITHUB_APP_CLIENT_ID }}
+          private-key: ${{ secrets.IRAN_GITHUB_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-actions: read
+          permission-pages: read
+          permission-issues: read
+      - name: Check GitHub App, WIF, branch protection, and Metricool without writes
+        if: inputs.mode == 'healthcheck' || inputs.mode == 'check-services'
         env:
-          OPERATION: ${{ github.event_name == 'schedule' && 'run' || inputs.mode }}
-          GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
-          ASSESSMENT_AUTOMATION_ENABLED: ${{ vars.ASSESSMENT_AUTOMATION_ENABLED }}
-          IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
-          OPENAI_WIF_AUDIENCE: https://api.openai.com/v1
-          OPENAI_IDENTITY_PROVIDER_ID: ${{ vars.OPENAI_IDENTITY_PROVIDER_ID || 'idp_e9927fe00cb77ede0705b70c' }}
-          OPENAI_SERVICE_ACCOUNT_ID: ${{ vars.OPENAI_SERVICE_ACCOUNT_ID || 'user-1e07e217b5a1' }}
-          AUTOMATION_GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
-          GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
+          GH_TOKEN: ${{ steps.app-preflight.outputs.token }}
           METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
-        run: python scripts/sunday_automation.py "$OPERATION"
+        run: python scripts/sunday_automation.py healthcheck
+      - name: Complete a live but unpublishable paid assessment dry-run
+        if: inputs.mode == 'dry-run'
+        run: python scripts/sunday_automation.py dry-run
+      - name: Verify publication gates before paying for Sunday research
+        if: steps.eligibility.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-preflight.outputs.token }}
+        run: python scripts/sunday_automation.py preflight
+      - name: Gather evidence and prepare candidate locally (no GitHub writes)
+        if: steps.eligibility.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-preflight.outputs.token }}
+        run: python scripts/sunday_automation.py prepare
+      - name: Mint FRESH GitHub App token immediately before candidate publication
+        id: app-publish
+        if: steps.eligibility.outputs.eligible == 'true'
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.IRAN_GITHUB_APP_CLIENT_ID }}
+          private-key: ${{ secrets.IRAN_GITHUB_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-actions: read
+          permission-pages: read
+          permission-issues: read
+      - name: Push candidate, require PR validation, and merge without bypass
+        if: steps.eligibility.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-publish.outputs.token }}
+        run: python scripts/sunday_automation.py publish
       - name: Preserve issuance, evidence, and result audit (no keys)
         if: always()
         uses: actions/upload-artifact@v4

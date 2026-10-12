@@ -2,8 +2,9 @@
 """Research -> one-data-file PR -> required CI -> protected, SHA-guarded merge.
 
 Service checks and dry-runs never open a PR, merge, deploy, or schedule X.
-A separate repository-scoped automation token is required for unattended CI.
+A GitHub App installation token is minted on demand, after research and before writes.
 """
+import base64
 import datetime as dt
 import fnmatch
 import hashlib
@@ -51,7 +52,8 @@ def schedule_slot(now=None, cron=None):
     return scheduled_slot(now.date(), cron or os.getenv("GITHUB_EVENT_SCHEDULE", ""), now)
 
 
-def ready(live=True):
+def ready(live=True, require_github_token=False):
+    """Fail closed for live operations, without requiring a long-lived PAT."""
     if live and os.getenv("ASSESSMENT_AUTOMATION_ENABLED") != "true":
         print("Sunday automation disabled; safely skipped")
         return False
@@ -60,11 +62,12 @@ def ready(live=True):
         return False
     if live:
         check(eastern_now().weekday() == 6, "Live assessments may be issued only on Sunday")
-    check(os.getenv("AUTOMATION_GH_TOKEN"), "Required secret missing: AUTOMATION_GH_TOKEN")
-    wif=bool(os.getenv("OPENAI_IDENTITY_PROVIDER_ID") and os.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+    wif = bool(os.getenv("OPENAI_IDENTITY_PROVIDER_ID") and
+               os.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
     check(wif or os.getenv("OPENAI_API_KEY"),
-          "OpenAI WIF variables are missing and no API-key fallback is configured")
-    check(os.getenv("GH_TOKEN") == os.getenv("AUTOMATION_GH_TOKEN"), "Automation gh token mismatch")
+          "OpenAI WIF provider/service IDs are missing and no local fallback exists")
+    if require_github_token:
+        check(os.getenv("GH_TOKEN"), "Short-lived GitHub App installation token missing")
     return True
 
 
@@ -124,7 +127,7 @@ def wait_checks(repo, branch, sha, seconds=1800):
 
 
 def service_checks():
-    ready(live=False)
+    ready(live=False, require_github_token=True)
     repo = os.environ.get("GITHUB_REPOSITORY", "chuckcoleman/iran-stability-monitor")
     errors = []
     try:
@@ -185,20 +188,42 @@ def dry_run():
     print("DRY-RUN PASSED; no PR, merge, deployment or X post was made")
 
 
-def prepare_and_merge():
-    repo = os.environ.get("GITHUB_REPOSITORY", "chuckcoleman/iran-stability-monitor")
-    verify_repository_gate(repo)
-    date = eastern_now().date().isoformat()
+def _repo():
+    return os.environ.get("GITHUB_REPOSITORY", "chuckcoleman/iran-stability-monitor")
+
+
+def _candidate_paths():
+    audit = ROOT / ".automation-audit"
+    return audit, audit / "prepared-candidate.json", audit / "history-exact-before.json"
+
+
+def _existing_sunday_or_stale_baseline(repo, date):
     base = main_sha(repo)
-    check(run("git", "rev-parse", "HEAD").stdout.strip() == base, "Checkout is not current main")
+    check(run("git", "rev-parse", "HEAD").stdout.strip() == base,
+          "Checkout is not current protected main")
     source = (ROOT / "data/history.json").read_bytes()
     original = json.loads(source)
     if original["updates"][-1]["date"] == date:
         print("Today's assessment already exists; no new judgment or duplicate PR")
-        return
+        return None
     check(original["updates"][-1]["date"] < date, "Future assessment in history")
-    check((dt.date.fromisoformat(date)-dt.date.fromisoformat(original["updates"][-1]["date"])).days == 7,
+    check((dt.date.fromisoformat(date) -
+           dt.date.fromisoformat(original["updates"][-1]["date"])).days == 7,
           "Preceding Sunday missing; manual reconciliation required")
+    return base, source, original
+
+
+def prepare_candidate():
+    """Research and validate a candidate; do not authenticate Git writes or issue a forecast yet."""
+    if not ready(live=True, require_github_token=True):
+        return
+    repo = _repo()
+    verify_repository_gate(repo)  # Checked with a separate preflight installation token.
+    date = eastern_now().date().isoformat()
+    prior = _existing_sunday_or_stale_baseline(repo, date)
+    if prior is None:
+        return
+    base, source, original = prior
     branch = "sunday-auto-" + date.replace("-", "")
     check(not run("git", "ls-remote", "--heads", "origin", branch).stdout.strip(),
           "Existing candidate branch: retain its issued forecasts; reconcile instead of regenerating")
@@ -212,21 +237,78 @@ def prepare_and_merge():
     run(sys.executable, "-m", "jsonschema", "-i", "data/history.json", "schema/history.schema.json")
     run(sys.executable, "-m", "unittest", "discover", "-s", "tests", "-v")
     run("node", "--check", "assets/app.js")
-    run(sys.executable, "scripts/validate_history.py", "--baseline", ".automation-audit/history-exact-before.json")
-    check(main_sha(repo) == base, "Main changed during research; do not publish against a different baseline")
+    audit, marker, baseline = _candidate_paths()
+    check(baseline.is_file() and baseline.read_bytes() == source,
+          "The exact original-history snapshot differs from the checked-out baseline")
+    run(sys.executable, "scripts/validate_history.py", "--baseline", str(baseline))
     changed = run("git", "diff", "--name-only").stdout.splitlines()
     check(changed == ["data/history.json"], "Unexpected tracked files changed")
+    record = {"date": date, "branch": branch, "base_sha": base,
+              "original_sha256": hashlib.sha256(source).hexdigest(),
+              "candidate_sha256": hashlib.sha256((ROOT / "data/history.json").read_bytes()).hexdigest()}
+    marker.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    print("Validated provisional Sunday candidate prepared; no GitHub write or public issuance")
+
+
+def _git_push_with_app_token(branch):
+    """Authenticate one git push through process-scoped config, never through a stored URL."""
+    token = os.getenv("GH_TOKEN")
+    check(token, "Fresh GitHub App installation token is required for push")
+    encoded = base64.b64encode(("x-access-token:" + token).encode()).decode()
+    env = dict(os.environ)
+    env["GIT_CONFIG_COUNT"] = "1"
+    env["GIT_CONFIG_KEY_0"] = "http.https://github.com/.extraheader"
+    env["GIT_CONFIG_VALUE_0"] = "AUTHORIZATION: basic " + encoded
+    run("git", "push", "origin", branch, env=env)
+
+
+def publish_candidate():
+    """Issue, push, open PR, await CI and merge using a FRESH installation token."""
+    if not ready(live=True, require_github_token=True):
+        return
+    repo = _repo()
+    verify_repository_gate(repo)
+    audit, marker, baseline = _candidate_paths()
+    if not marker.is_file():
+        print("No provisional candidate was generated; no GitHub publication action")
+        return
+    data = json.loads(marker.read_text(encoding="utf-8"))
+    date = eastern_now().date().isoformat()
+    check(data.get("date") == date, "Candidate date differs from Eastern issuance date")
+    branch, base = data["branch"], data["base_sha"]
+    check(run("git", "branch", "--show-current").stdout.strip() == branch,
+          "Prepared candidate branch changed after research")
+    check(main_sha(repo) == base, "Main changed during research; do not publish a stale candidate")
+    source = baseline.read_bytes()
+    check(hashlib.sha256(source).hexdigest() == data["original_sha256"],
+          "Original historical bytes do not match the prepared baseline")
+    git_original = subprocess.check_output(["git", "show", "HEAD:data/history.json"], cwd=ROOT)
+    check(git_original == source, "Committed historical baseline no longer matches original bytes")
+    candidate_raw = (ROOT / "data/history.json").read_bytes()
+    check(hashlib.sha256(candidate_raw).hexdigest() == data["candidate_sha256"],
+          "Candidate changed after the evidence and forecasting review")
+    original = json.loads(source)
+    candidate = json.loads(candidate_raw)
+    one_append(original, candidate)
+    run(sys.executable, "-m", "jsonschema", "-i", "data/history.json", "schema/history.schema.json")
+    run(sys.executable, "scripts/validate_history.py", "--baseline", str(baseline))
+    check(run("git", "diff", "--name-only").stdout.splitlines() == ["data/history.json"],
+          "Unexpected files changed before issuing the record")
     issued = eastern_now().replace(microsecond=0)
     digest = issue_time(ROOT / "data/history.json", original, issued)
     stamp = issued.isoformat()
+    # Validate the real recorded issuance timestamp before committing.
+    run(sys.executable, "scripts/validate_history.py", "--baseline", str(baseline))
     run("git", "add", "data/history.json")
     env = dict(os.environ, GIT_AUTHOR_DATE=stamp, GIT_COMMITTER_DATE=stamp)
     run("git", "commit", "-m", "Append prospective Iran assessment " + date, env=env)
-    check(run("git", "show", "-s", "--format=%cI", "HEAD").stdout.strip() == stamp, "Commit timestamp mismatch")
+    check(run("git", "show", "-s", "--format=%cI", "HEAD").stdout.strip() == stamp,
+          "Commit timestamp mismatch")
     sha = run("git", "rev-parse", "HEAD").stdout.strip()
-    (ROOT / ".automation-audit/issuance.json").write_text(json.dumps(
-        {"date": date, "base_sha": base, "head_sha": sha, "history_sha256": digest, "publication_time": stamp}, indent=2))
-    run("git", "push", "origin", branch)
+    (audit / "issuance.json").write_text(json.dumps(
+        {"date": date, "base_sha": base, "head_sha": sha,
+         "history_sha256": digest, "publication_time": stamp}, indent=2))
+    _git_push_with_app_token(branch)
     url = gh("pr", "create", "-R", repo, "--base", "main", "--head", branch,
              "--title", "Prospective Iran assessment " + date,
              "--body", "One append-only Protocol-v1 record. Required Actions validation and strict up-to-date branch protection must pass. No bypass authorized.")
@@ -242,15 +324,24 @@ def main():
     cmd = sys.argv[1] if len(sys.argv) == 2 else ""
     if cmd in ("check-services", "healthcheck"):
         service_checks()
+    elif cmd == "eligible":
+        eligible = ready(live=True)
+        output = os.environ.get("GITHUB_OUTPUT")
+        if output:
+            with open(output, "a", encoding="utf-8") as f:
+                f.write("eligible=" + ("true" if eligible else "false") + "\n")
+        print("Sunday candidate eligibility: " + ("eligible" if eligible else "skipped"))
     elif cmd == "preflight":
-        return 0 if ready() else 3
+        if ready(live=True, require_github_token=True):
+            verify_repository_gate(_repo())
     elif cmd == "dry-run":
         dry_run()
-    elif cmd == "run":
-        if ready():
-            prepare_and_merge()
+    elif cmd == "prepare":
+        prepare_candidate()
+    elif cmd == "publish":
+        publish_candidate()
     else:
-        raise SystemExit("Usage: sunday_automation.py check-services|dry-run|run")
+        raise SystemExit("Usage: sunday_automation.py healthcheck|eligible|preflight|dry-run|prepare|publish")
 
 
 if __name__ == "__main__":
