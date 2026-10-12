@@ -38,7 +38,7 @@ class SundayPipelineTests(unittest.TestCase):
             "We will check whether the rial depreciates over the next month.",
             "A regional war may expand; currency payments may fail.",
             "Will major interstate strikes continue for three days?",
-            "The rial may fall by 25% over 30 days"
+            "The parallel-market rial may fall by 25% over a rolling 30-day period"
         ):
             with self.subTest(fragment=fragment):
                 self.analysis["next_threshold"] = fragment
