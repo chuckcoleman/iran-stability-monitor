@@ -229,6 +229,36 @@ def service_checks():
     print("READINESS PASSED (read-only). Run dry-run before enabling production.")
 
 
+def api_probe():
+    """Small paid contract test of both Responses paths; never publish results.
+
+    The real WIF credential and full production web-search request contract
+    are tested against the API, without eliciting any scored forecast.
+    """
+    ready(live=False)
+    from assessment_pipeline import llm
+    path=ROOT / "data/history.json"
+    original=path.read_bytes()
+    try:
+        article,citations=llm(
+            "Search the live web for one recent Reuters or AP news article about Iran. "
+            "Return ONLY a JSON object with two string fields: title and url. "
+            "Cite the original source URL.",True)
+        check(isinstance(article,dict) and bool(citations),
+              "Responses API probe did not return cited live web evidence")
+        print("OpenAI Responses web-search request: VERIFIED (paid, unpublishable)",flush=True)
+        result,_=llm(
+            "Do not use web search. Return ONLY a JSON object: {\"probe\": true}.",
+            False)
+        check(isinstance(result,dict) and result.get("probe") is True,
+              "Responses API no-search JSON-mode probe was not confirmed")
+        print("OpenAI Responses non-search JSON-mode request: VERIFIED",flush=True)
+    finally:
+        check(path.read_bytes()==original,
+              "The unpublishable Responses API probe altered historical data")
+    print("API PROBE PASSED; no assessment, PR, merge, deployment or X post",flush=True)
+
+
 def dry_run():
     """Real API research with NO public side effects. Output cannot be promoted."""
     ready(live=False)
@@ -402,6 +432,8 @@ def main():
     elif cmd == "preflight":
         if ready(live=True, require_github_token=True):
             verify_repository_gate(_repo())
+    elif cmd == "api-probe":
+        api_probe()
     elif cmd == "dry-run":
         dry_run()
     elif cmd == "prepare":
@@ -409,7 +441,7 @@ def main():
     elif cmd == "publish":
         publish_candidate()
     else:
-        raise SystemExit("Usage: sunday_automation.py healthcheck|eligible|preflight|dry-run|prepare|publish")
+        raise SystemExit("Usage: sunday_automation.py healthcheck|eligible|preflight|api-probe|dry-run|prepare|publish")
 
 
 if __name__ == "__main__":
