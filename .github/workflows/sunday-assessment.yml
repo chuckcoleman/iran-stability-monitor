@@ -6,13 +6,14 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Read-only checks, unpublishable paid dry-run, or enabled Sunday publication'
+        description: 'Read-only checks, paid API contract probe, unpublishable dry-run, or enabled Sunday publication'
         required: true
         default: healthcheck
         type: choice
         options:
           - healthcheck
           - check-services
+          - api-probe
           - dry-run
           - run
 permissions:
@@ -75,6 +76,9 @@ jobs:
           GH_TOKEN: ${{ steps.app-preflight.outputs.token }}
           METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
         run: python scripts/sunday_automation.py healthcheck
+      - name: Check full OpenAI Responses web-search and JSON-mode contracts (paid, unpublishable)
+        if: inputs.mode == 'api-probe'
+        run: python scripts/sunday_automation.py api-probe
       - name: Complete a live but unpublishable paid assessment dry-run
         if: inputs.mode == 'dry-run'
         run: python scripts/sunday_automation.py dry-run
