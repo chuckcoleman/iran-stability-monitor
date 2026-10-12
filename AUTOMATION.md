@@ -42,6 +42,43 @@ any scored event or retrospectively change a forecast.
   are set to true. Do not enable them before a passing read-only healthcheck and
   unpublishable dry-run.
 
+## Oct 12 read-only healthcheck follow-up
+
+After enabling GitHub App permissions and storing the Metricool secret, the
+healthcheck now confirms **GitHub App installation and strict repository
+safeguards passed**. Remaining independent failures are the OpenAI token
+exchange (`HTTP 401 invalid_grant`) and the Metricool account/read-only
+verification (formerly logged as an unhelpful `RuntimeError`).
+
+GitHub's [immutable default OIDC subject
+format](https://docs.github.com/en/actions/reference/security/oidc#immutable-subject-claims)
+applies to repositories created after July 15, 2026. This repository was created
+September 16, 2026, and its owner/repository IDs are `25271226`/`1373559199`.
+Its main-branch token is therefore expected to use this **non-secret**
+`sub` selector:
+
+```text
+repo:chuckcoleman@25271226/iran-stability-monitor@1373559199:ref:refs/heads/main
+```
+
+The existing OpenAI mapping was created with the older name-only `sub` claim,
+which likely explains `invalid_grant`. The read-only healthcheck now prints
+**only allowlisted, non-secret** GitHub OIDC identity selectors (issuer,
+audience, subject, repository, ref, workflow_ref, and GitHub numeric IDs)
+directly from the JWT payload. It never prints the JWT itself, signature,
+bearer token, arbitrary claims, OAuth response body or the API secret.
+Verify the actual logged `sub` and `workflow_ref` against the mapping and edit
+only the corresponding OpenAI Workload Identity Provider mapping entries.
+
+Metricool diagnostics now report **which read-only stage** failed (brand and
+connected X identity, scheduled-post lookup, or published-X export), with only
+pre-approved messages or HTTP status codes; no raw response body or secret.
+Do not relax the API response checks or create an X post until all three
+stages verify as intended. Avoid retrying an ambiguous social POST.
+
+Neither auth diagnostic changes the canonical site, frozen Protocol v1,
+existing forecast records, nor live production switches.
+
 ## Owner setup: the remaining external boundary
 
 Use repository **Settings → Secrets and variables → Actions**. Never paste a key
