@@ -30,6 +30,10 @@ def fixture():
             revisions.append({"event_id": f["event_id"], "contributions": [{"label": "Synthetic unchanged judgment", "pp": 0}], "residual_pp": 0})
     analysis = {k: "Synthetic test narrative, not live evidence or a publishable assessment. " + k
                 for k in ("summary", "what_changed", "stabilizer", "next_threshold", "limitations")}
+    analysis["next_threshold"] = (
+        "We are monitoring whether any hypothetical threshold becomes observable. "
+        "This is synthetic test wording, not an actual forecast."
+    )
     analysis.update({"forecasts": forecasts, "revision_attribution": revisions,
                     "warning": copy.deepcopy(prev["warning"]), "conditions": copy.deepcopy(prev["conditions"]),
                     "haircut_components": {k: p for k, p, cap in prev["haircut"]["calculation"]["components"]},
