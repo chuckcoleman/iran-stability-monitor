@@ -1,21 +1,30 @@
 # Sunday unattended publication
 
-## Website prose: next thresholds
+## Website prose: thresholds to watch
 
-The dashboard's former **Next threshold** card is now headed **What should we
-watch next?**. Its archived `next_threshold` strings remain **byte-for-byte
-unchanged** in `data/history.json`. A deterministic display-only helper turns
-older leading `Whether ...` fragments and semicolon-separated `whether`
-clauses into complete monitoring sentences. It does not assert that any
-threshold has been crossed or change the meaning of a forecast.
+The dashboard card is titled **Thresholds to watch**. It displays one
+short declarative sentence for each distinct event or monitoring
+threshold, without recurring "We are watching" language, questions,
+or semicolon lists.
 
-For new assessments, the independent analytic prompt and candidate check require
-`next_threshold` to contain one or more grammatically complete sentences,
-with separate full sentences for distinct monitoring thresholds. A review also
-rejects sentence fragments. These are editorial rules only: Protocol v1.0,
-the frozen event definitions, resolution rules, probability history, and
-publishing gates are unchanged. Regression tests cover archived display and
-prospective candidate style.
+The archived `next_threshold` strings remain **byte-for-byte unchanged**
+in `data/history.json`. Exact-match, presentation-only editorial
+overrides render the three archived fragmentary strings as short,
+separate declarative sentences. A future assessment already written as
+sentences is displayed one sentence per paragraph. These descriptions
+identify events or conditions to monitor; they do not assert that a
+threshold has been crossed or replace its full resolution definition.
+
+Future assessor instructions require concise declaratives, one complete
+sentence per distinct threshold event, with an optional introductory
+declarative. A deterministic candidate guard rejects first-person
+monitoring phrasing, questions, semicolon-combined events, leading
+"Whether" fragments, or missing terminal punctuation. The independent
+review also checks sentence structure. These are **editorial**
+requirements only; the frozen Protocol v1.0, event definitions,
+forecast probabilities, historical records, and publication gates
+remain unchanged. Regression tests cover both archived display and
+new-candidate style.
 
 ## Installation state
 
