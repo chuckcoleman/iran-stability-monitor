@@ -25,9 +25,10 @@ into an issue, pull request, source file, public artifact, or ChatGPT message.
 
 | Repository secret | Required access |
 |---|---|
-| `OPENAI_API_KEY` | An OpenAI API project with billing and access to the configured Responses model and live web search |
 | `AUTOMATION_GH_TOKEN` | A repository-scoped fine-grained token or GitHub App token: Contents read/write, Pull requests read/write, Actions read, Pages read, Issues read, and sufficient read access to inspect repository rulesets; it must be able to merge without bypassing protections |
 | `METRICOOL_API_TOKEN` | Metricool REST API access for userId `5607453`, brand/blogId `7254821`, X `@IranStabilityMo` |
+
+OpenAI authentication uses **GitHub Actions OIDC workload identity federation**, not a long-lived `OPENAI_API_KEY`. The Sunday workflow has `id-token: write`; GitHub mints an ephemeral OIDC token for the configured audience and OpenAI exchanges it for a short-lived service-account token. The OpenAI mapping should match this repository, `refs/heads/main`, and `chuckcoleman/iran-stability-monitor/.github/workflows/sunday-assessment.yml@refs/heads/main`.
 
 Metricool documents REST API access for Advanced or Custom accounts. The existing
 connected Metricool ChatGPT app is not an exportable REST API token for Actions.
@@ -36,9 +37,13 @@ account access with the read-only check described below.
 
 | Repository variable | Initial value |
 |---|---|
+| `OPENAI_IDENTITY_PROVIDER_ID` | The non-secret ID of the OpenAI GitHub OIDC workload identity provider |
+| `OPENAI_SERVICE_ACCOUNT_ID` | The non-secret ID of the mapped dedicated OpenAI project service account |
 | `IRAN_FORECAST_MODEL` | `gpt-6.1-sol`, or a Responses/web-search model explicitly tested in this API project |
 | `ASSESSMENT_AUTOMATION_ENABLED` | `false` |
 | `AUTO_X_ENABLED` | `false` |
+
+The workflow audience is fixed to `https://api.openai.com/v1` and must exactly match the provider configuration. The OpenAI provider and service-account IDs are identifiers, not bearer secrets. Do not store the short-lived WIF access token; each Actions job obtains and exchanges its own GitHub identity token.
 
 In **Settings → Rules → Rulesets → Protect validated forecasts**, keep all existing
 protections and enable **Require branches to be up to date before merging** under
@@ -63,7 +68,7 @@ off. Running it is optional; the same steps can be done in GitHub Settings.
 After installation is merged, open **Actions → Prepare Sunday Iran assessment →
 Run workflow**. Choose the operation from the dropdown:
 
-1. **`healthcheck`** (compatible alias: `check-services`) — read-only GitHub safeguards, OpenAI key/model GET access,
+1. **`healthcheck`** (compatible alias: `check-services`) — read-only GitHub safeguards, OpenAI WIF exchange/model GET access,
    Metricool brand identity, scheduled calendar, and published-X CSV. It creates no
    forecast, pull request, merge, or post, and does not call paid model inference.
    A pass verifies reads, not Metricool POST delivery or model forecasting quality.
@@ -153,6 +158,7 @@ of automated geopolitical judgments solely from schema tests or model review.
 
 ## References
 
+- [OpenAI GitHub Actions workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation/github-actions)
 - [OpenAI Responses web search](https://developers.openai.com/api/docs/guides/tools-web-search)
 - [OpenAI model catalog](https://developers.openai.com/api/docs/models)
 - [GitHub workflow triggering and automation tokens](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)
