@@ -30,20 +30,23 @@ class SundayPipelineTests(unittest.TestCase):
     def record(self):
         return a.assemble(self.h, self.analysis, self.frozen(), self.cutoff, self.opened, self.opened + dt.timedelta(seconds=1))
 
-    def test_next_threshold_requires_complete_sentences(self):
-        """Future narrative must not reproduce the archived sentence fragments."""
+    def test_next_threshold_requires_declarative_event_sentences(self):
+        """Do not reintroduce narrative 'we', questions or merged events."""
         for fragment in (
             "Whether essential state allocations become disrupted for fourteen days.",
-            "We are tracking whether inflation accelerates; whether currency payments fail.",
-            "We are monitoring whether coercive salaries are paid without interruption"
+            "We are watching whether payments fail in multiple import categories.",
+            "We will check whether the rial depreciates over the next month.",
+            "A regional war may expand; currency payments may fail.",
+            "Will major interstate strikes continue for three days?",
+            "The rial may fall by 25% over 30 days"
         ):
             with self.subTest(fragment=fragment):
                 self.analysis["next_threshold"] = fragment
-                with self.assertRaisesRegex(ValueError, "complete grammatical sentences"):
+                with self.assertRaisesRegex(ValueError, "simple declarative sentences"):
                     self.record()
         self.analysis["next_threshold"] = (
-            "We are monitoring whether essential state allocations become disrupted. "
-            "We will also check whether salary payments stop for security personnel."
+            "A two-week payment disruption in two essential import categories could signal a crisis. "
+            "A sustained 25% rial depreciation over 30 days would reach the currency threshold."
         )
         self.assertEqual(self.record()["next_threshold"], self.analysis["next_threshold"])
 
