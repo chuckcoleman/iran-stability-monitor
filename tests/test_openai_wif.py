@@ -1,5 +1,7 @@
 """Offline tests for OpenAI GitHub Actions workload identity federation."""
 import json
+import io
+import urllib.error
 import os
 from pathlib import Path
 import sys
@@ -53,6 +55,45 @@ class WIFTests(unittest.TestCase):
             self.assertEqual(a.openai_bearer_token(),"openai-short-lived")
             self.assertEqual(a.openai_bearer_token(),"openai-short-lived")
         self.assertEqual(len(calls),2)
+
+    def test_exchange_failure_is_stage_specific_and_redacts_body(self):
+        env = {
+            "OPENAI_IDENTITY_PROVIDER_ID": "idp_fake",
+            "OPENAI_SERVICE_ACCOUNT_ID": "user_fake",
+            "OPENAI_WIF_AUDIENCE": "https://api.openai.com/v1",
+            "ACTIONS_ID_TOKEN_REQUEST_URL": "https://token.actions.example/oidc",
+            "ACTIONS_ID_TOKEN_REQUEST_TOKEN": "SECRET_GITHUB_REQUEST_TOKEN",
+        }
+        denied = urllib.error.HTTPError(
+            "https://auth.openai.com/oauth/token", 400, "Bad Request", {},
+            io.BytesIO(json.dumps({
+                "error": "invalid_subject_token",
+                "error_description": "do-not-log-credentials"
+            }).encode()))
+        with patch.dict(os.environ, env, clear=True), \
+             patch.object(a.urllib.request, "urlopen", side_effect=[
+                 FakeResponse({"value":"SECRET_SUBJECT_JWT"}), denied]):
+            with self.assertRaises(RuntimeError) as result:
+                a.openai_bearer_token()
+        message = str(result.exception)
+        self.assertEqual(message, "OpenAI token exchange HTTP 400 (invalid_subject_token)")
+        self.assertNotIn("SECRET_SUBJECT_JWT", message)
+        self.assertNotIn("do-not-log-credentials", message)
+
+    def test_oidc_request_failure_is_distinct_from_exchange_failure(self):
+        env = {
+            "OPENAI_IDENTITY_PROVIDER_ID": "idp_fake",
+            "OPENAI_SERVICE_ACCOUNT_ID": "user_fake",
+            "ACTIONS_ID_TOKEN_REQUEST_URL": "https://token.actions.example/oidc",
+            "ACTIONS_ID_TOKEN_REQUEST_TOKEN": "SECRET_GITHUB_REQUEST_TOKEN",
+        }
+        denied = urllib.error.HTTPError(
+            "https://token.actions.example/oidc", 403, "Denied", {},
+            io.BytesIO(b'{"error":"forbidden","secret":"never-print"}'))
+        with patch.dict(os.environ, env, clear=True), \
+             patch.object(a.urllib.request, "urlopen", side_effect=denied):
+            with self.assertRaisesRegex(RuntimeError, "GitHub OIDC token request HTTP 403"):
+                a.openai_bearer_token()
 
     def test_api_key_fallback_still_works_outside_github(self):
         with patch.dict(os.environ,{"OPENAI_API_KEY":"local-key"},clear=True):
