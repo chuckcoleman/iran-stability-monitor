@@ -26,6 +26,33 @@ forecast probabilities, historical records, and publication gates
 remain unchanged. Regression tests cover both archived display and
 new-candidate style.
 
+## First live dry-run: OpenAI Responses HTTP 400 (October 12)
+
+The first paid, nonpublishing `dry-run` reached the initial web-search
+`POST /v1/responses` call and the API rejected the request with
+`HTTP 400 Bad Request`. No web-research response, candidate assessment,
+history change, GitHub pull request, Pages publication, or X post was
+created. This is **not** a workload identity authentication failure:
+the preceding read-only `healthcheck` successfully exchanged a short-lived
+GitHub OIDC identity token, read the configured `gpt-6.1-sol` model, and
+verified GitHub/Metricool integrations. The model documents support for
+Responses API web search.
+
+To avoid guessing at and weakening publication prerequisites, the
+Responses API error guard now reports only the HTTP status, API `type`,
+`code`, rejected `param`, safe keyword-category labels, and OpenAI
+request ID when present. The full server error message, HTTP response
+body, model input, prompts, tokens, and JWTs are **not** logged.
+
+An optional workflow_dispatch mode `api-probe` now exercises the same
+production Responses request contract with a short live web-search
+question and a separate non-search JSON-mode response. This mode has a
+small paid API cost but does not open a PR, issue forecasts, modify
+history, deploy, or publish to X. Run the probe first, inspect any safe
+rejection metadata, correct the specific unsupported parameter or
+permission, rerun the probe, and only then repeat the full dry-run.
+Both production enable flags remain OFF throughout.
+
 ## Installation state
 
 The repository implementation covers live research, frozen evidence, four prospective
