@@ -17,6 +17,7 @@ on:
           - run
 permissions:
   contents: read
+  id-token: write
 concurrency:
   group: iran-sunday-single-run
   cancel-in-progress: false
@@ -47,7 +48,9 @@ jobs:
           GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
           ASSESSMENT_AUTOMATION_ENABLED: ${{ vars.ASSESSMENT_AUTOMATION_ENABLED }}
           IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_WIF_AUDIENCE: https://api.openai.com/v1
+          OPENAI_IDENTITY_PROVIDER_ID: ${{ vars.OPENAI_IDENTITY_PROVIDER_ID }}
+          OPENAI_SERVICE_ACCOUNT_ID: ${{ vars.OPENAI_SERVICE_ACCOUNT_ID }}
           AUTOMATION_GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
           GH_TOKEN: ${{ secrets.AUTOMATION_GH_TOKEN }}
           METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
