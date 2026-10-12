@@ -152,13 +152,13 @@ class GithubAppAuthTests(unittest.TestCase):
                           side_effect=RuntimeError('OpenAI token exchange HTTP 401 (invalid_grant)')), \
              patch.object(mp,'check_brand'), \
              patch.object(mp,'scheduled_posts',side_effect=RuntimeError('Unrecognized Metricool list response')), \
-             patch.object(mp,'published_posts',side_effect=RuntimeError('Published CSV lacks a recognized post-text column')):
+             patch.object(mp,'published_posts',side_effect=RuntimeError('Published TwitterPost missing text')):
             with self.assertRaises(RuntimeError) as result:
                 s.service_checks()
         message=str(result.exception)
         self.assertIn('OpenAI token exchange HTTP 401 (invalid_grant)',message)
         self.assertIn('Metricool scheduled posts: Unrecognized Metricool list response',message)
-        self.assertIn('Metricool published X export: Published CSV lacks a recognized post-text column',message)
+        self.assertIn('Metricool published X export: Published TwitterPost missing text',message)
         self.assertNotIn('SECRET_NEVER_LOG',message)
 
     def test_metricool_unknown_failure_does_not_echo_arbitrary_text(self):
