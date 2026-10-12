@@ -60,8 +60,10 @@ def ready(live=True):
         return False
     if live:
         check(eastern_now().weekday() == 6, "Live assessments may be issued only on Sunday")
-    for name in ("OPENAI_API_KEY", "AUTOMATION_GH_TOKEN"):
-        check(os.getenv(name), "Required secret missing: " + name)
+    check(os.getenv("AUTOMATION_GH_TOKEN"), "Required secret missing: AUTOMATION_GH_TOKEN")
+    wif=bool(os.getenv("OPENAI_IDENTITY_PROVIDER_ID") and os.getenv("OPENAI_SERVICE_ACCOUNT_ID"))
+    check(wif or os.getenv("OPENAI_API_KEY"),
+          "OpenAI WIF variables are missing and no API-key fallback is configured")
     check(os.getenv("GH_TOKEN") == os.getenv("AUTOMATION_GH_TOKEN"), "Automation gh token mismatch")
     return True
 
@@ -133,14 +135,15 @@ def service_checks():
     try:
         model = os.getenv("IRAN_FORECAST_MODEL") or "gpt-6.1-sol"
         from urllib.parse import quote
+        from assessment_pipeline import openai_bearer_token
         request = urllib.request.Request("https://api.openai.com/v1/models/" + quote(model, safe=""),
-                  headers={"Authorization": "Bearer " + os.environ["OPENAI_API_KEY"]})
+                  headers={"Authorization": "Bearer " + openai_bearer_token()})
         with urllib.request.urlopen(request, timeout=30) as response:
             data = json.load(response)
         check(data.get("id") == model, "Configured OpenAI model was not verified")
-        print("OpenAI key and model: GET access verified; no paid inference performed")
+        print("OpenAI WIF/model access: verified; no paid inference performed")
     except Exception:
-        errors.append("OpenAI model/key GET check failed")
+        errors.append("OpenAI WIF/model GET check failed")
     try:
         from metricool_publish import check_brand, scheduled_posts, published_posts
         check(os.getenv("METRICOOL_API_TOKEN"), "METRICOOL_API_TOKEN missing")

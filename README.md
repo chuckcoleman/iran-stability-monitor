@@ -45,7 +45,7 @@ A failed deploy leaves the most recently successful Actions deployment intact.
 
 ## Full Sunday automation (disabled until account setup)
 
-The scheduled prospective assessment, required PR validation, protected merge, exact Pages verification and deduplicated Metricool X scheduler are documented in [AUTOMATION.md](AUTOMATION.md). The schedule is intentionally **disabled by default** via `ASSESSMENT_AUTOMATION_ENABLED`; entering paid research API credentials and a GitHub automation PAT is required before unattended operation. Social posting has a separate `AUTO_X_ENABLED` gate. A failed assessment never edits validated history or deploys an unvalidated site.
+The scheduled prospective assessment, required PR validation, protected merge, exact Pages verification and deduplicated Metricool X scheduler are documented in [AUTOMATION.md](AUTOMATION.md). The schedule is intentionally **disabled by default** via `ASSESSMENT_AUTOMATION_ENABLED`; configuring OpenAI GitHub OIDC workload identity federation plus the remaining GitHub/Metricool credentials is required before unattended operation. Social posting has a separate `AUTO_X_ENABLED` gate. A failed assessment never edits validated history or deploys an unvalidated site.
 
 ## Automation
 For each Sunday assessment, create a working branch and a pull request rather
