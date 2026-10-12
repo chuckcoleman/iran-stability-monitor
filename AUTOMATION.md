@@ -150,6 +150,30 @@ The incoming GitHub JWT itself has already been verified for `iss`,
 `aud`, `sub`, `repository`, `ref`, and `workflow_ref` selectors.
 Never share the token or private credential.
 
+## October 12: confirmed WIF service-account identity correction
+
+A read-only OpenAI Admin API `GET /v1/organization/projects/{project_id}/service_accounts`
+lookup returned the existing `iran-monitor` account's **complete**
+service-account ID as `user-1e07e217b5a13cf3bc804060`. This is an
+actual service-account ID despite its `user-` prefix. Earlier guidance
+that the value must begin with `svc_acct_` was incorrect and led to a
+redundant search. The GitHub workflow accidentally used a **truncated**
+`user-1e07e217b5a1` value, sufficient to explain the repeated OpenAI
+`401 invalid_grant` responses even after aligning OIDC claims and issuer.
+
+The Sunday workflow now uses the complete, read-only API-verified ID
+directly (no repository-variable override). This is a non-secret
+identifier, not an API key. No new service account or mapping is needed.
+The existing GitHub OIDC JWT's `iss`, `aud`, immutable `sub`,
+`repository`, `ref`, and `workflow_ref` were independently verified
+against the provider/mapping. Token exchange continues to use short-lived
+GitHub identities. A **fresh healthcheck** must still demonstrate the
+successful OpenAI exchange and Metricool API reads before enabling
+unattended publication.
+
+Revoke the temporary Admin API key after retrieval. Never store it in
+GitHub Actions, source files, or this chat.
+
 ## Owner setup: the remaining external boundary
 
 Use repository **Settings → Secrets and variables → Actions**. Never paste a key
@@ -180,7 +204,7 @@ account access with the read-only check described below.
 |---|---|
 | `IRAN_GITHUB_APP_CLIENT_ID` | Optional override: the current non-secret App Client ID (`Iv23liGgGQPahqYbv6in`) is already configured as a workflow default |
 | `OPENAI_IDENTITY_PROVIDER_ID` | Optional override; the workflow already contains the current non-secret provider ID |
-| `OPENAI_SERVICE_ACCOUNT_ID` | Optional override; the workflow already contains the current non-secret mapped service-account User ID |
+| `OPENAI_SERVICE_ACCOUNT_ID` | Pinned to the existing `iran-monitor` service-account ID `user-1e07e217b5a13cf3bc804060` in the Sunday workflow; intentionally no repository-variable override |
 | `IRAN_FORECAST_MODEL` | `gpt-6.1-sol`, or a Responses/web-search model explicitly tested in this API project |
 | `ASSESSMENT_AUTOMATION_ENABLED` | `false` |
 | `AUTO_X_ENABLED` | `false` |
@@ -219,7 +243,7 @@ for each GitHub work phase. The private PEM is not periodically expiring but
 should be rotated promptly if compromised. This does not automate Metricool's own
 independent API/connection renewal requirements.
 
-The two OpenAI WIF identifiers are configured as non-secret defaults in `.github/workflows/sunday-assessment.yml`; GitHub Actions repository variables of the same names may override them. **Do not enter access tokens in either field.** WIF still requires a live `healthcheck` and `dry-run` before enabling unattended publication.
+The OpenAI provider ID remains a non-secret workflow default, optionally overridable by `OPENAI_IDENTITY_PROVIDER_ID`. The `iran-monitor` service-account ID is pinned to its complete OpenAI Admin API value in `.github/workflows/sunday-assessment.yml` and cannot be overridden by a stale `OPENAI_SERVICE_ACCOUNT_ID` repository variable. **Do not enter access tokens in either field.** WIF still requires a live `healthcheck` and `dry-run` before enabling unattended publication.
 
 The workflow audience is fixed to `https://api.openai.com/v1` and must exactly match the provider configuration. The OpenAI provider and service-account IDs are identifiers, not bearer secrets. Do not store the short-lived WIF access token; each Actions job obtains and exchanges its own GitHub identity token.
 
