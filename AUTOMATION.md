@@ -9,8 +9,8 @@ canonical-site verification, and a single deduplicated X scheduling attempt.
 Merging this installation does not issue a forecast, replace history, or post to X.
 
 Offline tests exercise the code with synthetic inputs and mocked services. They do
-not establish that the owner's API keys, subscription, permissions, billing, model
-access, or live API response formats work. The read-only readiness run and the
+not establish that the owner's installed GitHub App, private key, Metricool API
+access, OpenAI subscription, billing, permissions, or live responses work. The read-only readiness run and the
 unpublishable live dry-run exist to establish those boundaries before activation.
 No new live assessment or social post is part of installation testing.
 
@@ -25,8 +25,17 @@ into an issue, pull request, source file, public artifact, or ChatGPT message.
 
 | Repository secret | Required access |
 |---|---|
-| `AUTOMATION_GH_TOKEN` | A repository-scoped fine-grained token or GitHub App token: Contents read/write, Pull requests read/write, Actions read, Pages read, Issues read, and sufficient read access to inspect repository rulesets; it must be able to merge without bypassing protections |
+| `IRAN_GITHUB_APP_PRIVATE_KEY` | The **complete PEM private key** generated for the dedicated GitHub App (store as a repository secret; never in source control) |
 | `METRICOOL_API_TOKEN` | Metricool REST API access for userId `5607453`, brand/blogId `7254821`, X `@IranStabilityMo` |
+
+**GitHub App authentication replaces `AUTOMATION_GH_TOKEN`.** No fine-grained
+personal access token is needed. The official `actions/create-github-app-token@v3`
+action creates one-hour installation tokens from the dedicated App identity and
+private key. The workflow checks the App before paid research, creates **another
+fresh token after research** before the protected PR operation, and separately
+mints a new token just before any X posting claim. Tokens are scoped to the
+current repository and revoked at the end of each job. The App's PEM private key
+is long-lived (no routine expiration); replace it if compromised or revoked.
 
 OpenAI authentication uses **GitHub Actions OIDC workload identity federation**, not a long-lived `OPENAI_API_KEY`. The Sunday workflow has `id-token: write`; GitHub mints an ephemeral OIDC token for the configured audience and OpenAI exchanges it for a short-lived service-account token. The OpenAI mapping should match this repository, `refs/heads/main`, and `chuckcoleman/iran-stability-monitor/.github/workflows/sunday-assessment.yml@refs/heads/main`.
 
@@ -37,11 +46,46 @@ account access with the read-only check described below.
 
 | Repository variable | Initial value |
 |---|---|
+| `IRAN_GITHUB_APP_CLIENT_ID` | The **Client ID** shown in your new GitHub App's settings; usually starts with `Iv1` |
 | `OPENAI_IDENTITY_PROVIDER_ID` | Optional override; the workflow already contains the current non-secret provider ID |
 | `OPENAI_SERVICE_ACCOUNT_ID` | Optional override; the workflow already contains the current non-secret mapped service-account User ID |
 | `IRAN_FORECAST_MODEL` | `gpt-6.1-sol`, or a Responses/web-search model explicitly tested in this API project |
 | `ASSESSMENT_AUTOMATION_ENABLED` | `false` |
 | `AUTO_X_ENABLED` | `false` |
+
+### Create and install the dedicated GitHub App (one-time owner action)
+
+1. In GitHub, open **personal Settings → Developer settings → GitHub Apps → New GitHub App**.
+   Name it `Iran Stability Monitor Automation` (or a unique variant).
+   Set its homepage URL to `https://iranstabilitymonitor.org`. The automation
+   handles no webhooks: disable **Active** in the Webhook section. Leave any
+   optional OAuth/authorization callback fields unset.
+2. Under **Repository permissions**, grant ONLY: **Contents Read & write**, **Pull
+   requests Read & write**, **Actions Read-only**, **Pages Read-only**, **Issues
+   Read-only**. **Metadata Read-only** is automatic. Do NOT grant Administration,
+   Secrets, Members, Workflows, or organization-wide permissions.
+3. Restrict **Where can this GitHub App be installed?** to **Only on this account**.
+   Create the App, then use its **Install App** page to install it on account
+   `chuckcoleman` with **Only select repositories → iran-stability-monitor**.
+4. On the App settings page, copy **Client ID** (typically `Iv1...`) to the GitHub
+   repository **variable** `IRAN_GITHUB_APP_CLIENT_ID` under **Settings → Secrets
+   and variables → Actions → Variables**. Use the Client ID, not the App numeric ID.
+5. Select **Generate a private key** from the App's settings. A `.pem` file downloads.
+   Open the file privately, copy the **entire PEM including BEGIN/END lines**, and
+   store it as the GitHub repository **secret** `IRAN_GITHUB_APP_PRIVATE_KEY` under
+   **Settings → Secrets and variables → Actions → Secrets**. On desktop you may use
+   the optional owner helper with `--app-private-key-file /path/to/downloaded.pem`.
+   Never upload the private key to this chat, GitHub issues/PRs, or source control.
+6. After installation, run the read-only Actions **healthcheck**. It requests a
+   short-lived token and checks the actual App installation, Pages source and
+   strict ruleset; also checks OpenAI WIF and Metricool reads. Then run **dry-run**
+   before enabling either live switch.
+
+Installation access tokens automatically expire in about one hour. **Nothing
+needs to be renewed manually each Sunday**: the official action mints new tokens
+for each GitHub work phase. The private PEM is not periodically expiring but
+should be rotated promptly if compromised. This does not automate Metricool's own
+independent API/connection renewal requirements.
 
 The two OpenAI WIF identifiers are configured as non-secret defaults in `.github/workflows/sunday-assessment.yml`; GitHub Actions repository variables of the same names may override them. **Do not enter access tokens in either field.** WIF still requires a live `healthcheck` and `dry-run` before enabling unattended publication.
 
@@ -59,18 +103,18 @@ publishing a candidate validated against an out-of-date `main`.
 **Native repository auto-merge is not needed.** The orchestrator waits for CI and
 performs a normal, SHA-guarded merge, never an administrative bypass.
 
-An optional owner-run helper, `scripts/configure_automation.py`, accepts hidden
-credential entry and can strengthen the existing strict-check setting. It requires
-an authenticated GitHub CLI administrator. Its `--store-secrets` and
-`--strict-protection` options are explicit actions, and it leaves both live switches
-off. Running it is optional; the same steps can be done in GitHub Settings.
+An optional owner-run helper, `scripts/configure_automation.py`, can store the
+non-secret App Client ID, import a downloaded private PEM file directly into a
+GitHub secret, prompt for the Metricool token, and strengthen the existing strict
+ruleset. It requires an authenticated GitHub CLI administrator and **leaves both
+live switches OFF**. Running it is optional; GitHub Settings works on iPhone.
 
 ## Readiness and activation
 
 After installation is merged, open **Actions → Prepare Sunday Iran assessment →
 Run workflow**. Choose the operation from the dropdown:
 
-1. **`healthcheck`** (compatible alias: `check-services`) — read-only GitHub safeguards, OpenAI WIF exchange/model GET access,
+1. **`healthcheck`** (compatible alias: `check-services`) — mints a temporary GitHub App token to perform read-only safeguards, and checks OpenAI WIF/model GET access,
    Metricool brand identity, scheduled calendar, and published-X CSV. It creates no
    forecast, pull request, merge, or post, and does not call paid model inference.
    A pass verifies reads, not Metricool POST delivery or model forecasting quality.
@@ -119,15 +163,18 @@ candidate probabilities to get a more convenient result.
   new, not-yet-committed record receives a captured issuance time; that time equals
   the candidate Git commit's author/committer timestamp. Actual later public
   deployment is independently attested, not backdated.
-- Commits only `data/history.json` on a dated branch, opens a PR, waits for the
-  correct Actions `validate` job at its exact head SHA, checks `main` again, then
-  merges without bypass. A separate authorized automation token is used so the
-  subsequent CI/deployment events are not suppressed or left awaiting approval.
+- Research runs after the GitHub App's initial permissions/safety preflight, but
+  before a fresh App installation token is minted for publication. Commits only
+  `data/history.json` on a dated branch, opens a PR, waits for the correct Actions
+  `validate` job at its exact head SHA, checks `main` again, then merges without
+  bypass. GitHub App-authenticated writes trigger CI/deployment unlike writes
+  authenticated by the default `GITHUB_TOKEN`. Transient push credentials remain
+  process-scoped rather than stored in a Git remote URL or checkout settings.
 - Requires successful `validate` and **Deploy validated website** jobs from the
   correct main push workflow and SHA. Checks that the full canonical public JSON
   matches and is not superseded. An attestation records date, SHA, run ID and
   history hash. A code-only merge does not announce a new assessment.
-- Re-verifies before X; checks **scheduled posts and the separate published-X CSV**.
+- Re-verifies before X with a distinct newly minted installation token; checks **scheduled posts and the separate published-X CSV**.
   A unique Git tag `x-announcement-YYYY-MM-DD` atomically reserves the date before
   the non-idempotent Metricool POST. Old issue-based claims remain respected.
   A single future, unoccupied minute is chosen; one ≤280-character post contains
@@ -159,6 +206,9 @@ service changes may still require maintenance. No software can guarantee the tru
 of automated geopolitical judgments solely from schema tests or model review.
 
 ## References
+
+- [Official GitHub App installation-token action](https://github.com/actions/create-github-app-token)
+- [Create a GitHub App](https://docs.github.com/en/apps/creating-github-apps/setting-up-a-github-app/creating-a-github-app)
 
 - [OpenAI GitHub Actions workload identity federation](https://developers.openai.com/api/docs/guides/workload-identity-federation/github-actions)
 - [OpenAI Responses web search](https://developers.openai.com/api/docs/guides/tools-web-search)
