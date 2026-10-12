@@ -34,7 +34,7 @@ class WIFTests(unittest.TestCase):
     def test_github_oidc_exchanges_and_caches_short_lived_token(self):
         env={
             "OPENAI_IDENTITY_PROVIDER_ID":"idp_test",
-            "OPENAI_SERVICE_ACCOUNT_ID":"svc_test",
+            "OPENAI_SERVICE_ACCOUNT_ID":"user-1e07e217b5a13cf3bc804060",
             "OPENAI_WIF_AUDIENCE":"https://api.openai.com/v1",
             "ACTIONS_ID_TOKEN_REQUEST_URL":"https://token.actions.example/oidc?x=1",
             "ACTIONS_ID_TOKEN_REQUEST_TOKEN":"github-request-token",
@@ -50,7 +50,7 @@ class WIFTests(unittest.TestCase):
             self.assertEqual(req.full_url,"https://auth.openai.com/oauth/token")
             self.assertEqual(body["subject_token"],"github-oidc-jwt")
             self.assertEqual(body["identity_provider_id"],"idp_test")
-            self.assertEqual(body["service_account_id"],"svc_test")
+            self.assertEqual(body["service_account_id"],"user-1e07e217b5a13cf3bc804060")
             return FakeResponse({"access_token":"openai-short-lived","expires_in":3600})
         with patch.dict(os.environ,env,clear=True),              patch.object(a.urllib.request,"urlopen",side_effect=fake_open),              patch.object(a.time,"time",return_value=1000):
             self.assertEqual(a.openai_bearer_token(),"openai-short-lived")
@@ -121,6 +121,16 @@ class WIFTests(unittest.TestCase):
     def test_malformed_oidc_payload_is_not_echoed(self):
         with self.assertRaisesRegex(ValueError, "GitHub OIDC"):
             a._public_oidc_claims("SECRET_HEADER.not_base64~.SECRET_SIGNATURE")
+
+    def test_workflow_uses_complete_admin_verified_service_id(self):
+        """Do not let a truncated or stale GitHub repo variable override WIF."""
+        workflow=(ROOT / ".github/workflows/sunday-assessment.yml").read_text(encoding="utf-8")
+        self.assertIn(
+            "OPENAI_SERVICE_ACCOUNT_ID: user-1e07e217b5a13cf3bc804060",
+            workflow)
+        self.assertNotIn("user-1e07e217b5a1'", workflow)
+        self.assertNotIn("vars.OPENAI_SERVICE_ACCOUNT_ID", workflow)
+        self.assertIn("OPENAI_IDENTITY_PROVIDER_ID", workflow)
 
     def test_api_key_fallback_still_works_outside_github(self):
         with patch.dict(os.environ,{"OPENAI_API_KEY":"local-key"},clear=True):

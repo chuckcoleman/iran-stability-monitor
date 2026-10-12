@@ -35,7 +35,9 @@ jobs:
       IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
       OPENAI_WIF_AUDIENCE: https://api.openai.com/v1
       OPENAI_IDENTITY_PROVIDER_ID: ${{ vars.OPENAI_IDENTITY_PROVIDER_ID || 'idp_e9927fe00cb77ede0705b70c' }}
-      OPENAI_SERVICE_ACCOUNT_ID: ${{ vars.OPENAI_SERVICE_ACCOUNT_ID || 'user-1e07e217b5a1' }}
+      # Exact existing iran-monitor service account ID, verified through OpenAI Admin API.
+      # Intentionally do not use an unchecked repository-variable override.
+      OPENAI_SERVICE_ACCOUNT_ID: user-1e07e217b5a13cf3bc804060
     steps:
       - uses: actions/checkout@v4
         with:
