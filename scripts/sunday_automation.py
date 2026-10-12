@@ -15,6 +15,7 @@ import subprocess
 import sys
 import time
 import urllib.request
+import urllib.error
 from zoneinfo import ZoneInfo
 
 from candidate_checks import issue_time, one_append, scheduled_slot
