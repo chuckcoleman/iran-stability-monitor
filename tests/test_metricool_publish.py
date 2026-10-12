@@ -90,6 +90,22 @@ class MetricoolTests(unittest.TestCase):
         self.assertIn('"twitterData_type": "dict"', out.getvalue())
         self.assertNotIn('UNTRUSTED', out.getvalue())
 
+    def test_v2_brand_lookup_uses_documented_connected_network_schema(self):
+        """Live API uses BrandLite.networksData, not legacy PublicBlog data."""
+        brand = {'id': 7254821, 'userId': 5607453, 'timezone': 'America/New_York',
+                 'networksData': {'twitterData': 'IranStabilityMo'}}
+        with patch.object(x, 'metricool', return_value={'data': [brand]}) as api:
+            self.assertEqual(x.check_brand(), brand)
+        api.assert_called_once_with('/v2/settings/brands')
+
+    def test_v2_brand_absent_x_identity_fails_closed(self):
+        """A brand list with correct ID but absent X details cannot post."""
+        brand = {'id': 7254821, 'userId': 5607453, 'timezone': 'America/New_York'}
+        with patch.object(x, 'metricool', return_value={'data': [brand]}) as api:
+            with self.assertRaisesRegex(RuntimeError, 'connected X identity'):
+                x.check_brand()
+        api.assert_called_once_with('/v2/settings/brands')
+
     def test_next_future_unoccupied_minute(self):
         now = self.now.replace(second=5)
         post = {'providers': [{'network': 'twitter'}], 'publicationDate': {
