@@ -138,6 +138,32 @@ def wait_checks(repo, branch, sha, seconds=1800):
     raise RuntimeError("Timed out waiting for PR CI; candidate remains unmerged")
 
 
+def _metricool_read_failure(stage, exc):
+    """Return an allowlisted diagnostic; never echo API response bodies."""
+    if isinstance(exc, urllib.error.HTTPError):
+        return stage + ": HTTP " + str(exc.code)
+    safe = {
+        "Iran Stability Monitor brand not accessible",
+        "Brand timezone mismatch",
+        "Unexpected or missing connected X identity",
+        "Metricool user identity mismatch",
+        "Unrecognized Metricool list response",
+        "Unrecognized Metricool pagination",
+        "Metricool returned an incomplete page",
+        "Partial Metricool list",
+        "Undocumented Metricool pagination",
+        "More Metricool pages require reconciliation",
+        "Malformed list item",
+        "Empty/unknown published-post export",
+        "Published-post export was not CSV",
+        "Published CSV lacks a recognized post-text column",
+        "Malformed CSV row",
+    }
+    reason = str(exc)
+    return stage + ": " + (reason if isinstance(exc, RuntimeError) and reason in safe
+                            else type(exc).__name__)
+
+
 def service_checks():
     """Read-only independent diagnostics: never disclose bearer, JWT, or API response."""
     ready(live=False, require_github_token=True)
@@ -151,6 +177,7 @@ def service_checks():
         errors.append("GitHub safeguards: " + str(exc))
 
     from assessment_pipeline import openai_bearer_token
+    os.environ['OPENAI_WIF_AUDIT_CLAIMS'] = 'true'
     try:
         bearer = openai_bearer_token()
         print("OpenAI OIDC token exchange: VERIFIED (no paid inference)")
@@ -181,17 +208,22 @@ def service_checks():
     if not os.getenv("METRICOOL_API_TOKEN"):
         errors.append("Metricool: missing METRICOOL_API_TOKEN repository secret")
     else:
+        from metricool_publish import check_brand, scheduled_posts, published_posts
         try:
-            from metricool_publish import check_brand, scheduled_posts, published_posts
             check_brand()
-            day = eastern_now().date().isoformat()
-            scheduled_posts(day)
-            published_posts(day)
-            print("Metricool brand, scheduled and published reads: VERIFIED (no post)")
-        except urllib.error.HTTPError as exc:
-            errors.append("Metricool reads: HTTP " + str(exc.code))
+            print("Metricool brand and connected X identity: VERIFIED (read-only)",flush=True)
         except Exception as exc:
-            errors.append("Metricool reads: " + type(exc).__name__)
+            errors.append(_metricool_read_failure("Metricool brand lookup", exc))
+        else:
+            day = eastern_now().date().isoformat()
+            for stage, query in (
+                    ("Metricool scheduled posts", lambda: scheduled_posts(day)),
+                    ("Metricool published X export", lambda: published_posts(day))):
+                try:
+                    query()
+                    print(stage + ": VERIFIED (read-only)",flush=True)
+                except Exception as exc:
+                    errors.append(_metricool_read_failure(stage, exc))
     check(not errors, "; ".join(errors))
     print("READINESS PASSED (read-only). Run dry-run before enabling production.")
 
