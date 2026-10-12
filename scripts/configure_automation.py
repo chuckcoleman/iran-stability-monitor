@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Owner-run setup helper. Hidden secret entry; no forecast or social publication.
 
-Requires an already authenticated GitHub CLI. Stores keys through gh secret set
+Requires an already authenticated GitHub CLI. Stores remaining private credentials through gh secret set
 stdin, switches both production flags OFF, and enables strict up-to-date checks
 in the existing protection rule without removing any other rule or bypass guard.
 """
@@ -49,7 +49,7 @@ def protect():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--store-secrets", action="store_true", help="Prompt privately for three API credentials")
+    parser.add_argument("--store-secrets", action="store_true", help="Prompt privately for the GitHub automation and Metricool credentials")
     parser.add_argument("--strict-protection", action="store_true", help="Require up-to-date CI in existing ruleset")
     args = parser.parse_args()
     if not (args.store_secrets or args.strict_protection):
@@ -67,7 +67,7 @@ def main():
         protect()
         print("Existing protection strengthened; no PR/check bypass added.")
     if args.store_secrets:
-        for name in ("OPENAI_API_KEY", "AUTOMATION_GH_TOKEN", "METRICOOL_API_TOKEN"):
+        for name in ("AUTOMATION_GH_TOKEN", "METRICOOL_API_TOKEN"):
             value = getpass.getpass(name + " (hidden; Enter keeps an existing secret): ").strip()
             if value:
                 command(["secret", "set", name, "--repo", REPO], value)
