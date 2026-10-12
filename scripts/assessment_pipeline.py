@@ -152,7 +152,7 @@ def _safe_responses_error(exc, search):
     or re-raised in a way that reveals user data or bearer tokens.
     """
     stage="web-search research" if search else "non-search assessment/review"
-    safe=lambda x: x if isinstance(x,str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_.\\[\\]-]{0,99}",x) else None
+    safe=lambda x: x if isinstance(x,str) and re.fullmatch(r"[A-Za-z][A-Za-z0-9_.\[\]-]{0,99}",x) else None
     details={"type":None,"code":None,"param":None}
     hints=[]
     try:
