@@ -9,6 +9,8 @@ import os
 from pathlib import Path
 import sys
 import urllib.request
+import urllib.parse
+import time
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 from source_metadata import url_key, capture_metadata
@@ -27,6 +29,59 @@ def check(ok,why):
 def clock():
     return dt.datetime.now(dt.timezone.utc).astimezone(EST)
 
+_OPENAI_WIF_CACHE={"access_token":None,"expires_at":0.0}
+
+
+def openai_bearer_token():
+    """Return a short-lived WIF bearer when configured; API-key fallback is local-only."""
+    provider_id=os.getenv("OPENAI_IDENTITY_PROVIDER_ID")
+    service_id=os.getenv("OPENAI_SERVICE_ACCOUNT_ID")
+    audience=os.getenv("OPENAI_WIF_AUDIENCE") or "https://api.openai.com/v1"
+    if provider_id or service_id:
+        check(provider_id and service_id, "Incomplete OpenAI WIF configuration")
+        request_url=os.getenv("ACTIONS_ID_TOKEN_REQUEST_URL")
+        request_token=os.getenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+        check(request_url and request_token,
+              "GitHub OIDC environment unavailable; workflow needs id-token: write")
+        now=time.time()
+        if (_OPENAI_WIF_CACHE["access_token"] and
+                _OPENAI_WIF_CACHE["expires_at"]-now>300):
+            return _OPENAI_WIF_CACHE["access_token"]
+        parsed=urllib.parse.urlparse(request_url)
+        query=dict(urllib.parse.parse_qsl(parsed.query,keep_blank_values=True))
+        query["audience"]=audience
+        oidc_url=urllib.parse.urlunparse(parsed._replace(query=urllib.parse.urlencode(query)))
+        oidc_req=urllib.request.Request(
+            oidc_url,headers={"Authorization":"bearer "+request_token})
+        with urllib.request.urlopen(oidc_req,timeout=30) as response:
+            oidc=json.load(response)
+        subject=oidc.get("value")
+        check(subject,"GitHub OIDC token response missing value")
+        exchange_payload={
+            "grant_type":"urn:ietf:params:oauth:grant-type:token-exchange",
+            "subject_token_type":"urn:ietf:params:oauth:token-type:jwt",
+            "subject_token":subject,
+            "identity_provider_id":provider_id,
+            "service_account_id":service_id,
+        }
+        exchange_req=urllib.request.Request(
+            "https://auth.openai.com/oauth/token",
+            data=json.dumps(exchange_payload).encode(),method="POST",
+            headers={"Content-Type":"application/json"})
+        with urllib.request.urlopen(exchange_req,timeout=30) as response:
+            token_data=json.load(response)
+        access=token_data.get("access_token")
+        check(access,"OpenAI WIF exchange returned no access_token")
+        expires_at=token_data.get("expires_at")
+        if not isinstance(expires_at,(int,float)):
+            expires_at=now+float(token_data.get("expires_in") or 600)
+        _OPENAI_WIF_CACHE.update(access_token=access,expires_at=float(expires_at))
+        return access
+    api_key=os.getenv("OPENAI_API_KEY")
+    check(api_key,"OpenAI WIF variables are missing; no API-key fallback configured")
+    return api_key
+
+
 def deadline(opened,key):
     if key==IDS[0]:
         day=opened.date()+dt.timedelta(days=90)
@@ -44,7 +99,7 @@ def llm(prompt,search):
                         "tool_choice":"required","include":["web_search_call.action.sources"]})
     req=urllib.request.Request("https://api.openai.com/v1/responses",
        data=json.dumps(payload).encode(),method="POST",
-       headers={"Content-Type":"application/json","Authorization":"Bearer "+os.environ["OPENAI_API_KEY"]})
+       headers={"Content-Type":"application/json","Authorization":"Bearer "+openai_bearer_token()})
     with urllib.request.urlopen(req,timeout=500) as response: raw=json.load(response)
     check(raw.get("status")=="completed","OpenAI response incomplete")
     output=raw.get("output",[])
