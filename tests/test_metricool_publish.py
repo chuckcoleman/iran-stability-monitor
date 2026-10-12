@@ -41,13 +41,59 @@ class MetricoolTests(unittest.TestCase):
             with self.assertRaises(RuntimeError): x.list_data(response)
         self.assertEqual(x.list_data({'data': [], 'page': None}), [])
 
-    def test_published_csv_is_distinct_from_scheduler(self):
-        csv = 'Date,Text,Impressions\n' + self.day + ',Iran ' + self.day + ' update,10\n'
-        posts = x.parse_published_csv(csv)
+    def test_published_json_is_distinct_from_scheduler_and_scoped(self):
+        post = {'text': 'Iran ' + self.day + ' assessment https://t.co/abc',
+                'blogId': 7254821, 'username': 'IranStabilityMo',
+                'tweetId': '9876543210'}
+        with patch.object(x, 'metricool', return_value={'data': [post]}) as api:
+            posts = x.published_posts(self.day, self.now)
+        self.assertEqual(len(posts), 1)
         self.assertTrue(x.matches_assessment(posts[0], self.day))
-        with self.assertRaises(RuntimeError): x.parse_published_csv('{"data":[]}')
-        with self.assertRaises(RuntimeError): x.parse_published_csv('Date,Views\n2026-10-11,10\n')
-        self.assertEqual(x.parse_published_csv('Date,Text\n'), [])
+        args = api.call_args
+        self.assertEqual(args.args[0], '/v2/analytics/posts/twitter')
+        self.assertEqual(args.kwargs['params']['from'], '2026-10-10T00:00:00')
+        self.assertEqual(args.kwargs['params']['to'], '2026-10-11T16:00:00')
+        self.assertEqual(args.kwargs['params']['timezone'], 'America/New_York')
+        self.assertNotIn('csv_response', args.kwargs)
+
+    def test_published_json_rejects_wrong_or_unknown_identity(self):
+        row = {'text': 'Iran ' + self.day + ' update',
+               'blogId': 7254821, 'username': 'IranStabilityMo'}
+        for changed in [
+                {'blogId': 123},
+                {'username': 'DifferentAccount'},
+                {'text': None},
+                {'text': 12345}]:
+            with self.subTest(changed=changed):
+                bad = dict(row, **changed)
+                with patch.object(x, 'metricool', return_value={'data': [bad]}):
+                    with self.assertRaises(RuntimeError):
+                        x.published_posts(self.day, self.now)
+        with patch.object(x, 'metricool',
+                          return_value={'data': [row],
+                                        'page': {'totalPages': 2}}):
+            with self.assertRaisesRegex(RuntimeError, 'More Metricool pages'):
+                x.published_posts(self.day, self.now)
+        with patch.object(x, 'metricool', return_value={'data': []}):
+            self.assertEqual(x.published_posts(self.day, self.now), [])
+
+    def test_scheduler_uses_local_time_without_offset(self):
+        with patch.object(x, 'metricool', return_value={'data': []}) as api:
+            self.assertEqual(x.scheduled_posts(self.day), [])
+        call = api.call_args
+        self.assertEqual(call.args[0], '/v2/scheduler/posts')
+        self.assertEqual(call.kwargs['params'], {
+            'start': '2026-10-10T00:00:00',
+            'end': '2026-10-19T00:00:00',
+            'timezone': 'America/New_York',
+            'extendedRange': 'true'
+        })
+
+    def test_local_datetime_converts_utc_and_rejects_naive_time(self):
+        stamp = dt.datetime(2026, 10, 11, 20, tzinfo=dt.timezone.utc)
+        self.assertEqual(x.metricool_local_datetime(stamp), '2026-10-11T16:00:00')
+        with self.assertRaisesRegex(RuntimeError, 'timezone aware'):
+            x.metricool_local_datetime(stamp.replace(tzinfo=None))
 
     def test_duplicate_works_with_shortened_url(self):
         post = {'text': 'Iran ' + self.day + ' assessment https://t.co/abc', 'providers': [{'network': 'twitter'}]}

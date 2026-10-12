@@ -118,6 +118,38 @@ GitHub OIDC `sub` and mapping `iss` have been compared; check the
 **provider-level OIDC Issuer URL**, enabled status, mapping selection and
 service-account target separately, without disclosing any JWT or credentials.
 
+## October 12: local date query and JSON analytics corrections
+
+The latest read-only healthcheck proved that **GitHub App / Pages / strict
+branch protections** and **Metricool's exact IranStabilityMo X connection**
+are verified. The remaining Metricool calendar and published-post endpoints
+returned HTTP 400. Against [Metricool's published OpenAPI specification]
+(https://app.metricool.com/api/swagger.json):
+
+- `GET /v2/scheduler/posts` expects `start` and `end` in
+  **local** `YYYY-MM-DDTHH:MM:SS` form and `timezone=America/New_York`
+  as a separate query parameter, not date-time values containing UTC offsets.
+- `GET /v2/analytics/posts/twitter` likewise documents separate local
+  `from`, `to`, and `timezone` values. Its response is
+  `JsonOkListResponseTwitterPost` in **JSON**, not a CSV export.
+- Published Tweet records have a `text` field and optional `blogId`
+  and `username` fields. The duplicate-posting checker now rejects
+  missing text, any conflicting known brand or username, and incomplete
+  pagination rather than treating them as empty posts.
+- A live read-only healthcheck must pass before creating any social post.
+  The future one-post-per-assessment claim mechanism and post-publication
+  verification remain unchanged. No X post is created by this repair.
+
+OpenAI WIF **still returns HTTP 401 `invalid_grant`** even after aligning
+the issuer slash. Its exchange HTTP request agrees with OpenAI's published
+`POST /oauth/token` JSON token-exchange reference. Check that the
+**saved** OpenAI provider and service-account mapping are enabled,
+unambiguous, and associated with the `iran-monitor` service account in
+`Default project`; confirm the mapping `iss` has **no trailing slash**.
+The incoming GitHub JWT itself has already been verified for `iss`,
+`aud`, `sub`, `repository`, `ref`, and `workflow_ref` selectors.
+Never share the token or private credential.
+
 ## Owner setup: the remaining external boundary
 
 Use repository **Settings → Secrets and variables → Actions**. Never paste a key

@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 """One at-most-once X scheduling attempt after fresh, SHA-bound public verification.
 
-Scheduled calendar and published Twitter CSV are separate reads. An atomic Git ref
+Scheduled calendar and published Twitter JSON are separate read-only sources. An atomic Git ref
 claims the assessment before the non-idempotent POST. Uncertain delivery never
 causes an automatic retry. Authentication and response-shape failures stop posting.
 """
-import csv
 import datetime as dt
-import io
 import json
 import os
 from pathlib import Path
@@ -116,43 +114,56 @@ def check_brand(healthcheck=False):
     return b
 
 
+def metricool_local_datetime(value):
+    """Metricool date query fields are local ISO seconds; timezone is separate.
+
+    ISO offsets or trailing Z cause Metricool HTTP 400. Do not lose the
+    intended instant: convert into the brand's configured IANA timezone first.
+    """
+    check(isinstance(value, dt.datetime) and
+          value.tzinfo is not None and value.utcoffset() is not None,
+          "Metricool date must be timezone aware")
+    return value.astimezone(ZONE).strftime("%Y-%m-%dT%H:%M:%S")
+
+
 def scheduled_posts(day, now=None):
     date = dt.date.fromisoformat(day)
     start = dt.datetime.combine(date - dt.timedelta(days=1), dt.time.min, ZONE)
     end = dt.datetime.combine(date + dt.timedelta(days=8), dt.time.min, ZONE)
     return list_data(metricool("/v2/scheduler/posts", params={
-        "start": start.isoformat(), "end": end.isoformat(),
+        "start": metricool_local_datetime(start),
+        "end": metricool_local_datetime(end),
         "timezone": "America/New_York", "extendedRange": "true"}))
 
 
-def parse_published_csv(raw):
-    check(isinstance(raw, str) and raw.strip(), "Empty/unknown published-post export")
-    check(not raw.lstrip().startswith(("<", "{", "[")), "Published-post export was not CSV")
-    try:
-        dialect = csv.Sniffer().sniff(raw[:8192], delimiters=",;\t")
-    except csv.Error:
-        dialect = csv.excel
-    reader = csv.DictReader(io.StringIO(raw), dialect=dialect)
-    names = reader.fieldnames or []
-    normalized = {re.sub(r"[^a-z]", "", n.lower()): n for n in names}
-    text_field = next((normalized[k] for k in ("text", "tweet", "content", "posttext", "tweettext")
-                       if k in normalized), None)
-    check(text_field is not None, "Published CSV lacks a recognized post-text column")
-    rows = []
-    for row in reader:
-        check(None not in row and all(value is not None for value in row.values()), "Malformed CSV row")
-        rows.append({"text": row[text_field], "providers": [{"network": "twitter"}]})
-    return rows
-
-
 def published_posts(day, now=None):
+    """Query documented JSON TwitterPost records, NOT an unrelated CSV export.
+
+    The endpoint is scoped to the verified brand, but reject inconsistent
+    brand IDs and X handles in returned records rather than silently accepting
+    another account's posts. Never treat unfamiliar or paginated data as empty.
+    """
     date = dt.date.fromisoformat(day)
     start = dt.datetime.combine(date - dt.timedelta(days=1), dt.time.min, ZONE)
     current = now or dt.datetime.now(ZONE)
-    text = metricool("/v2/analytics/posts/twitter", params={
-        "from": start.isoformat(), "to": current.isoformat(), "timezone": "America/New_York"},
-        csv_response=True)
-    return parse_published_csv(text)
+    check(current.tzinfo is not None and current.utcoffset() is not None,
+          "Metricool published-post end must be timezone aware")
+    check(current >= start, "Published-post interval is reversed")
+    result = list_data(metricool("/v2/analytics/posts/twitter", params={
+        "from": metricool_local_datetime(start),
+        "to": metricool_local_datetime(current),
+        "timezone": "America/New_York"}))
+    rows = []
+    for item in result:
+        check(isinstance(item.get("text"), str), "Published TwitterPost missing text")
+        if "blogId" in item:
+            check(str(item["blogId"]) == BRAND, "Published TwitterPost belongs to another brand")
+        if "username" in item:
+            check(isinstance(item["username"], str) and
+                  item["username"].lstrip("@").lower() == "iranstabilitymo",
+                  "Published TwitterPost belongs to another X account")
+        rows.append({"text": item["text"], "providers": [{"network": "twitter"}]})
+    return rows
 
 
 def is_x(post):

@@ -155,10 +155,10 @@ def _metricool_read_failure(stage, exc):
         "Undocumented Metricool pagination",
         "More Metricool pages require reconciliation",
         "Malformed list item",
-        "Empty/unknown published-post export",
-        "Published-post export was not CSV",
-        "Published CSV lacks a recognized post-text column",
-        "Malformed CSV row",
+        "Published TwitterPost missing text",
+        "Published TwitterPost belongs to another brand",
+        "Published TwitterPost belongs to another X account",
+        "Published-post interval is reversed",
     }
     reason = str(exc)
     return stage + ": " + (reason if isinstance(exc, RuntimeError) and reason in safe
