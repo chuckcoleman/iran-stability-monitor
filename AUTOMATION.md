@@ -26,6 +26,33 @@ forecast probabilities, historical records, and publication gates
 remain unchanged. Regression tests cover both archived display and
 new-candidate style.
 
+## October 12: live API-probe rejected web-search JSON format
+
+The first **actual** `api-probe` invocation returned
+`HTTP 400 invalid_request_error` with rejected parameter
+`response_format`. This was the hosted **web-search research** request
+to `/v1/responses`; it failed before any second, non-search JSON-mode
+probe ran. An `API PROBE PASSED` line in the old job log came from a
+*mocked offline regression test*, not real API success. The offline test
+now suppresses that misleading status print.
+
+The code now removes `text.format: {"type":"json_object"}` **only when
+`web_search` is enabled** for the configured model. OpenAI documents
+model/tool compatibility restrictions for JSON response formatting.
+We retain the mandatory live web search, explicit model instruction to
+return JSON, the complete consulted source list, URL-citation checks,
+strict `json.loads` with non-finite-number rejection, source metadata
+capture, closed-evidence cutoff, independent review and **all** Protocol
+v1 publication validations. Unparseable prose, missing citations or
+invalid data still fail closed. The non-search forecast/review request
+continues to request JSON mode.
+
+The change requires another **owner-triggered, paid but unpublishable**
+`api-probe` to confirm both search and non-search request formats.
+Do not perform a live full dry-run or enable unattended publication
+until that contract probe succeeds. If the second stage fails, diagnose
+that stage separately rather than changing the frozen protocol.
+
 ## First live dry-run: OpenAI Responses HTTP 400 (October 12)
 
 The first paid, nonpublishing `dry-run` reached the initial web-search

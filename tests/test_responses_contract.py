@@ -57,12 +57,12 @@ class ResponsesContractTests(unittest.TestCase):
         self.assertNotIn("bad:code",report)
         self.assertNotIn('"param"',report)
 
-    def test_search_request_retains_paid_web_and_json_constraints(self):
+    def test_search_request_omits_rejected_response_format_but_requires_citations(self):
         requests=[]
         def deny(req,timeout=0):
             requests.append(json.loads(req.data.decode("utf-8")))
-            raise rejected("Unsupported tool mode: web_search json format",
-                           "text.format.type")
+            raise rejected("Unsupported response_format for web_search",
+                           "response_format")
         with patch.object(a,"openai_bearer_token",return_value="SECRET_BEARER"), \
              patch.object(a.urllib.request,"urlopen",side_effect=deny):
             with self.assertRaisesRegex(RuntimeError,"Responses web-search research HTTP 400") as caught:
@@ -73,9 +73,55 @@ class ResponsesContractTests(unittest.TestCase):
         self.assertEqual(p["tool_choice"],"required")
         self.assertEqual(p["include"],["web_search_call.action.sources"])
         self.assertFalse(p["store"])
-        self.assertEqual(p["text"]["format"],{"type":"json_object"})
+        self.assertNotIn("text",p)
+        self.assertNotIn("response_format",p)
         self.assertNotIn("SECRET_BEARER",str(caught.exception))
-        self.assertIn("text.format.type",str(caught.exception))
+        self.assertIn("response_format",str(caught.exception))
+
+    def test_nonsearch_request_still_requires_json_format(self):
+        requests=[]
+        def deny(req,timeout=0):
+            requests.append(json.loads(req.data.decode("utf-8")))
+            raise rejected("Invalid non-search request", "text.format")
+        with patch.object(a,"openai_bearer_token",return_value="SECRET_BEARER"), \
+             patch.object(a.urllib.request,"urlopen",side_effect=deny):
+            with self.assertRaisesRegex(RuntimeError,"non-search assessment/review HTTP 400"):
+                a.llm("Produce a JSON object without search.",False)
+        p=requests[0]
+        self.assertNotIn("tools",p)
+        self.assertNotIn("include",p)
+        self.assertNotIn("tool_choice",p)
+        self.assertEqual(p["text"]["format"],{"type":"json_object"})
+
+    def test_web_search_parse_remains_strict_and_sources_required(self):
+        url="https://www.reuters.com/world/example"
+        result={"status":"completed","output":[
+            {"type":"web_search_call","action":{"sources":[{"url":url}]}},
+            {"type":"message","content":[{"type":"output_text",
+                "text":json.dumps({"evidence":[{"source":url,"event_date":"2026-10-12"}]})}]}
+        ]}
+        def fake_open(req,timeout=0):
+            return io.BytesIO(json.dumps(result).encode("utf-8"))
+        with patch.dict(os.environ,{"GITHUB_ACTIONS":"false"},clear=True), \
+             patch.object(a,"openai_bearer_token",return_value="SECRET_BEARER"), \
+             patch.object(a.urllib.request,"urlopen",side_effect=fake_open):
+            answer,citations=a.llm("Search and return JSON evidence.",True)
+        self.assertEqual(answer["evidence"][0]["source"],url)
+        self.assertEqual(citations,{url})
+        result["output"][0]["action"]["sources"]=[]
+        with patch.dict(os.environ,{"GITHUB_ACTIONS":"false"},clear=True), \
+             patch.object(a,"openai_bearer_token",return_value="SECRET_BEARER"), \
+             patch.object(a.urllib.request,"urlopen",side_effect=fake_open):
+            answer,citations=a.llm("Search and return JSON evidence.",True)
+        self.assertFalse(citations)
+        # The next publication guard must fail closed on sources missing.
+        self.assertIsInstance(answer,dict)
+        result["output"][1]["content"][0]["text"]="Not valid JSON!"
+        with patch.dict(os.environ,{"GITHUB_ACTIONS":"false"},clear=True), \
+             patch.object(a,"openai_bearer_token",return_value="SECRET_BEARER"), \
+             patch.object(a.urllib.request,"urlopen",side_effect=fake_open):
+            with self.assertRaises(json.JSONDecodeError):
+                a.llm("Search and return JSON evidence.",True)
 
     def test_api_probe_never_writes_history_or_touches_github_or_metricool(self):
         with tempfile.TemporaryDirectory() as d:
@@ -94,7 +140,8 @@ class ResponsesContractTests(unittest.TestCase):
                  patch.object(a,"llm",side_effect=fake_llm), \
                  patch.object(sunday,"gh") as github, \
                  patch.object(sunday,"run") as commands:
-                sunday.api_probe()
+                with patch("sys.stdout",new_callable=io.StringIO):
+                    sunday.api_probe()
                 github.assert_not_called()
                 commands.assert_not_called()
             self.assertEqual([s for _,s in calls],[True,False])
