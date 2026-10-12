@@ -37,11 +37,13 @@ account access with the read-only check described below.
 
 | Repository variable | Initial value |
 |---|---|
-| `OPENAI_IDENTITY_PROVIDER_ID` | The non-secret ID of the OpenAI GitHub OIDC workload identity provider |
-| `OPENAI_SERVICE_ACCOUNT_ID` | The non-secret ID of the mapped dedicated OpenAI project service account |
+| `OPENAI_IDENTITY_PROVIDER_ID` | Optional override; the workflow already contains the current non-secret provider ID |
+| `OPENAI_SERVICE_ACCOUNT_ID` | Optional override; the workflow already contains the current non-secret mapped service-account User ID |
 | `IRAN_FORECAST_MODEL` | `gpt-6.1-sol`, or a Responses/web-search model explicitly tested in this API project |
 | `ASSESSMENT_AUTOMATION_ENABLED` | `false` |
 | `AUTO_X_ENABLED` | `false` |
+
+The two OpenAI WIF identifiers are configured as non-secret defaults in `.github/workflows/sunday-assessment.yml`; GitHub Actions repository variables of the same names may override them. **Do not enter access tokens in either field.** WIF still requires a live `healthcheck` and `dry-run` before enabling unattended publication.
 
 The workflow audience is fixed to `https://api.openai.com/v1` and must exactly match the provider configuration. The OpenAI provider and service-account IDs are identifiers, not bearer secrets. Do not store the short-lived WIF access token; each Actions job obtains and exchanges its own GitHub identity token.
 
