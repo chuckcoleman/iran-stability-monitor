@@ -147,6 +147,7 @@ def _metricool_read_failure(stage, exc):
         "Brand timezone mismatch",
         "Unexpected or missing connected X identity",
         "Metricool user identity mismatch",
+        "Malformed Metricool network metadata",
         "Unrecognized Metricool list response",
         "Unrecognized Metricool pagination",
         "Metricool returned an incomplete page",
@@ -210,7 +211,7 @@ def service_checks():
     else:
         from metricool_publish import check_brand, scheduled_posts, published_posts
         try:
-            check_brand()
+            check_brand(healthcheck=True)
             print("Metricool brand and connected X identity: VERIFIED (read-only)",flush=True)
         except Exception as exc:
             errors.append(_metricool_read_failure("Metricool brand lookup", exc))
