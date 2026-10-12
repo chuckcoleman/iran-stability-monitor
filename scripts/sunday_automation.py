@@ -236,7 +236,7 @@ def api_probe():
     are tested against the API, without eliciting any scored forecast.
     """
     ready(live=False)
-    from assessment_pipeline import llm
+    from assessment_pipeline import llm, urlkey
     path=ROOT / "data/history.json"
     original=path.read_bytes()
     try:
@@ -244,8 +244,14 @@ def api_probe():
             "Search the live web for one recent Reuters or AP news article about Iran. "
             "Return ONLY a JSON object with two string fields: title and url. "
             "Cite the original source URL.",True)
-        check(isinstance(article,dict) and bool(citations),
-              "Responses API probe did not return cited live web evidence")
+        # A nonempty citation set alone is not proof that the article returned
+        # by the model was consulted. Apply the same HTTPS URL identity rule
+        # used by the production evidence-freezing guard.
+        check(isinstance(article,dict) and
+              isinstance(article.get("title"),str) and bool(article["title"].strip())
+              and urlkey(article.get("url")) is not None
+              and urlkey(article["url"]) in {urlkey(x) for x in citations},
+              "Responses API probe did not return a cited public-HTTPS article")
         print("OpenAI Responses web-search request: VERIFIED (paid, unpublishable)",flush=True)
         result,_=llm(
             "Do not use web search. Return ONLY a JSON object: {\"probe\": true}.",
