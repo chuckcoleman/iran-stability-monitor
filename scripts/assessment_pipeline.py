@@ -280,6 +280,13 @@ def assemble(history,assessment,evidence,cutoff,opened,issued):
     for key in ("summary","what_changed","stabilizer","next_threshold","limitations"):
         val=assessment.get(key)
         check(isinstance(val,str) and len(val.strip())>=40,"Missing analytical narrative: "+key)
+        if key=="next_threshold":
+            # This is a forward-looking *presentation* rule, not a change to
+            # any frozen event, threshold, forecast or historical record.
+            check(not re.match(r"\s*whether\b",val,re.I)
+                  and not re.search(r";\s*whether\b",val,re.I)
+                  and bool(re.search(r"[.!?]\s*$",val)),
+                  "Next threshold must use complete grammatical sentences, not bare 'Whether' clauses")
         u[key]=val
     pf=assessment.get("forecasts")
     check(isinstance(pf,list) and len(pf)==4,"Exactly four forecasts required")
@@ -447,6 +454,10 @@ information. Elicit exactly four independent prospective probabilities under fro
 Protocol v1.0, retaining exact event definitions, warning rules and Houthi rule.
 Output JSON ONLY with:
 summary, what_changed, stabilizer, next_threshold, limitations (>=40 chars);
+Write next_threshold as one or more complete grammatical sentences, each describing
+an observable condition to monitor. Do not start with a bare "Whether ..." clause,
+use semicolon-separated "whether ..." fragments, or imply a threshold was crossed
+without evidence. Use a separate full sentence for each distinct threshold.
 forecasts array exactly four, each with event_id,p,range [lower,upper]
 (10th and 90th percentiles of informed analysts),confidence
 (Low/Medium/Medium-high/High), raise, lower;
@@ -512,7 +523,8 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
     if reviewer is not None:
         review,_=reviewer("Review the following proposed assessment against only its frozen evidence and protocol. "
            "Do not elicit or revise probabilities. Do not browse. Identify unsupported claims, contradictions, "
-           "unsafe warning levels, ungrounded Hanke claims, grammar errors or source/probability confusion. "
+           "unsafe warning levels, ungrounded Hanke claims, grammar errors (including sentence "
+           "fragments in next_threshold) or source/probability confusion. "
            "Return JSON with approved boolean and issues array. Approve only if issues is empty. Input: "+
            json.dumps({"analysis":analysis,"evidence":evidence,"protocol":history["protocol"]}),False)
         check(review.get("approved") is True and review.get("issues")==[],"Independent analytical review rejected the candidate")

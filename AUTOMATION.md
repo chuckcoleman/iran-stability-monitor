@@ -1,5 +1,22 @@
 # Sunday unattended publication
 
+## Website prose: next thresholds
+
+The dashboard's former **Next threshold** card is now headed **What should we
+watch next?**. Its archived `next_threshold` strings remain **byte-for-byte
+unchanged** in `data/history.json`. A deterministic display-only helper turns
+older leading `Whether ...` fragments and semicolon-separated `whether`
+clauses into complete monitoring sentences. It does not assert that any
+threshold has been crossed or change the meaning of a forecast.
+
+For new assessments, the independent analytic prompt and candidate check require
+`next_threshold` to contain one or more grammatically complete sentences,
+with separate full sentences for distinct monitoring thresholds. A review also
+rejects sentence fragments. These are editorial rules only: Protocol v1.0,
+the frozen event definitions, resolution rules, probability history, and
+publishing gates are unchanged. Regression tests cover archived display and
+prospective candidate style.
+
 ## Installation state
 
 The repository implementation covers live research, frozen evidence, four prospective

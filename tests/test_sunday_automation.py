@@ -30,6 +30,23 @@ class SundayPipelineTests(unittest.TestCase):
     def record(self):
         return a.assemble(self.h, self.analysis, self.frozen(), self.cutoff, self.opened, self.opened + dt.timedelta(seconds=1))
 
+    def test_next_threshold_requires_complete_sentences(self):
+        """Future narrative must not reproduce the archived sentence fragments."""
+        for fragment in (
+            "Whether essential state allocations become disrupted for fourteen days.",
+            "We are tracking whether inflation accelerates; whether currency payments fail.",
+            "We are monitoring whether coercive salaries are paid without interruption"
+        ):
+            with self.subTest(fragment=fragment):
+                self.analysis["next_threshold"] = fragment
+                with self.assertRaisesRegex(ValueError, "complete grammatical sentences"):
+                    self.record()
+        self.analysis["next_threshold"] = (
+            "We are monitoring whether essential state allocations become disrupted. "
+            "We will also check whether salary payments stop for security personnel."
+        )
+        self.assertEqual(self.record()["next_threshold"], self.analysis["next_threshold"])
+
     def test_deadline_dst_and_leap(self):
         x = dt.datetime(2026, 10, 18, 9, tzinfo=ZONE)
         self.assertEqual(a.deadline(x, a.IDS[0]), "2027-01-16T09:00:00-05:00")
