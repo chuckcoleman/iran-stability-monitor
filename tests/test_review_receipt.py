@@ -107,11 +107,7 @@ class ReceiptTests(unittest.TestCase):
                     receipt.verify_repository_change("base",root)
                 p=root/"data/review-receipts";p.mkdir()
                 (p/(self.receipt["date"]+".json")).write_text(json.dumps(self.receipt))
-                # Simulated GitHub CI clock is after completed review time.
-                with patch.object(receipt.dt,"datetime",wraps=dt.datetime) as mocked:
-                    mocked.now.return_value=self.after
-                    mocked.fromisoformat.side_effect=dt.datetime.fromisoformat
-                    result=receipt.verify_repository_change("base",root)
+                result=receipt.verify_repository_change("base",root,now=self.after)
                 self.assertIn("verified",result)
 
     def test_code_only_change_does_not_require_receipt(self):
