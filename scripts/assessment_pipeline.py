@@ -653,6 +653,45 @@ Frozen protocol: {protocol}
 Prior prospective forecasts: {prior}
 Closed evidence: {evidence}"""
 
+REVIEW="""Independently review the proposed assessment using ONLY the closed, cited
+evidence and frozen Protocol v1.0. Do not browse, elicit new probabilities,
+change event definitions or silently supply missing evidence.
+Check unsupported affirmative claims, contradictions, independence of cited
+sources, evidence IDs (including syndicated wire-service mirrors), warning
+states, false claims of resilience based on absence of shortage reporting,
+the evidence/basis justification for EACH nonzero haircut component, Hanke
+observations, exact core forecast attribution, and source/probability confusion.
+The one-distinct-event-per-sentence editorial rule applies ONLY to
+analysis.next_threshold. Do NOT apply it to summary or any other field.
+For next_threshold, flag fragments, first-person phrasing, questions, merged
+distinct events, and departures from the frozen resolution conditions.
+A supported judgmental haircut assumption is permissible ONLY if stated
+plainly, linked to relevant frozen evidence, and compatible with its anchor.
+Return JSON with approved boolean and issues array; if rejecting, each issue
+must include type, location, and reason. Approve only when issues=[].
+Input: """
+
+CORRECT="""Revise this draft ASSESSMENT using ONLY the identical closed evidence and
+the existing frozen protocol. This is an editorial/diagnostic correction after
+independent review, NOT a fresh prospective forecast elicitation. Return the
+COMPLETE corrected JSON assessment object (not a patch) with all required fields.
+The four scored forecasts are LOCKED: preserve the original forecasts array
+byte-for-byte as JSON data, including event IDs, probabilities, ranges,
+confidence and raise/lower descriptions. Do not elicit new probabilities or
+change the opening of any event. You may correct qualitative narrative,
+warnings, evidence-handling commentary, the six UNSCORED oil-credit haircut
+components and their specific provenance rationales, and revision-attribution
+explanations if the exact unchanged core forecasts remain mathematically
+reconciled. Do not manufacture offsets or sources. Re-check all event definitions,
+the nine warning categories, evidence IDs, six haircut support records and
+other unscored diagnostic constraints. The one-event-per-sentence requirement
+applies ONLY to next_threshold. Absence of a reported shortage is not proof
+of hospital resilience. If evidence does not support a nonzero haircut
+component, use zero and explicitly explain the missing support. A syndicated
+mirror of an earlier report is not newly independent evidence.
+The original closed evidence, protocol, draft and identified problems follow: """
+
+
 def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=capture_metadata,reviewer=None):
     baseline=json.dumps(history,sort_keys=True,ensure_ascii=False)
     today=now().date().isoformat()
@@ -681,16 +720,51 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
        [{"event_id":f["event_id"],"p":f["p"]} for f in previous["forecasts"] if f.get("scored")]),
        evidence=json.dumps(evidence),templates=json.dumps({k:previous[k] for k in ("regional","political","chains","absence_indicators")}))
     analysis,_=assessor(input,False)
-    opened=now() # forecast formation completes here; same open timestamp for four scored events
+    opened=now() # the ONE prospective elicitation of exactly four core probabilities
     if reviewer is not None:
-        review,_=reviewer("Review the following proposed assessment against only its frozen evidence and protocol. "
-           "Do not elicit or revise probabilities. Do not browse. Identify unsupported claims, contradictions, "
-           "unsafe warning levels, ungrounded Hanke claims, grammar errors (including "
-           "nondeclarative or first-person next_threshold copy, sentence fragments and "
-           "multiple events in one sentence) or source/probability confusion. "
-           "Return JSON with approved boolean and issues array. Approve only if issues is empty. Input: "+
-           json.dumps({"analysis":analysis,"evidence":evidence,"protocol":history["protocol"]}),False)
-        check(review.get("approved") is True and review.get("issues")==[],"Independent analytical review rejected the candidate")
+        check(isinstance(analysis,dict),"Initial assessment was not a JSON object")
+        locked_forecasts=copy.deepcopy(analysis.get("forecasts"))
+        approved=False
+        # At most two evidence-closed corrections; never regenerate the scored
+        # forecasts or dilute an independent rejection into automatic approval.
+        for attempt in range(3):
+            try:
+                # First check all deterministic guards before paying for review.
+                # No file is changed, and the eventual issue time is still unknown.
+                assemble(history,analysis,evidence,cutoff,opened,opened)
+                review,_=reviewer(REVIEW+json.dumps({
+                    "analysis":analysis,"evidence":evidence,
+                    "protocol":history["protocol"]},ensure_ascii=False),False)
+                check(isinstance(review,dict) and
+                      type(review.get("approved")) is bool and
+                      isinstance(review.get("issues"),list),
+                      "Independent review did not return a valid decision")
+                if review["approved"] is True and review["issues"]==[]:
+                    approved=True
+                    break
+                problems=review["issues"]
+                check(bool(problems),"Independent review rejected without actionable issues")
+            except (ValueError,TypeError,KeyError) as exc:
+                # A deterministic validation failure remains blocking unless a
+                # corrected draft independently passes the same full guards.
+                problems=[{"type":"deterministic_validation","reason":str(exc)}]
+            if os.getenv("GITHUB_ACTIONS")=="true":
+                audit=ROOT/".automation-audit"
+                audit.mkdir(exist_ok=True)
+                (audit/f"review-issues-{attempt+1}.json").write_text(
+                    json.dumps({"review_attempt":attempt+1,"issues":problems},
+                               ensure_ascii=False,indent=2),encoding="utf-8")
+            print("Candidate not approved: review/validation attempt "+str(attempt+1)+
+                  " identified "+str(len(problems))+" issue(s).",flush=True)
+            check(attempt<2,"Independent analytical review rejected the candidate after two bounded corrections")
+            revised,_=assessor(CORRECT+json.dumps({
+                "closed_evidence":evidence,"protocol":history["protocol"],
+                "prior_prospective":input,"draft":analysis,
+                "issues":problems},ensure_ascii=False),False)
+            check(isinstance(revised,dict) and revised.get("forecasts")==locked_forecasts,
+                  "Review correction changed or re-elicited the locked four core forecasts")
+            analysis=revised
+        check(approved,"Independent analytical review rejected the candidate")
     issued=now()
     check(cutoff<=opened<=issued and opened.date().isoformat()==today,"Timestamp ordering/date failed")
     u=assemble(history,analysis,evidence,cutoff,opened,issued)
