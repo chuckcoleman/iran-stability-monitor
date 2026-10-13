@@ -43,6 +43,17 @@ def fixture():
                     "social_summary": "This is a synthetic automation test, not news.",
                     "hanke_hyperinflation": {"probabilities": {"m3": 1, "m6": 2, "m12": 3},
                          "annual_inflation_pct": None, "assessment": "Synthetic monthly diagnostic only."}})
+    # The source of each synthetic haircut point is explicit, matching the
+    # production requirement without claiming these fixtures are real evidence.
+    source_id = "E-" + day.strftime("%Y%m%d") + "-01"
+    analysis["haircut_component_support"] = {
+        k: {"basis": "assumption" if p else "no_support",
+            "evidence_ids": [source_id] if p else [],
+            "rationale": ("An explicitly assumed synthetic adjustment for unit tests, "
+                          "with no real-world empirical claim or market observation."
+                          if p else
+                          "No supporting observation in this synthetic test.")}
+        for k,p,cap in prev["haircut"]["calculation"]["components"]}
     analysis["houthi"]["headline_support_12m"] = prev["metrics"]["houthi_support_12m"]
     for key in ("regional", "political", "chains", "absence_indicators"):
         analysis[key] = copy.deepcopy(prev[key])
