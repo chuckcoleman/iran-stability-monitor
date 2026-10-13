@@ -51,8 +51,10 @@ class MetricoolTests(unittest.TestCase):
         self.assertTrue(x.matches_assessment(posts[0], self.day))
         args = api.call_args
         self.assertEqual(args.args[0], '/v2/analytics/posts/twitter')
-        self.assertEqual(args.kwargs['params']['from'], '2026-10-10T00:00:00')
-        self.assertEqual(args.kwargs['params']['to'], '2026-10-11T16:00:00')
+        expected_start=(dt.date.fromisoformat(self.day)-dt.timedelta(days=1)).isoformat()
+        self.assertEqual(args.kwargs['params']['from'],expected_start+'T00:00:00')
+        self.assertEqual(args.kwargs['params']['to'],
+                         self.now.strftime('%Y-%m-%dT%H:%M:%S'))
         self.assertEqual(args.kwargs['params']['timezone'], 'America/New_York')
         self.assertNotIn('csv_response', args.kwargs)
 
@@ -82,9 +84,10 @@ class MetricoolTests(unittest.TestCase):
             self.assertEqual(x.scheduled_posts(self.day), [])
         call = api.call_args
         self.assertEqual(call.args[0], '/v2/scheduler/posts')
+        day=dt.date.fromisoformat(self.day)
         self.assertEqual(call.kwargs['params'], {
-            'start': '2026-10-10T00:00:00',
-            'end': '2026-10-19T00:00:00',
+            'start':(day-dt.timedelta(days=1)).isoformat()+'T00:00:00',
+            'end':(day+dt.timedelta(days=8)).isoformat()+'T00:00:00',
             'timezone': 'America/New_York',
             'extendedRange': 'true'
         })

@@ -42,6 +42,40 @@ not reviewer identity; they are **not a cryptographic signature**. Protected
 PR review and control of the outside-GitHub preparation environment remain
 important independent protections.
 
+The current off-GitHub publication handoff is available as a single
+**external-host** command, for a trusted machine with this repository checked
+out, the `gh` CLI authenticated locally, a separately provisioned OpenAI API
+credential, and the pinned `jsonschema` dependency. Run it on the intended
+**Sunday** (for the next opportunity, October 18, 2026):
+
+```sh
+python scripts/run_off_github_sunday.py \
+  --output-dir "$HOME/iran-reviews/2026-10-18" --submit --merge
+```
+
+The command must be run **outside GitHub Actions** and its output directory
+must be new and outside the checkout. It first finishes all evidence collection,
+one prospective core forecast elicitation, deterministic validation and
+alternating affirmative/critical reviews. Only upon clean approval does it
+inspect GitHub's remote branch, Pages/PR protections, create a dated candidate
+branch, push exactly `data/history.json` and
+`data/review-receipts/YYYY-MM-DD.json`, open a PR, wait for the required
+`validate` job on the matching commit, and attempt an exact-head protected
+merge. The separate Pages and social checks still run after merge. Omit
+`--merge` to stop after creating the protected PR, or omit `--submit`
+to keep all work off GitHub. A review failure or timeout **never invokes**
+the GitHub submission stage. Existing branches, changed `main` or previous
+forecasts are not overwritten; they require reconciliation.
+
+GitHub credentials should be configured in the local CLI's secure credential
+store, **not** placed in environment variables during off-GitHub preparation
+and not copied into the review folder. OpenAI's local credential is different
+from the existing GitHub Actions WIF service identity and must be provided
+separately. No trusted external scheduler or API credential has been installed
+by these repository changes. A host scheduler may invoke the command weekly
+only after its owner configures it; GitHub Actions remains strictly prohibited
+from running the assessment or its reviews.
+
 Only after receiving this clean handoff may the approved candidate
 `data/history.json` and receipt be submitted together in a GitHub pull
 request. The `validate` job compares them with the actual PR base, requires
