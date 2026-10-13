@@ -474,7 +474,7 @@ class OrchestrationTests(unittest.TestCase):
         self.assertLess(workflow.index("- name: Offline readiness tests"),
                         workflow.index("- name: Discard synthetic offline-test audit files"))
         self.assertLess(workflow.index("- name: Discard synthetic offline-test audit files"),
-                        workflow.index("- name: Determine whether a new Sunday candidate is permitted"))
+                        workflow.index("- name: Mint short-lived diagnostic GitHub App token"))
 
     def test_schedule_nominal_dst_and_delays(self):
         summer = dt.datetime(2026, 10, 18, 11, 30, tzinfo=ZONE)
