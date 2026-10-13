@@ -132,10 +132,8 @@ def submit(folder, *, merge=False, root=ROOT):
     require(run("git","diff","--name-only").stdout.splitlines()==["data/history.json"],
             "Unexpected tracked changes in approved candidate")
     # Validate the bytes actually being committed a second time.
-    validate_handoff(folder,root=ROOT) if False else None
-    from review_receipt import checked_receipt as recheck
     actual=json.loads((ROOT/"data/history.json").read_bytes())
-    recheck(checked["before"],actual,json.loads(new_receipt.read_bytes()))
+    checked_receipt(checked["before"],actual,json.loads(new_receipt.read_bytes()))
     validate_history(actual,checked["before"])
     run("git","add","--","data/history.json",
         "data/review-receipts/"+date+".json")
