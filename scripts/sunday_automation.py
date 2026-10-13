@@ -318,7 +318,8 @@ def _existing_sunday_or_stale_baseline(repo, date):
 
 
 def prepare_candidate():
-    """Research and validate a candidate; do not authenticate Git writes or issue a forecast yet."""
+    """Retired: GitHub Actions must never research or review assessments."""
+    raise RuntimeError("Prepare and complete both reviews outside GitHub first")
     if not ready(live=True, require_github_token=True):
         return
     repo = _repo()
@@ -367,7 +368,8 @@ def _git_push_with_app_token(branch):
 
 
 def publish_candidate():
-    """Issue, push, open PR, await CI and merge using a FRESH installation token."""
+    """Retired: reviewed candidates enter GitHub only through an approved PR."""
+    raise RuntimeError("Submit only externally reviewed candidates with matching receipts")
     if not ready(live=True, require_github_token=True):
         return
     repo = _repo()
@@ -428,26 +430,13 @@ def main():
     cmd = sys.argv[1] if len(sys.argv) == 2 else ""
     if cmd in ("check-services", "healthcheck"):
         service_checks()
-    elif cmd == "eligible":
-        eligible = ready(live=True)
-        output = os.environ.get("GITHUB_OUTPUT")
-        if output:
-            with open(output, "a", encoding="utf-8") as f:
-                f.write("eligible=" + ("true" if eligible else "false") + "\n")
-        print("Sunday candidate eligibility: " + ("eligible" if eligible else "skipped"))
-    elif cmd == "preflight":
-        if ready(live=True, require_github_token=True):
-            verify_repository_gate(_repo())
     elif cmd == "api-probe":
         api_probe()
-    elif cmd == "dry-run":
-        dry_run()
-    elif cmd == "prepare":
-        prepare_candidate()
-    elif cmd == "publish":
-        publish_candidate()
+    elif cmd in ("dry-run", "prepare", "publish", "eligible", "preflight"):
+        raise RuntimeError("Assessment reviews must finish outside GitHub before submission; "
+                           "GitHub-hosted report preparation and publication are retired")
     else:
-        raise SystemExit("Usage: sunday_automation.py healthcheck|eligible|preflight|api-probe|dry-run|prepare|publish")
+        raise SystemExit("Usage: sunday_automation.py healthcheck|api-probe (diagnostics only)")
 
 
 if __name__ == "__main__":
