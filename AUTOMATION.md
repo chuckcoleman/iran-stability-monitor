@@ -29,6 +29,31 @@ owner needs to remain online. For supported task/app actions and possible
 permission pauses, see
 [OpenAI scheduled tasks](https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt).
 
+### Complete validation repeats until clean
+
+Every review/correction cycle must run **the full deterministic candidate
+validation** (frozen Protocol-v1 checks, JSON Schema, exactly-one append and
+historical immutability, UTC/DST deadlines, attribution arithmetic and all
+JavaScript-facing dashboard checks), not merely the initial lightweight
+assembly checks. Correctable deterministic violations become concrete
+correction issues. After correction from the **same closed evidence**,
+rerun the *entire* deterministic suite and both independent affirmative
+then critical reviews from the beginning on the changed draft. After those
+two reviewers explicitly accept one exact draft, validate the **actual
+issued candidate** in full again, before writing any CLEAN approval or
+review receipt. If this last validation fails, its issue starts another
+complete correction + validation + two-review cycle. Do not mark a
+candidate clean merely because the reviewers passed an earlier version.
+
+Six cycles / 60 minutes remain strict **failure ceilings**, never passing
+thresholds: unresolved defects, tool failures or timeouts halt publication
+and leave previous results intact. All four prospective scored forecasts
+are locked after initial elicitation and cannot be changed by repair.
+Archived legacy provenance warnings must be reported honestly, not silently
+rewritten or disguised as newly clean observations. GitHub CI still
+independently validates each exact PR commit and never treats retrying an
+unchanged failed commit as a pass.
+
 ## October 13, 2026: external-review-first procedure (publication boundary)
 
 **No Iran assessment is researched, drafted, scored, revised or reviewed in
