@@ -25,8 +25,11 @@ class NextThresholdCopyTests(unittest.TestCase):
         self.assertEqual(source.count(marker), 1)
         helpers = source.split(marker, 1)[0]
         records = json.loads(HISTORY.read_text(encoding="utf-8"))["updates"]
-        historical = [r["next_threshold"] for r in records if r.get("next_threshold")]
-        self.assertEqual(len(historical), 3)
+        legacy_dates=("2026-09-27","2026-10-04","2026-10-11")
+        historical = [next(r["next_threshold"] for r in records if r["date"]==date)
+                      for date in legacy_dates]
+        # This tests immutable archived phrasing; future assessments may
+        # append arbitrarily many fresh, already-grammatical statements.
         future = "Sustained interstate strikes would raise escalation risk. A currency shock could follow."
         scenarios = historical + [future, "", "U.S. officials may intervene. Currency stress may increase."]
         js = (
@@ -70,8 +73,12 @@ class NextThresholdCopyTests(unittest.TestCase):
 
     def test_historical_records_are_still_raw_unmodified_prose(self):
         records = json.loads(HISTORY.read_text(encoding="utf-8"))["updates"]
-        self.assertTrue(records[-1]["next_threshold"].startswith("Whether "))
-        self.assertIn("; whether ", records[-1]["next_threshold"])
+        archived=next(x for x in records if x["date"]=="2026-10-11")
+        self.assertTrue(archived["next_threshold"].startswith("Whether "))
+        self.assertIn("; whether ", archived["next_threshold"])
+        for future in (x for x in records if x["date"]>"2026-10-11"):
+            self.assertFalse(future["next_threshold"].startswith("Whether "))
+            self.assertNotIn("; whether ",future["next_threshold"])
 
 
 if __name__ == "__main__":
