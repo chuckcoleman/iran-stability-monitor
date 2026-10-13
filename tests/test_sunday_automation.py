@@ -96,6 +96,43 @@ class SundayPipelineTests(unittest.TestCase):
         self.assertEqual(out[0]["evidence_status"], "carried_forward")
         self.assertEqual(out[0]["id"], prior["evidence"][0]["id"])
 
+    def test_pre_v1_carried_evidence_without_publisher_is_preserved(self):
+        """The real September archive omits newer optional provenance fields."""
+        history=json.loads((ROOT/"data/history.json").read_text(encoding="utf-8"))
+        legacy=next(row for update in history["updates"]
+                    if update["date"]=="2026-09-27"
+                    for row in update["evidence"] if row["id"]=="E-20260927-03")
+        self.assertNotIn("publisher",legacy)
+        self.assertNotIn("source_title",legacy)
+        self.assertNotIn("event_date",legacy)
+        before=copy.deepcopy(legacy)
+        claimed={"id":legacy["id"],"source":legacy["source"],
+                 "category":legacy["category"],"evidence_status":"carried_forward",
+                 "publisher":"Unverified attribution must not be copied",
+                 "source_title":"Unverified replacement headline"}
+        out=a.freeze_evidence(
+            {"evidence":copy.deepcopy(self.e)+[claimed]},self.sources,
+            {"evidence":[legacy]},self.date,self.cutoff)
+        expected=copy.deepcopy(before)
+        expected["evidence_status"]="carried_forward"
+        self.assertEqual(out[-1],expected)
+        self.assertEqual(legacy,before)
+        self.assertNotIn("publisher",out[-1])
+
+    def test_legacy_record_does_not_weaken_publisher_diversity(self):
+        history=json.loads((ROOT/"data/history.json").read_text(encoding="utf-8"))
+        legacy=next(row for update in history["updates"]
+                    if update["date"]=="2026-09-27"
+                    for row in update["evidence"] if row["id"]=="E-20260927-03")
+        items=copy.deepcopy(self.e)
+        for item in items:
+            item["publisher"]="Only one verified publisher"
+        items.append({"id":legacy["id"],"source":legacy["source"],
+                      "evidence_status":"carried_forward"})
+        with self.assertRaisesRegex(ValueError,"Require three source publishers"):
+            a.freeze_evidence({"evidence":items},self.sources,
+                              {"evidence":[legacy]},self.date,self.cutoff)
+
     def test_exact_append_and_prospective_baselines(self):
         before = copy.deepcopy(self.h)
         new = copy.deepcopy(self.h)
@@ -214,6 +251,14 @@ class SundayPipelineTests(unittest.TestCase):
 
 
 class OrchestrationTests(unittest.TestCase):
+    def test_live_audit_does_not_include_synthetic_offline_test_records(self):
+        workflow=(ROOT/".github/workflows/sunday-assessment.yml").read_text(encoding="utf-8")
+        self.assertIn("rm -rf -- .automation-audit",workflow)
+        self.assertLess(workflow.index("- name: Offline readiness tests"),
+                        workflow.index("- name: Discard synthetic offline-test audit files"))
+        self.assertLess(workflow.index("- name: Discard synthetic offline-test audit files"),
+                        workflow.index("- name: Determine whether a new Sunday candidate is permitted"))
+
     def test_schedule_nominal_dst_and_delays(self):
         summer = dt.datetime(2026, 10, 18, 11, 30, tzinfo=ZONE)
         winter = dt.datetime(2026, 11, 1, 10, 30, tzinfo=ZONE)

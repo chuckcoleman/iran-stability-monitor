@@ -308,7 +308,15 @@ def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
         if entry.get("source_publication_time"):
             check(dt.datetime.fromisoformat(entry["source_publication_time"])<=cutoff,
                   "Post-cutoff evidence")
-        out.append(entry);publishers.add(entry["publisher"]);directions.add(entry["direction"])
+        out.append(entry)
+        # Pre-v1 carried-forward evidence may not have a publisher field.
+        # Preserve its original contents; never infer or invent missing
+        # historical provenance. Count only explicitly identified publishers
+        # toward the existing three-publisher evidence-diversity guard.
+        publisher=entry.get("publisher")
+        if isinstance(publisher,str) and publisher.strip():
+            publishers.add(publisher)
+        directions.add(entry["direction"])
     check(len(publishers)>=3,"Require three source publishers")
     check({"raises","lowers","ambiguous"}.issubset(directions),"Require raising, lowering, ambiguous evidence")
     check(sum(e["evidence_status"]=="new" for e in out)>=4,"Require four new source observations")

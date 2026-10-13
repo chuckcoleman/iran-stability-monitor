@@ -54,6 +54,10 @@ jobs:
           python -m compileall -q scripts tests
           python -m unittest discover -s tests -v
           node --check assets/app.js
+      # Offline tests generate synthetic audit records when GITHUB_ACTIONS=true.
+      # Never mix them with a real paid probe, dry-run, or Sunday issuance.
+      - name: Discard synthetic offline-test audit files
+        run: rm -rf -- .automation-audit
       - name: Determine whether a new Sunday candidate is permitted
         id: eligibility
         if: github.event_name == 'schedule' || inputs.mode == 'run'
