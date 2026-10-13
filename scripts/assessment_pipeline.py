@@ -756,6 +756,24 @@ mirror of an earlier report is not newly independent evidence.
 The original closed evidence, protocol, draft and identified problems follow: """
 
 
+def _fully_validated_candidate(history,analysis,evidence,cutoff,opened,issued,validator):
+    """Repeat ALL deterministic gates on the same intact baseline and draft.
+
+    This runs before reviewer approval and again on the exact issued record.
+    A caught substantive defect becomes a specific correction request; schema
+    or validator infrastructure failures must not be interpreted as clean.
+    """
+    from validate_history import validate_history
+    record=assemble(history,analysis,evidence,cutoff,opened,issued)
+    candidate=copy.deepcopy(history)
+    candidate["updates"].append(record)
+    one_append(history,candidate)
+    validator.validate(candidate)
+    validate_history(candidate,history)
+    dashboard_record(record,history["updates"][-1])
+    return candidate
+
+
 def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=capture_metadata,reviewer=None):
     baseline=json.dumps(history,sort_keys=True,ensure_ascii=False)
     today=now().date().isoformat()
@@ -785,6 +803,10 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
        evidence=json.dumps(evidence),templates=json.dumps({k:previous[k] for k in ("regional","political","chains","absence_indicators")}))
     analysis,_=assessor(input,False)
     opened=now() # the ONE prospective elicitation of exactly four core probabilities
+    from jsonschema import Draft202012Validator
+    from jsonschema.exceptions import ValidationError as SchemaValidationError
+    schema=json.loads((ROOT/"schema/history.schema.json").read_text(encoding="utf-8"))
+    validator=Draft202012Validator(schema)
     if reviewer is not None:
         check(isinstance(analysis,dict),"Initial assessment was not a JSON object")
         locked_forecasts=copy.deepcopy(analysis.get("forecasts"))
@@ -792,28 +814,32 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
                                separators=(",",":"),allow_nan=False)
         start_review=time.monotonic()
         approved=False
-        # Six bounded cycles, with BOTH reviewers examining the exact same
-        # immutable draft in this order: affirmative, then critical.
-        # Neither review failures nor elapsed/runner timeouts count as passes.
+        final_out=None
+        # Each cycle re-runs ALL deterministic validation, not merely assembly.
+        # On a correctable defect, revise using the CLOSED evidence and repeat
+        # every check plus BOTH independent reviews on the changed exact draft.
+        # Exhaustion, service errors and timeouts remain failures, not passes.
         for round_no in range(1,REVIEW_CYCLES_LIMIT+1):
             check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
-                  "Alternating review time limit exceeded; publication blocked")
+                  "Alternating validation/review time limit exceeded; publication blocked")
             draft_hash=hashlib.sha256(json.dumps(
                 analysis,sort_keys=True,ensure_ascii=False,
                 separators=(",",":"),allow_nan=False).encode()).hexdigest()
             issues=[]
             try:
-                # Invalid drafts are corrected before either reviewer may pass.
-                assemble(history,analysis,evidence,cutoff,opened,opened)
-            except (ValueError,TypeError,KeyError) as exc:
-                issues=[{"type":"deterministic_validation","location":"assessment",
-                         "reason":str(exc)}]
+                _fully_validated_candidate(
+                    history,analysis,evidence,cutoff,opened,opened,validator)
+            except (ValueError,TypeError,KeyError,SchemaValidationError) as exc:
+                issues=[{"type":"deterministic_validation","location":"candidate",
+                         "reason":str(exc)[:2000]}]
                 _write_review_audit(round_no,"validation",draft_hash,"issues",issues)
+            else:
+                _write_review_audit(round_no,"validation",draft_hash,"clean",[])
             if not issues:
                 for role,prompt in (("affirmative",AFFIRMATIVE_REVIEW),
                                     ("critical",CRITICAL_REVIEW)):
                     check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
-                          "Alternating review time limit exceeded; publication blocked")
+                          "Alternating validation/review time limit exceeded; publication blocked")
                     try:
                         result,_=reviewer(prompt+json.dumps({
                             "analysis":analysis,"evidence":evidence,
@@ -823,20 +849,36 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
                     except Exception as exc:
                         _write_review_audit(round_no,role,draft_hash,"failure",
                                             error_type=type(exc).__name__)
-                        raise  # API errors, reviewer failures and timeouts are terminal
+                        raise  # no tool/reviewer failure or timeout may pass
                     check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
-                          "Alternating review time limit exceeded; publication blocked")
+                          "Alternating validation/review time limit exceeded; publication blocked")
                     _write_review_audit(round_no,role,draft_hash,
                                         "clean" if not role_issues else "issues",
                                         role_issues)
                     issues.extend(dict(issue,review_role=role) for issue in role_issues)
             if not issues:
-                # Both independent review calls explicitly approved the SAME
-                # unchanged draft, and deterministic validation succeeded.
                 check(json.dumps(analysis.get("forecasts"),sort_keys=True,
                       ensure_ascii=False,separators=(",",":"),allow_nan=False)
                       ==locked_json,
                       "Review altered the locked four core forecasts")
+                issued=now()
+                check(cutoff<=opened<=issued and
+                      opened.date().isoformat()==today and
+                      issued.astimezone(EST).date()==opened.astimezone(EST).date(),
+                      "Timestamp ordering/date changed during review; publication blocked")
+                try:
+                    # Repeat every validation AGAIN on the final issued object.
+                    final_out=_fully_validated_candidate(
+                        history,analysis,evidence,cutoff,opened,issued,validator)
+                except (ValueError,TypeError,KeyError,SchemaValidationError) as exc:
+                    issues=[{"type":"final_validation","location":"issued_candidate",
+                             "reason":str(exc)[:2000]}]
+                    _write_review_audit(round_no,"final_validation",draft_hash,"issues",issues)
+                else:
+                    _write_review_audit(round_no,"final_validation",draft_hash,"clean",[])
+            if not issues:
+                # No clean receipt is written until full pre- AND post-review
+                # deterministic checks and both independent reviews pass.
                 folder=_review_audit_dir()
                 if folder is not None:
                     folder.mkdir(exist_ok=True)
@@ -849,30 +891,34 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
                     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
                 approved=True
                 break
-            print("Alternating review round "+str(round_no)+" rejected the draft ("
+            print("Complete validation/review round "+str(round_no)+" rejected the draft ("
                   +str(len(issues))+" issue(s)); publication blocked.",flush=True)
             check(round_no<REVIEW_CYCLES_LIMIT,
-                  "Alternating review cycles exhausted with unresolved issues; publication blocked")
+                  "Alternating validation/review cycles exhausted with unresolved issues; publication blocked")
             check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
-                  "Alternating review time limit exceeded; publication blocked")
+                  "Alternating validation/review time limit exceeded; publication blocked")
             revised,_=assessor(CORRECT+json.dumps({
                 "closed_evidence":evidence,"protocol":history["protocol"],
                 "locked_forecasts":locked_forecasts,"draft":analysis,
                 "issues":issues},ensure_ascii=False),False)
             check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
-                  "Alternating review time limit exceeded; publication blocked")
+                  "Alternating validation/review time limit exceeded; publication blocked")
             check(isinstance(revised,dict) and
                   json.dumps(revised.get("forecasts"),sort_keys=True,
                     ensure_ascii=False,separators=(",",":"),allow_nan=False)
                     ==locked_json,
-                  "Review correction changed or re-elicited the locked four core forecasts")
+                  "Validation correction changed or re-elicited the locked four core forecasts")
             analysis=revised
-        check(approved,"Alternating reviews never jointly approved the draft; publication blocked")
-    issued=now()
-    check(cutoff<=opened<=issued and opened.date().isoformat()==today,"Timestamp ordering/date failed")
-    u=assemble(history,analysis,evidence,cutoff,opened,issued)
-    out=copy.deepcopy(history);out["updates"].append(u)
-    check(json.dumps(history,sort_keys=True,ensure_ascii=False)==baseline,"Historical data changed in memory")
+        check(approved and final_out is not None,
+              "Complete validation and alternating reviews never jointly passed; publication blocked")
+        out=final_out
+    else:
+        issued=now()
+        check(cutoff<=opened<=issued and opened.date().isoformat()==today,
+              "Timestamp ordering/date failed")
+        out=_fully_validated_candidate(history,analysis,evidence,cutoff,opened,issued,validator)
+    check(json.dumps(history,sort_keys=True,ensure_ascii=False)==baseline,
+          "Historical data changed in memory")
     return out
 
 def main():
