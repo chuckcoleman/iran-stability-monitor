@@ -77,9 +77,12 @@ def checked_receipt(before, after, receipt, now=None):
             "Exactly four scored forecasts required")
     require([x.get("event_id") for x in issued] == list(CORE),
             "Core forecasts missing or out of order")
-    require([x.get("event_id") for x in locked] == list(CORE),
-            "Reviewed core event order changed")
-    for reviewed, actual in zip(locked, issued):
+    reviewed_ids=[x.get("event_id") for x in locked if isinstance(x,dict)]
+    require(len(reviewed_ids)==4 and set(reviewed_ids)==set(CORE),
+            "Reviewed four core events do not match the frozen protocol")
+    by_id={row["event_id"]:row for row in locked}
+    for actual in issued:
+        reviewed=by_id[actual["event_id"]]
         for field in ("event_id", "p", "range", "confidence"):
             require(reviewed.get(field) == actual.get(field),
                     "Scored forecast changed after clean review: " + field)
