@@ -43,9 +43,26 @@ On GitHub Actions source, the validated deployment runs automatically after a
 successful push to `main`; pull-request validation never deploys.
 A failed deploy leaves the most recently successful Actions deployment intact.
 
-## Full Sunday automation (disabled until account setup)
+## Sunday assessment automation (ChatGPT scheduled task)
 
-The scheduled prospective assessment, required PR validation, protected merge, exact Pages verification and deduplicated Metricool X scheduler are documented in [AUTOMATION.md](AUTOMATION.md). The schedule is intentionally **disabled by default** via `ASSESSMENT_AUTOMATION_ENABLED`; configuring OpenAI GitHub OIDC workload identity federation, a repository-scoped GitHub App, and Metricool API access is required before unattended operation. The official GitHub App token action mints temporary credentials automatically; no GitHub personal access token renewal is required. Social posting has a separate `AUTO_X_ENABLED` gate. A failed assessment never edits validated history or deploys an unvalidated site.
+**No separate computer or local OpenAI API key is required for the configured
+ChatGPT-first path.** The existing ChatGPT Scheduled task, `Iran Sunday
+Assessment`, is set for Sundays at 09:00 America/New_York starting October 18,
+2026. It is instructed to research and close evidence, elicit exactly four
+Protocol-v1 forecasts once, then alternate affirmative and critical reviews
+until **both approve the same unchanged draft** before any GitHub access.
+Failures, timeouts, incomplete reviews or exhausted review limits **never pass**.
+
+After clean reviews it may use the connected GitHub app (subject to connection
+permissions and possible write approvals) to submit the candidate and matching
+review receipt through a strictly validated pull request. GitHub Actions remains
+the **CI/Pages deployment platform, not the assessment writer**. The previous
+GitHub Actions Sunday cron and assessment `run`/`dry-run` modes are retired.
+A first successful end-to-end ChatGPT scheduled publication has **not** yet
+been observed, and the workflow must fail closed if any required tool or
+approval is missing. Social posting remains separately controlled by
+`AUTO_X_ENABLED` and independent post-deployment checks. The optional local
+script and complete safeguards are documented in [AUTOMATION.md](AUTOMATION.md).
 
 ## Automation
 For each Sunday assessment, create a working branch and a pull request rather
