@@ -653,23 +653,77 @@ Frozen protocol: {protocol}
 Prior prospective forecasts: {prior}
 Closed evidence: {evidence}"""
 
-REVIEW="""Independently review the proposed assessment using ONLY the closed, cited
-evidence and frozen Protocol v1.0. Do not browse, elicit new probabilities,
-change event definitions or silently supply missing evidence.
-Check unsupported affirmative claims, contradictions, independence of cited
-sources, evidence IDs (including syndicated wire-service mirrors), warning
-states, false claims of resilience based on absence of shortage reporting,
-the evidence/basis justification for EACH nonzero haircut component, Hanke
-observations, exact core forecast attribution, and source/probability confusion.
-The one-distinct-event-per-sentence editorial rule applies ONLY to
-analysis.next_threshold. Do NOT apply it to summary or any other field.
-For next_threshold, flag fragments, first-person phrasing, questions, merged
-distinct events, and departures from the frozen resolution conditions.
-A supported judgmental haircut assumption is permissible ONLY if stated
-plainly, linked to relevant frozen evidence, and compatible with its anchor.
-Return JSON with approved boolean and issues array; if rejecting, each issue
-must include type, location, and reason. Approve only when issues=[].
-Input: """
+REVIEW_CYCLES_LIMIT=6
+REVIEW_ELAPSED_LIMIT_SECONDS=3600
+
+_REVIEW_COMMON="""Use ONLY the identical closed, cited evidence and frozen Protocol v1.0.
+Do not browse, revise or elicit scored forecasts, change event definitions,
+invent evidence, or infer positive resilience from absent reporting.
+Check the precise nine warning categories, source-event IDs and wire-service
+syndications, separate scored from unscored diagnostics, verify four locked
+core probabilities and signed attribution, six source-linked oil-credit
+component assumptions, Hanke observations, and all unsupported claims.
+A documented judgmental assumption is permissible only if transparently
+linked to evidence and compatible with the frozen anchor.
+The one-event-per-sentence editorial rule applies ONLY to next_threshold,
+NOT to summary or other fields; next_threshold must use complete declaratives.
+Return ONLY a JSON object: {"approved": boolean, "issues": [
+{"type": "short category", "location": "precise JSON field or item",
+"reason": "concrete correction required"}]}.
+Approve ONLY when there are NO remaining substantive or editorial defects,
+with approved=true and issues=[]; otherwise approved=false and a nonempty
+list of specific, actionable issues. No inferred or default approvals.
+Do not see or refer to the other reviewer, its decisions, or prior reviews.
+Review exactly the draft in Input: """
+
+AFFIRMATIVE_REVIEW="""ROLE: AFFIRMATIVE REVIEWER.
+Independently verify which substantive conclusions, forecasts, warnings,
+limitations, and individual diagnostic adjustments the cited evidence
+ACTUALLY supports. Look for missing countervailing facts or omitted
+stabilizers and identify any overstatement or false reassurance.
+A constructive review is NOT a request to approve: reject whenever support
+or balance is inadequate. Verify the report could be defended to a skeptical
+reader without unstated facts. """+_REVIEW_COMMON
+
+CRITICAL_REVIEW="""ROLE: CRITICAL REVIEWER.
+Adversarially challenge every important factual or inferential claim and
+search for unsupported certainty, stale or duplicated evidence, hidden
+contradictions, errors in event interpretation, source/probability confusion,
+and misleading uncertainty or diagnostics. Probe for defects the
+affirmative review could have missed. Reject any unresolved material or
+editorial problem, even if the report is otherwise persuasive. """+_REVIEW_COMMON
+
+
+def _review_issues(decision,role):
+    """Treat malformed, contradictory, missing or partial reviews as failures."""
+    check(isinstance(decision,dict) and type(decision.get("approved")) is bool
+          and isinstance(decision.get("issues"),list),
+          role+" reviewer failed to return a complete review decision")
+    issues=decision["issues"]
+    check(all(isinstance(issue,dict) and all(
+                  isinstance(issue.get(k),str) and bool(issue[k].strip())
+                  for k in ("type","location","reason"))
+              for issue in issues),
+          role+" reviewer returned malformed issues; review failed")
+    check(decision["approved"] == (len(issues)==0),
+          role+" reviewer returned an inconsistent verdict; review failed")
+    return issues
+
+
+def _write_review_audit(round_no,role,draft_hash,status,issues=None,error_type=None):
+    if os.getenv("GITHUB_ACTIONS")!="true":
+        return
+    folder=ROOT/".automation-audit"
+    folder.mkdir(exist_ok=True)
+    row={"round":round_no,"role":role,"draft_sha256":draft_hash,
+         "status":status}
+    if issues is not None:
+        row["issues"]=issues
+    if error_type is not None:
+        row["error_type"]=error_type  # class name only; never API response bodies
+    (folder/f"review-{round_no:02d}-{role}.json").write_text(
+        json.dumps(row,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+
 
 CORRECT="""Revise this draft ASSESSMENT using ONLY the identical closed evidence and
 the existing frozen protocol. This is an editorial/diagnostic correction after
@@ -724,50 +778,85 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
     if reviewer is not None:
         check(isinstance(analysis,dict),"Initial assessment was not a JSON object")
         locked_forecasts=copy.deepcopy(analysis.get("forecasts"))
+        locked_json=json.dumps(locked_forecasts,sort_keys=True,ensure_ascii=False,
+                               separators=(",",":"),allow_nan=False)
+        start_review=time.monotonic()
         approved=False
-        # At most two evidence-closed corrections; never regenerate the scored
-        # forecasts or dilute an independent rejection into automatic approval.
-        for attempt in range(3):
-            problems=[]
+        # Six bounded cycles, with BOTH reviewers examining the exact same
+        # immutable draft in this order: affirmative, then critical.
+        # Neither review failures nor elapsed/runner timeouts count as passes.
+        for round_no in range(1,REVIEW_CYCLES_LIMIT+1):
+            check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
+                  "Alternating review time limit exceeded; publication blocked")
+            draft_hash=hashlib.sha256(json.dumps(
+                analysis,sort_keys=True,ensure_ascii=False,
+                separators=(",",":"),allow_nan=False).encode()).hexdigest()
+            issues=[]
             try:
-                # No file is changed, and the eventual issue time is unknown.
+                # Invalid drafts are corrected before either reviewer may pass.
                 assemble(history,analysis,evidence,cutoff,opened,opened)
             except (ValueError,TypeError,KeyError) as exc:
-                # A deterministic content failure remains blocking unless a
-                # corrected draft independently passes the same full guards.
-                problems=[{"type":"deterministic_validation","reason":str(exc)}]
-            if not problems:
-                # Reviewer service/API errors and malformed decisions are
-                # terminal. Never disguise them as fixable drafting defects.
-                review,_=reviewer(REVIEW+json.dumps({
-                    "analysis":analysis,"evidence":evidence,
-                    "protocol":history["protocol"]},ensure_ascii=False),False)
-                check(isinstance(review,dict) and
-                      type(review.get("approved")) is bool and
-                      isinstance(review.get("issues"),list),
-                      "Independent review did not return a valid decision")
-                if review["approved"] is True and review["issues"]==[]:
-                    approved=True
-                    break
-                problems=review["issues"]
-                check(bool(problems),"Independent review rejected without actionable issues")
-            if os.getenv("GITHUB_ACTIONS")=="true":
-                audit=ROOT/".automation-audit"
-                audit.mkdir(exist_ok=True)
-                (audit/f"review-issues-{attempt+1}.json").write_text(
-                    json.dumps({"review_attempt":attempt+1,"issues":problems},
-                               ensure_ascii=False,indent=2),encoding="utf-8")
-            print("Candidate not approved: review/validation attempt "+str(attempt+1)+
-                  " identified "+str(len(problems))+" issue(s).",flush=True)
-            check(attempt<2,"Independent analytical review rejected the candidate after two bounded corrections")
+                issues=[{"type":"deterministic_validation","location":"assessment",
+                         "reason":str(exc)}]
+                _write_review_audit(round_no,"validation",draft_hash,"issues",issues)
+            if not issues:
+                for role,prompt in (("affirmative",AFFIRMATIVE_REVIEW),
+                                    ("critical",CRITICAL_REVIEW)):
+                    check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
+                          "Alternating review time limit exceeded; publication blocked")
+                    try:
+                        result,_=reviewer(prompt+json.dumps({
+                            "analysis":analysis,"evidence":evidence,
+                            "protocol":history["protocol"]},
+                            ensure_ascii=False,sort_keys=True),False)
+                        role_issues=_review_issues(result,role)
+                    except Exception as exc:
+                        _write_review_audit(round_no,role,draft_hash,"failure",
+                                            error_type=type(exc).__name__)
+                        raise  # API errors, reviewer failures and timeouts are terminal
+                    check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
+                          "Alternating review time limit exceeded; publication blocked")
+                    _write_review_audit(round_no,role,draft_hash,
+                                        "clean" if not role_issues else "issues",
+                                        role_issues)
+                    issues.extend(dict(issue,review_role=role) for issue in role_issues)
+            if not issues:
+                # Both independent review calls explicitly approved the SAME
+                # unchanged draft, and deterministic validation succeeded.
+                check(json.dumps(analysis.get("forecasts"),sort_keys=True,
+                      ensure_ascii=False,separators=(",",":"),allow_nan=False)
+                      ==locked_json,
+                      "Review altered the locked four core forecasts")
+                if os.getenv("GITHUB_ACTIONS")=="true":
+                    folder=ROOT/".automation-audit"
+                    folder.mkdir(exist_ok=True)
+                    (folder/"review-approval.json").write_text(json.dumps({
+                        "status":"CLEAN","round":round_no,"draft_sha256":draft_hash,
+                        "forecast_sha256":hashlib.sha256(locked_json.encode()).hexdigest(),
+                        "affirmative":{"approved":True,"issues":[],"draft_sha256":draft_hash},
+                        "critical":{"approved":True,"issues":[],"draft_sha256":draft_hash}
+                    },indent=2)+"\n",encoding="utf-8")
+                approved=True
+                break
+            print("Alternating review round "+str(round_no)+" rejected the draft ("
+                  +str(len(issues))+" issue(s)); publication blocked.",flush=True)
+            check(round_no<REVIEW_CYCLES_LIMIT,
+                  "Alternating review cycles exhausted with unresolved issues; publication blocked")
+            check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
+                  "Alternating review time limit exceeded; publication blocked")
             revised,_=assessor(CORRECT+json.dumps({
                 "closed_evidence":evidence,"protocol":history["protocol"],
                 "locked_forecasts":locked_forecasts,"draft":analysis,
-                "issues":problems},ensure_ascii=False),False)
-            check(isinstance(revised,dict) and revised.get("forecasts")==locked_forecasts,
+                "issues":issues},ensure_ascii=False),False)
+            check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
+                  "Alternating review time limit exceeded; publication blocked")
+            check(isinstance(revised,dict) and
+                  json.dumps(revised.get("forecasts"),sort_keys=True,
+                    ensure_ascii=False,separators=(",",":"),allow_nan=False)
+                    ==locked_json,
                   "Review correction changed or re-elicited the locked four core forecasts")
             analysis=revised
-        check(approved,"Independent analytical review rejected the candidate")
+        check(approved,"Alternating reviews never jointly approved the draft; publication blocked")
     issued=now()
     check(cutoff<=opened<=issued and opened.date().isoformat()==today,"Timestamp ordering/date failed")
     u=assemble(history,analysis,evidence,cutoff,opened,issued)
