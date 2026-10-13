@@ -133,6 +133,54 @@ class SundayPipelineTests(unittest.TestCase):
             a.freeze_evidence({"evidence":items},self.sources,
                               {"evidence":[legacy]},self.date,self.cutoff)
 
+    def test_ap_syndicated_mirror_is_carried_with_original_id(self):
+        """An ABC-hosted reprint is not a second independent AP report."""
+        archived=next(e for u in self.h["updates"] for e in u.get("evidence",[])
+                      if e.get("id")=="E-20261004-05")
+        mirror={"event_date":archived["event_date"],
+                "category":"Medicine / claimed supply resilience",
+                "observation":"Extra context from the identical syndicated report.",
+                "source":"https://abcnews.com/Business/wireStory/iranians-face-soaring-prices-medicine-us-blockade-sanctions-136878849",
+                "source_title":archived["source_title"],
+                "publisher":"Associated Press via ABC News",
+                "reliability":"High","affects":["Food / medicine"],
+                "evidence_status":"new","impact_magnitude":"moderate","direction":"lowers"}
+        items=copy.deepcopy(self.e)+[mirror]
+        cited=set(self.sources)|{mirror["source"]}
+        out=a.freeze_evidence({"evidence":items},cited,
+                              {"evidence":[archived]},self.date,self.cutoff)
+        expected=copy.deepcopy(archived)
+        expected["evidence_status"]="carried_forward"
+        self.assertEqual(out[-1],expected)
+        self.assertEqual(len(out),len(items))
+        self.assertEqual(sum(v["evidence_status"]=="new" for v in out),6)
+        # An uncited mirror cannot evade the source-verification rule.
+        with self.assertRaisesRegex(ValueError,"Syndicated source"):
+            a.freeze_evidence({"evidence":items},self.sources,
+                              {"evidence":[archived]},self.date,self.cutoff)
+        # A different report date is not necessarily the same source/event.
+        other=copy.deepcopy(mirror)
+        other["event_date"]=self.date
+        different=a.freeze_evidence({"evidence":copy.deepcopy(self.e)+[other]},cited,
+                                    {"evidence":[archived]},self.date,self.cutoff)
+        self.assertEqual(different[-1]["evidence_status"],"new")
+
+    def test_haircut_component_support_is_not_optional_for_nonzero_points(self):
+        without=copy.deepcopy(self.analysis)
+        del without["haircut_component_support"]
+        with self.assertRaisesRegex(ValueError,"Six explicit oil-credit"):
+            a.assemble(self.h,without,self.frozen(),self.cutoff,
+                       self.opened,self.opened+dt.timedelta(seconds=1))
+        unsupported=copy.deepcopy(self.analysis)
+        point="Oil-price/basis"
+        self.assertGreater(unsupported["haircut_components"][point],0)
+        unsupported["haircut_component_support"][point]={
+            "basis":"no_support","evidence_ids":[],
+            "rationale":"There is no relevant synthetic source that supports this adjustment."}
+        with self.assertRaisesRegex(ValueError,"Nonzero oil-credit component"):
+            a.assemble(self.h,unsupported,self.frozen(),self.cutoff,
+                       self.opened,self.opened+dt.timedelta(seconds=1))
+
     def test_exact_append_and_prospective_baselines(self):
         before = copy.deepcopy(self.h)
         new = copy.deepcopy(self.h)
@@ -212,6 +260,58 @@ class SundayPipelineTests(unittest.TestCase):
                       lambda p, s: (self.analysis, set()), lambda: next(times),
                       lambda u: {}, lambda p, s: ({"approved": False, "issues": ["unsupported"]}, set()))
 
+    def test_reviewer_can_correct_language_without_changing_four_forecasts(self):
+        times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,
+                    self.opened,self.opened+dt.timedelta(seconds=4)])
+        first=copy.deepcopy(self.analysis)
+        first["warning"]["Food / medicine"]["text"]="Unsupported affirmative hospital resilience."
+        corrected=copy.deepcopy(first)
+        corrected["warning"]["Food / medicine"]["text"]=(
+            "No broad hospital shortage has been documented; the available "
+            "evidence does not establish resilience or normal supply.")
+        calls=[]
+        def research(prompt,search):
+            return {"evidence":self.e},self.sources
+        def assess(prompt,search):
+            self.assertFalse(search)
+            calls.append("assess")
+            return (first if calls.count("assess")==1 else corrected),set()
+        def review(prompt,search):
+            self.assertFalse(search)
+            calls.append("review")
+            self.assertIn("ONLY to",prompt)
+            if calls.count("review")==1:
+                return {"approved":False,"issues":[{
+                    "type":"unsupported_claim","location":"warning.Food / medicine",
+                    "reason":"Unsupported hospital supply resilience."}]},set()
+            return {"approved":True,"issues":[]},set()
+        out=a.produce(self.h,research,assess,lambda:next(times),
+                      lambda url:{},review)
+        self.assertEqual([x for x in calls if x=="assess"],["assess","assess"])
+        self.assertEqual([x for x in calls if x=="review"],["review","review"])
+        self.assertEqual(out["updates"][-1]["warning"]["Food / medicine"]["text"],
+                         corrected["warning"]["Food / medicine"]["text"])
+        self.assertEqual(out["updates"][-1]["forecasts"][0]["p"],first["forecasts"][0]["p"])
+        validate_history(out,self.h)
+
+    def test_review_correction_cannot_change_scored_forecasts(self):
+        times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,self.opened])
+        altered=copy.deepcopy(self.analysis)
+        altered["forecasts"][0]["p"]+=1
+        n=[0]
+        def assessor(prompt,search):
+            n[0]+=1
+            return (self.analysis if n[0]==1 else altered),set()
+        def reviewer(prompt,search):
+            return {"approved":False,"issues":[{"type":"unsupported_claim",
+                                                "reason":"Fix a claim."}]},set()
+        unchanged=copy.deepcopy(self.h)
+        with self.assertRaisesRegex(ValueError,"locked four core forecasts"):
+            a.produce(self.h,
+                      lambda p,search:({"evidence":self.e},self.sources),
+                      assessor,lambda:next(times),lambda url:{},reviewer)
+        self.assertEqual(self.h,unchanged)
+
     def test_commit_issue_time_only_new_record(self):
         out = copy.deepcopy(self.h)
         out["updates"].append(self.record())
@@ -233,7 +333,11 @@ class SundayPipelineTests(unittest.TestCase):
                 item["event_date"] = (stamp.date() - dt.timedelta(days=1)).isoformat()
             ledger = a.freeze_evidence({"evidence": items}, self.sources, history["updates"][-1],
                                        stamp.date().isoformat(), stamp - dt.timedelta(seconds=5))
-            record = a.assemble(history, self.analysis, ledger, stamp - dt.timedelta(seconds=5), stamp,
+            current=copy.deepcopy(self.analysis)
+            for row in current["haircut_component_support"].values():
+                if row["evidence_ids"]:
+                    row["evidence_ids"]=[ledger[0]["id"]]
+            record = a.assemble(history, current, ledger, stamp - dt.timedelta(seconds=5), stamp,
                                 stamp + dt.timedelta(seconds=1))
             candidate = copy.deepcopy(history); candidate["updates"].append(record)
             validate_history(candidate, history)

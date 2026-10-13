@@ -247,6 +247,31 @@ def llm(prompt,search):
 def urlkey(url):
     return url_key(url)
 
+def _syndicated_story_identity(item):
+    """Conservatively identify exact reprints of a named wire-service story.
+
+    Only an identical normalized headline, original event day, and recognized
+    originating wire service qualify. Different events or unknown publishers
+    are never automatically combined.
+    """
+    if not isinstance(item,dict):
+        return None
+    pub=item.get("publisher")
+    title=item.get("source_title")
+    day=item.get("event_date")
+    if not all(isinstance(v,str) and v.strip() for v in (pub,title,day)):
+        return None
+    name=pub.casefold().strip()
+    if re.match(r"^(?:associated press|ap)\b",name):
+        agency="associated-press"
+    elif re.match(r"^reuters\b",name):
+        agency="reuters"
+    else:
+        return None
+    headline=re.sub(r"[\W_]+"," ",title.casefold()).strip()
+    return (agency,day.strip(),headline) if headline else None
+
+
 def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
     metadata=metadata or {}
     new=obj.get("evidence")
@@ -256,10 +281,25 @@ def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
     seen=set(); out=[]; publishers=set(); directions=set()
     archived={e["id"]:e for e in previous.get("evidence",[])}
     identities={(urlkey(e["source"]),e.get("event_date"),e.get("category")):e for e in archived.values()}
+    syndicated={}
+    for old in archived.values():
+        key=_syndicated_story_identity(old)
+        if key is not None:
+            syndicated.setdefault(key,old)
     for i,item in enumerate(new,1):
         check(isinstance(item,dict),"Bad evidence item")
         check(item.get("evidence_status","new") in ("new","carried_forward"),"Invalid evidence status")
         existing=identities.get((urlkey(item.get("source")),item.get("event_date"),item.get("category")))
+        if existing is None and item.get("evidence_status","new")=="new":
+            mirror=syndicated.get(_syndicated_story_identity(item))
+            if mirror is not None:
+                # A new syndication URL is not independent new evidence.
+                # It must have been consulted and cited before reusing
+                # the original, immutable source/event identifier.
+                mirror_url=urlkey(item.get("source"))
+                check(mirror_url is not None and mirror_url in cited,
+                      "Syndicated source is missing a verified web-search citation")
+                existing=mirror
         if existing is not None and item.get("evidence_status","new")=="new":
             item=dict(item,id=existing["id"],evidence_status="carried_forward")
         carried=item.get("evidence_status")=="carried_forward"
@@ -338,6 +378,37 @@ def haircut(values):
             "sensitivity":{"overlap_0pct":adjusted(0),"overlap_20pct":adjusted(.2),
                            "overlap_40pct":adjusted(.4)}}
 
+def validated_haircut_support(assessment,evidence):
+    """Require a traceable source or stated assumption for every nonzero point."""
+    values=assessment.get("haircut_components")
+    support=assessment.get("haircut_component_support")
+    names={key for key,cap in CAPS}
+    check(isinstance(support,dict) and set(support)==names,
+          "Six explicit oil-credit component support records are required")
+    available={e["id"] for e in evidence}
+    verified={}
+    for key,cap in CAPS:
+        row=support[key]
+        check(isinstance(row,dict),"Malformed oil-credit support for "+key)
+        basis=row.get("basis")
+        ids=row.get("evidence_ids")
+        reason=row.get("rationale")
+        check(basis in ("observed","assumption","no_support") and
+              isinstance(ids,list) and len(set(map(str,ids)))==len(ids) and
+              all(isinstance(x,str) and x in available for x in ids) and
+              isinstance(reason,str) and len(reason.strip())>=25,
+              "Missing or unsupported oil-credit component rationale: "+key)
+        if values[key]>0:
+            check(basis in ("observed","assumption") and bool(ids)
+                  and len(reason.strip())>=40,
+                  "Nonzero oil-credit component requires specific supporting evidence: "+key)
+        if basis=="no_support":
+            check(values[key]==0 and not ids,
+                  "Unsupported oil-credit component must be zero: "+key)
+        verified[key]={"basis":basis,"evidence_ids":ids,"rationale":reason.strip()}
+    return verified
+
+
 def assemble(history,assessment,evidence,cutoff,opened,issued):
     date=opened.date().isoformat()
     prev=history["updates"][-1]
@@ -415,6 +486,7 @@ def assemble(history,assessment,evidence,cutoff,opened,issued):
          for k in ("hormuz","energy","elite","coercion")),"Missing conditions")
     u["conditions"]=conditions
     h=haircut(assessment.get("haircut_components"))
+    u["haircut"]["component_support"]=validated_haircut_support(assessment,evidence)
     u["haircut"]["calculation"]=h
     u["haircut"]["method"]["components"]=h["components"]
     u["haircut"]["method"]["rule"]=history["protocol"]["haircut_protocol"]["dependence_rule"]
@@ -506,6 +578,11 @@ FX, external settlement, food/medicine, energy, protests, elite/coercive reliabi
 China and Russia support, China oil credit, Houthi resupply separately from local
 capability, military scenarios, and Hanke inflation when applicable.
 Prior evidence for persistent carried-forward IDs: {prior}.
+A syndicated Reuters/AP story republished at a second URL with the same original
+report date and headline is NOT an independent new source. Carry forward its
+original source/event identifier rather than giving it a second new ID.
+Source mirrors, archived details and old publication dates must not be
+presented as new events. Reassess old reporting without double counting it.
 Return ONLY a JSON object with evidence array of 8-22 items.
 Each item: event_date YYYY-MM-DD, category, observation, source full HTTPS URL,
 source_title, publisher, reliability (High/Medium-high/Medium/Low),
@@ -529,6 +606,10 @@ phrasing such as "We are watching", "We are monitoring", or "We will check".
 Do NOT ask questions, begin a sentence with "Whether", combine events with
 semicolons, or imply a threshold was already crossed without evidence.
 Keep wording concise and preserve the frozen event-resolution conditions.
+This single-event-per-sentence instruction applies ONLY to next_threshold,
+NOT to summary, what_changed, stabilizer, limitations or other descriptions.
+Never turn "no broad evidence of a shortage" into affirmative evidence that
+hospitals or supply chains are resilient. Label missing data as unknown.
 forecasts array exactly four, each with event_id,p,range [lower,upper]
 (10th and 90th percentiles of informed analysts),confidence
 (Low/Medium/Medium-high/High), raise, lower;
@@ -540,6 +621,16 @@ warning EXACT nine frozen categories each with level
 coverage (Low/Medium/Medium-high/High), text >=25 chars;
 conditions object (hormuz,energy,elite,coercion);
 haircut_components six named capped point adjustments; haircut_range [low,high];
+haircut_component_support EXACTLY the six named keys from the frozen haircut
+anchors, each mapped to an object with basis (observed/assumption/no_support),
+evidence_ids (array referencing frozen evidence IDs), and rationale (at least
+40 chars for nonzero adjustments). Every positive adjustment needs one or more
+relevant evidence IDs and an explicit explanation of the protocol anchor.
+If evidence is indirect, mark basis=assumption and disclose the inference.
+If even an assumption-based connection cannot be justified, set points=0,
+basis=no_support and evidence_ids=[]. Never fill component points merely to
+reach a plausible headline. Do not infer positive resilience from the lack
+of reported failures. The haircut is judgmental, not an observed price.
 houthi four probabilities (headline_support_12m,material_support_12m,
 technical_financial_support_12m,independent_capability_12m) and m6,m24;
 status map regional,regime,fx,hormuz,energy,houthi,china (green/amber/red);
@@ -561,6 +652,45 @@ Prior dashboard templates: {templates}
 Frozen protocol: {protocol}
 Prior prospective forecasts: {prior}
 Closed evidence: {evidence}"""
+
+REVIEW="""Independently review the proposed assessment using ONLY the closed, cited
+evidence and frozen Protocol v1.0. Do not browse, elicit new probabilities,
+change event definitions or silently supply missing evidence.
+Check unsupported affirmative claims, contradictions, independence of cited
+sources, evidence IDs (including syndicated wire-service mirrors), warning
+states, false claims of resilience based on absence of shortage reporting,
+the evidence/basis justification for EACH nonzero haircut component, Hanke
+observations, exact core forecast attribution, and source/probability confusion.
+The one-distinct-event-per-sentence editorial rule applies ONLY to
+analysis.next_threshold. Do NOT apply it to summary or any other field.
+For next_threshold, flag fragments, first-person phrasing, questions, merged
+distinct events, and departures from the frozen resolution conditions.
+A supported judgmental haircut assumption is permissible ONLY if stated
+plainly, linked to relevant frozen evidence, and compatible with its anchor.
+Return JSON with approved boolean and issues array; if rejecting, each issue
+must include type, location, and reason. Approve only when issues=[].
+Input: """
+
+CORRECT="""Revise this draft ASSESSMENT using ONLY the identical closed evidence and
+the existing frozen protocol. This is an editorial/diagnostic correction after
+independent review, NOT a fresh prospective forecast elicitation. Return the
+COMPLETE corrected JSON assessment object (not a patch) with all required fields.
+The four scored forecasts are LOCKED: preserve the original forecasts array
+byte-for-byte as JSON data, including event IDs, probabilities, ranges,
+confidence and raise/lower descriptions. Do not elicit new probabilities or
+change the opening of any event. You may correct qualitative narrative,
+warnings, evidence-handling commentary, the six UNSCORED oil-credit haircut
+components and their specific provenance rationales, and revision-attribution
+explanations if the exact unchanged core forecasts remain mathematically
+reconciled. Do not manufacture offsets or sources. Re-check all event definitions,
+the nine warning categories, evidence IDs, six haircut support records and
+other unscored diagnostic constraints. The one-event-per-sentence requirement
+applies ONLY to next_threshold. Absence of a reported shortage is not proof
+of hospital resilience. If evidence does not support a nonzero haircut
+component, use zero and explicitly explain the missing support. A syndicated
+mirror of an earlier report is not newly independent evidence.
+The original closed evidence, protocol, draft and identified problems follow: """
+
 
 def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=capture_metadata,reviewer=None):
     baseline=json.dumps(history,sort_keys=True,ensure_ascii=False)
@@ -590,16 +720,54 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
        [{"event_id":f["event_id"],"p":f["p"]} for f in previous["forecasts"] if f.get("scored")]),
        evidence=json.dumps(evidence),templates=json.dumps({k:previous[k] for k in ("regional","political","chains","absence_indicators")}))
     analysis,_=assessor(input,False)
-    opened=now() # forecast formation completes here; same open timestamp for four scored events
+    opened=now() # the ONE prospective elicitation of exactly four core probabilities
     if reviewer is not None:
-        review,_=reviewer("Review the following proposed assessment against only its frozen evidence and protocol. "
-           "Do not elicit or revise probabilities. Do not browse. Identify unsupported claims, contradictions, "
-           "unsafe warning levels, ungrounded Hanke claims, grammar errors (including "
-           "nondeclarative or first-person next_threshold copy, sentence fragments and "
-           "multiple events in one sentence) or source/probability confusion. "
-           "Return JSON with approved boolean and issues array. Approve only if issues is empty. Input: "+
-           json.dumps({"analysis":analysis,"evidence":evidence,"protocol":history["protocol"]}),False)
-        check(review.get("approved") is True and review.get("issues")==[],"Independent analytical review rejected the candidate")
+        check(isinstance(analysis,dict),"Initial assessment was not a JSON object")
+        locked_forecasts=copy.deepcopy(analysis.get("forecasts"))
+        approved=False
+        # At most two evidence-closed corrections; never regenerate the scored
+        # forecasts or dilute an independent rejection into automatic approval.
+        for attempt in range(3):
+            problems=[]
+            try:
+                # No file is changed, and the eventual issue time is unknown.
+                assemble(history,analysis,evidence,cutoff,opened,opened)
+            except (ValueError,TypeError,KeyError) as exc:
+                # A deterministic content failure remains blocking unless a
+                # corrected draft independently passes the same full guards.
+                problems=[{"type":"deterministic_validation","reason":str(exc)}]
+            if not problems:
+                # Reviewer service/API errors and malformed decisions are
+                # terminal. Never disguise them as fixable drafting defects.
+                review,_=reviewer(REVIEW+json.dumps({
+                    "analysis":analysis,"evidence":evidence,
+                    "protocol":history["protocol"]},ensure_ascii=False),False)
+                check(isinstance(review,dict) and
+                      type(review.get("approved")) is bool and
+                      isinstance(review.get("issues"),list),
+                      "Independent review did not return a valid decision")
+                if review["approved"] is True and review["issues"]==[]:
+                    approved=True
+                    break
+                problems=review["issues"]
+                check(bool(problems),"Independent review rejected without actionable issues")
+            if os.getenv("GITHUB_ACTIONS")=="true":
+                audit=ROOT/".automation-audit"
+                audit.mkdir(exist_ok=True)
+                (audit/f"review-issues-{attempt+1}.json").write_text(
+                    json.dumps({"review_attempt":attempt+1,"issues":problems},
+                               ensure_ascii=False,indent=2),encoding="utf-8")
+            print("Candidate not approved: review/validation attempt "+str(attempt+1)+
+                  " identified "+str(len(problems))+" issue(s).",flush=True)
+            check(attempt<2,"Independent analytical review rejected the candidate after two bounded corrections")
+            revised,_=assessor(CORRECT+json.dumps({
+                "closed_evidence":evidence,"protocol":history["protocol"],
+                "locked_forecasts":locked_forecasts,"draft":analysis,
+                "issues":problems},ensure_ascii=False),False)
+            check(isinstance(revised,dict) and revised.get("forecasts")==locked_forecasts,
+                  "Review correction changed or re-elicited the locked four core forecasts")
+            analysis=revised
+        check(approved,"Independent analytical review rejected the candidate")
     issued=now()
     check(cutoff<=opened<=issued and opened.date().isoformat()==today,"Timestamp ordering/date failed")
     u=assemble(history,analysis,evidence,cutoff,opened,issued)
