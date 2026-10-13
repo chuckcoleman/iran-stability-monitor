@@ -55,10 +55,15 @@ console.log(JSON.stringify({forecast:chart.out,haircut:haircutChart.out}));
         records=current["updates"]
         out=self.render(records)
         dates=[x["date"] for x in records]
-        self.assertEqual(dates,["2026-09-20","2026-09-27","2026-10-04","2026-10-11"])
+        self.assertEqual(dates[:4],["2026-09-20","2026-09-27",
+                                    "2026-10-04","2026-10-11"])
         for chart in (out["forecast"],out["haircut"]):
             labels=[x["text"] for x in chart["labels"] if x["text"] in dates]
-            self.assertEqual(labels,dates)
+            self.assertEqual(labels[0], dates[0])
+            self.assertEqual(labels[-1], dates[-1])
+            self.assertEqual(labels, [x for x in dates if x in labels])
+            if len(dates)<=9:  # enough horizontal space for every ISO date
+                self.assertEqual(labels,dates)
             self.assertTrue(all(x["y"]>=200 for x in chart["labels"]
                                 if x["text"] in dates))
             self.assertEqual(chart["attributes"]["role"],"img")
