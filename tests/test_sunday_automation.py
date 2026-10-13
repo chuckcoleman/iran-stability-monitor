@@ -250,15 +250,22 @@ class SundayPipelineTests(unittest.TestCase):
             return {"approved": True, "issues": []}, set()
         out = a.produce(self.h, research, assess, lambda: next(times), metadata, review)
         validate_history(out, self.h)
-        self.assertEqual(calls, ["research"] + ["metadata"] * 6 + ["assess", "review"])
+        self.assertEqual(calls, ["research"] + ["metadata"] * 6 + ["assess", "review", "review"])
         self.assertEqual(len(out["updates"][-1]["forecasts"]), 4)
 
     def test_rejected_review_never_produces_candidate(self):
         times = iter([self.cutoff, self.cutoff, self.opened])
-        with self.assertRaisesRegex(ValueError, "review rejected"):
+        calls=[]
+        def reject(prompt,search):
+            self.assertFalse(search)
+            calls.append("affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical")
+            return {"approved":False,"issues":[{"type":"evidence_gap",
+                "location":"summary","reason":"Unsupported assertion persists."}]},set()
+        with self.assertRaisesRegex(ValueError, "cycles exhausted"):
             a.produce(self.h, lambda p, s: ({"evidence": self.e}, self.sources),
                       lambda p, s: (self.analysis, set()), lambda: next(times),
-                      lambda u: {}, lambda p, s: ({"approved": False, "issues": ["unsupported"]}, set()))
+                      lambda u: {}, reject)
+        self.assertEqual(calls,["affirmative","critical"]*a.REVIEW_CYCLES_LIMIT)
 
     def test_reviewer_can_correct_language_without_changing_four_forecasts(self):
         times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,
@@ -279,7 +286,7 @@ class SundayPipelineTests(unittest.TestCase):
         def review(prompt,search):
             self.assertFalse(search)
             calls.append("review")
-            self.assertIn("ONLY to",prompt)
+            self.assertIn("ONLY to next_threshold",prompt)
             if calls.count("review")==1:
                 return {"approved":False,"issues":[{
                     "type":"unsupported_claim","location":"warning.Food / medicine",
@@ -288,7 +295,7 @@ class SundayPipelineTests(unittest.TestCase):
         out=a.produce(self.h,research,assess,lambda:next(times),
                       lambda url:{},review)
         self.assertEqual([x for x in calls if x=="assess"],["assess","assess"])
-        self.assertEqual([x for x in calls if x=="review"],["review","review"])
+        self.assertEqual([x for x in calls if x=="review"],["review"]*4)
         self.assertEqual(out["updates"][-1]["warning"]["Food / medicine"]["text"],
                          corrected["warning"]["Food / medicine"]["text"])
         self.assertEqual(out["updates"][-1]["forecasts"][0]["p"],first["forecasts"][0]["p"])
@@ -304,13 +311,119 @@ class SundayPipelineTests(unittest.TestCase):
             return (self.analysis if n[0]==1 else altered),set()
         def reviewer(prompt,search):
             return {"approved":False,"issues":[{"type":"unsupported_claim",
-                                                "reason":"Fix a claim."}]},set()
+                                                "location":"summary","reason":"Fix a claim."}]},set()
         unchanged=copy.deepcopy(self.h)
         with self.assertRaisesRegex(ValueError,"locked four core forecasts"):
             a.produce(self.h,
                       lambda p,search:({"evidence":self.e},self.sources),
                       assessor,lambda:next(times),lambda url:{},reviewer)
         self.assertEqual(self.h,unchanged)
+
+    def test_positive_review_alone_cannot_pass_critical_rejection(self):
+        times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,
+                    self.opened,self.opened+dt.timedelta(seconds=4)])
+        initial=copy.deepcopy(self.analysis)
+        revision=copy.deepcopy(initial)
+        revision["summary"]="The synthetic report explicitly distinguishes judgment from observation."
+        calls=[]
+        def assessor(prompt,search):
+            calls.append("assessor")
+            if "locked_forecasts" in prompt:
+                self.assertIn('"review_role": "critical"',prompt)
+                return revision,set()
+            return initial,set()
+        def reviewer(prompt,search):
+            role="affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical"
+            calls.append(role)
+            self.assertFalse(search)
+            if role=="critical" and calls.count("critical")==1:
+                return {"approved":False,"issues":[{"type":"unsupported_claim",
+                    "location":"summary","reason":"The summary overstates an observation."}]},set()
+            return {"approved":True,"issues":[]},set()
+        before=copy.deepcopy(self.h)
+        result=a.produce(self.h,
+                         lambda p,q:({"evidence":self.e},self.sources),
+                         assessor,lambda:next(times),lambda u:{},reviewer)
+        self.assertEqual(calls,["assessor","affirmative","critical",
+                                "assessor","affirmative","critical"])
+        self.assertEqual(result["updates"][-1]["summary"],revision["summary"])
+        self.assertEqual(result["updates"][-1]["forecasts"][0]["p"],
+                         initial["forecasts"][0]["p"])
+        self.assertEqual(self.h,before)
+
+    def test_review_timeout_or_service_failure_is_never_a_pass(self):
+        for failing_role in ("affirmative","critical"):
+            with self.subTest(failing_role=failing_role):
+                times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,self.opened])
+                calls=[]
+                def assessor(prompt,search):
+                    calls.append("assessor")
+                    return self.analysis,set()
+                def reviewer(prompt,search):
+                    role="affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical"
+                    calls.append(role)
+                    if role==failing_role:
+                        raise TimeoutError("Review service timed out")
+                    return {"approved":True,"issues":[]},set()
+                with self.assertRaisesRegex(TimeoutError,"timed out"):
+                    a.produce(self.h,
+                              lambda p,q:({"evidence":self.e},self.sources),
+                              assessor,lambda:next(times),lambda u:{},reviewer)
+                self.assertEqual(calls,["assessor"]+(
+                    ["affirmative"] if failing_role=="affirmative" else
+                    ["affirmative","critical"]))
+                self.assertEqual(len(self.h["updates"]),4)
+
+    def test_inconsistent_or_malformed_verdict_fails_without_correction(self):
+        for response in ({"approved":True,"issues":[{"type":"x",
+                           "location":"summary","reason":"Not actually clean."}]},
+                         {"approved":False,"issues":[]},
+                         {"approved":True},
+                         {"approved":False,"issues":["bad issue"]}):
+            with self.subTest(response=response):
+                times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,self.opened])
+                calls=[]
+                def assessor(prompt,search):
+                    calls.append("assessor")
+                    return self.analysis,set()
+                def reviewer(prompt,search):
+                    calls.append("reviewer")
+                    return response,set()
+                with self.assertRaisesRegex(ValueError,"review"):
+                    a.produce(self.h,
+                              lambda p,q:({"evidence":self.e},self.sources),
+                              assessor,lambda:next(times),lambda u:{},reviewer)
+                self.assertEqual(calls,["assessor","reviewer"])
+
+    def test_review_elapsed_limit_is_blocking(self):
+        times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,self.opened])
+        called=[]
+        def reviewer(prompt,search):
+            called.append("review")
+            return {"approved":True,"issues":[]},set()
+        with patch.object(a.time,"monotonic",side_effect=[0,1,a.REVIEW_ELAPSED_LIMIT_SECONDS+1]):
+            with self.assertRaisesRegex(ValueError,"time limit exceeded"):
+                a.produce(self.h,
+                          lambda p,q:({"evidence":self.e},self.sources),
+                          lambda p,q:(self.analysis,set()),
+                          lambda:next(times),lambda u:{},reviewer)
+        self.assertEqual(called,[])
+
+    def test_affirmative_and_critical_are_called_in_order_on_same_draft(self):
+        times=iter([self.cutoff-dt.timedelta(seconds=5),self.cutoff,
+                    self.opened,self.opened+dt.timedelta(seconds=4)])
+        calls=[]
+        def reviewer(prompt,search):
+            role="affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical"
+            calls.append((role,prompt.split('Input: ')[-1]))
+            return {"approved":True,"issues":[]},set()
+        result=a.produce(self.h,
+                         lambda p,q:({"evidence":self.e},self.sources),
+                         lambda p,q:(self.analysis,set()),
+                         lambda:next(times),lambda u:{},reviewer)
+        self.assertEqual([x[0] for x in calls],["affirmative","critical"])
+        self.assertEqual(calls[0][1],calls[1][1])
+        self.assertEqual(len(result["updates"]),len(self.h["updates"])+1)
 
     def test_commit_issue_time_only_new_record(self):
         out = copy.deepcopy(self.h)
