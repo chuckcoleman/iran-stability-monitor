@@ -102,7 +102,7 @@ def checked_receipt(before, after, receipt, now=None):
     return True
 
 
-def verify_repository_change(baseline_ref, root=ROOT):
+def verify_repository_change(baseline_ref, root=ROOT, now=None):
     """Read only the local checkout and git object database. No remote calls."""
     root = Path(root)
     original = subprocess.check_output(
@@ -120,7 +120,7 @@ def verify_repository_change(baseline_ref, root=ROOT):
     require(receipt_path.is_file(),
             "New assessment has no off-GitHub clean-review receipt")
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    checked_receipt(before, after, receipt)
+    checked_receipt(before, after, receipt, now=now)
     return "External two-role clean-review receipt verified"
 
 
