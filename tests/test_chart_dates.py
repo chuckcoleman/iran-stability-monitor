@@ -18,7 +18,7 @@ const fs=require('fs'),vm=require('vm');
 const source=fs.readFileSync('assets/app.js','utf8');
 const start=source.indexOf('function axes(c,max=100)');
 if(start<0)throw Error('Chart source is missing');
-const pct=x=>x==null?'—':x+'%';
+globalThis.pct=x=>x==null?'—':x+'%';
 function canvas(height){
   const out={labels:[],dots:[],attributes:{},ticks:[]};
   const ctx={
