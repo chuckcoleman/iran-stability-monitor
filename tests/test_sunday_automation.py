@@ -372,7 +372,8 @@ class SundayPipelineTests(unittest.TestCase):
                 self.assertEqual(calls,["assessor"]+(
                     ["affirmative"] if failing_role=="affirmative" else
                     ["affirmative","critical"]))
-                self.assertEqual(len(self.h["updates"]),4)
+                self.assertEqual(self.h["updates"][-1]["date"],
+                                 (self.opened.date()-dt.timedelta(days=7)).isoformat())
 
     def test_inconsistent_or_malformed_verdict_fails_without_correction(self):
         for response in ({"approved":True,"issues":[{"type":"x",
