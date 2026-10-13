@@ -43,6 +43,19 @@ On GitHub Actions source, the validated deployment runs automatically after a
 successful push to `main`; pull-request validation never deploys.
 A failed deploy leaves the most recently successful Actions deployment intact.
 
+## Complete validation and review cycles
+
+Before any new Sunday history append is authorized, the candidate must
+pass full JSON Schema, frozen Protocol v1, historical immutability, revision
+arithmetic and dashboard validation. Correctable failures lead to a
+closed-evidence correction and **restart of every validator and both
+affirmative/critical reviews** on the exact revised draft. A final full
+validation is repeated after both approvals. Only one candidate with clean
+validation and two same-draft clean reviews may be submitted. Six cycles
+and the review time limit are failure ceilings, not successful outcomes.
+Unresolved defects, timeouts, invalid evidence or tool failures stop
+publication; no forecast or historical record may be silently changed.
+
 ## Sunday assessment automation (ChatGPT scheduled task)
 
 **No separate computer or local OpenAI API key is required for the configured
