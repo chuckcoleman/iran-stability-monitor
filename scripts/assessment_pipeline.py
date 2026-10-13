@@ -728,10 +728,17 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         # At most two evidence-closed corrections; never regenerate the scored
         # forecasts or dilute an independent rejection into automatic approval.
         for attempt in range(3):
+            problems=[]
             try:
-                # First check all deterministic guards before paying for review.
-                # No file is changed, and the eventual issue time is still unknown.
+                # No file is changed, and the eventual issue time is unknown.
                 assemble(history,analysis,evidence,cutoff,opened,opened)
+            except (ValueError,TypeError,KeyError) as exc:
+                # A deterministic content failure remains blocking unless a
+                # corrected draft independently passes the same full guards.
+                problems=[{"type":"deterministic_validation","reason":str(exc)}]
+            if not problems:
+                # Reviewer service/API errors and malformed decisions are
+                # terminal. Never disguise them as fixable drafting defects.
                 review,_=reviewer(REVIEW+json.dumps({
                     "analysis":analysis,"evidence":evidence,
                     "protocol":history["protocol"]},ensure_ascii=False),False)
@@ -744,10 +751,6 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
                     break
                 problems=review["issues"]
                 check(bool(problems),"Independent review rejected without actionable issues")
-            except (ValueError,TypeError,KeyError) as exc:
-                # A deterministic validation failure remains blocking unless a
-                # corrected draft independently passes the same full guards.
-                problems=[{"type":"deterministic_validation","reason":str(exc)}]
             if os.getenv("GITHUB_ACTIONS")=="true":
                 audit=ROOT/".automation-audit"
                 audit.mkdir(exist_ok=True)
@@ -759,7 +762,7 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
             check(attempt<2,"Independent analytical review rejected the candidate after two bounded corrections")
             revised,_=assessor(CORRECT+json.dumps({
                 "closed_evidence":evidence,"protocol":history["protocol"],
-                "prior_prospective":input,"draft":analysis,
+                "locked_forecasts":locked_forecasts,"draft":analysis,
                 "issues":problems},ensure_ascii=False),False)
             check(isinstance(revised,dict) and revised.get("forecasts")==locked_forecasts,
                   "Review correction changed or re-elicited the locked four core forecasts")
