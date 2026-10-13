@@ -1,15 +1,44 @@
 # Iran assessment — reviews before GitHub publication
 
-## October 13, 2026: external-review-first procedure (current)
+## October 13, 2026: ChatGPT Scheduled task (current preferred path)
+
+A ChatGPT scheduled cloud task, **Iran Sunday Assessment**, is configured for
+**Sunday 09:00 America/New_York**, starting **2026-10-18**. It is intended to
+research and review the report inside ChatGPT, without an owner's external
+computer or an additional `OPENAI_API_KEY`. ChatGPT uses the publicly
+available prior history and frozen Protocol v1 to finish research, fix defects,
+and complete alternating affirmative and critical reviews **before any GitHub
+connector access for that assessment**. The final draft must have explicit
+clean approvals by both reviewers. Failures and timeouts are failures.
+
+After both reviews, the task may use the already connected GitHub app
+(subject to its existing read/write permissions and required user approvals)
+to compare the protected `main` baseline, construct the matching clean
+review receipt, submit a protected PR, require green exact-head CI, merge,
+and check Pages publication. A paused approval is **not** publication success.
+Automatic X announcements remain controlled by the separate enable flag,
+published-site checks and deduplication; never retry an uncertain posting.
+The **October 18 run is not yet end-to-end verified**. The live task must
+fail closed rather than invent a positive status if a necessary step, tool,
+validator, or approval is unavailable.
+
+GitHub Actions itself remains limited to integration diagnostics, PR
+validation, Pages deployment, and post-publication verification. The former
+GitHub-hosted assessment writer stays retired. No machine belonging to the
+owner needs to remain online. For supported task/app actions and possible
+permission pauses, see
+[OpenAI scheduled tasks](https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt).
+
+## October 13, 2026: external-review-first procedure (publication boundary)
 
 **No Iran assessment is researched, drafted, scored, revised or reviewed in
 GitHub Actions.** GitHub is only the destination for an already-clean report:
 the preparation and two-role review occur outside GitHub, and GitHub then
 checks the unchanged candidate, protected PR, deployment and verified X status.
-The previous unattended Sunday GitHub Actions writer is **retired**. Consequently
-weekly unattended publication will not resume without a separately configured
-off-GitHub research/review scheduler or an explicitly initiated external
-preparation session. The existing publication status check remains read-only.
+The previous unattended Sunday GitHub Actions writer is **retired**. Its
+replacement is the separately scheduled ChatGPT assessment task described
+above. The earlier read-only publication-check task has been repurposed;
+no second competing assessment writer should be started.
 
 The review cycle is **affirmative, then critical**, on exactly the same draft.
 Any objection triggers an evidence-closed revision and a fresh pair of reviews.
@@ -22,7 +51,9 @@ editorial and unscored diagnostic corrections cannot change them.
 
 ### Handoff
 
-A trusted, external preparation environment needs a local source snapshot
+The ChatGPT scheduled cloud task is the primary preparation environment.
+The following local-computer workflow is an **optional alternative**, not
+a requirement. It needs a trusted local source snapshot
 with the frozen Protocol v1 code, current `data/history.json`, JSON Schema,
 and validator. A local run of `scripts/pre_github_review.py` requires a
 separately configured `OPENAI_API_KEY` (never pasted into the repository,
@@ -42,7 +73,7 @@ not reviewer identity; they are **not a cryptographic signature**. Protected
 PR review and control of the outside-GitHub preparation environment remain
 important independent protections.
 
-The current off-GitHub publication handoff is available as a single
+The optional CLI publication handoff is available as a single
 **external-host** command, for a trusted machine with this repository checked
 out, the `gh` CLI authenticated locally, a separately provisioned OpenAI API
 credential, and the pinned `jsonschema` dependency. Run it on the intended
@@ -71,10 +102,10 @@ GitHub credentials should be configured in the local CLI's secure credential
 store, **not** placed in environment variables during off-GitHub preparation
 and not copied into the review folder. OpenAI's local credential is different
 from the existing GitHub Actions WIF service identity and must be provided
-separately. No trusted external scheduler or API credential has been installed
-by these repository changes. A host scheduler may invoke the command weekly
-only after its owner configures it; GitHub Actions remains strictly prohibited
-from running the assessment or its reviews.
+separately. That requirement applies to the optional standalone CLI path,
+not the ChatGPT scheduled task. A local host scheduler may invoke that
+alternative only after its owner configures it. GitHub Actions remains
+strictly prohibited from running the assessment or its reviews.
 
 Only after receiving this clean handoff may the approved candidate
 `data/history.json` and receipt be submitted together in a GitHub pull
@@ -91,7 +122,7 @@ integration diagnostics and an optional paid *API contract probe*; neither
 is a content review or publication authorization. Its scheduled assessment
 trigger, `run` and assessment `dry-run` choices were intentionally removed.
 Do not reactivate the old GitHub-hosted writer as a workaround for absent
-external credentials or review failures. Any future unattended external
+permissions or review failures. The ChatGPT scheduled task and any alternative
 scheduler must use the same receipt and fail-closed review rules.
 
 
@@ -507,10 +538,18 @@ GitHub secret, prompt for the Metricool token, and strengthen the existing stric
 ruleset. It requires an authenticated GitHub CLI administrator and **leaves both
 live switches OFF**. Running it is optional; GitHub Settings works on iPhone.
 
-## Readiness and activation
+## Superseded October 12 installation notes (historical, not current instructions)
 
-After installation is merged, open **Actions → Prepare Sunday Iran assessment →
-Run workflow**. Choose the operation from the dropdown:
+The older guidance below describes the retired GitHub-hosted assessment writer,
+including its former `run` and `dry-run` operations. Those options were removed
+when report reviews moved before GitHub. It is retained for historical diagnosis
+and must **not** be used to re-enable assessment production in GitHub Actions.
+The current method is the ChatGPT scheduled task described above.
+
+### Former readiness and activation procedure (retired)
+
+After the former installation, the operator opened
+**Actions → Prepare Sunday Iran assessment → Run workflow**:
 
 1. **`healthcheck`** (compatible alias: `check-services`) — mints a temporary GitHub App token and verifies read-only Pages and branch safeguards, OpenAI WIF and model GET, and Metricool brand, scheduled-post, and published-X **JSON** reads. No forecasts, writes, or paid model inference occur.
 2. **`api-probe`** — makes two small, paid live Responses API calls (a live web-search query and a separate non-search JSON-mode query), with no forecast, PR, website or social side effects. Any 400 rejection reports only non-secret API error identifiers. Run this mode before the full dry-run.
@@ -523,11 +562,10 @@ entries cover daylight and standard time; the nominal cron is checked against th
 Eastern date, so a same-day delayed runner does not accidentally miss the right
 slot or run the second slot. GitHub scheduling is not an exact-time guarantee.
 
-The existing ChatGPT Sunday task must not be a second independent writer after
-GitHub scheduling is enabled. Use it as a supervisor or disable its publication
-path. The GitHub orchestrator refuses a date already present on `main`, a concurrent
-run, or an existing dated candidate branch. It never re-elicits already-issued
-candidate probabilities to get a more convenient result.
+The former guidance prohibited multiple independent writers. The current
+single ChatGPT task is the intended assessment writer, while GitHub Actions
+is the validator and deployment platform. Do not re-enable the retired
+GitHub writer or run a competing source for the same Sunday date.
 
 ## What a live run does
 
