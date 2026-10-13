@@ -578,6 +578,11 @@ FX, external settlement, food/medicine, energy, protests, elite/coercive reliabi
 China and Russia support, China oil credit, Houthi resupply separately from local
 capability, military scenarios, and Hanke inflation when applicable.
 Prior evidence for persistent carried-forward IDs: {prior}.
+A syndicated Reuters/AP story republished at a second URL with the same original
+report date and headline is NOT an independent new source. Carry forward its
+original source/event identifier rather than giving it a second new ID.
+Source mirrors, archived details and old publication dates must not be
+presented as new events. Reassess old reporting without double counting it.
 Return ONLY a JSON object with evidence array of 8-22 items.
 Each item: event_date YYYY-MM-DD, category, observation, source full HTTPS URL,
 source_title, publisher, reliability (High/Medium-high/Medium/Low),
@@ -601,6 +606,10 @@ phrasing such as "We are watching", "We are monitoring", or "We will check".
 Do NOT ask questions, begin a sentence with "Whether", combine events with
 semicolons, or imply a threshold was already crossed without evidence.
 Keep wording concise and preserve the frozen event-resolution conditions.
+This single-event-per-sentence instruction applies ONLY to next_threshold,
+NOT to summary, what_changed, stabilizer, limitations or other descriptions.
+Never turn "no broad evidence of a shortage" into affirmative evidence that
+hospitals or supply chains are resilient. Label missing data as unknown.
 forecasts array exactly four, each with event_id,p,range [lower,upper]
 (10th and 90th percentiles of informed analysts),confidence
 (Low/Medium/Medium-high/High), raise, lower;
@@ -612,6 +621,16 @@ warning EXACT nine frozen categories each with level
 coverage (Low/Medium/Medium-high/High), text >=25 chars;
 conditions object (hormuz,energy,elite,coercion);
 haircut_components six named capped point adjustments; haircut_range [low,high];
+haircut_component_support EXACTLY the six named keys from the frozen haircut
+anchors, each mapped to an object with basis (observed/assumption/no_support),
+evidence_ids (array referencing frozen evidence IDs), and rationale (at least
+40 chars for nonzero adjustments). Every positive adjustment needs one or more
+relevant evidence IDs and an explicit explanation of the protocol anchor.
+If evidence is indirect, mark basis=assumption and disclose the inference.
+If even an assumption-based connection cannot be justified, set points=0,
+basis=no_support and evidence_ids=[]. Never fill component points merely to
+reach a plausible headline. Do not infer positive resilience from the lack
+of reported failures. The haircut is judgmental, not an observed price.
 houthi four probabilities (headline_support_12m,material_support_12m,
 technical_financial_support_12m,independent_capability_12m) and m6,m24;
 status map regional,regime,fx,hormuz,energy,houthi,china (green/amber/red);
