@@ -39,11 +39,15 @@ class PublicationGateRehearsalTests(unittest.TestCase):
                         self.repo/"schema/history.schema.json")
         history=json.loads((ROOT/"data/history.json").read_text(encoding="utf-8"))
         self.assertGreaterEqual(len(history["updates"]),4)
-        # Rehearse issuance from a real, previously validated baseline instead
-        # of inventing a future approval timestamp (which must fail if future).
-        # Use the most recent two archived Protocol-v1 records.
+        # Rehearse the immutable 2026-10-11 issuance from its exact
+        # 2026-10-04 baseline. Later synthetic or actual Sunday updates must
+        # not turn a test receipt into a future-dated approval.
+        # Never bypass the production validator's real-time cutoff.
+        historical=next(i for i,r in enumerate(history["updates"])
+                        if r["date"]=="2026-10-11")
         self.after=copy.deepcopy(history)
-        self.before=copy.deepcopy(history)
+        self.after["updates"]=self.after["updates"][:historical+1]
+        self.before=copy.deepcopy(self.after)
         self.before["updates"].pop()
         self.original=self.after["updates"][-1]
         self.date=self.original["date"]
