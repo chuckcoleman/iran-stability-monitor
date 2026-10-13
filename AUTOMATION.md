@@ -1,6 +1,44 @@
 # Sunday unattended publication
 
-## October 13: dry-run review rejection and bounded repairs
+## October 13: alternating affirmative and critical reviews — current publication gate
+
+Every newly prepared Sunday assessment receives alternating **affirmative** and
+**critical** reviews of the *same exact draft*, in that order. The affirmative
+review independently verifies evidentiary support, balance, documented
+assumptions and qualifications; the critical review independently challenges
+weak claims, missing evidence, contradictions, double counting, forecasts,
+warnings and data quality. Neither reviewer may infer that a favorable verdict
+from the other reviewer is sufficient.
+
+Publication requires **both** reviewers to return a valid, explicit
+`approved: true` verdict with an **empty** `issues` array on the **same
+unchanged draft**, after deterministic data and frozen-Protocol-v1 checks.
+Any substantive objections from either reviewer trigger a closed-evidence
+correction and then a **fresh affirmative-and-critical pair**, even if one
+reviewer previously approved an earlier draft. An approved draft is not
+automatically approved again after a change.
+
+Review is bounded by **six full cycles** (initial draft plus at most five
+revisions) and a **60-minute review-phase deadline**, inside the existing
+90-minute GitHub Actions job deadline. Those are *resource limits*, not
+success criteria. If clean consensus is not reached, the workflow **fails
+closed** without pushing, merging, deploying, or posting. API errors, malformed
+or contradictory review verdicts, incomplete review stages, reviewer or runner
+timeouts and process cancellation are also **failures, never passes**.
+Individual review results are retained in dated, role-labeled run audit files
+with the exact draft SHA-256; the final receipt is written only after both
+reviewers approve the same SHA-256 and all deterministic checks pass.
+
+The report's four core prospective forecasts are elicited exactly once per
+candidate and cannot be revised during the editorial review cycles.
+Evidence collection remains closed throughout; reviewers cannot introduce
+new information or change the Protocol v1 event definitions, horizons,
+resolution deadlines or historical records. Only a fully validated,
+review-approved candidate may enter the separate protected-PR publication
+transaction and subsequent verified one-post social step. Both production
+enable flags remain disabled until explicitly enabled by the owner.
+
+## October 13: dry-run review rejection and earlier bounded repairs
 
 The October 13 owner-triggered dry-run reached evidence freezing, one elicitation
 of four scored forecasts, and independent analytical review, which rejected
@@ -22,18 +60,11 @@ source-linked rationale, marked observed, explicitly assumed, or unsupported
 (zero). All nonzero point adjustments require cited evidence identifiers and
 must satisfy the existing Protocol v1 caps and overlap arithmetic.
 
-If an independent reviewer rejects a draft or deterministic content checks
-find defects, the process can request **at most two** closed-evidence corrective
-drafts. This is not a second probability elicitation: the original complete
-array of four core forecasts (including all values, analyst intervals, and
-confidence labels) is locked and verified after every correction. Attributions
-must continue to reconcile and all deterministic validation repeats. A fresh
-independent reviewer must approve the last corrected draft with zero issues.
-Reviewer service failures, malformed decisions, changed core forecasts, or
-remaining issues fail closed with no publication. The feedback is retained
-in GitHub Actions audit artifacts and a count-only status is logged.
-This repair does not change frozen Protocol v1, historical observations,
-existing forecast values, protected-branch checks, or production enable flags.
+The initial remedy used one independent reviewer and at most two correction
+attempts. It is superseded by the alternating affirmative/critical review
+requirement above: both roles must approve the same final draft, or publication
+fails. The historical forecast lock, frozen evidence, explicit oil-credit
+source justifications and fail-closed protected-branch safeguards remain.
 
 
 ## Website prose: thresholds to watch
