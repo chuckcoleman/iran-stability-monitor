@@ -31,7 +31,7 @@ must continue to reconcile and all deterministic validation repeats. A fresh
 independent reviewer must approve the last corrected draft with zero issues.
 Reviewer service failures, malformed decisions, changed core forecasts, or
 remaining issues fail closed with no publication. The feedback is retained
-in private GitHub Actions audit artifacts and a count-only status is logged.
+in GitHub Actions audit artifacts and a count-only status is logged.
 This repair does not change frozen Protocol v1, historical observations,
 existing forecast values, protected-branch checks, or production enable flags.
 
