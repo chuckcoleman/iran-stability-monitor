@@ -251,6 +251,14 @@ class SundayPipelineTests(unittest.TestCase):
 
 
 class OrchestrationTests(unittest.TestCase):
+    def test_live_audit_does_not_include_synthetic_offline_test_records(self):
+        workflow=(ROOT/".github/workflows/sunday-assessment.yml").read_text(encoding="utf-8")
+        self.assertIn("rm -rf -- .automation-audit",workflow)
+        self.assertLess(workflow.index("- name: Offline readiness tests"),
+                        workflow.index("- name: Discard synthetic offline-test audit files"))
+        self.assertLess(workflow.index("- name: Discard synthetic offline-test audit files"),
+                        workflow.index("- name: Determine whether a new Sunday candidate is permitted"))
+
     def test_schedule_nominal_dst_and_delays(self):
         summer = dt.datetime(2026, 10, 18, 11, 30, tzinfo=ZONE)
         winter = dt.datetime(2026, 11, 1, 10, 30, tzinfo=ZONE)
