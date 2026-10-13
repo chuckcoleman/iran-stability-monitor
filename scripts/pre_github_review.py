@@ -41,7 +41,7 @@ def check_offline_environment():
             "Local pre-GitHub review requires a separately configured OpenAI API credential")
 
 
-def prepare(out_dir, *, now=None, producer=None):
+def prepare(out_dir, *, now=None, producer=None, review_finished_at=None):
     """Return paths only after two independent reviews and validation pass."""
     check_offline_environment()
     day = now or clock()
@@ -77,7 +77,7 @@ def prepare(out_dir, *, now=None, producer=None):
         require(approval_file.is_file(),
                 "Both external reviews have not produced a clean approval receipt")
         approval=json.loads(approval_file.read_text(encoding="utf-8"))
-        review_date=dt.datetime.now(dt.timezone.utc)
+        review_date=review_finished_at or dt.datetime.now(dt.timezone.utc)
         receipt={
             "version":1,"origin":"off_github","status":"CLEAN",
             "date":candidate["updates"][-1]["date"],
@@ -106,7 +106,6 @@ def prepare(out_dir, *, now=None, producer=None):
             for src in Path(temporary).glob("review-*.json"):
                 shutil.copyfile(src,audit/src.name)
             # One final readback; never deliver corrupt/incomplete handoff.
-            from review_receipt import checked_receipt
             verify=json.loads((data/"history.json").read_text(encoding="utf-8"))
             handoff=json.loads((evidence/(receipt["date"]+".json")).read_text(encoding="utf-8"))
             checked_receipt(history,verify,handoff,now=review_date)
