@@ -710,10 +710,20 @@ def _review_issues(decision,role):
     return issues
 
 
+def _review_audit_dir():
+    """Write reviewer evidence before GitHub, in a designated external directory."""
+    offline=os.getenv("IRAN_OFFLINE_REVIEW_DIR")
+    if offline:
+        check(os.getenv("GITHUB_ACTIONS")!="true",
+              "External reviews must complete outside GitHub Actions")
+        return Path(offline)
+    return ROOT/".automation-audit" if os.getenv("GITHUB_ACTIONS")=="true" else None
+
+
 def _write_review_audit(round_no,role,draft_hash,status,issues=None,error_type=None):
-    if os.getenv("GITHUB_ACTIONS")!="true":
+    folder=_review_audit_dir()
+    if folder is None:
         return
-    folder=ROOT/".automation-audit"
     folder.mkdir(exist_ok=True)
     row={"round":round_no,"role":role,"draft_sha256":draft_hash,
          "status":status}
@@ -827,15 +837,16 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
                       ensure_ascii=False,separators=(",",":"),allow_nan=False)
                       ==locked_json,
                       "Review altered the locked four core forecasts")
-                if os.getenv("GITHUB_ACTIONS")=="true":
-                    folder=ROOT/".automation-audit"
+                folder=_review_audit_dir()
+                if folder is not None:
                     folder.mkdir(exist_ok=True)
                     (folder/"review-approval.json").write_text(json.dumps({
                         "status":"CLEAN","round":round_no,"draft_sha256":draft_hash,
                         "forecast_sha256":hashlib.sha256(locked_json.encode()).hexdigest(),
+                        "locked_forecasts":locked_forecasts,
                         "affirmative":{"approved":True,"issues":[],"draft_sha256":draft_hash},
                         "critical":{"approved":True,"issues":[],"draft_sha256":draft_hash}
-                    },indent=2)+"\n",encoding="utf-8")
+                    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
                 approved=True
                 break
             print("Alternating review round "+str(round_no)+" rejected the draft ("

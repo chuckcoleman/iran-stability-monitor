@@ -120,6 +120,13 @@ def verify_all():
         print("Code-only deployment; no new forecast or X announcement")
         return None
     date = fresh_record(before, after)
+    # A report prepared before GitHub must carry a matching clean approval
+    # for BOTH independent roles; enforce again before any social claim.
+    from review_receipt import checked_receipt
+    receipt_file = ROOT / "data" / "review-receipts" / (date + ".json")
+    check(receipt_file.is_file(), "Missing pre-GitHub approved-review receipt")
+    receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
+    checked_receipt(before, after, receipt)
     from validate_history import validate_history
     validate_history(after, before)
     run_id = verify_run(sha)

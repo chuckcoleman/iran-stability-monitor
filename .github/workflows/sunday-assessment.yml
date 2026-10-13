@@ -1,12 +1,9 @@
-name: Prepare Sunday Iran assessment
+name: Iran external-service diagnostics (no report reviews)
 on:
-  schedule:
-    - cron: '0 13 * * 0'
-    - cron: '0 14 * * 0'
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Read-only checks, paid API contract probe, unpublishable dry-run, or enabled Sunday publication'
+        description: 'Read-only service checks or a paid, unpublishable API contract probe'
         required: true
         default: healthcheck
         type: choice
@@ -14,30 +11,23 @@ on:
           - healthcheck
           - check-services
           - api-probe
-          - dry-run
-          - run
 permissions:
   contents: read
   actions: read
   pages: read
   id-token: write
 concurrency:
-  group: iran-sunday-single-run
+  group: iran-diagnostics-single-run
   cancel-in-progress: false
 jobs:
   prepare:
-    if: github.event_name == 'workflow_dispatch' || vars.ASSESSMENT_AUTOMATION_ENABLED == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 30
     env:
       GITHUB_EVENT_NAME: ${{ github.event_name }}
-      GITHUB_EVENT_SCHEDULE: ${{ github.event.schedule }}
-      ASSESSMENT_AUTOMATION_ENABLED: ${{ vars.ASSESSMENT_AUTOMATION_ENABLED }}
       IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
       OPENAI_WIF_AUDIENCE: https://api.openai.com/v1
       OPENAI_IDENTITY_PROVIDER_ID: ${{ vars.OPENAI_IDENTITY_PROVIDER_ID || 'idp_e9927fe00cb77ede0705b70c' }}
-      # Exact existing iran-monitor service account ID, verified through OpenAI Admin API.
-      # Intentionally do not use an unchecked repository-variable override.
       OPENAI_SERVICE_ACCOUNT_ID: user-1e07e217b5a13cf3bc804060
     steps:
       - uses: actions/checkout@v4
@@ -54,74 +44,38 @@ jobs:
           python -m compileall -q scripts tests
           python -m unittest discover -s tests -v
           node --check assets/app.js
-      # Offline tests generate synthetic audit records when GITHUB_ACTIONS=true.
-      # Never mix them with a real paid probe, dry-run, or Sunday issuance.
       - name: Discard synthetic offline-test audit files
         run: rm -rf -- .automation-audit
-      - name: Determine whether a new Sunday candidate is permitted
-        id: eligibility
-        if: github.event_name == 'schedule' || inputs.mode == 'run'
-        run: python scripts/sunday_automation.py eligible
-      - name: Mint short-lived GitHub App preflight token
+      - name: Mint short-lived diagnostic GitHub App token
         id: app-preflight
-        if: steps.eligibility.outputs.eligible == 'true' || inputs.mode == 'healthcheck' || inputs.mode == 'check-services'
+        if: inputs.mode == 'healthcheck' || inputs.mode == 'check-services'
         uses: actions/create-github-app-token@v3
         with:
           client-id: ${{ vars.IRAN_GITHUB_APP_CLIENT_ID || 'Iv23liGgGQPahqYbv6in' }}
           private-key: ${{ secrets.IRAN_GITHUB_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-pull-requests: write
+          permission-contents: read
+          permission-pull-requests: read
           permission-actions: read
           permission-pages: read
           permission-issues: read
-      - name: Check GitHub App, WIF, branch protection, and Metricool without writes
+      - name: Check GitHub, WIF, branch protection, and Metricool without writes
         if: inputs.mode == 'healthcheck' || inputs.mode == 'check-services'
         env:
           GH_TOKEN: ${{ steps.app-preflight.outputs.token }}
           METRICOOL_API_TOKEN: ${{ secrets.METRICOOL_API_TOKEN }}
         run: python scripts/sunday_automation.py healthcheck
-      - name: Check full OpenAI Responses web-search and JSON-mode contracts (paid, unpublishable)
+      - name: Check OpenAI web-search and JSON-mode contracts (paid, unpublishable)
         if: inputs.mode == 'api-probe'
         run: python scripts/sunday_automation.py api-probe
-      - name: Complete a live but unpublishable paid assessment dry-run
-        if: inputs.mode == 'dry-run'
-        run: python scripts/sunday_automation.py dry-run
-      - name: Verify publication gates before paying for Sunday research
-        if: steps.eligibility.outputs.eligible == 'true'
-        env:
-          GH_TOKEN: ${{ steps.app-preflight.outputs.token }}
-        run: python scripts/sunday_automation.py preflight
-      - name: Gather evidence and prepare candidate locally (no GitHub writes)
-        if: steps.eligibility.outputs.eligible == 'true'
-        env:
-          GH_TOKEN: ${{ steps.app-preflight.outputs.token }}
-        run: python scripts/sunday_automation.py prepare
-      - name: Mint FRESH GitHub App token immediately before candidate publication
-        id: app-publish
-        if: steps.eligibility.outputs.eligible == 'true'
-        uses: actions/create-github-app-token@v3
-        with:
-          client-id: ${{ vars.IRAN_GITHUB_APP_CLIENT_ID || 'Iv23liGgGQPahqYbv6in' }}
-          private-key: ${{ secrets.IRAN_GITHUB_APP_PRIVATE_KEY }}
-          permission-contents: write
-          permission-pull-requests: write
-          permission-actions: read
-          permission-pages: read
-          permission-issues: read
-      - name: Push candidate, require PR validation, and merge without bypass
-        if: steps.eligibility.outputs.eligible == 'true'
-        env:
-          GH_TOKEN: ${{ steps.app-publish.outputs.token }}
-        run: python scripts/sunday_automation.py publish
-      - name: Preserve issuance, evidence, and result audit (no keys)
+      - name: Preserve diagnostic audit (no credentials)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: sunday-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          name: integration-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
           path: .automation-audit/*.json
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 30
       - name: Failure summary
         if: failure()
-        run: echo 'Automation stopped at a failed guard. Inspect this run; do not bypass validation or blindly retry a social POST.' >> "$GITHUB_STEP_SUMMARY"
+        run: echo 'Diagnostic failed. It does not authorize assessment preparation or publication.' >> "$GITHUB_STEP_SUMMARY"

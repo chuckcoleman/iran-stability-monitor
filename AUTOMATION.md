@@ -1,4 +1,65 @@
-# Sunday unattended publication
+# Iran assessment — reviews before GitHub publication
+
+## October 13, 2026: external-review-first procedure (current)
+
+**No Iran assessment is researched, drafted, scored, revised or reviewed in
+GitHub Actions.** GitHub is only the destination for an already-clean report:
+the preparation and two-role review occur outside GitHub, and GitHub then
+checks the unchanged candidate, protected PR, deployment and verified X status.
+The previous unattended Sunday GitHub Actions writer is **retired**. Consequently
+weekly unattended publication will not resume without a separately configured
+off-GitHub research/review scheduler or an explicitly initiated external
+preparation session. The existing publication status check remains read-only.
+
+The review cycle is **affirmative, then critical**, on exactly the same draft.
+Any objection triggers an evidence-closed revision and a fresh pair of reviews.
+Publication requires both explicit clean verdicts for the same draft. Six
+cycles and a 60-minute review-phase deadline are **failure ceilings, not passing
+conditions**. Unresolved defects, API errors, timeouts, malformed decisions,
+inconsistent reviewer results, incomplete rounds or altered core forecasts
+block publication. Four scored probabilities are elicited only once; later
+editorial and unscored diagnostic corrections cannot change them.
+
+### Handoff
+
+A trusted, external preparation environment needs a local source snapshot
+with the frozen Protocol v1 code, current `data/history.json`, JSON Schema,
+and validator. A local run of `scripts/pre_github_review.py` requires a
+separately configured `OPENAI_API_KEY` (never pasted into the repository,
+issue, review record or ChatGPT). GitHub OIDC/WIF is **not available** outside
+GitHub Actions. The script refuses an Actions environment, GitHub credentials,
+non-Sunday issuance, a missing previous Sunday, or an output directory inside
+the repository. Its prepared output must be kept outside the checkout.
+
+It emits a full append-only `data/history.json` plus
+`data/review-receipts/YYYY-MM-DD.json` **only after** both reviewers explicitly
+approve the exact same final draft and the schema, immutability, dashboard
+and Protocol v1 validators pass. It also retains the exact baseline and
+local review audit. The receipt contains draft, forecast, candidate and
+record SHA-256 hashes, the two clean verdicts, the frozen scored values,
+and a review-completion timestamp. These hashes verify content integrity,
+not reviewer identity; they are **not a cryptographic signature**. Protected
+PR review and control of the outside-GitHub preparation environment remain
+important independent protections.
+
+Only after receiving this clean handoff may the approved candidate
+`data/history.json` and receipt be submitted together in a GitHub pull
+request. The `validate` job compares them with the actual PR base, requires
+exactly one append, both clean role approvals of the same draft, the locked
+forecasts, original historical data, matching hashes and timestamps, and
+the existing frozen validator. Code-only changes require no new receipt.
+The post-deployment verifier checks the receipt again before a social
+announcement can be considered. **No individual review, failed review,
+timeout, exhausted cycle or missing receipt may ever count as a pass.**
+
+`.github/workflows/sunday-assessment.yml` is now limited to read-only
+integration diagnostics and an optional paid *API contract probe*; neither
+is a content review or publication authorization. Its scheduled assessment
+trigger, `run` and assessment `dry-run` choices were intentionally removed.
+Do not reactivate the old GitHub-hosted writer as a workaround for absent
+external credentials or review failures. Any future unattended external
+scheduler must use the same receipt and fail-closed review rules.
+
 
 ## October 13: alternating affirmative and critical reviews — current publication gate
 

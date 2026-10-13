@@ -30,6 +30,10 @@ jobs:
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: python scripts/validate_history.py
+      - name: Require pre-GitHub affirmative and critical reviews before new assessment publication
+        env:
+          GITHUB_EVENT_BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python scripts/review_receipt.py --baseline-ref "$GITHUB_EVENT_BEFORE"
       - name: Retain reproducible review source snapshot
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
@@ -42,6 +46,7 @@ jobs:
             tests/*.py
             schema/*.json
             data/history.json
+            data/review-receipts/*.json
             assets/app.js
             *.html
             README.md

@@ -200,8 +200,10 @@ class ResponsesContractTests(unittest.TestCase):
         self.assertIn("          - api-probe",workflow)
         self.assertIn("inputs.mode == 'api-probe'",workflow)
         self.assertIn("python scripts/sunday_automation.py api-probe",workflow)
-        self.assertIn("inputs.mode == 'dry-run'",workflow)
-        self.assertNotIn("inputs.mode == 'api-probe' || steps.eligibility.outputs.eligible",workflow)
+        self.assertNotIn("inputs.mode == 'dry-run'",workflow)
+        self.assertNotIn("python scripts/sunday_automation.py prepare",workflow)
+        self.assertNotIn("python scripts/sunday_automation.py publish",workflow)
+        self.assertNotIn("  schedule:",workflow)
 
 
 if __name__=="__main__":

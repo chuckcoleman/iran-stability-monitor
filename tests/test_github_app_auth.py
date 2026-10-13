@@ -15,21 +15,23 @@ class GithubAppAuthTests(unittest.TestCase):
     def workflow(self, relative):
         return (ROOT / relative).read_text(encoding="utf-8")
 
-    def test_sunday_workflow_mints_separate_short_lived_tokens(self):
-        text = self.workflow('.github/workflows/sunday-assessment.yml')
-        self.assertEqual(text.count('uses: actions/create-github-app-token@v3'), 2)
-        self.assertNotIn('AUTOMATION_GH_TOKEN', text)
-        self.assertNotIn('secrets.OPENAI_API_KEY', text)
-        self.assertIn('permission-pull-requests: write', text)
-        self.assertIn('permission-pages: read', text)
-        self.assertIn('permission-actions: read', text)
-        self.assertIn('persist-credentials: false', text)
-        self.assertIn('id-token: write', text)
-        self.assertTrue(text.index('id: app-preflight') < text.index('python scripts/sunday_automation.py prepare'))
-        self.assertTrue(text.index('python scripts/sunday_automation.py prepare') < text.index('id: app-publish'))
-        self.assertTrue(text.index('id: app-publish') < text.index('python scripts/sunday_automation.py publish'))
-        self.assertIn('GH_TOKEN: ${{ steps.app-publish.outputs.token }}', text)
-        self.assertIn("if: steps.eligibility.outputs.eligible == 'true'", text)
+    def test_github_is_diagnostics_only_until_external_review_is_clean(self):
+        text=self.workflow('.github/workflows/sunday-assessment.yml')
+        self.assertEqual(text.count('uses: actions/create-github-app-token@v3'),1)
+        self.assertIn('permission-contents: read',text)
+        self.assertIn('permission-pull-requests: read',text)
+        self.assertIn('persist-credentials: false',text)
+        self.assertIn('id-token: write',text)
+        self.assertIn('          - api-probe',text)
+        self.assertNotIn('  schedule:',text)
+        self.assertNotIn('          - run',text)
+        self.assertNotIn('          - dry-run',text)
+        self.assertNotIn('python scripts/sunday_automation.py prepare',text)
+        self.assertNotIn('python scripts/sunday_automation.py publish',text)
+        self.assertNotIn('python scripts/sunday_automation.py dry-run',text)
+        self.assertNotIn('permission-contents: write',text)
+        self.assertNotIn('AUTOMATION_GH_TOKEN',text)
+        self.assertNotIn('secrets.OPENAI_API_KEY',text)
 
     def test_social_token_minted_only_after_gated_site_confirmation(self):
         text = self.workflow('.github/workflows/verify-publication.yml')
@@ -75,7 +77,8 @@ class GithubAppAuthTests(unittest.TestCase):
                  patch.object(s, '_candidate_paths', return_value=(base,base/'missing.json',base/'history.json')), \
                  patch.object(s, 'gh') as api, \
                  patch.object(s, 'run') as commands:
-                self.assertIsNone(s.publish_candidate())
+                with self.assertRaisesRegex(RuntimeError,"externally reviewed"):
+                    s.publish_candidate()
                 api.assert_not_called()
                 commands.assert_not_called()
 
