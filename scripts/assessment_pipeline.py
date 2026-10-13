@@ -247,6 +247,31 @@ def llm(prompt,search):
 def urlkey(url):
     return url_key(url)
 
+def _syndicated_story_identity(item):
+    """Conservatively identify exact reprints of a named wire-service story.
+
+    Only an identical normalized headline, original event day, and recognized
+    originating wire service qualify. Different events or unknown publishers
+    are never automatically combined.
+    """
+    if not isinstance(item,dict):
+        return None
+    pub=item.get("publisher")
+    title=item.get("source_title")
+    day=item.get("event_date")
+    if not all(isinstance(v,str) and v.strip() for v in (pub,title,day)):
+        return None
+    name=pub.casefold().strip()
+    if re.match(r"^(?:associated press|ap)\b",name):
+        agency="associated-press"
+    elif re.match(r"^reuters\b",name):
+        agency="reuters"
+    else:
+        return None
+    headline=re.sub(r"[\W_]+"," ",title.casefold()).strip()
+    return (agency,day.strip(),headline) if headline else None
+
+
 def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
     metadata=metadata or {}
     new=obj.get("evidence")
@@ -256,10 +281,25 @@ def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
     seen=set(); out=[]; publishers=set(); directions=set()
     archived={e["id"]:e for e in previous.get("evidence",[])}
     identities={(urlkey(e["source"]),e.get("event_date"),e.get("category")):e for e in archived.values()}
+    syndicated={}
+    for old in archived.values():
+        key=_syndicated_story_identity(old)
+        if key is not None:
+            syndicated.setdefault(key,old)
     for i,item in enumerate(new,1):
         check(isinstance(item,dict),"Bad evidence item")
         check(item.get("evidence_status","new") in ("new","carried_forward"),"Invalid evidence status")
         existing=identities.get((urlkey(item.get("source")),item.get("event_date"),item.get("category")))
+        if existing is None and item.get("evidence_status","new")=="new":
+            mirror=syndicated.get(_syndicated_story_identity(item))
+            if mirror is not None:
+                # A new syndication URL is not independent new evidence.
+                # It must have been consulted and cited before reusing
+                # the original, immutable source/event identifier.
+                mirror_url=urlkey(item.get("source"))
+                check(mirror_url is not None and mirror_url in cited,
+                      "Syndicated source is missing a verified web-search citation")
+                existing=mirror
         if existing is not None and item.get("evidence_status","new")=="new":
             item=dict(item,id=existing["id"],evidence_status="carried_forward")
         carried=item.get("evidence_status")=="carried_forward"
@@ -338,6 +378,37 @@ def haircut(values):
             "sensitivity":{"overlap_0pct":adjusted(0),"overlap_20pct":adjusted(.2),
                            "overlap_40pct":adjusted(.4)}}
 
+def validated_haircut_support(assessment,evidence):
+    """Require a traceable source or stated assumption for every nonzero point."""
+    values=assessment.get("haircut_components")
+    support=assessment.get("haircut_component_support")
+    names={key for key,cap in CAPS}
+    check(isinstance(support,dict) and set(support)==names,
+          "Six explicit oil-credit component support records are required")
+    available={e["id"] for e in evidence}
+    verified={}
+    for key,cap in CAPS:
+        row=support[key]
+        check(isinstance(row,dict),"Malformed oil-credit support for "+key)
+        basis=row.get("basis")
+        ids=row.get("evidence_ids")
+        reason=row.get("rationale")
+        check(basis in ("observed","assumption","no_support") and
+              isinstance(ids,list) and len(set(map(str,ids)))==len(ids) and
+              all(isinstance(x,str) and x in available for x in ids) and
+              isinstance(reason,str) and len(reason.strip())>=25,
+              "Missing or unsupported oil-credit component rationale: "+key)
+        if values[key]>0:
+            check(basis in ("observed","assumption") and bool(ids)
+                  and len(reason.strip())>=40,
+                  "Nonzero oil-credit component requires specific supporting evidence: "+key)
+        if basis=="no_support":
+            check(values[key]==0 and not ids,
+                  "Unsupported oil-credit component must be zero: "+key)
+        verified[key]={"basis":basis,"evidence_ids":ids,"rationale":reason.strip()}
+    return verified
+
+
 def assemble(history,assessment,evidence,cutoff,opened,issued):
     date=opened.date().isoformat()
     prev=history["updates"][-1]
@@ -415,6 +486,7 @@ def assemble(history,assessment,evidence,cutoff,opened,issued):
          for k in ("hormuz","energy","elite","coercion")),"Missing conditions")
     u["conditions"]=conditions
     h=haircut(assessment.get("haircut_components"))
+    u["haircut"]["component_support"]=validated_haircut_support(assessment,evidence)
     u["haircut"]["calculation"]=h
     u["haircut"]["method"]["components"]=h["components"]
     u["haircut"]["method"]["rule"]=history["protocol"]["haircut_protocol"]["dependence_rule"]
