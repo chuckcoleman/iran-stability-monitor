@@ -1,5 +1,41 @@
 # Sunday unattended publication
 
+## October 13: dry-run review rejection and bounded repairs
+
+The October 13 owner-triggered dry-run reached evidence freezing, one elicitation
+of four scored forecasts, and independent analytical review, which rejected
+unsupported language and two underjustified oil-credit components. It also found
+an AP medicine story copied through ABC News that duplicated an archived AP
+report. The reviewer incorrectly interpreted the one-event-per-sentence copy
+requirement as applying to the summary; that rule applies only to
+`next_threshold`.
+
+The evidence freezer now recognizes **exact same-day, same-headline** syndicated
+Reuters/AP reports when the original wire service is explicit; the new
+syndication URL must itself be cited. It reuses the old evidence ID and
+original evidence content. It does not infer source identities for unrelated,
+unrecognized, or undated sources. Missing reporting about hospital shortages
+is never affirmative proof of supply resilience.
+
+Each of the six China oil-credit haircut components now carries its own
+source-linked rationale, marked observed, explicitly assumed, or unsupported
+(zero). All nonzero point adjustments require cited evidence identifiers and
+must satisfy the existing Protocol v1 caps and overlap arithmetic.
+
+If an independent reviewer rejects a draft or deterministic content checks
+find defects, the process can request **at most two** closed-evidence corrective
+drafts. This is not a second probability elicitation: the original complete
+array of four core forecasts (including all values, analyst intervals, and
+confidence labels) is locked and verified after every correction. Attributions
+must continue to reconcile and all deterministic validation repeats. A fresh
+independent reviewer must approve the last corrected draft with zero issues.
+Reviewer service failures, malformed decisions, changed core forecasts, or
+remaining issues fail closed with no publication. The feedback is retained
+in private GitHub Actions audit artifacts and a count-only status is logged.
+This repair does not change frozen Protocol v1, historical observations,
+existing forecast values, protected-branch checks, or production enable flags.
+
+
 ## Website prose: thresholds to watch
 
 The dashboard card is titled **Thresholds to watch**. It displays one
