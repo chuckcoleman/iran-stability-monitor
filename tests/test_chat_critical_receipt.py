@@ -78,7 +78,7 @@ class SingleCriticalTests(unittest.TestCase):
             self.check()
     def test_pre_october_18_critical_only_not_eligible(self):
         self.receipt["date"]="2026-10-11"
-        with self.assertRaisesRegex(ValueError,"Unknown or unauthorized"):
+        with self.assertRaisesRegex(ValueError,"Missing or invalid review receipt"):
             self.check()
 
 if __name__ == "__main__":
