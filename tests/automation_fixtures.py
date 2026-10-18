@@ -9,8 +9,10 @@ ROOT = Path(__file__).resolve().parent.parent
 ZONE = ZoneInfo("America/New_York")
 
 
-def fixture():
-    history = json.loads((ROOT / "data/history.json").read_text())
+def fixture(history=None):
+    if history is None:
+        history = json.loads((ROOT / "data/history.json").read_text())
+    history = copy.deepcopy(history)
     prev = history["updates"][-1]
     day = dt.date.fromisoformat(prev["date"]) + dt.timedelta(days=7)
     opened = dt.datetime.combine(day, dt.time(10, 0, 20), ZONE)
