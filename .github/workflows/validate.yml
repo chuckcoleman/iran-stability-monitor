@@ -30,7 +30,7 @@ jobs:
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: python scripts/validate_history.py
-      - name: Require pre-GitHub affirmative and critical reviews before new assessment publication
+      - name: Require complete prospective review receipt before new assessment publication
         env:
           GITHUB_EVENT_BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: python scripts/review_receipt.py --baseline-ref "$GITHUB_EVENT_BEFORE"

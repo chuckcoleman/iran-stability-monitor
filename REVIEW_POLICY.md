@@ -1,0 +1,11 @@
+# Prospective single critical ChatGPT review — effective 2026-10-18
+
+This operational policy changes the publication review requirement, NOT frozen forecasting Protocol v1.0. One documented critical review in ChatGPT replaces the former two-role AI review requirement. Legacy version-1 dual-review receipts remain valid.
+
+The only permissible sequence is: verify immutable main baseline and current deployed artifact; close timestamped evidence; elicit and lock exactly four core forecasts once; run every deterministic check; conduct one documented rigorous critical review of the exact candidate with explicit approved=true and issues=[]; correct only permissible unscored narrative or diagnostics and restart all checks/review after changes; set the real Sunday issuance timestamp after approval; rerun every deterministic validator; prepare the matching version-2 receipt; submit a protected PR; verify exact-head CI and unchanged main; merge without bypass; verify Pages artifact bytes and canonical public JSON/HTML; consider X only if enabled, confirmed and not duplicative.
+
+Version-2 review receipts must identify origin chatgpt_critical and mode single_critical_chat and include actual completion time; the report's SHA-256 and immutable reviewed-draft hash; baseline, issued candidate and prior-record digests; and the identical four locked forecasts. Keep both the full review report and the exact pre-issuance reviewed candidate in dated repository files. Only the top-level last record's publication_time may differ between reviewed and issued drafts; historical records, root metadata and all other current-record fields are immutable.
+
+A ChatGPT review is an editorial decision, NOT proof of another independently executed model. The saved receipt authenticates contents only, not model identity. Never invent an affirmative review. All missing validations, review objections, action-requiring warnings, tool or timeouts and exhausted six-cycle/60-minute limits are failures, never approvals.
+
+The off-GitHub dual-review CLI is an optional legacy alternative; its separate API-key requirement does not apply to the native ChatGPT review report workflow. Prior records, forecasting definitions and Protocol v1.0 remain frozen.

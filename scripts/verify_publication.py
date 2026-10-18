@@ -139,7 +139,16 @@ def verify_all():
         receipt_file = ROOT / "data" / "review-receipts" / (date + ".json")
         check(receipt_file.is_file(), "Missing pre-GitHub approved-review receipt")
         receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
-        checked_receipt(before, after, receipt)
+        if receipt.get("version") == 2:
+            draft_path = ROOT / "data" / "review-drafts" / (date + ".json")
+            report_path = ROOT / "data" / "review-reports" / (date + ".md")
+            check(draft_path.is_file() and report_path.is_file(),
+                  "Missing exact critical-chat review draft/report")
+            checked_receipt(before, after, receipt,
+                            reviewed_draft=json.loads(draft_path.read_bytes()),
+                            report_bytes=report_path.read_bytes())
+        else:
+            checked_receipt(before, after, receipt)
         from validate_history import validate_history
         validate_history(after, before)
 
