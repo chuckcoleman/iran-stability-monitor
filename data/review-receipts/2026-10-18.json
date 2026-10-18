@@ -1,0 +1,105 @@
+{
+  "version": 2,
+  "origin": "chatgpt_critical",
+  "review_mode": "single_critical_chat",
+  "status": "CLEAN",
+  "date": "2026-10-18",
+  "baseline_sha256": "ee3daef1083211531af77063c9c2ec5bb08d91e3b60fe38046e83fc6c457dee1",
+  "candidate_sha256": "8f09b73c44bdf909aa402dc93a2b8684d924a76a99839105e7817b519fc019c2",
+  "record_sha256": "ece52cff2b9251d1a1169f93a8427a9a55565b6f7a2f62035ee5cabaa6bdcbdc",
+  "report_sha256": "a65393cdee53a1b8e237c35165fb788f6044df7a5a7cb0e341b04a2343143282",
+  "review_completed_at": "2026-10-18T17:49:28+00:00",
+  "approval": {
+    "status": "CLEAN",
+    "round": 1,
+    "draft_sha256": "eae87b4c9daa48d79ce57ed4f0b95b3b383c3cf32eee0420073d650315874c28",
+    "forecast_sha256": "1183b55cfda22f2e5c91788cbb6d6139b8dc6a9f23032c2efacb489c8772b1df",
+    "locked_forecasts": [
+      {
+        "label": "Sustained major regional escalation",
+        "p": 77,
+        "horizon": "within 90 days",
+        "confidence": "Medium-high",
+        "range": [
+          63,
+          88
+        ],
+        "event_definition": "Sustained major interstate strikes lasting at least 72 hours, or a material expansion of major combat to an additional sovereign state or operational theater. Isolated interceptions, one-off strikes, proxy attacks, and rhetoric alone are excluded unless they initiate the qualifying sustained episode.",
+        "raise": "More sustained Saudi/Houthi attacks, actual new-state engagement or US-Iran interstate strikes.",
+        "lower": "Verified Saudi-Houthi de-escalation, an agreed Hormuz reopening or reliable US-Iran ceasefire.",
+        "scored": true,
+        "created_date": "2026-10-18",
+        "provenance": "Prospective frozen Protocol v1.0 draft formed after actual evidence cutoff; NOT ISSUED unless validated and independently approved.",
+        "forecast_id": "regional_escalation_90d_20261018",
+        "event_id": "regional_escalation_90d",
+        "forecast_open": "2026-10-18T12:19:39-04:00",
+        "resolution_deadline": "2027-01-16T12:19:39-05:00"
+      },
+      {
+        "label": "Regime-ending transition",
+        "p": 16,
+        "horizon": "within 12 months",
+        "confidence": "Medium",
+        "range": [
+          9,
+          27
+        ],
+        "event_definition": "Replacement of the Islamic Republic's governing constitutional-institutional order, or loss of its effective national governing authority. Leadership succession, cabinet changes, and factional turnover within the same governing order are excluded.",
+        "raise": "Security force defections, national fiscal payment failure or rival sovereign authority.",
+        "lower": "Demonstrated elite cohesion, functioning priority payments and broad stabilization.",
+        "scored": true,
+        "created_date": "2026-10-18",
+        "provenance": "Prospective frozen Protocol v1.0 draft formed after actual evidence cutoff; NOT ISSUED unless validated and independently approved.",
+        "forecast_id": "regime_end_12m_20261018",
+        "event_id": "regime_end_12m",
+        "forecast_open": "2026-10-18T12:19:39-04:00",
+        "resolution_deadline": "2027-10-18T12:19:39-04:00"
+      },
+      {
+        "label": "Currency crisis",
+        "p": 80,
+        "horizon": "within 12 months",
+        "confidence": "Medium",
+        "range": [
+          65,
+          91
+        ],
+        "event_definition": "Depreciation of the parallel-market rial by at least 25% against the U.S. dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.",
+        "raise": "A consistently measured rapid parallel-rial depreciation and exhaustion of credible support mechanisms.",
+        "lower": "Sustained parallel-market stability and restored external settlements.",
+        "scored": true,
+        "created_date": "2026-10-18",
+        "provenance": "Prospective frozen Protocol v1.0 draft formed after actual evidence cutoff; NOT ISSUED unless validated and independently approved.",
+        "forecast_id": "currency_crisis_12m_20261018",
+        "event_id": "currency_crisis_12m",
+        "forecast_open": "2026-10-18T12:19:39-04:00",
+        "resolution_deadline": "2027-10-18T12:19:39-04:00"
+      },
+      {
+        "label": "External-payments crisis",
+        "p": 86,
+        "horizon": "within 12 months",
+        "confidence": "Medium-high",
+        "range": [
+          72,
+          95
+        ],
+        "event_definition": "Corroborated settlement disruption lasting at least 14 days in at least two essential-import categories—food or grain, medicine or medical inputs, or critical energy or industrial inputs—combined with broad emergency foreign-exchange, import, or payment restrictions or a material shift by suppliers to prepayment or cash because established settlement channels are failing. Evidence must come from at least two independent source streams.",
+        "raise": "Corroborated two-category essential-import settlement disruption lasting two weeks and emergency restrictions.",
+        "lower": "Sustained verified essential-import payments through multiple functional channels.",
+        "scored": true,
+        "created_date": "2026-10-18",
+        "provenance": "Prospective frozen Protocol v1.0 draft formed after actual evidence cutoff; NOT ISSUED unless validated and independently approved.",
+        "forecast_id": "external_payments_crisis_12m_20261018",
+        "event_id": "external_payments_crisis_12m",
+        "forecast_open": "2026-10-18T12:19:39-04:00",
+        "resolution_deadline": "2027-10-18T12:19:39-04:00"
+      }
+    ],
+    "critical": {
+      "approved": true,
+      "issues": [],
+      "draft_sha256": "eae87b4c9daa48d79ce57ed4f0b95b3b383c3cf32eee0420073d650315874c28"
+    }
+  }
+}
