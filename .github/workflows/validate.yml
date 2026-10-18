@@ -62,6 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
       pages: write
       id-token: write
     concurrency:
@@ -87,6 +88,28 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
+          retention-days: 90
+          include-hidden-files: true
+      - name: Download exact uploaded Pages artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/pages-downloaded
+      - name: Verify uploaded Pages archive against exact Git files
+        run: |
+          python scripts/verify_pages_artifact.py \
+            --site _site \
+            --checkout . \
+            --downloaded-tar "${RUNNER_TEMP}/pages-downloaded/artifact.tar" \
+            --commit-sha "$GITHUB_SHA" \
+            --output "${RUNNER_TEMP}/pages-artifact-attestation.json"
+      - name: Retain verified Pages byte manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: pages-attestation-${{ github.sha }}
+          path: ${{ runner.temp }}/pages-artifact-attestation.json
+          retention-days: 90
+          if-no-files-found: error
       - name: Deploy artifact after validation
         id: deployment
         uses: actions/deploy-pages@v4
