@@ -139,7 +139,7 @@ def verify_all():
         receipt_file = ROOT / "data" / "review-receipts" / (date + ".json")
         check(receipt_file.is_file(), "Missing pre-GitHub approved-review receipt")
         receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
-        if receipt.get("version") == 2:
+        if receipt.get("version") in (2, 3):
             draft_path = ROOT / "data" / "review-drafts" / (date + ".json")
             report_path = ROOT / "data" / "review-reports" / (date + ".md")
             check(draft_path.is_file() and report_path.is_file(),
