@@ -70,12 +70,12 @@ class PublicationTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'Gated job'):
             v.validate_run(run, jobs, 'abc')
 
-    def test_exact_public_json_required(self):
+    def test_exact_public_bytes_required(self):
         raw = b'{"updates":[{"date":"2026-10-11"}]}'
         with patch.object(v, 'request_bytes', return_value=raw):
             v.verify_public(raw, tries=1)
         with patch.object(v, 'request_bytes', return_value=b'{"updates":[]}'):
-            with self.assertRaisesRegex(RuntimeError, 'differs'):
+            with self.assertRaisesRegex(RuntimeError, 'bytes differ'):
                 v.verify_public(raw, tries=1)
 
     def test_canonical_redirect_is_refused(self):
