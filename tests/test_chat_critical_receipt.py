@@ -13,7 +13,10 @@ from review_receipt import checked_receipt, digest
 
 class SingleCriticalTests(unittest.TestCase):
     def setUp(self):
-        self.before,analysis,evidence,opened=fixture()
+        history=json.loads((Path(__file__).resolve().parent.parent / "data/history.json").read_text())
+        history["updates"]=history["updates"][:next(i for i,u in enumerate(history["updates"]) if u["date"]=="2026-10-18")]
+        self.before,analysis,evidence,opened=fixture(history=history)
+        self.assertEqual(opened.date().isoformat(), "2026-10-18")
         cutoff=opened-dt.timedelta(seconds=10)
         ledger=pipeline.freeze_evidence({"evidence":evidence},{e["source"] for e in evidence},
                                         self.before["updates"][-1],opened.date().isoformat(),cutoff)

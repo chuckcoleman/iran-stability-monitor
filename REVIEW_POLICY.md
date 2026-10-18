@@ -1,3 +1,17 @@
+# Prospective alternating affirmative and critical ChatGPT reviews — effective 2026-10-25
+
+The owner requires **affirmative THEN critical** review of the **identical SHA-256 draft**, repeating complete validation and both roles after any correction until BOTH record approved=true and issues=[] for the same draft. Six whole cycles and 60 minutes remain failure ceilings; neither an exhausted limit nor a warning/timeout equals approval. The closed evidence, four scored forecasts, dates, and previously issued records cannot be rewritten.
+
+**Review provenance:** These are two sequential editorial perspectives within ChatGPT, **not two independent model instances**. The report and receipt must disclose this exactly; never imply independent execution, reuse approvals after a modification, or create an affirmative verdict that was not actually performed.
+
+Version-3 receipts (from 2026-10-25 onward) identify origin chatgpt_alternating, review_mode affirmative_then_critical_chat, and reviewer_provenance one_chatgpt_session_two_perspectives. Include the immutable reviewed draft and full report, their SHA-256 digests, the actual time of each complete pre-review validation, affirmative and critical decisions on the same hash, every correction round's issues and new hash, final post-review validation time, review_completed_at matching the final critical decision, actual later Sunday issuance, and the unchanged four forecast locks. An earlier round may be superseded only when at least one role raised actionable issues, the revised draft SHA differs and the entire suite and BOTH roles reran. No post-review change except the actual issuance timestamp is permitted. Protected GitHub PR, exact-head CI, Pages artifact-byte and canonical-domain verification, and conditional deduplicated X posting remain mandatory.
+
+**Historical compatibility:** Original version-1 dual-review receipts and the October 18, 2026 version-2 single-critical ChatGPT receipt remain valid for their original assessments. No retroactive requirements or changes to frozen forecasting Protocol v1.0 are permitted. New assessments on and after October 25 must use the version-3 alternating-review policy. A missing, ambiguous, untimestamped or failed review stops publication.
+
+---
+
+## Archived publication review policy, October 18, 2026 (historical only)
+
 # Prospective single critical ChatGPT review — effective 2026-10-18
 
 This operational policy changes the publication review requirement, NOT frozen forecasting Protocol v1.0. One documented critical review in ChatGPT replaces the former two-role AI review requirement. Legacy version-1 dual-review receipts remain valid.

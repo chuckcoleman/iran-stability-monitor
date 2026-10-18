@@ -1,5 +1,11 @@
 # Iran assessment — reviews before GitHub publication
 
+## Controlling review policy from October 25, 2026
+
+Use the current [REVIEW_POLICY.md](REVIEW_POLICY.md). One frozen candidate receives full deterministic validation, then **affirmative followed by critical ChatGPT reviews of the same draft SHA-256**. Both must explicitly approve with empty issues. A defect means an evidence-closed correction, followed by complete deterministic revalidation and BOTH fresh reviews. Never carry approval to a changed draft. Six cycles and 60 minutes are failure ceilings. Version-3 receipts preserve the full review report, exact draft, role decisions and their chronology. This is a two-perspective ChatGPT process, not proof of separately executed independent models. October 18's version-2 single-review receipt is preserved historically. Frozen forecasting Protocol v1.0 is unchanged. The existing scheduled task uses this policy; no separate computer or local API key is needed.
+
+## Archived operational history
+
 ## October 13, 2026: ChatGPT Scheduled task (current preferred path)
 
 A ChatGPT scheduled cloud task, **Iran Sunday Assessment**, is configured for

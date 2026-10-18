@@ -71,9 +71,14 @@ permissions and possible write approvals) to submit the candidate and matching
 review receipt through a strictly validated pull request. GitHub Actions remains
 the **CI/Pages deployment platform, not the assessment writer**. The previous
 GitHub Actions Sunday cron and assessment `run`/`dry-run` modes are retired.
-A first successful end-to-end ChatGPT scheduled publication has **not** yet
-been observed, and the workflow must fail closed if any required tool or
-approval is missing. Social posting remains separately controlled by
+The October 18 assessment was published and verified under its historical
+single-critical-review policy. **From October 25 onward**, alternate ChatGPT
+affirmative and critical perspectives on the same immutable draft, repeating
+the entire validation and both reviews after every correction until both
+explicitly approve with no issues. Both perspectives are from ChatGPT and must
+not be misrepresented as independently executed model instances. A version-3
+receipt with round-by-round timestamps, hashes and issues is mandatory.
+Any unavailable review or required validation continues to fail closed. Social posting remains separately controlled by
 `AUTO_X_ENABLED` and independent post-deployment checks. The optional local
 script and complete safeguards are documented in [AUTOMATION.md](AUTOMATION.md).
 
