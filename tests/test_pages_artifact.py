@@ -68,6 +68,13 @@ class PagesArtifactTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "file set"):
             verify(self.site, self.repo, self.tar, SHA)
 
+    def test_hidden_marker_omitted_from_archive_fails_closed(self):
+        # upload-pages-artifact@v4 strips dotfiles; staging .nojekyll must
+        # therefore fail unless the staging script is changed to omit it.
+        self.package({name: data for name, data in self.data.items() if name != ".nojekyll"})
+        with self.assertRaisesRegex(ValueError, r"missing=.*nojekyll"):
+            verify(self.site, self.repo, self.tar, SHA)
+
     def test_wrong_source_bytes(self):
         (self.repo / "index.html").write_bytes(b"changed")
         with self.assertRaisesRegex(ValueError, "repository bytes"):

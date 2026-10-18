@@ -81,7 +81,10 @@ jobs:
           cp index.html about.html history.html special-reports.html protocol-v1.html CNAME _site/
           cp assets/app.js assets/style.css _site/assets/
           cp data/history.json _site/data/
-          touch _site/.nojekyll
+          # upload-pages-artifact@v4 excludes all dotfiles, including .nojekyll.
+          # Actions-based Pages deployments serve the prebuilt static artifact;
+          # do not stage hidden markers that will be silently omitted from it.
+          test ! -e _site/.nojekyll
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload validated Pages artifact
@@ -89,7 +92,6 @@ jobs:
         with:
           path: _site
           retention-days: 90
-          include-hidden-files: true
       - name: Download exact uploaded Pages artifact
         uses: actions/download-artifact@v4
         with:
