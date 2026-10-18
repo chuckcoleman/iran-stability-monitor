@@ -221,6 +221,8 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
                 and reviewed_at.astimezone(EASTERN).date().isoformat() == date
                 and issuance_at.astimezone(EASTERN).date().isoformat() == date,
                 "Critical review must follow opening and precede actual Sunday issuance")
+    if alternating:
+        require(post_time <= issuance_at, "Final validation must precede issuance")
     current = now or dt.datetime.now(dt.timezone.utc)
     require(reviewed_at <= current, "Review cannot have a future completion time")
     return True
