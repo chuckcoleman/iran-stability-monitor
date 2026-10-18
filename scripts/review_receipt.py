@@ -37,7 +37,7 @@ def digest(value):
 
 
 def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, report_bytes=None):
-    """Validate original dual-review or prospective ChatGPT critical review."""
+    """Validate legacy review receipts and prospective alternating ChatGPT reviews."""
     one_append(before, after)
     record = after["updates"][-1]
     date = record["date"]
@@ -50,7 +50,13 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
     chat_critical = (receipt.get("version") == 2 and receipt.get("origin") == "chatgpt_critical"
                      and receipt.get("review_mode") == "single_critical_chat"
                      and date >= "2026-10-18")
-    require(legacy or chat_critical, "Unknown or unauthorized review policy/version")
+    alternating = (receipt.get("version") == 3
+                   and receipt.get("origin") == "chatgpt_alternating"
+                   and receipt.get("review_mode") == "affirmative_then_critical_chat"
+                   and receipt.get("reviewer_provenance") == "one_chatgpt_session_two_perspectives"
+                   and date >= "2026-10-25")
+    require(legacy or (chat_critical and date < "2026-10-25") or alternating,
+            "Unknown or unauthorized review policy/version")
     require(receipt.get("baseline_sha256") == digest(before)
             and receipt.get("candidate_sha256") == digest(after)
             and receipt.get("record_sha256") == digest(record),
@@ -64,7 +70,7 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
     require(isinstance(draft_hash, str) and len(draft_hash) == 64
             and all(ch in "0123456789abcdef" for ch in draft_hash),
             "Invalid reviewed-draft digest")
-    if chat_critical:
+    if chat_critical or alternating:
         require(isinstance(reviewed_draft, dict) and isinstance(report_bytes, bytes),
                 "Chat critical review requires immutable draft and report artifacts")
         require(draft_hash == digest(reviewed_draft), "Reviewed chat draft digest mismatch")
@@ -82,19 +88,99 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
         require(receipt.get("report_sha256") == hashlib.sha256(report_bytes).hexdigest(),
                 "Critical review report digest mismatch")
         report_text = report_bytes.decode("utf-8")
-        require(draft_hash in report_text
-                and "Approved for final timestamping and complete deterministic revalidation: yes." in report_text
-                and "**Issues:** " + chr(96) + "[]" + chr(96) in report_text,
-                "Chat review report does not document clean approval of this draft")
-        require(approval.get("affirmative") is None,
-                "Chat critical mode cannot claim an affirmative review")
-    for role in (("affirmative", "critical") if legacy else ("critical",)):
+        if chat_critical:
+            require(draft_hash in report_text
+                    and "Approved for final timestamping and complete deterministic revalidation: yes." in report_text
+                    and "**Issues:** " + chr(96) + "[]" + chr(96) in report_text,
+                    "Chat review report does not document clean approval of this draft")
+            require(approval.get("affirmative") is None,
+                    "Legacy chat critical mode cannot claim an affirmative review")
+        else:
+            for role in ("Affirmative", "Critical"):
+                line = (role + " verdict: approved=true; issues=[]; draft_sha256="
+                        + draft_hash)
+                require(line in report_text,
+                        role + " review report lacks an exact same-draft clean verdict")
+            require("Both review perspectives are from one ChatGPT session" in report_text,
+                    "Chat review provenance absent in report")
+    for role in (("affirmative", "critical") if legacy or alternating else ("critical",)):
         decision = approval.get(role)
         require(isinstance(decision, dict)
                 and decision.get("approved") is True
                 and decision.get("issues") == []
                 and decision.get("draft_sha256") == draft_hash,
                 role + " clean approval missing or belongs to another draft")
+    if alternating:
+        rounds = approval.get("rounds")
+        require(isinstance(rounds, list) and len(rounds) == approval["round"]
+                and 1 <= len(rounds) <= 6,
+                "Every review round must be documented; maximum six")
+        last_hash, last_critical_time, started = None, None, None
+        def parsed_time(value):
+            require(isinstance(value, str), "Missing review or validation time")
+            stamp = dt.datetime.fromisoformat(value)
+            require(stamp.tzinfo is not None, "Review/validation time lacks offset")
+            return stamp
+        for index, item in enumerate(rounds):
+            require(isinstance(item, dict) and item.get("round") == index + 1,
+                    "Review round numbers must be sequential")
+            round_hash = item.get("draft_sha256")
+            require(isinstance(round_hash, str) and len(round_hash) == 64
+                    and all(c in "0123456789abcdef" for c in round_hash)
+                    and round_hash != last_hash,
+                    "A revised draft must have a new 64-character SHA-256")
+            require(item.get("forecast_sha256") == approval.get("forecast_sha256"),
+                    "Four scored forecast locks changed during review")
+            validation = item.get("validation")
+            require(isinstance(validation, dict) and validation.get("passed") is True,
+                    "Full deterministic pre-review validation was not clean")
+            validation_time = parsed_time(validation.get("completed_at"))
+            if started is None:
+                started = validation_time
+            if last_critical_time is not None:
+                require(last_critical_time < validation_time,
+                        "Revised draft not fully validated after previous reviews")
+            affirmative = item.get("affirmative")
+            critical = item.get("critical")
+            require(isinstance(affirmative, dict) and isinstance(critical, dict),
+                    "Each round needs affirmative followed by critical review")
+            affirmative_time = parsed_time(affirmative.get("completed_at"))
+            critical_time = parsed_time(critical.get("completed_at"))
+            require(validation_time <= affirmative_time < critical_time,
+                    "Required order: validate, affirmative, critical")
+            for role, decision in (("affirmative", affirmative), ("critical", critical)):
+                require(decision.get("draft_sha256") == round_hash
+                        and type(decision.get("approved")) is bool
+                        and isinstance(decision.get("issues"), list),
+                        role + " verdict must identify the same exact draft")
+                if decision["approved"]:
+                    require(decision["issues"] == [],
+                            "Reviewer with issues cannot approve")
+                else:
+                    require(bool(decision["issues"]),
+                            "Reviewer rejection must document actionable defects")
+            final = index == len(rounds) - 1
+            if final:
+                require(round_hash == draft_hash
+                        and affirmative["approved"] and critical["approved"]
+                        and affirmative["issues"] == [] and critical["issues"] == [],
+                        "Both final reviewers must approve the identical draft")
+                post = item.get("post_review_validation")
+                require(isinstance(post, dict) and post.get("passed") is True,
+                        "Missing full post-review validation")
+                post_time = parsed_time(post.get("completed_at"))
+                require(critical_time <= post_time,
+                        "Full final validation must follow critical approval")
+                require(parsed_time(receipt.get("review_completed_at")) == critical_time,
+                        "Review completion must equal the final critical decision time")
+                require(post_time - started <= dt.timedelta(minutes=60),
+                        "Review phase exceeded sixty minutes")
+            else:
+                require(not (affirmative["approved"] and critical["approved"]),
+                        "Cannot revise after an already clean approval")
+                require(item.get("post_review_validation") is None,
+                        "Rejected round cannot claim final validation")
+            last_hash, last_critical_time = round_hash, critical_time
     locked = approval.get("locked_forecasts")
     require(isinstance(locked, list) and len(locked) == 4
             and approval.get("forecast_sha256") == digest(locked),
@@ -158,7 +244,7 @@ def verify_repository_change(baseline_ref, root=ROOT, now=None):
     require(receipt_path.is_file(),
             "New assessment has no off-GitHub clean-review receipt")
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
-    if receipt.get("version") == 2:
+    if receipt.get("version") in (2, 3):
         date = after["updates"][-1]["date"]
         draft_file = root / "data" / "review-drafts" / (date + ".json")
         report_file = root / "data" / "review-reports" / (date + ".md")
@@ -167,7 +253,7 @@ def verify_repository_change(baseline_ref, root=ROOT, now=None):
         checked_receipt(before, after, receipt, now=now,
                         reviewed_draft=json.loads(draft_file.read_bytes()),
                         report_bytes=report_file.read_bytes())
-        return "Single ChatGPT critical-review receipt and exact artifacts verified"
+        return "ChatGPT alternating or legacy critical receipt and exact artifacts verified"
     checked_receipt(before, after, receipt, now=now)
     return "Legacy external two-role clean-review receipt verified"
 
