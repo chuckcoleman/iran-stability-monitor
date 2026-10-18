@@ -47,6 +47,9 @@ jobs:
             schema/*.json
             data/history.json
             data/review-receipts/*.json
+            data/review-drafts/*.json
+            data/review-reports/*.md
+            REVIEW_POLICY.md
             assets/app.js
             *.html
             README.md
