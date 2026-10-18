@@ -77,6 +77,21 @@ approval is missing. Social posting remains separately controlled by
 `AUTO_X_ENABLED` and independent post-deployment checks. The optional local
 script and complete safeguards are documented in [AUTOMATION.md](AUTOMATION.md).
 
+## Canonical deployment verification
+
+Every successful GitHub Pages deployment, including a code-only release, must
+independently retrieve the canonical HTTPS `/data/history.json` and
+`/protocol-v1.html` files and compare their **exact bytes** to the validated
+checkout. This is separate from verifying the retained Pages upload artifact.
+Unavailable responses, unexpected redirects, altered bytes, missing deployment
+status, or a changed `main` baseline fail closed. A successful deployment
+alone does not demonstrate that the custom domain serves the same content.
+A verified code-only release produces an audit record but **never** a social
+posting authorization. No retrospective or fabricated forecast is issued to
+fill a missed Sunday; the next scheduled assessment remains blocked until
+its required preceding-Sunday baseline is valid or a separately authorized
+prospective protocol revision supplies an explicit gap policy.
+
 ## Automation
 For each Sunday assessment, create a working branch and a pull request rather
 than committing the proposed forecast record directly to `main`.
