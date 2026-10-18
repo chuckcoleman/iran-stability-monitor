@@ -174,11 +174,27 @@ class AlternatingReviewTests(unittest.TestCase):
         approval["rounds"] = [prior, last]
         self.assertTrue(self.check())
 
-    def test_refuse_recycling_same_failing_draft(self):
+    def test_refuse_repetition_after_clean_approval(self):
         self.receipt["approval"]["round"] = 2
         self.receipt["approval"]["rounds"] = [
-            copy.deepcopy(self.round), dict(self.round, round_=2)]
-        self.receipt["approval"]["rounds"][1]["round"] = 2
+            copy.deepcopy(self.round), dict(self.round, round=2)]
+        with self.assertRaisesRegex(ValueError, "Cannot revise after an already clean approval"):
+            self.check()
+
+    def test_recycled_failing_draft_is_not_a_correction(self):
+        prior = copy.deepcopy(self.round)
+        prior["affirmative"]["approved"] = False
+        prior["affirmative"]["issues"] = ["Contradiction requiring correction"]
+        prior["post_review_validation"] = None
+        prior["validation"]["completed_at"] = self.opened.isoformat()
+        prior["affirmative"]["completed_at"] = (
+            self.opened + dt.timedelta(seconds=1)).isoformat()
+        prior["critical"]["completed_at"] = (
+            self.opened + dt.timedelta(seconds=2)).isoformat()
+        following = copy.deepcopy(self.round)
+        following["round"] = 2
+        self.receipt["approval"]["round"] = 2
+        self.receipt["approval"]["rounds"] = [prior, following]
         with self.assertRaisesRegex(ValueError, "new 64-character"):
             self.check()
 
