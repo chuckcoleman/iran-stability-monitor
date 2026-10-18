@@ -14,6 +14,7 @@ from candidate_checks import one_append
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://iranstabilitymonitor.org/data/history.json"
+PROTOCOL_SITE = "https://iranstabilitymonitor.org/protocol-v1.html"
 ZONE = ZoneInfo("America/New_York")
 
 
@@ -95,56 +96,97 @@ def verify_run(sha):
     return run_id
 
 
-def verify_public(expected, tries=12, sleeper=time.sleep):
+def verify_public(expected, tries=6, sleeper=time.sleep, url=SITE):
+    """Require exact canonical HTTPS bytes, not JSON-equivalent content or GitHub success.
+
+    Both the history and the frozen protocol page must be checked on every deploy,
+    including code-only deploys. A cache-busting request cannot substitute for a
+    successful independent .org response.
+    """
+    check(url in (SITE, PROTOCOL_SITE), "Unapproved canonical verification URL")
+    check(tries >= 1, "No canonical verification attempts")
+    errors = []
     for attempt in range(tries):
         try:
-            body = request_bytes(SITE + "?verify=" + str(time.time_ns()), {
-                "Cache-Control": "no-cache", "User-Agent": "IranMonitor-publication-check/1.0"})
-            # Full parsed equality: no stale prefixes or mismatching metadata accepted.
-            if json.loads(body) == json.loads(expected):
-                return
-        except (OSError, ValueError):
-            pass
+            body = request_bytes(url + "?verify=" + str(time.time_ns()), {
+                "Cache-Control": "no-cache",
+                "Pragma": "no-cache",
+                "User-Agent": "IranMonitor-publication-check/1.1"})
+            if body == expected:
+                return hashlib.sha256(body).hexdigest()
+            errors.append("byte mismatch")
+        except (OSError, ValueError, RuntimeError) as exc:
+            errors.append(type(exc).__name__ + ": " + str(exc)[:180])
         if attempt + 1 < tries:
-            sleeper(30)
-    raise RuntimeError("Canonical public JSON differs from validated commit")
+            sleeper(20)
+    raise RuntimeError("Canonical public bytes differ or unavailable: " + url +
+                       " (last: " + errors[-1] + ")")
 
 
 def verify_all():
     sha = git("rev-parse", "HEAD")
     check(sha == os.environ["SOURCE_HEAD_SHA"], "Checkout/source commit mismatch")
     raw = (ROOT / "data/history.json").read_bytes()
+    protocol_raw = (ROOT / "protocol-v1.html").read_bytes()
     before = json.loads(git("show", "HEAD^:data/history.json"))
     after = json.loads(raw)
-    if after == before:
-        print("Code-only deployment; no new forecast or X announcement")
-        return None
-    date = fresh_record(before, after)
-    # A report prepared before GitHub must carry a matching clean approval
-    # for BOTH independent roles; enforce again before any social claim.
-    from review_receipt import checked_receipt
-    receipt_file = ROOT / "data" / "review-receipts" / (date + ".json")
-    check(receipt_file.is_file(), "Missing pre-GitHub approved-review receipt")
-    receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
-    checked_receipt(before, after, receipt)
-    from validate_history import validate_history
-    validate_history(after, before)
+    code_only = after == before
+
+    if not code_only:
+        date = fresh_record(before, after)
+        # A new forecast must already carry a legitimate clean pre-GitHub receipt.
+        from review_receipt import checked_receipt
+        receipt_file = ROOT / "data" / "review-receipts" / (date + ".json")
+        check(receipt_file.is_file(), "Missing pre-GitHub approved-review receipt")
+        receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
+        checked_receipt(before, after, receipt)
+        from validate_history import validate_history
+        validate_history(after, before)
+
+    # These checks must NOT be skipped merely because the commit is code-only.
     run_id = verify_run(sha)
-    # A later main commit is harmless only when it preserves precisely this history.
-    current = github("contents/data/history.json?ref=main")
     import base64
-    check(current.get("encoding") == "base64", "Cannot inspect current main history")
-    check(base64.b64decode(current["content"]) == raw, "A newer assessment superseded this run")
-    verify_public(raw)
-    receipt = {"assessment_date": date, "head_sha": sha, "source_run_id": run_id,
-               "history_sha256": hashlib.sha256(raw).hexdigest(),
-               "verified_at": dt.datetime.now(ZONE).isoformat(timespec="seconds")}
-    (ROOT / ".verified-publication.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    for path, expected in (("data/history.json", raw),
+                           ("protocol-v1.html", protocol_raw)):
+        current = github("contents/" + path + "?ref=main")
+        check(current.get("encoding") == "base64", "Cannot inspect current main " + path)
+        check(base64.b64decode(current["content"]) == expected,
+              "Current main file differs from validated commit: " + path)
+
+    public_history_hash = verify_public(raw, url=SITE)
+    public_protocol_hash = verify_public(protocol_raw, url=PROTOCOL_SITE)
+    checked_at = dt.datetime.now(ZONE).isoformat(timespec="seconds")
+    evidence = {
+        "verification_status": "CANONICAL_BYTES_VERIFIED",
+        "kind": "code_only" if code_only else "new_assessment",
+        "head_sha": sha,
+        "source_run_id": run_id,
+        "history_sha256": public_history_hash,
+        "protocol_html_sha256": public_protocol_hash,
+        "verified_at": checked_at,
+        "scope": "canonical .org HTTPS responses, not only uploaded Pages artifacts"
+    }
     audit = ROOT / ".automation-audit"
     audit.mkdir(exist_ok=True)
-    (audit / "publication-verification.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    (audit / "publication-verification.json").write_text(
+        json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
+
+    if code_only:
+        print("Code-only deployment: validated commit and BOTH canonical files verified; no X announcement")
+        return None
+
+    social_receipt = {
+        "assessment_date": date,
+        "head_sha": sha,
+        "source_run_id": run_id,
+        "history_sha256": public_history_hash,
+        "protocol_html_sha256": public_protocol_hash,
+        "verified_at": checked_at
+    }
+    (ROOT / ".verified-publication.json").write_text(
+        json.dumps(social_receipt, indent=2) + "\n", encoding="utf-8")
     print("Gated public assessment verified: " + date)
-    return receipt
+    return social_receipt
 
 
 if __name__ == "__main__":
