@@ -199,7 +199,7 @@ class AlternatingReviewTests(unittest.TestCase):
             self.check()
 
     def test_missing_full_report_section_heading_is_rejected(self):
-        self.report = self.report.replace(b"### hanke_inflation_and_humanitarian_diagnostics",
+        self.report = self.report.replace(b"### inflation_and_humanitarian_diagnostics",
                                           b"### missing_review")
         self.receipt["report_sha256"] = hashlib.sha256(self.report).hexdigest()
         with self.assertRaisesRegex(ValueError, "Full report lacks"):
