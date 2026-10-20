@@ -21,6 +21,8 @@ from source_metadata import url_key, capture_metadata
 from source_search_trace import (observed_search_calls, verify_search_trace,
                                  load_matching_search_trace, verify_claimed_source_links)
 from responses_transport import request_response
+from source_citation_reconciliation import (
+    reconcile_source_citations, save_reconciliation, require_supported_citations)
 from candidate_checks import dashboard_record, one_append
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -693,6 +695,11 @@ Each coverage row: category, queries (array of real search/outlet examples),
 outcome (eligible_reporting_found / searched_no_eligible_evidence /
 inaccessible_or_incomplete), original_urls (cited original HTTPS URLs or
 empty list), limitations (honest free-text qualification >=20 characters).
+Use the EXACT original HTTPS URL appearing in an actual tool citation,
+not an invented URL, alternate article slug, or assumed equivalent page.
+If a source lacks a traceable cited URL, DO NOT list it as an original_url
+or a new evidence URL; note it as unverified/inaccessible in limitations.
+Never assume matching article IDs, publishers or headlines prove identity.
 Only list URLs actually found/cited by web search; do not invent searches,
 dates or coverage. Coverage rows describe research attempts and are NOT
 new evidence or proof of comprehensive access. Include the recorded gaps
@@ -898,6 +905,19 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         archive.update({e["id"]:e for e in old.get("evidence",[])})
     evidence_history={"evidence":list(archive.values())}
     result,sources=researcher(RESEARCH.format(date=today,prior=json.dumps(evidence_history["evidence"])),True)
+    # Flag unsupported links BEFORE any metadata retrieval, evidence freeze,
+    # probability elicitation or review. Never silently repair/drop model URLs.
+    audit_dir=_review_audit_dir()
+    search_calls=None
+    if researcher is llm:
+        check(audit_dir is not None,
+              "Live source research lacks persistent web-search audit directory")
+        search_calls=load_matching_search_trace(audit_dir,result)
+    if researcher is llm or "coverage_audit" in result:
+        reconciliation=reconcile_source_citations(result,sources,search_calls)
+        if audit_dir is not None:
+            save_reconciliation(audit_dir,reconciliation)
+        require_supported_citations(reconciliation)
     # Finish ALL source retrieval and metadata verification before closing evidence.
     metadata={}
     for item in result.get("evidence",[]):
@@ -912,11 +932,7 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
     # legacy fixture compatibility. This metadata is not a seventh forecast.
     coverage=(validate_source_coverage_audit(result.get("coverage_audit"),sources)
               if researcher is llm or "coverage_audit" in result else None)
-    audit_dir=_review_audit_dir()
     if researcher is llm:
-        check(audit_dir is not None,
-              "Actual search research lacks persistent immutable response trace directory")
-        search_calls=load_matching_search_trace(audit_dir,result)
         verify_claimed_source_links(coverage,search_calls)
     evidence=freeze_evidence(result,sources,evidence_history,today,cutoff,metadata)
     if audit_dir is not None:
