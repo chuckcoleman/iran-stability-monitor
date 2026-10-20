@@ -72,9 +72,11 @@ def request_response(payload, *, search, token_supplier, audit_dir,
     audit_dir = Path(audit_dir)
     audit_dir.mkdir(parents=True, exist_ok=True)
     record_path = audit_dir / ("api-request-" + uuid.uuid4().hex + ".json")
+    client_request_id = "iran-" + uuid.uuid4().hex
     fingerprint = hashlib.sha256(json.dumps(payload, sort_keys=True,
                       ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
     record = {"phase": "web-search research" if search else "non-search assessment/review",
+              "client_request_id": client_request_id,
               "request_sha256": fingerprint, "model": payload.get("model"),
               "background": bool(search), "store": False,
               "response_id": None, "status": "prepared_not_sent",
@@ -95,6 +97,7 @@ def request_response(payload, *, search, token_supplier, audit_dir,
         raise
     req = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode(), method="POST",
                                  headers={"Content-Type": "application/json",
+                                          "X-Client-Request-Id": client_request_id,
                                           "Authorization": "Bearer " + token})
     save("create_sent_acknowledgement_pending", post_attempts=1)
     try:
