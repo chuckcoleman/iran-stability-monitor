@@ -15,12 +15,12 @@ sys.path.insert(0,str(ROOT/"scripts"))
 import assessment_pipeline as pipeline
 import pre_github_review as prepare
 import review_receipt as receipt
-from automation_fixtures import fixture
+from automation_fixtures import fixture, legacy_receipt_fixture
 
 
 class ReceiptTests(unittest.TestCase):
     def setUp(self):
-        self.history,self.analysis,self.evidence,self.opened=fixture()
+        self.history,self.analysis,self.evidence,self.opened=legacy_receipt_fixture()
         cutoff=self.opened-dt.timedelta(seconds=10)
         source_set={e["source"] for e in self.evidence}
         ledger=pipeline.freeze_evidence(
