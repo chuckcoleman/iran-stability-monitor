@@ -18,7 +18,8 @@ import time
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 from source_metadata import url_key, capture_metadata
-from source_search_trace import observed_search_calls, verify_search_trace
+from source_search_trace import (observed_search_calls, verify_search_trace,
+                                 load_matching_search_trace, verify_claimed_source_links)
 from candidate_checks import dashboard_record, one_append
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -911,8 +912,13 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
     # legacy fixture compatibility. This metadata is not a seventh forecast.
     coverage=(validate_source_coverage_audit(result.get("coverage_audit"),sources)
               if researcher is llm or "coverage_audit" in result else None)
-    evidence=freeze_evidence(result,sources,evidence_history,today,cutoff,metadata)
     audit_dir=_review_audit_dir()
+    if researcher is llm:
+        check(audit_dir is not None,
+              "Actual search research lacks persistent immutable response trace directory")
+        search_calls=load_matching_search_trace(audit_dir,result)
+        verify_claimed_source_links(coverage,search_calls)
+    evidence=freeze_evidence(result,sources,evidence_history,today,cutoff,metadata)
     if audit_dir is not None:
         audit_dir.mkdir(parents=True,exist_ok=True)
         (audit_dir/"frozen-evidence.json").write_text(json.dumps({
