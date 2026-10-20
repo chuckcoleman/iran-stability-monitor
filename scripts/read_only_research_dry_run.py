@@ -21,6 +21,9 @@ from assessment_pipeline import (
     validate_source_coverage_audit, _review_issues,
 )
 from source_metadata import capture_metadata, url_key
+from source_quality_audit import (
+    source_inventory, source_quality_audit, save_quality_audit,
+    validate_source_review)
 from source_citation_resolution import resolve_source_citations
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 from source_citation_reconciliation import (
@@ -28,8 +31,14 @@ from source_citation_reconciliation import (
 
 
 SOURCE_REVIEW_COMMON = """
-No new web search: inspect the EXACT closed test-only evidence and the SIX
-source-category audit rows supplied below. For every original URL, check
+No new web search: inspect the EXACT closed test-only evidence, SIX
+source-category rows, and EVERY entry in source_quality_audit.sources.
+Return source_reviews for each original URL (even background-only):
+url, specific assessment at least 30 characters, disposition of
+supported_as_qualified / background_only / unverified_reject.
+If material claims are unverified, global approval MUST be false with
+a specific issue. Unknown original release instants must be disclosed,
+not fabricated; cited links never prove observed events. Check
 first-publication time status, citation provenance, independent corroboration,
 reporting versus opinion, shared wire/official claims, and limits of any
 conclusion. Review what the snapshot actually demonstrates. Distinguish
@@ -118,19 +127,19 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     if researcher is llm:
         verify_claimed_source_links(coverage,actual_calls)
     metadata={}
-    for item in result.get("evidence",[]):
-        if item.get("evidence_status","new") == "new":
-            url=item.get("source")
-            check(url_key(url) is not None and
-                  url_key(url) in {url_key(u) for u in citations},
-                  "No actual cited URL for research-test article")
-            if url not in metadata:
-                metadata[url]=metadata_reader(url)
+    for url in source_inventory(result):
+        check(url_key(url) in {url_key(u) for u in citations},
+              "Source quality audit URL missing from citations")
+        metadata[url]=metadata_reader(url)
     cutoff=now()
+    quality=source_quality_audit(result,metadata,strict=(researcher is llm),
+                                 cutoff=cutoff)
+    save_quality_audit(folder,quality)
     archive={"evidence": saved}
     frozen=freeze_evidence(result,citations,archive,day,cutoff,metadata)
     reviewers={}
-    sample={"evidence":frozen,"coverage":coverage,"cutoff":cutoff.isoformat(),
+    sample={"evidence":frozen,"coverage":coverage,"source_quality_audit":quality,
+            "cutoff":cutoff.isoformat(),
             "published_history_sha256":baseline_sha,
             "mode":"RESEARCH_ONLY_TEST_NO_SCORED_FORECASTS"}
     canonical=json.dumps(sample,ensure_ascii=False,sort_keys=True,
@@ -154,7 +163,10 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                 else:
                     os.environ["IRAN_OFFLINE_REVIEW_DIR"]=previous_audit
             issues=_review_issues(response,role)
+            if reviewer is llm:
+                validate_source_review(response,quality,role)
             reviewers[role]={"approved":not bool(issues),"issues":issues,
+                             "source_reviews":response.get("source_reviews",[]),
                              "completed_at":now().isoformat(),"draft_sha256":frozen_sha}
         approved=all(x["approved"] for x in reviewers.values())
         status=("RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE" if approved
@@ -167,7 +179,8 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "research_input_sha256":frozen_sha,
             "baseline_history_sha256":baseline_sha,
             "actual_cutoff":cutoff.isoformat(),"source_coverage":coverage,
-            "source_metadata":metadata,"frozen_test_evidence":frozen,
+            "source_metadata":metadata,"source_quality_audit":quality,
+            "frozen_test_evidence":frozen,
             "source_citations":sorted(citations),
             "actual_search_tool_calls":actual_calls or [],
             "actual_live_model_used":researcher is llm and reviewer is llm,
