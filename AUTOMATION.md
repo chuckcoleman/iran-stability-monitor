@@ -1,5 +1,38 @@
 # Iran assessment — reviews before GitHub publication
 
+## Long-running Responses API requests and failure recovery
+
+Research web searches are now created with OpenAI Responses **background=true**
+and **store=false**, then polled by their acknowledged response ID with bounded
+read-only GET requests. The first POST is issued **exactly once**: if its
+acknowledgement is lost or the connection closes, the run stops with an
+explicit **unknown-acceptance / DO NOT REPOST** diagnosis. Once a response ID
+is known, intermittent GET failures permit limited retrieval retries against
+the **same ID**; an incomplete/failed/cancelled response, missing ID or exhausted
+time limit is a failure, never a clean forecast or source review. The
+non-search assessment and reviewer JSON calls retain their existing
+foreground request protocol, strict JSON validation and single-submission rule.
+
+Before requesting a bearer token or sending each API POST, the script creates
+a durable, redacted `api-request-*.json` record in the ignored
+`.automation-audit` directory (or designated external review audit
+directory). It contains only response/request identifiers, a SHA-256 request
+fingerprint, stage/model, known transport status, retry counts and timestamps:
+**never raw prompts, authorization headers, WIF credentials, signed JWTs or
+API error bodies**. The diagnostics workflow uploads these records even if
+the live API fails before any response is returned. A record saying the
+remote API completed is *not* a valid research ledger or editorial approval;
+the existing source-citation, evidence cutoff and response-JSON checks must
+all pass separately. No automatic POST resubmissions are permitted.
+
+OpenAI background store=false responses are temporarily retained for polling
+(about ten minutes under the documented policy), not archived indefinitely.
+This project enforces a bounded ~9-minute research poll interval to avoid
+mistaking expired responses for approval. An unresolved response ID may be
+inspected using authorized API retrieval, but MUST NOT cause an automatic
+new billable generation. This implementation changes no archived forecasts,
+frozen forecasting event definitions, branch protections or publication gates.
+
 ## Dedicated safe research dry run (nonpublishing, effective October 20, 2026)
 
 The manual `Iran diagnostics and nonpublishing source rehearsal` workflow now

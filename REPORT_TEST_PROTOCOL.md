@@ -61,6 +61,19 @@ silently promoted to PASS. Known material FAIL blocks releasing the item.
    Sunday assessments additionally require a version-3 machine
    section-review matrix and matching SHA-256 report/receipt digest.
 
+## Request reliability and no-duplicate-work tests
+
+For authenticated Responses research, test that the single initial
+background POST is recorded before network activity, that its response ID
+is persisted immediately on receipt, and that only read-only GET polling
+may be retried. Intentionally inject a dropped initial connection, GET
+network failure, failed/expired response, unexpected ID, incomplete result,
+and request timeout. A lost acknowledgement is **unknown acceptance**, never
+a reason to generate a duplicate paid assessment. The redacted request
+audit must survive a failure without storing tokens, prompts or error bodies.
+The actual API's background completion alone is NOT source validation,
+editorial approval, a Sunday forecast, or publication.
+
 ## Distinct nonpublishing rehearsal results
 
 The manual `research-dry-run` diagnostic tests actual Web Search

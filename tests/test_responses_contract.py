@@ -73,6 +73,7 @@ class ResponsesContractTests(unittest.TestCase):
         self.assertEqual(p["tool_choice"],"required")
         self.assertEqual(p["include"],["web_search_call.action.sources"])
         self.assertFalse(p["store"])
+        self.assertTrue(p["background"])
         self.assertNotIn("text",p)
         self.assertNotIn("response_format",p)
         self.assertNotIn("SECRET_BEARER",str(caught.exception))
@@ -95,7 +96,7 @@ class ResponsesContractTests(unittest.TestCase):
 
     def test_web_search_parse_remains_strict_and_sources_required(self):
         url="https://www.reuters.com/world/example"
-        result={"status":"completed","output":[
+        result={"id":"resp_example123","status":"completed","output":[
             {"type":"web_search_call","action":{"sources":[{"url":url}]}},
             {"type":"message","content":[{"type":"output_text",
                 "text":json.dumps({"evidence":[{"source":url,"event_date":"2026-10-12"}]})}]}
