@@ -131,6 +131,13 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         check(url_key(url) in {url_key(u) for u in citations},
               "Source quality audit URL missing from citations")
         metadata[url]=metadata_reader(url)
+    # Preserve the original URL lookup for freeze_evidence(), which retains
+    # the exact historic evidence link rather than rewriting it.
+    for item in result.get("evidence",[]):
+        if item.get("evidence_status","new")=="new":
+            key=url_key(item.get("source"))
+            if key in metadata:
+                metadata[item["source"]]=metadata[key]
     cutoff=now()
     quality=source_quality_audit(result,metadata,strict=(researcher is llm),
                                  cutoff=cutoff)
