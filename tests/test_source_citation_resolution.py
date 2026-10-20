@@ -173,7 +173,7 @@ class ResolutionTests(unittest.TestCase):
                  'outcome':'searched_no_eligible_evidence','limitations':'Synthetic test only; no real source claim.'}
                  for c in SOURCE_SCAN_GROUPS]}
             initial['coverage_audit'][1].update(original_urls=[BAD],outcome='eligible_reporting_found')
-        initial['source_quality']=synthetic_quality_rows(initial)
+            initial['source_quality']=synthetic_quality_rows(initial)
             source_urls={e['source'] for e in evidence}
             def fake(prompt,search):
                 seen.append('research' if not seen else 'correction')
