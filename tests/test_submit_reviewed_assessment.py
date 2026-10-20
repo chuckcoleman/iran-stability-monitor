@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/"scripts"))
-from automation_fixtures import fixture
+from automation_fixtures import fixture, legacy_receipt_fixture
 import assessment_pipeline as a
 import review_receipt as receipts
 import submit_reviewed_assessment as submission
@@ -21,7 +21,7 @@ import run_off_github_sunday as coordinator
 
 class ExternalHandoffTests(unittest.TestCase):
     def setUp(self):
-        self.history,self.analysis,self.evidence,self.opened=fixture()
+        self.history,self.analysis,self.evidence,self.opened=legacy_receipt_fixture()
         cutoff=self.opened-dt.timedelta(seconds=10)
         ledger=a.freeze_evidence({"evidence":self.evidence},
             {e["source"] for e in self.evidence},
