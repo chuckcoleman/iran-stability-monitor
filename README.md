@@ -100,6 +100,18 @@ public/social copy before any optional X posting. These operational
 review checks do not change frozen forecasting Protocol v1.0, historical
 assessments or source cutoff rules. See [REVIEW_POLICY.md](REVIEW_POLICY.md).
 
+## Reliable research API transport
+
+Web-search research uses background Responses with short POST acknowledgement
+and bounded retrieval by the same response ID. Every actual API attempt now
+creates a redacted `api-request-*.json` diagnostic **before** submission:
+stage, model, request SHA-256 fingerprint, ID when acknowledged, outcome,
+and bounded read-only GET retry counts. Lost acknowledgement, failure,
+timeout or missing ID **cannot** auto-resubmit a paid request or approve a
+forecast. The original `store=false` requirement and citation/evidence
+validation are retained. Research is only eligible after all checks pass.
+These audits are not published as website files.
+
 ## Explicit nonpublishing source-research rehearsal
 
 The separate manual GitHub Actions diagnostic has a
