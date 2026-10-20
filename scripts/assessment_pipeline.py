@@ -577,6 +577,19 @@ sources, other independent journalists and experts. Include Hormuz, sanctions,
 FX, external settlement, food/medicine, energy, protests, elite/coercive reliability,
 China and Russia support, China oil credit, Houthi resupply separately from local
 capability, military scenarios, and Hanke inflation when applicable.
+Every Sunday, also search ORIGINAL Iran International reporting directly via
+https://www.iranintl.com/en/latest and date-bounded site:iranintl.com searches
+(English and, when reliably interpretable, Persian). Examine domestic protests,
+strikes, security-force loyalty/defections, elite fractures, shortages,
+rial/market stress and escalation. This is an ADDITIONAL search, not a
+required citation or a claim that any report is true. Date the underlying
+event and FIRST public release, distinguish firsthand reports from opinion,
+official allegations, wire syndication and reprints. Independently corroborate
+consequential claims against independent original reporting or primary evidence
+when possible; otherwise label low/uncertain evidentiary support, and do not
+turn unverified allegations into facts or probability revisions. If nothing
+eligible is found, say so in the research audit and do not invent coverage.
+See SOURCE_WATCHLIST.md; this does not alter frozen Protocol v1.0.
 Prior evidence for persistent carried-forward IDs: {prior}.
 A syndicated Reuters/AP story republished at a second URL with the same original
 report date and headline is NOT an independent new source. Carry forward its
