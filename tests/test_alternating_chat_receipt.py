@@ -53,10 +53,10 @@ class AlternatingReviewTests(unittest.TestCase):
                 "items": list(items),
                 "affirmative": {
                     "draft_sha256": self.hash, "approved": True, "issues": [],
-                    "test_note": "Synthetic affirmative test confirms each cited report item was reviewed."},
+                    "test_note": "Synthetic affirmative test checks the supporting details for " + section},
                 "critical": {
                     "draft_sha256": self.hash, "approved": True, "issues": [],
-                    "test_note": "Synthetic adversarial test checks for contradictions and missing support."}
+                    "test_note": "Synthetic adversarial test challenges unsupported conclusions in " + section}
             } for section, items in inv.items()
         }
         self.round["section_reviews"] = copy.deepcopy(self.section_reviews)
