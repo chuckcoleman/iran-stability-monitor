@@ -20,7 +20,7 @@ ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/"scripts"))
 from review_receipt import digest
 
-SCRIPTS=("review_receipt.py","candidate_checks.py",
+SCRIPTS=("review_receipt.py","report_section_review.py","candidate_checks.py",
          "source_metadata.py","validate_history.py")
 
 
