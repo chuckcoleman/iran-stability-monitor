@@ -50,6 +50,7 @@ jobs:
             data/review-drafts/*.json
             data/review-reports/*.md
             REVIEW_POLICY.md
+            REPORT_TEST_PROTOCOL.md
             SOURCE_WATCHLIST.md
             assets/app.js
             *.html
