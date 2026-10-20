@@ -60,3 +60,21 @@ def fixture(history=None):
     for key in ("regional", "political", "chains", "absence_indicators"):
         analysis[key] = copy.deepcopy(prev[key])
     return history, analysis, evidence, opened
+
+
+def legacy_receipt_fixture():
+    """Synthetic October 11 v1 receipt test using immutable Oct 4 history.
+
+    Keeps historical-compatibility tests meaningful as current history grows.
+    It must never authorize a future date through a legacy approval format.
+    """
+    history=json.loads((ROOT / "data/history.json").read_text(encoding="utf-8"))
+    indices=[i for i, item in enumerate(history["updates"])
+             if item["date"] == "2026-10-11"]
+    if len(indices) != 1 or indices[0] < 1:
+        raise ValueError("Historical October 11 receipt fixture unavailable")
+    history["updates"]=history["updates"][:indices[0]]
+    result=fixture(history=history)
+    if result[3].date().isoformat() != "2026-10-11":
+        raise ValueError("Legacy receipt fixture must target October 11")
+    return result

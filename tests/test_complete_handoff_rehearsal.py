@@ -7,6 +7,7 @@ import copy
 import datetime as dt
 import json
 import os
+import shutil
 from pathlib import Path
 import sys
 import tempfile
@@ -15,7 +16,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / 'scripts'))
-from automation_fixtures import fixture
+from automation_fixtures import fixture, legacy_receipt_fixture
 import assessment_pipeline as pipeline
 import pre_github_review as pre
 import submit_reviewed_assessment as handoff
@@ -24,8 +25,18 @@ from candidate_checks import one_append
 
 
 class FullHandoffRehearsal(unittest.TestCase):
+    @staticmethod
+    def historical_checkout(path, history):
+        """Use an isolated October 4 checkout for October 11 legacy receipt tests."""
+        (path / "data").mkdir(parents=True)
+        (path / "schema").mkdir()
+        (path / "data/history.json").write_text(
+            json.dumps(history, ensure_ascii=False) + "\n", encoding="utf-8")
+        shutil.copyfile(ROOT / "schema/history.schema.json",
+                        path / "schema/history.schema.json")
+
     def test_five_rounds_from_failed_validation_to_clean_handoff(self):
-        history, base, evidence, opened = fixture()
+        history, base, evidence, opened = legacy_receipt_fixture()
         original = copy.deepcopy(history)
         day = opened.date().isoformat()
         cutoff = opened - dt.timedelta(seconds=10)
@@ -90,7 +101,11 @@ class FullHandoffRehearsal(unittest.TestCase):
                       opened + dt.timedelta(seconds=7)])
         with tempfile.TemporaryDirectory(prefix='iran-no-publication-') as tmp:
             dest = Path(tmp) / 'approved'
-            with patch.dict(os.environ, {
+            checkout = Path(tmp) / 'historical-checkout'
+            self.historical_checkout(checkout, history)
+            with patch.object(pre, 'ROOT', checkout), \
+                 patch.object(pipeline, 'ROOT', checkout), \
+                 patch.dict(os.environ, {
                 'OPENAI_API_KEY': 'synthetic-unused',
                 'GITHUB_ACTIONS': 'false'}, clear=True), \
                  patch.object(pipeline, '_fully_validated_candidate',
@@ -104,7 +119,7 @@ class FullHandoffRehearsal(unittest.TestCase):
                         lambda url: {}, reviewer=reviewer_fn),
                     review_finished_at=opened + dt.timedelta(seconds=8))
                 handoff.validate_handoff(
-                    result, root=ROOT, now=opened + dt.timedelta(seconds=9))
+                    result, root=checkout, now=opened + dt.timedelta(seconds=9))
                 git_write.assert_not_called()
                 git_read.assert_not_called()
 
@@ -138,16 +153,18 @@ class FullHandoffRehearsal(unittest.TestCase):
             (dest / 'review-audit/review-05-critical.json').unlink()
             with self.assertRaisesRegex(RuntimeError, 'critical review audit'):
                 handoff.validate_handoff(
-                    dest, root=ROOT, now=opened + dt.timedelta(seconds=9))
+                    dest, root=checkout, now=opened + dt.timedelta(seconds=9))
         self.assertEqual(history, original)
 
     def test_timeout_yields_no_clean_handoff(self):
-        history, base, evidence, opened = fixture()
+        history, base, evidence, opened = legacy_receipt_fixture()
         sources = {x['source'] for x in evidence}
         cutoff = opened - dt.timedelta(seconds=10)
         dates = iter([cutoff - dt.timedelta(seconds=5), cutoff, opened])
         with tempfile.TemporaryDirectory(prefix='iran-unsafe-handoff-') as tmp:
             dest = Path(tmp) / 'should-not-exist'
+            checkout = Path(tmp) / 'historical-checkout'
+            self.historical_checkout(checkout, history)
 
             def producer(h, reviewer=None):
                 return pipeline.produce(
@@ -157,9 +174,11 @@ class FullHandoffRehearsal(unittest.TestCase):
                     lambda prompt, search: (_ for _ in ()).throw(
                         TimeoutError('Synthetic independent reviewer timeout')))
 
-            with patch.dict(os.environ, {
-                'OPENAI_API_KEY': 'synthetic-unused',
-                'GITHUB_ACTIONS': 'false'}, clear=True):
+            with patch.object(pre, 'ROOT', checkout), \
+                 patch.object(pipeline, 'ROOT', checkout), \
+                 patch.dict(os.environ, {
+                     'OPENAI_API_KEY': 'synthetic-unused',
+                     'GITHUB_ACTIONS': 'false'}, clear=True):
                 with self.assertRaisesRegex(TimeoutError, 'reviewer timeout'):
                     pre.prepare(dest, now=opened, producer=producer)
             self.assertFalse(dest.exists())
