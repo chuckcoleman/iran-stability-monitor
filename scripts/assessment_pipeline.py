@@ -18,6 +18,7 @@ import time
 from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 from source_metadata import url_key, capture_metadata
+from source_search_trace import observed_search_calls, verify_search_trace
 from candidate_checks import dashboard_record, one_append
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -220,8 +221,9 @@ def llm(prompt,search):
         raise _safe_responses_error(exc, search) from None
     check(raw.get("status")=="completed","OpenAI response incomplete")
     output=raw.get("output",[])
-    check(not search or any(x.get("type")=="web_search_call" for x in output),
-          "Search stage did not use web search")
+    call_trace = observed_search_calls(output) if search else []
+    if search:
+        verify_search_trace(call_trace)
     messages=[x for x in output if x.get("type")=="message"]
     texts=[p.get("text","") for x in messages for p in x.get("content",[]) if p.get("type")=="output_text"]
     check(bool(texts),"Empty model response")
@@ -239,14 +241,17 @@ def llm(prompt,search):
         if x.get("type")=="web_search_call":
             for s in (x.get("action") or {}).get("sources",[]):
                 if isinstance(s,dict) and s.get("url"): citations.add(s["url"])
-    audit=ROOT/".automation-audit"
-    if os.getenv("GITHUB_ACTIONS")=="true":
-        audit.mkdir(exist_ok=True)
+    external_audit = os.getenv("IRAN_OFFLINE_REVIEW_DIR")
+    if os.getenv("GITHUB_ACTIONS") == "true" or external_audit:
+        audit=Path(external_audit) if external_audit else ROOT/".automation-audit"
+        audit.mkdir(parents=True,exist_ok=True)
         record={"model":payload["model"],"response_id":raw.get("id"),"completed_at":clock().isoformat(),
                 "prompt_sha256":hashlib.sha256(prompt.encode()).hexdigest(),"search":search,
-                "citations":sorted(citations),"result":obj}
+                "citations":sorted(citations),"tool_search_calls":call_trace,"result":obj,
+                "provenance_limitations":"Tool calls and URLs are real API-returned metadata; "
+                                         "not proof that every claimed outlet was inspected"}
         name="response-"+str(len(list(audit.glob("response-*.json")))+1)+".json"
-        (audit/name).write_text(json.dumps(record,ensure_ascii=False,indent=2),encoding="utf-8")
+        (audit/name).write_text(json.dumps(record,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     return obj,citations
 
 def urlkey(url):
