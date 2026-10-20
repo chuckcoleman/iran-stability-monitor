@@ -57,17 +57,25 @@ and the review time limit are failure ceilings, not successful outcomes.
 Unresolved defects, timeouts, invalid evidence or tool failures stop
 publication; no forecast or historical record may be silently changed.
 
-## Sunday source coverage
+## Sunday research source coverage
 
-Beginning October 25, 2026, Sunday research must separately check the latest
-original reporting from [Iran International](https://www.iranintl.com/en/latest)
-for protests, elite divisions, security-force behavior, the rial, shortages,
-and other potential stability indicators. Record the actual search and source
-dates before the evidence cutoff. Seek independent corroboration and
-deduplicate syndicated coverage; this is a mandatory **source check**, not
-a requirement to cite the outlet or accept any unsupported claim.
-See [SOURCE_WATCHLIST.md](SOURCE_WATCHLIST.md) for details.
-This change does not alter Protocol v1.0 or past forecasts.
+From October 25, 2026, each Sunday assessment requires a broad,
+topic-specific scan across **reputable international and local media,
+original wire reporting, specialist investigations, primary evidence,
+independent economic research and security/regional think tanks**.
+The search includes Iran International and other Persian-language
+reporting, as well as relevant Arabic, Gulf, Israeli, European, US
+and Asian outlets. It also looks for contrary and stabilizing evidence.
+
+See [SOURCE_WATCHLIST.md](SOURCE_WATCHLIST.md) for six coverage
+categories, an illustrative (not exhaustive) set of organizations,
+source-quality rules and the required pre-cutoff coverage audit.
+A think-tank opinion is not an observed event; a repeated Reuters/AP
+report is not independent corroboration. Record missing or inaccessible
+material coverage and never fabricate a source or original publication
+time. No outlet is automatically accepted, and no outlet must be cited
+just to satisfy a coverage target. The frozen four scored events and
+forecast history are unaffected.
 
 ## Sunday assessment automation (ChatGPT scheduled task)
 
