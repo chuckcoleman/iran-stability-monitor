@@ -100,6 +100,20 @@ public/social copy before any optional X posting. These operational
 review checks do not change frozen forecasting Protocol v1.0, historical
 assessments or source cutoff rules. See [REVIEW_POLICY.md](REVIEW_POLICY.md).
 
+## Comprehensive evidence-quality review
+
+Following the citation-link check, the research stage now records a
+private `source-quality-audit.json` listing EVERY selected original
+media, think-tank, primary-data and specialist URL, including references
+used only for background. Each entry labels the type of reported claim,
+whether it is original or syndicated/secondary, source access status,
+publisher release-clock status (often **unknown**), proposed independent
+corroboration, and limitations. The two alternating source reviewers
+must evaluate every entry independently as *editorial perspectives*
+and document a precise disposition before any assessment can be approved.
+These are prospective research process checks and do not alter
+historical records or Protocol v1.0.
+
 ## Unsupported source-URL flags (fail-closed)
 
 The pre-freeze source audit now records each model-reported original media

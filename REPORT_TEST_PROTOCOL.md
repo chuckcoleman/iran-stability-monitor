@@ -61,6 +61,22 @@ silently promoted to PASS. Known material FAIL blocks releasing the item.
    Sunday assessments additionally require a version-3 machine
    section-review matrix and matching SHA-256 report/receipt digest.
 
+## All-source evidence-quality tests
+
+A source appearing in a search result does not prove the related claim.
+For each unique new-evidence or context-only URL, verify presence in
+the quality inventory, original versus syndicated/official/analytical
+attribution, source metadata accessibility, claimed publisher timestamp
+versus unknown original release, independent corroboration URL validity,
+a material claim's directional inference, and specific limitations.
+Explicitly test absent, duplicated and fictitious per-source rows and
+future source-publication instants. All URLs must receive BOTH a distinct
+affirmative source review and a critical challenge. Neither a model's
+optimistic classification nor a historical carried-forward ID may be
+treated as new independent evidence. Missing reviewer findings or
+unverified/rejected material claims fail closed; synthetic mock reviews
+are labeled as such, not real editorial approval.
+
 ## Explicit citation reconciliation tests
 
 Before source freezing, every original source URL in the six-category

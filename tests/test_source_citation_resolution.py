@@ -12,6 +12,18 @@ ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/'scripts'))
 from source_citation_resolution import apply_resolutions, resolve_source_citations
 from source_citation_reconciliation import reconcile_source_citations
+from source_quality_audit import source_inventory
+
+
+def synthetic_quality_rows(data):
+    """Explicitly annotated source-quality fixtures, never genuine verification."""
+    return [{
+        "url":url,"kind":"unverified","origin":"unknown",
+        "corroborating_urls":[],
+        "assessment":"This synthetic citation is only a testing placeholder and proves no real event.",
+        "limitations":"Original content and publication timing have not been checked in this synthetic fixture."
+    } for url in source_inventory(data)]
+
 from test_source_citation_reconciliation import A, B, BAD, trace
 
 
@@ -161,6 +173,7 @@ class ResolutionTests(unittest.TestCase):
                  'outcome':'searched_no_eligible_evidence','limitations':'Synthetic test only; no real source claim.'}
                  for c in SOURCE_SCAN_GROUPS]}
             initial['coverage_audit'][1].update(original_urls=[BAD],outcome='eligible_reporting_found')
+            initial['source_quality']=synthetic_quality_rows(initial)
             source_urls={e['source'] for e in evidence}
             def fake(prompt,search):
                 seen.append('research' if not seen else 'correction')
@@ -188,6 +201,7 @@ class ResolutionTests(unittest.TestCase):
              'outcome':'searched_no_eligible_evidence','limitations':'Synthetic test; no live source coverage asserted.'}
             for c in pipeline.SOURCE_SCAN_GROUPS]}
         initial['coverage_audit'][1].update(original_urls=[BAD],outcome='eligible_reporting_found')
+        initial['source_quality']=synthetic_quality_rows(initial)
         with tempfile.TemporaryDirectory() as tmp:
             folder=Path(tmp)
             def fake(prompt,search):
@@ -200,7 +214,13 @@ class ResolutionTests(unittest.TestCase):
             def assess(prompt,search):
                 seen.append('assessment');return copy.deepcopy(analysis),set()
             def review(prompt,search):
-                seen.append('review');return {'approved':True,'issues':[]},set()
+                seen.append('review')
+                draft=json.loads(prompt.split('Input: ')[-1])
+                quality=draft['source_quality_audit']['sources']
+                rows=[{'url':item['url'],
+                       'assessment':'Synthetic test inspected the cited row and recorded its limitations.',
+                       'disposition':'supported_as_qualified'} for item in quality]
+                return {'approved':True,'issues':[],'source_reviews':rows},set()
             with patch.object(pipeline,'llm',fake),patch.dict(os.environ,{
                     'GITHUB_ACTIONS':'false','IRAN_OFFLINE_REVIEW_DIR':tmp},clear=True):
                 result=pipeline.produce(history,researcher=fake,assessor=assess,

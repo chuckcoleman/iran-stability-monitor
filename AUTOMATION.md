@@ -1,5 +1,29 @@
 # Iran assessment — reviews before GitHub publication
 
+## Mandatory source-by-source evidence quality (prospective)
+
+After successful citation reconciliation and BEFORE any scored
+probability is elicited, capture whatever source-site metadata can be
+retrieved for **all distinct category/evidence URLs** (not only newly
+scored evidence). Require a complete model classification of each:
+direct observation, attributed claim, analysis, unverified claim,
+or historical background, with originality/syndication, proposed
+corroborating links, explicit basis and limitations. The private
+`source-quality-audit.json` states exact source access status,
+unknown/claimed first-publication clock and metadata observations
+without asserting factual authentication. Carried-forward historical
+evidence remains unchanged.
+
+The same source-quality audit must be attached to the closed assessment
+and to the nonpublishing research-only two-perspective source review.
+Each perspective gives a source-specific substantive verdict for EVERY
+URL, including original think-tank and specialist sources. Omissions,
+unsupported material inferences and reviewer rejections block clean
+approval. A machine-validated matrix is still NOT proof all assertions
+are true, that unavailable documents were inspected, or that two
+independent reviewer models were used. No new forecasts may use
+material labeled unverified as though it were confirmed evidence.
+
 ## Unsupported citation flags and pre-freeze rejection
 
 Before metadata capture, the source-evidence cutoff, and **any probability

@@ -21,6 +21,8 @@ from source_metadata import url_key, capture_metadata
 from source_search_trace import (observed_search_calls, verify_search_trace,
                                  load_matching_search_trace, verify_claimed_source_links)
 from responses_transport import request_response
+from source_quality_audit import (source_inventory, source_quality_audit,
+                                  save_quality_audit, validate_source_review)
 from source_citation_reconciliation import (
     reconcile_source_citations, save_reconciliation, require_supported_citations)
 from candidate_checks import dashboard_record, one_append
@@ -709,6 +711,26 @@ dates or coverage. Coverage rows describe research attempts and are NOT
 new evidence or proof of comprehensive access. Include the recorded gaps
 in the affirmative and critical source-quality assessment.
 Omit unverified scan timestamps rather than inventing them.
+In the same JSON provide a source_quality ARRAY with exactly one item per
+DISTINCT cited original URL in coverage_audit.original_urls or any NEW
+evidence item's source. Include ALL media and think-tank context sources.
+Each item: url (exact cited public HTTPS), kind
+(direct_observation / attributed_claim / analysis / unverified /
+background_only), origin (original_reporting / syndicated_reprint /
+official_or_advocacy_claim / analytical_secondary / unknown),
+corroborating_urls (array of other independent URLs in same source set,
+[] if none established), assessment (>=30 chars stating exactly what
+was observed/reported), limitations (>=30 chars specifying unknown original
+publication clock, institutional perspective, syndicated dependency,
+access restrictions, missing direct verification or counterevidence).
+Avoid inventing first-release times or counting wire mirrors as independent.
+Where a source cannot be inspected or is merely a search snippet, use
+kind=unverified and origin=unknown; unknown is not proof of stability.
+Distinguish actor claims and Houthi operational capability from verified
+Iranian physical resupply. Analyses and advocacy are not fresh events,
+and unverified/analytical forecasts are assumptions not established
+directional observations. Keep direction ambiguous when unsupported.
+The program will independently try to retrieve publication-time metadata.
 Each evidence item: event_date YYYY-MM-DD, category, observation, source full HTTPS URL,
 source_title, publisher, reliability (High/Medium-high/Medium/Low),
 affects (array), evidence_status new or carried_forward (with old id if carried),
@@ -781,7 +803,17 @@ Closed evidence: {evidence}"""
 REVIEW_CYCLES_LIMIT=6
 REVIEW_ELAPSED_LIMIT_SECONDS=3600
 
-_REVIEW_COMMON="""Use ONLY the identical closed, cited evidence and frozen Protocol v1.0.
+_REVIEW_COMMON="""Use ONLY the identical closed evidence and SOURCE QUALITY audit.
+Examine EVERY original URL in source_quality_audit.sources, including
+media and think tanks used only for context. Return source_reviews with
+EXACTLY one record per source URL: url, assessment (>=30 characters of
+specific source support or adversarial objection), disposition
+(supported_as_qualified / background_only / unverified_reject).
+An unresolved unsupported MATERIAL inference must be unverified_reject
+and the global review must reject. Matching URLs and reputable publishers
+are not factual proof. Do not infer Houthi resupply from attack claims,
+treat opinion as measured evidence, ignore missing publication times, or
+count repeated wires as independent corroboration.
 Do not browse, revise or elicit scored forecasts, change event definitions,
 invent evidence, or infer positive resilience from absent reporting.
 Check the precise nine warning categories, source-event IDs and wire-service
@@ -794,7 +826,10 @@ The one-event-per-sentence editorial rule applies ONLY to next_threshold,
 NOT to summary or other fields; next_threshold must use complete declaratives.
 Return ONLY a JSON object: {"approved": boolean, "issues": [
 {"type": "short category", "location": "precise JSON field or item",
-"reason": "concrete correction required"}]}.
+"reason": "concrete correction required"}],
+"source_reviews": [{"url":"exact source URL",
+"assessment":"specific 30+ character review finding",
+"disposition":"supported_as_qualified|background_only|unverified_reject"}]}.
 Approve ONLY when there are NO remaining substantive or editorial defects,
 with approved=true and issues=[]; otherwise approved=false and a nonempty
 list of specific, actionable issues. No inferred or default approvals.
@@ -924,15 +959,30 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         if audit_dir is not None:
             save_reconciliation(audit_dir,reconciliation)
         require_supported_citations(reconciliation)
-    # Finish ALL source retrieval and metadata verification before closing evidence.
+    # Inspect EVERY selected original URL, including background-only
+    # category citations, not only new forecast evidence URLs.
     metadata={}
+    if researcher is llm or "source_quality" in result:
+        urls=list(source_inventory(result))
+    else:
+        urls=list({urlkey(item.get("source")) for item in result.get("evidence",[])
+                   if item.get("evidence_status","new")=="new"})
+    for url in urls:
+        check(url is not None and url in {urlkey(x) for x in sources},
+              "Source-quality audit includes URL not cited by research")
+        metadata[url]=metadata_reader(url)
+    # Preserve the original URL lookup for freeze_evidence(), which retains
+    # the exact historic evidence link rather than rewriting it.
     for item in result.get("evidence",[]):
         if item.get("evidence_status","new")=="new":
-            url=item.get("source")
-            check(urlkey(url) is not None and urlkey(url) in {urlkey(x) for x in sources},"Uncited source")
-            if url not in metadata:
-                metadata[url]=metadata_reader(url)
+            key=url_key(item.get("source"))
+            if key in metadata:
+                metadata[item["source"]]=metadata[key]
     cutoff=now()
+    quality=source_quality_audit(result,metadata,strict=(researcher is llm),
+                                 cutoff=cutoff)
+    if audit_dir is not None and (researcher is llm or "source_quality" in result):
+        save_quality_audit(audit_dir,quality)
     # Live source gathering must document broad category coverage before
     # elicitation. Synthetic test researchers without a coverage field retain
     # legacy fixture compatibility. This metadata is not a seventh forecast.
@@ -945,12 +995,13 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         audit_dir.mkdir(parents=True,exist_ok=True)
         (audit_dir/"frozen-evidence.json").write_text(json.dumps({
            "cutoff":cutoff.isoformat(),"metadata":metadata,"evidence":evidence,
-           "source_coverage":coverage,
-           "coverage_claim":"model-reported category searches; citation-linked URLs, not proof of exhaustive retrieval"
+           "source_coverage":coverage,"source_quality_audit":quality,
+           "coverage_claim":"model-reported classes and matching links are not independent verification"
         },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     input=ASSESS.format(protocol=json.dumps(history["protocol"]),prior=json.dumps(
        [{"event_id":f["event_id"],"p":f["p"]} for f in previous["forecasts"] if f.get("scored")]),
        evidence=json.dumps(evidence),templates=json.dumps({k:previous[k] for k in ("regional","political","chains","absence_indicators")}))
+    input+="\nSource-by-source quality classifications and limits: "+json.dumps(quality,ensure_ascii=False)
     analysis,_=assessor(input,False)
     opened=now() # the ONE prospective elicitation of exactly four core probabilities
     from jsonschema import Draft202012Validator
@@ -993,9 +1044,19 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
                     try:
                         result,_=reviewer(prompt+json.dumps({
                             "analysis":analysis,"evidence":evidence,
+                            "source_quality_audit":quality,
                             "protocol":history["protocol"]},
                             ensure_ascii=False,sort_keys=True),False)
                         role_issues=_review_issues(result,role)
+                        if researcher is llm:
+                            validate_source_review(result,quality,role)
+                            folder=_review_audit_dir()
+                            if folder is not None:
+                                (folder/f"source-quality-review-{round_no:02d}-{role}.json").write_text(
+                                    json.dumps({"round":round_no,"role":role,
+                                        "draft_sha256":draft_hash,
+                                        "source_reviews":result["source_reviews"]},
+                                        ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
                     except Exception as exc:
                         _write_review_audit(round_no,role,draft_hash,"failure",
                                             error_type=type(exc).__name__)
@@ -1048,7 +1109,8 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
             check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
                   "Alternating validation/review time limit exceeded; publication blocked")
             revised,_=assessor(CORRECT+json.dumps({
-                "closed_evidence":evidence,"protocol":history["protocol"],
+                "closed_evidence":evidence,"source_quality_audit":quality,
+                "protocol":history["protocol"],
                 "locked_forecasts":locked_forecasts,"draft":analysis,
                 "issues":issues},ensure_ascii=False),False)
             check(time.monotonic()-start_review<REVIEW_ELAPSED_LIMIT_SECONDS,
