@@ -100,6 +100,24 @@ public/social copy before any optional X posting. These operational
 review checks do not change frozen forecasting Protocol v1.0, historical
 assessments or source cutoff rules. See [REVIEW_POLICY.md](REVIEW_POLICY.md).
 
+## Unsupported source-URL flags (fail-closed)
+
+The pre-freeze source audit now records each model-reported original media
+or think-tank URL and each new evidence URL alongside two independent
+*provenance checks*: appearing in the model's cited source URLs and
+appearing in the actual Responses web-search-tool source list. The audit
+preserves both supported and **FLAGGED_UNSUPPORTED** claims, with precise
+reasons, in `citation-reconciliation.json`. Duplicate category URLs and
+non-public-HTTPS addresses are also flagged; similar article IDs and
+headline rewrites are never automatically equated.
+
+In the read-only manual `research-dry-run`, flagged URLs are saved and
+identified in `research-dry-run.json` even though the job exits as
+failure. Reviewers, forecast elicitation, source freezing and publication
+are never allowed to regard those unsupported claims as verified.
+Production source research has the same strict pre-freeze barrier.
+This changes neither frozen Protocol v1.0 nor prior issued forecasts.
+
 ## Reliable research API transport
 
 Web-search research uses background Responses with short POST acknowledgement
