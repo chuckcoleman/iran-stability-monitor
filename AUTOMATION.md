@@ -1,5 +1,25 @@
 # Iran assessment — reviews before GitHub publication
 
+## Controlling source coverage from October 25, 2026
+
+Every Sunday **before evidence closure or forecast elicitation**, separately
+search original reporting from **Iran International**, using
+[the English latest-news feed](https://www.iranintl.com/en/latest), the
+[English site](https://www.iranintl.com/en) and date-bounded
+`iranintl.com` searches (including Persian reporting when it can be
+interpreted reliably). Focus on domestic protests, security-force behavior,
+elite divisions, the rial, shortages, economic pressures and regional risks.
+Preserve the actual scan time, original publication/event dates, candidate
+links, syndication identity, contradictory information and uncertainties in
+the **pre-cutoff working evidence audit**. Reconcile with Reuters/AP and
+earlier evidence IDs. **Do not force an Iran International citation or treat
+its claims as automatically established**: corroborate material allegations
+independently whenever possible and explicitly qualify unverifiable claims.
+A missing/blocked scan must be disclosed, never represented as completed.
+[Detailed operational source rules](SOURCE_WATCHLIST.md).
+This prospective research instruction changes neither historical records
+nor frozen forecasting Protocol v1.0.
+
 ## Controlling review policy from October 25, 2026
 
 Use the current [REVIEW_POLICY.md](REVIEW_POLICY.md). One frozen candidate receives full deterministic validation, then **affirmative followed by critical ChatGPT reviews of the same draft SHA-256**. Both must explicitly approve with empty issues. A defect means an evidence-closed correction, followed by complete deterministic revalidation and BOTH fresh reviews. Never carry approval to a changed draft. Six cycles and 60 minutes are failure ceilings. Version-3 receipts preserve the full review report, exact draft, role decisions and their chronology. This is a two-perspective ChatGPT process, not proof of separately executed independent models. October 18's version-2 single-review receipt is preserved historically. Frozen forecasting Protocol v1.0 is unchanged. The existing scheduled task uses this policy; no separate computer or local API key is needed.
