@@ -1,5 +1,25 @@
 # Prospective alternating affirmative and critical ChatGPT reviews — effective 2026-10-25
 
+## Source-specific dual-perspective quality gate
+
+Before constructing any NEW prospective forecast, audit **every original
+source URL**, including context-only specialist/media/think-tank entries
+outside the newly selected evidence rows. Preserve source classifications,
+original vs wire/syndicated vs unknown origin, direct retrieval availability,
+publisher-supplied original date/time or UNKNOWN, independent corroborating
+URLs and precise limitations. The data belong to a private
+`source-quality-audit.json`, not an edit to prior history.
+
+Both affirmative THEN critical reviewers must issue a substantive
+per-URL `source_reviews` record (identical input digest), with a
+qualified-support, background-only or unverified/rejected disposition.
+The global verdict cannot be approved if any material source is explicitly
+unverified/rejected. Disclose who made the judgment: a model's
+classification or tool-cited URL is NOT an independent validation of a
+reported event. Model omitting/duplicating any URL review is a failure.
+Retain both per-source reviewers' real decisions as audit artifacts;
+never silently remove troublesome sources to force an approval.
+
 ## Report-wide alternating test and review protocol (controlling, effective 2026-10-25)
 
 The two successive ChatGPT editorial perspectives must test **EVERY
