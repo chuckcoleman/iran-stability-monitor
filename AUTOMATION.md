@@ -1,5 +1,33 @@
 # Iran assessment — reviews before GitHub publication
 
+## Unsupported citation flags and pre-freeze rejection
+
+Before metadata capture, the source-evidence cutoff, and **any probability
+elicitation**, match every new evidence URL and each of the six source
+categories' `original_urls` to (a) the exact normalized URL found in
+Responses citations and (b) the actual retrieved web-search-tool source
+list. Use the existing conservative public HTTPS normalization (tracking
+parameter removal only). **Do not infer URL equivalence** from a publisher
+name, matching AP article identifier, altered article slug or headline.
+
+Always preserve **every model-claimed URL** and its per-location flag in
+`.automation-audit/citation-reconciliation.json`: `not_in_response_citations`,
+`not_in_actual_web_search_sources`, `invalid_public_https_url`, or
+`duplicate_url_within_research_category` (as applicable). Model-facing
+search guidance requests exact original URLs; neither the code nor the
+model may silently replace, remove, invent, or promote unsupported claims.
+
+The manual **research-dry-run** also retains its
+`research-dry-run.json` summary with
+`UNSUPPORTED_CITATIONS_FLAGGED_NOT_PUBLISHABLE` and precise counts and
+reasons. A flagged dry run is an **expected fail-closed diagnostic**:
+source freeze and both editorial approvals are NOT REACHED. A passing
+regression suite or completed API web-search request cannot override it.
+Publication/forecast research remains strictly blocked pending a **new
+separately reviewed, cited and verified evidence set**; never quietly
+filter the flagged citations and issue a probability anyway. Original
+historical evidence and Protocol v1.0 remain unchanged.
+
 ## Long-running Responses API requests and failure recovery
 
 Research web searches are now created with OpenAI Responses **background=true**
