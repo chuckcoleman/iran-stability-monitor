@@ -1,9 +1,9 @@
-name: Iran external-service diagnostics (no report reviews)
+name: Iran diagnostics and nonpublishing source rehearsal
 on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Read-only service checks or a paid, unpublishable API contract probe'
+        description: 'Read-only checks, paid API probe, or never-publish live-source dual-review test'
         required: true
         default: healthcheck
         type: choice
@@ -11,6 +11,7 @@ on:
           - healthcheck
           - check-services
           - api-probe
+          - research-dry-run
 permissions:
   contents: read
   actions: read
@@ -67,6 +68,9 @@ jobs:
       - name: Check OpenAI web-search and JSON-mode contracts (paid, unpublishable)
         if: inputs.mode == 'api-probe'
         run: python scripts/sunday_automation.py api-probe
+      - name: Run actual research and both source-only reviews (paid, NEVER PUBLISHABLE)
+        if: inputs.mode == 'research-dry-run'
+        run: python scripts/read_only_research_dry_run.py
       - name: Preserve diagnostic audit (no credentials)
         if: always()
         uses: actions/upload-artifact@v4
