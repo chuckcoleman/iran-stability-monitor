@@ -69,6 +69,8 @@ class BackgroundTransportTests(unittest.TestCase):
         self.assertEqual(self.audit()["response_id"],"resp_live123")
         self.assertEqual(self.audit()["status"],"api_completed_output_not_yet_validated")
         self.assertEqual(self.audit()["poll_count"],2)
+        self.assertEqual(self.requests[0].headers["X-client-request-id"],
+                         self.audit()["client_request_id"])
         sent=json.loads(self.requests[0].data)
         self.assertTrue(sent["background"])
         self.assertFalse(sent["store"])
