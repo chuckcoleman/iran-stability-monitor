@@ -61,6 +61,28 @@ silently promoted to PASS. Known material FAIL blocks releasing the item.
    Sunday assessments additionally require a version-3 machine
    section-review matrix and matching SHA-256 report/receipt digest.
 
+## Explicit citation reconciliation tests
+
+Before source freezing, every original source URL in the six-category
+coverage audit and every *new* evidence URL must be matched to both a
+Responses citation and an original source URL exposed by a genuine
+web-search-tool call. Preserve a location-indexed ledger of the claimed
+link, normalized URL, evidence/coverage role and independent match
+results. Flag mismatches, invalid URLs and duplicate URLs within a
+category; **never treat a similar AP ID, redirect guess or rewritten
+headline as a verified equivalence**. Test both a clean match and
+deliberately unsupported versions, including an evidence URL absent
+from tool results.
+
+If ANY citation is flagged, save the complete audit and an explicit
+`UNSUPPORTED_CITATIONS_FLAGGED_NOT_PUBLISHABLE` test disposition;
+neither an editor's approval nor a clean JSON schema can override the
+missing provenance. The test must stop before frozen evidence,
+scored forecasts and affirmative/critical publication reviews. This
+prefreeze validation failure is appropriately recorded as both reviews
+NOT REACHED, not as a claim they were approved. Missing source-trace
+data is NOT TESTED, not an inferred verification.
+
 ## Request reliability and no-duplicate-work tests
 
 For authenticated Responses research, test that the single initial
