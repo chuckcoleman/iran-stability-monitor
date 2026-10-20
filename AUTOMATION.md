@@ -1,5 +1,44 @@
 # Iran assessment — reviews before GitHub publication
 
+## Dedicated safe research dry run (nonpublishing, effective October 20, 2026)
+
+The manual `Iran diagnostics and nonpublishing source rehearsal` workflow now
+offers `research-dry-run`, in addition to healthcheck and API-probe.
+This **read-only** job performs a real, paid OpenAI web-search source sweep
+with six categories; saves the Responses API's actual web-search-call
+and surfaced citation URL metadata; obtains independently attempted article
+metadata (including unknown first-publication times); freezes only a
+**TEST-ONLY** source ledger; and obtains sequential affirmative then
+critical source-quality verdicts on the identical ledger hash.
+
+The job carries read-only repository permissions and OpenAI workload
+identity. It does **not** receive the GitHub App PR/merge token or
+Metricool token. It cannot issue forecasts, change `data/history.json`,
+push a branch, make a PR, merge, deploy, alter the site, or post to X.
+The ephemeral `.automation-audit` JSON records are uploaded as a private
+run artifact for inspection and removed from the website artifact.
+Bad/uncited/missing web-search-tool provenance, incomplete six-category
+audit, cutoff mismatch, implausible publication timing or any review
+objection is recorded as failure, never a successful publication.
+
+Use `workflow_dispatch` (manual only) to select this diagnostic.
+No recurring writer or scheduled assessment is re-enabled. The
+diagnostic may run on a weekday because it creates **zero** scored
+forecasts; it never pretends that a Tuesday report is Sunday's future
+forecast. The genuine Sunday ChatGPT-first approval/issuance pipeline
+remains separately governed by REVIEW_POLICY.md and
+REPORT_TEST_PROTOCOL.md.
+
+**Critical limitation:** A successful source-only live dry run proves
+that the real research API, source-audit structure and two sequential
+source-editorial calls were exercisable. It does **not** prove:
+independent review execution, actual semantic truth of reports, complete
+coverage of every news outlet, forecasts, fifteen-section production
+review, browser charts, GitHub publication or public X threading.
+Always label those gates NOT TESTED rather than PASS. The saved
+search-tool call records are API observations; a model-reported query
+list or missing query metadata is never accepted as proof it ran.
+
 ## Controlling report-wide alternating tests (effective October 25, 2026)
 
 The two editorial review perspectives must test **every** part of each new
