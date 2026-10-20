@@ -104,10 +104,6 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
                         role + " review report lacks an exact same-draft clean verdict")
             require("Both review perspectives are from one ChatGPT session" in report_text,
                     "Chat review provenance absent in report")
-            section_sha = digest(approval["rounds"][-1].get("section_reviews"))
-            require(receipt.get("report_section_review_sha256") == section_sha
-                    and "Section review matrix SHA-256: " + section_sha in report_text,
-                    "Full report section-review matrix is absent or unbound")
             for name in REPORT_SECTIONS:
                 require("### " + name in report_text,
                         "Full report lacks the " + name + " review section")
@@ -194,6 +190,10 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
                 require(item.get("post_review_validation") is None,
                         "Rejected round cannot claim final validation")
             last_hash, last_critical_time = round_hash, critical_time
+        section_sha = digest(rounds[-1]["section_reviews"])
+        require(receipt.get("report_section_review_sha256") == section_sha
+                and "Section review matrix SHA-256: " + section_sha in report_text,
+                "Full report section-review matrix is absent or unbound")
     locked = approval.get("locked_forecasts")
     require(isinstance(locked, list) and len(locked) == 4
             and approval.get("forecast_sha256") == digest(locked),
