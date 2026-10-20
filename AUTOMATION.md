@@ -1,5 +1,40 @@
 # Iran assessment — reviews before GitHub publication
 
+## Controlling report-wide alternating tests (effective October 25, 2026)
+
+The two editorial review perspectives must test **every** part of each new
+Sunday Iran assessment and its relevant delivery materials, not merely the
+four core forecast probabilities. Use the fifteen-section
+[report-review inventory](scripts/report_section_review.py), which covers
+the complete evidence ledger and six search categories; new events and
+news; each forecast and signed revision; nine warnings; political/regional
+scenarios; causal chains and absence indicators; Hormuz/energy/coercion;
+Houthi support; all six oil-credit components; Hanke inflation; dashboard,
+tables and chart values; all narrative, stabilizer and threshold fields;
+public/social summary; methodology and corrections. Reject unmapped new
+fields or missing individual items.
+
+For EACH section, record explicit affirmative checks of support and
+arithmetic and critical/adversarial checks of contradictions, missing
+counterevidence, source independence, false certainty and numerical
+presentation. Both must judge the same SHA-256; preserve substantive
+test notes and item lists. The version-3 receipt requires a full section
+review matrix, its SHA-256 in both receipt and Markdown review report,
+and a heading for each section. One failed/missing section fails the
+entire approval, requiring full deterministic revalidation and **both**
+fresh perspectives after any allowed evidence-closed correction. The
+two-role model is editorial, not independent model execution.
+
+For special/supplemental reports, charts, tables, X copy, and nonpublishing
+test reports, prepare the same full positive/critical review ledger for
+every material item before releasing that artifact. State which tests
+were NOT RUN; never call the whole work PASS when a constituent part
+was untested. Derived public charts/summaries must match frozen assessed
+data, timestamps and denominators. X stays disabled by default, and
+an unreviewed/unsupported two-post X thread must not be scheduled.
+See [REVIEW_POLICY.md](REVIEW_POLICY.md). Historical forecasts and
+the frozen Protocol v1.0 remain untouched.
+
 ## Controlling source coverage from October 25, 2026
 
 Before closing each Sunday's evidence set or eliciting any forecasts,
