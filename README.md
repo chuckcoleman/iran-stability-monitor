@@ -7,6 +7,7 @@ Public, timestamped scenario estimates and early-warning indicators for Iran.
 - `data/history.json` — machine-readable, append-only forecast history
 - `about.html` — definitions, evidence classes, source and revision policy
 - `SOURCE_WATCHLIST.md` — prospective weekly news-source scan and corroboration guidance
+- `REPORT_TEST_PROTOCOL.md` — reusable affirmative–critical tests for every report and test artifact
 - `special-reports.html` — longer event-driven analyses
 - `protocol-v1.html` — frozen prospective forecasting protocol
 - `history.html` — full immutable forecast history
@@ -76,6 +77,28 @@ material coverage and never fabricate a source or original publication
 time. No outlet is automatically accepted, and no outlet must be cited
 just to satisfy a coverage target. The frozen four scored events and
 forecast history are unaffected.
+
+## Whole-report alternating validation
+
+Beginning with the October 25 Sunday assessment, the required affirmative
+then critical review covers the **entire report**, not just its four
+prospective probabilities. The [report-section inventory](scripts/report_section_review.py)
+tracks every JSON record field plus individually identified sources,
+news events, forecasts, revision rows, warnings, scenario rows, diagnostic
+components and dashboard indicators. An incomplete section or test note,
+unsupported fact, missing adversarial perspective, mismatched draft hash,
+or unreviewed new field blocks publication under the version-3 receipt.
+The full Markdown review report must record the section-level results
+and the exact matrix SHA-256. After an allowed correction, all automated
+tests and both perspectives restart on the new exact draft; any core
+scored forecast remains locked.
+
+Supplemental and nonpublishing reports also require affirmative and
+critical checks for each material claim, calculation, table and chart,
+with NOT TESTED clearly distinguished from PASS. Separately review final
+public/social copy before any optional X posting. These operational
+review checks do not change frozen forecasting Protocol v1.0, historical
+assessments or source cutoff rules. See [REVIEW_POLICY.md](REVIEW_POLICY.md).
 
 ## Sunday assessment automation (ChatGPT scheduled task)
 
