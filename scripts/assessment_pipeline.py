@@ -20,6 +20,7 @@ from zoneinfo import ZoneInfo
 from source_metadata import url_key, capture_metadata
 from source_search_trace import (observed_search_calls, verify_search_trace,
                                  load_matching_search_trace, verify_claimed_source_links)
+from responses_transport import request_response
 from candidate_checks import dashboard_record, one_append
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -212,14 +213,13 @@ def llm(prompt,search):
         # Non-search elicitation and independent review continue to request
         # JSON mode. Their compatibility is tested by the independent API probe.
         payload["text"]={"format":{"type":"json_object"}}
-    req=urllib.request.Request("https://api.openai.com/v1/responses",
-       data=json.dumps(payload).encode(),method="POST",
-       headers={"Content-Type":"application/json","Authorization":"Bearer "+openai_bearer_token()})
-    try:
-        with urllib.request.urlopen(req,timeout=500) as response:
-            raw=json.load(response)
-    except urllib.error.HTTPError as exc:
-        raise _safe_responses_error(exc, search) from None
+    # Background web research avoids a single multi-minute socket. The durable
+    # request record is written before sending; a lost POST ACK is NEVER retried.
+    # Foreground JSON review/assessment retains its existing mode and strictness.
+    audit_dir = Path(os.getenv("IRAN_OFFLINE_REVIEW_DIR") or ROOT / ".automation-audit")
+    raw = request_response(payload, search=search,
+            token_supplier=openai_bearer_token, audit_dir=audit_dir,
+            http_error_formatter=_safe_responses_error)
     check(raw.get("status")=="completed","OpenAI response incomplete")
     output=raw.get("output",[])
     call_trace = observed_search_calls(output) if search else []
