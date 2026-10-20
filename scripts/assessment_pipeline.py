@@ -26,6 +26,11 @@ IDS=("regional_escalation_90d","regime_end_12m","currency_crisis_12m","external_
 CAPS=(("Physical delivery/blockade",25),("Sanctions/payment channels",15),
       ("Sovereign/counterparty",10),("Oil-price/basis",8),
       ("Illiquidity/enforcement",8),("Political/secondary-sanctions tail",8))
+SOURCE_SCAN_GROUPS=("primary_data","international_media",
+                    "regional_multilingual_media","specialist_investigative",
+                    "think_tanks","economic_humanitarian_academic")
+SOURCE_SCAN_STATUSES=("eligible_reporting_found","searched_no_eligible_evidence",
+                      "inaccessible_or_incomplete")
 
 def check(ok,why):
     if not ok: raise ValueError(why)
@@ -270,6 +275,45 @@ def _syndicated_story_identity(item):
         return None
     headline=re.sub(r"[\W_]+"," ",title.casefold()).strip()
     return (agency,day.strip(),headline) if headline else None
+
+
+def validate_source_coverage_audit(rows, citations):
+    """Validate structural honesty of a model-reported source sweep.
+
+    This checks the six required research classes and cited original links.
+    It cannot prove all searches ran or certify a publisher's credibility.
+    """
+    check(isinstance(rows,list) and len(rows)==len(SOURCE_SCAN_GROUPS),
+          "Missing or incomplete six-class Sunday media and think-tank source sweep")
+    referenced={urlkey(url) for url in citations}
+    seen=set(); normalized=[]
+    for row in rows:
+        check(isinstance(row,dict), "Source coverage row must be an object")
+        category=row.get("category")
+        check(category in SOURCE_SCAN_GROUPS and category not in seen,
+              "Unknown/duplicate research source category")
+        seen.add(category)
+        queries=row.get("queries")
+        check(isinstance(queries,list) and bool(queries)
+              and all(isinstance(x,str) and len(x.strip())>=5 for x in queries),
+              "Source category must disclose attempted searches")
+        outcome=row.get("outcome")
+        check(outcome in SOURCE_SCAN_STATUSES,
+              "Source category lacks honest eligible/none/incomplete result")
+        urls=row.get("original_urls")
+        check(isinstance(urls,list) and len(urls)==len(set(urls))
+              and all(isinstance(u,str) and urlkey(u) is not None
+                      and urlkey(u) in referenced for u in urls),
+              "Coverage source URLs must be real, unique and web-cited")
+        check(outcome!="eligible_reporting_found" or bool(urls),
+              "A category claiming eligible sources needs original cited links")
+        limitations=row.get("limitations")
+        check(isinstance(limitations,str) and len(limitations.strip())>=20,
+              "Coverage limitations and independence notes are required")
+        normalized.append({"category":category,"queries":queries,"outcome":outcome,
+                           "original_urls":urls,"limitations":limitations.strip()})
+    check(seen==set(SOURCE_SCAN_GROUPS), "Missing Sunday research source category")
+    return normalized
 
 
 def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
@@ -636,9 +680,18 @@ original source/event identifier rather than giving it a second new ID.
 Source mirrors, archived details and old publication dates must not be
 presented as new events. Reassess old reporting without double counting it.
 Return ONLY a JSON object with evidence array of 8-22 RELEVANT items and
-coverage_audit array of the six broad research classes (category, searched
-query/outlet examples, outcome, gaps; separate it from evidence).
-Omit unverified search timestamps rather than inventing them.
+coverage_audit array with EXACTLY these six category identifiers:
+primary_data, international_media, regional_multilingual_media,
+specialist_investigative, think_tanks, economic_humanitarian_academic.
+Each coverage row: category, queries (array of real search/outlet examples),
+outcome (eligible_reporting_found / searched_no_eligible_evidence /
+inaccessible_or_incomplete), original_urls (cited original HTTPS URLs or
+empty list), limitations (honest free-text qualification >=20 characters).
+Only list URLs actually found/cited by web search; do not invent searches,
+dates or coverage. Coverage rows describe research attempts and are NOT
+new evidence or proof of comprehensive access. Include the recorded gaps
+in the affirmative and critical source-quality assessment.
+Omit unverified scan timestamps rather than inventing them.
 Each evidence item: event_date YYYY-MM-DD, category, observation, source full HTTPS URL,
 source_title, publisher, reliability (High/Medium-high/Medium/Low),
 affects (array), evidence_status new or carried_forward (with old id if carried),
@@ -848,11 +901,20 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
             if url not in metadata:
                 metadata[url]=metadata_reader(url)
     cutoff=now()
+    # Live source gathering must document broad category coverage before
+    # elicitation. Synthetic test researchers without a coverage field retain
+    # legacy fixture compatibility. This metadata is not a seventh forecast.
+    coverage=(validate_source_coverage_audit(result.get("coverage_audit"),sources)
+              if researcher is llm or "coverage_audit" in result else None)
     evidence=freeze_evidence(result,sources,evidence_history,today,cutoff,metadata)
-    if os.getenv("GITHUB_ACTIONS")=="true":
-        audit=ROOT/".automation-audit";audit.mkdir(exist_ok=True)
-        (audit/"frozen-evidence.json").write_text(json.dumps({"cutoff":cutoff.isoformat(),"metadata":metadata,
-                  "evidence":evidence},ensure_ascii=False,indent=2),encoding="utf-8")
+    audit_dir=_review_audit_dir()
+    if audit_dir is not None:
+        audit_dir.mkdir(parents=True,exist_ok=True)
+        (audit_dir/"frozen-evidence.json").write_text(json.dumps({
+           "cutoff":cutoff.isoformat(),"metadata":metadata,"evidence":evidence,
+           "source_coverage":coverage,
+           "coverage_claim":"model-reported category searches; citation-linked URLs, not proof of exhaustive retrieval"
+        },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     input=ASSESS.format(protocol=json.dumps(history["protocol"]),prior=json.dumps(
        [{"event_id":f["event_id"],"p":f["p"]} for f in previous["forecasts"] if f.get("scored")]),
        evidence=json.dumps(evidence),templates=json.dumps({k:previous[k] for k in ("regional","political","chains","absence_indicators")}))
