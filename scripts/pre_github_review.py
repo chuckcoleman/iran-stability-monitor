@@ -47,6 +47,11 @@ def prepare(out_dir, *, now=None, producer=None, review_finished_at=None):
     day = now or clock()
     require(day.tzinfo is not None and day.weekday() == 6,
             "Prospective Sunday assessment must be prepared on Sunday")
+    # This archived tool emits v1 receipts. Reject modern submissions before
+    # spending money on elicitation or preparing unpublishable handoffs.
+    require(day.date().isoformat() < "2026-10-18",
+            "Legacy version-1 handoff is historical-only; new Sunday assessments "
+            "must use version-3 full-section review receipts")
     root=ROOT.resolve()
     output=Path(out_dir).expanduser().resolve()
     require(output != root and root not in output.parents,
