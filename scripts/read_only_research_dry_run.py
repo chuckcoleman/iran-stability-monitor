@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""Explicit unpublishable LIVE-source + dual-review test (never forecast issuance).
+
+For the actual Sunday forecast pipeline, use the separately governed
+ChatGPT-first process. This diagnostic never elicits scored forecasts, writes
+data/history.json, opens a PR, touches Pages, or posts to Metricool/X.
+It is safe to run on any day, including Tuesdays. For full end-to-end
+Sunday issuance certification the result must say NOT TESTED.
+"""
+import argparse
+import copy
+import datetime as dt
+import hashlib
+import json
+import os
+from pathlib import Path
+import sys
+
+from assessment_pipeline import (
+    ROOT, RESEARCH, check, clock, llm, freeze_evidence,
+    validate_source_coverage_audit, _review_issues,
+)
+from source_metadata import capture_metadata, url_key
+
+
+SOURCE_REVIEW_COMMON = """
+No new web search: inspect the EXACT closed test-only evidence and the SIX
+source-category audit rows supplied below. For every original URL, check
+first-publication time status, citation provenance, independent corroboration,
+reporting versus opinion, shared wire/official claims, and limits of any
+conclusion. Review what the snapshot actually demonstrates. Distinguish
+searched-but-empty from inaccessible. The test is not a Sunday forecast.
+Return ONLY JSON {"approved": boolean, "issues": [
+{"type": "specific issue type", "location": "source ID/coverage category",
+ "reason": "actual actionable defect"}]}.
+Approve only for zero substantive unresolved issues.
+"""
+
+
+def _audit_folder(root, output):
+    root=Path(root).resolve()
+    folder=Path(output).resolve()
+    check(folder != root and root not in folder.parents
+          or folder == root / ".automation-audit",
+          "Nonpublishing audit must be outside checkout or the ignored audit directory")
+    folder.mkdir(parents=True,exist_ok=True)
+    return folder
+
+
+def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
+                       metadata_reader=capture_metadata, now=clock):
+    """Research + two genuine source-only editorial reviews without publication.
+
+    Injecting synthetic researcher/reviewer in tests is always flagged as
+    synthetic. Even genuine API research does not produce a scored assessment.
+    """
+    root=Path(root).resolve()
+    folder=_audit_folder(root, output or root / ".automation-audit")
+    check(os.environ.get("GH_TOKEN") is None and
+          os.environ.get("METRICOOL_API_TOKEN") is None,
+          "Read-only research diagnostic must not hold GitHub write or X tokens")
+    if os.getenv("GITHUB_ACTIONS")=="true":
+        check(os.getenv("GITHUB_EVENT_NAME")=="workflow_dispatch",
+              "Live research diagnostics must be manually invoked, never scheduled")
+    before=(root/"data/history.json").read_bytes()
+    baseline_sha=hashlib.sha256(before).hexdigest()
+    history=json.loads(before)
+    stamp=now()
+    check(stamp.tzinfo is not None, "Test time needs a timezone")
+    day=stamp.date().isoformat()
+    check(day>=history["updates"][-1]["date"], "Research test cannot use past cutoff")
+    saved=[]
+    for u in history["updates"]:
+        saved.extend(u.get("evidence",[]))
+    # Gather real or synthetic source results once; no forecast prompt anywhere.
+    result, citations=researcher(
+        RESEARCH.format(date=day, prior=json.dumps(saved,ensure_ascii=False)), True)
+    check(isinstance(result,dict), "Source model returned no structured evidence")
+    coverage=validate_source_coverage_audit(result.get("coverage_audit"),citations)
+    metadata={}
+    for item in result.get("evidence",[]):
+        if item.get("evidence_status","new") == "new":
+            url=item.get("source")
+            check(url_key(url) is not None and
+                  url_key(url) in {url_key(u) for u in citations},
+                  "No actual cited URL for research-test article")
+            if url not in metadata:
+                metadata[url]=metadata_reader(url)
+    cutoff=now()
+    archive={"evidence": saved}
+    frozen=freeze_evidence(result,citations,archive,day,cutoff,metadata)
+    reviewers={}
+    sample={"evidence":frozen,"coverage":coverage,"cutoff":cutoff.isoformat(),
+            "published_history_sha256":baseline_sha,
+            "mode":"RESEARCH_ONLY_TEST_NO_SCORED_FORECASTS"}
+    canonical=json.dumps(sample,ensure_ascii=False,sort_keys=True,
+                         separators=(",",":"),allow_nan=False)
+    frozen_sha=hashlib.sha256(canonical.encode()).hexdigest()
+    try:
+        for role in ("affirmative","critical"):
+            prompt=("ROLE: "+role.upper()+" SOURCE QUALITY REVIEW. " +
+                    ("Seek verifiable supporting and disconfirming context. "
+                     if role=="affirmative" else
+                     "Adversarially challenge all substantive claims and source gaps. ") +
+                    SOURCE_REVIEW_COMMON + "\nIdentical input SHA-256: " +
+                    frozen_sha + "\nInput: " + canonical)
+            response,_=reviewer(prompt,False)
+            issues=_review_issues(response,role)
+            reviewers[role]={"approved":not bool(issues),"issues":issues,
+                             "completed_at":now().isoformat(),"draft_sha256":frozen_sha}
+        approved=all(x["approved"] for x in reviewers.values())
+        status=("RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE" if approved
+                else "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
+    finally:
+        check((root/"data/history.json").read_bytes()==before,
+              "Source dry-run altered the immutable published history")
+    report={"status":status,"reviewers":reviewers,
+            "research_input_sha256":frozen_sha,
+            "baseline_history_sha256":baseline_sha,
+            "actual_cutoff":cutoff.isoformat(),"source_coverage":coverage,
+            "source_metadata":metadata,"frozen_test_evidence":frozen,
+            "source_citations":sorted(citations),
+            "actual_live_model_used":researcher is llm and reviewer is llm,
+            "mode":"RESEARCH_ONLY_NONPUBLISHING",
+            "prospective_forecasts":"NOT TESTED",
+            "full_15_section_report_review":"NOT TESTED",
+            "Sunday_publication_receipt":"NOT CREATED",
+            "GitHub_PR_or_Pages_or_X":"NOT INVOKED",
+            "limitations":"No Sunday forecasts, actual issuance, dashboard browser render, "
+                          "public deployment or social posting were tested. "
+                          "A model-reported category audit does not prove every query ran."}
+    dest=folder/"research-dry-run.json"
+    dest.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    check((root/"data/history.json").read_bytes()==before,
+          "Source dry-run changed published history after audit")
+    return report
+
+
+def main(argv=None):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir",default=None,
+                        help="External audit output folder (default: ignored .automation-audit)")
+    args=parser.parse_args(argv)
+    summary=research_rehearsal(output=args.output_dir)
+    print("SOURCE-ONLY LIVE TEST (NEVER PUBLISHABLE): "+summary["status"])
+    if not all(v["approved"] for v in summary["reviewers"].values()):
+        raise SystemExit(1)
+
+
+if __name__=="__main__":
+    main()
