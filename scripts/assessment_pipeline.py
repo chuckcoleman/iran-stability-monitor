@@ -589,15 +589,57 @@ consequential claims against independent original reporting or primary evidence
 when possible; otherwise label low/uncertain evidentiary support, and do not
 turn unverified allegations into facts or probability revisions. If nothing
 eligible is found, say so in the research audit and do not invent coverage.
-See SOURCE_WATCHLIST.md; this does not alter frozen Protocol v1.0.
+Also run a BROAD, ADAPTIVE source search from ALL RELEVANT reputable media
+and think-tank categories, NOT just Reuters/AP/Iran International and NOT a
+closed list of approved outlets. Cover these six research classes separately:
+(1) official and primary observational data: IAEA, IMF, World Bank, UN,
+energy/trade/central banks, shipping records, original government documents;
+(2) original global wire and mainstream reporting: Reuters, AP, AFP, BBC,
+Financial Times, Bloomberg, Wall Street Journal, Guardian, Washington Post,
+New York Times, DW, France 24, Nikkei and other independently edited media;
+(3) Persian, Arabic, Gulf, Israeli, Turkish and local media: Iran International,
+BBC Persian, Radio Farda, Al Jazeera, IranWire, Al-Monitor, The National,
+Asharq Al-Awsat and other relevant sources; state outlets are attributed
+claims, not independent proof;
+(4) specialist investigative/energy/shipping/human-rights monitoring:
+Lloyd's List, S&P Global Commodity Insights, Argus, ACLED, Bellingcat,
+qualified vessel trackers and rights monitors where relevant;
+(5) think tanks and regional policy/security institutes: IISS, Chatham House,
+International Crisis Group, CSIS, Carnegie, RUSI, Brookings, RAND, Stimson,
+Atlantic Council, Middle East Institute, SIPRI and geographically/ideologically
+diverse additional institutes (including contrary perspectives);
+(6) macroeconomic, humanitarian, academic and CONTROVERTING evidence:
+independent economic analysts, reputable research reports, primary datasets,
+conflicting measurements and credible stabilizing assessments.
+Follow new credible original source links discovered by topic instead of
+treating examples as exhaustive. Search internal stability, currency/payments,
+food/medicine, energy/Hormuz, Houthi support and regional escalation, and
+check both confirming and disconfirming material. Reports by think tanks
+may provide analysis, hypotheses or scenario estimates: do not misclassify
+them as independent measurements or confirmed events; disclose analytical
+bias, funding/affiliations if material, and the evidence they actually cite.
+Do not count articles republishing the same newswire, official statement or
+another think tank's claims as independent corroboration.
+Prepare a PRE-CUTOFF COVERAGE AUDIT with each of the six classes, actual
+topics/query types, original sources attempted, any relevant original URLs,
+and truthful status: eligible reporting found / searched with no eligible
+new evidence / inaccessible or incomplete. No forced inclusion/citation for
+every outlet or class. Do not invent searches or scan times; the orchestrator
+must record its real cutoff. No finite scan can literally cover every media
+organization, so disclose consequential coverage gaps rather than claim
+universal completeness. See SOURCE_WATCHLIST.md for category and item rules.
+This changes no frozen Protocol v1.0 events or earlier forecasts.
 Prior evidence for persistent carried-forward IDs: {prior}.
 A syndicated Reuters/AP story republished at a second URL with the same original
 report date and headline is NOT an independent new source. Carry forward its
 original source/event identifier rather than giving it a second new ID.
 Source mirrors, archived details and old publication dates must not be
 presented as new events. Reassess old reporting without double counting it.
-Return ONLY a JSON object with evidence array of 8-22 items.
-Each item: event_date YYYY-MM-DD, category, observation, source full HTTPS URL,
+Return ONLY a JSON object with evidence array of 8-22 RELEVANT items and
+coverage_audit array of the six broad research classes (category, searched
+query/outlet examples, outcome, gaps; separate it from evidence).
+Omit unverified search timestamps rather than inventing them.
+Each evidence item: event_date YYYY-MM-DD, category, observation, source full HTTPS URL,
 source_title, publisher, reliability (High/Medium-high/Medium/Low),
 affects (array), evidence_status new or carried_forward (with old id if carried),
 impact_magnitude minor/moderate/major, direction raises/lowers/ambiguous.
