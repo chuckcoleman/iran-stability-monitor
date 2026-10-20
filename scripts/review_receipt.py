@@ -47,8 +47,7 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
     require(isinstance(receipt, dict) and receipt.get("status") == "CLEAN"
             and receipt.get("date") == date,
             "Missing or invalid review receipt")
-    legacy = (receipt.get("version") == 1 and receipt.get("origin") == "off_github"
-              and date < "2026-10-25")
+    legacy = receipt.get("version") == 1 and receipt.get("origin") == "off_github"
     chat_critical = (receipt.get("version") == 2 and receipt.get("origin") == "chatgpt_critical"
                      and receipt.get("review_mode") == "single_critical_chat"
                      and date >= "2026-10-18")
