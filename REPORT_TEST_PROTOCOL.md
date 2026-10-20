@@ -61,6 +61,22 @@ silently promoted to PASS. Known material FAIL blocks releasing the item.
    Sunday assessments additionally require a version-3 machine
    section-review matrix and matching SHA-256 report/receipt digest.
 
+## Distinct nonpublishing rehearsal results
+
+The manual `research-dry-run` diagnostic tests actual Web Search
+API calls and their cited source URLs, publication metadata, a six-class
+source-coverage ledger and two alternating source-quality reviews.
+Keep the API-provided search-call trace, the reviewed frozen source
+digest and each actual reviewer decision. A simulated model response
+is NOT a genuine API call, and a model's claimed search query that was
+not exposed by the tool is NOT verified as executed.
+
+The research-only run has NO future Sunday forecast, issued record,
+fifteen-section Sunday report approval, visual browser verification,
+GitHub PR, Pages deployment or X posting. These sections must appear
+as NOT TESTED or NOT INVOKED in its final test report; a successful
+research diagnostic never changes the publication state.
+
 ## Report disposition
 
 Report each section and its negative-test result, then distinguish:

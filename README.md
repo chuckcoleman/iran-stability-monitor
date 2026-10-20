@@ -100,6 +100,30 @@ public/social copy before any optional X posting. These operational
 review checks do not change frozen forecasting Protocol v1.0, historical
 assessments or source cutoff rules. See [REVIEW_POLICY.md](REVIEW_POLICY.md).
 
+## Explicit nonpublishing source-research rehearsal
+
+The separate manual GitHub Actions diagnostic has a
+`research-dry-run` option. It uses the configured short-lived
+OpenAI workload identity to **test actual research web-search calls**,
+the six-category audit, independently attempted article metadata, and
+sequential affirmative/critical SOURCE-QUALITY assessments. It retains
+real tool-call metadata and URL citations so self-reported model
+coverage alone cannot authorize a clean test; source authenticity and
+unavailable original release times remain explicitly qualified.
+
+The diagnostic's GitHub permissions are read-only; it receives no
+GitHub App writer or Metricool credential. It creates **no forecasts
+or assessment history append**, GitHub PR, public website deployment
+or X post, even when the test passes. It can run on weekdays without
+faking future Sunday dates. A passing research-only result is NOT
+end-to-end Sunday forecast certification and must be labeled
+`NOT TESTED` for forecasts, live 15-section approvals, browser
+rendering, publication and social messaging.
+
+Use `scripts/read_only_research_dry_run.py` for the diagnostic;
+see [AUTOMATION.md](AUTOMATION.md) for its exact limitations.
+The separately retired GitHub-hosted assessment writer remains disabled.
+
 ## Sunday assessment automation (ChatGPT scheduled task)
 
 **No separate computer or local OpenAI API key is required for the configured
