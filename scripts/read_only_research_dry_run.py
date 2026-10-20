@@ -107,7 +107,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "limitations":"Uncited or unsupported URLs are kept as flagged claims, "
                           "never silently dropped, rewritten or promoted to evidence."}
         (folder/"research-dry-run.json").write_text(
-            json.dumps(blocked,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+            json.dumps(blocked,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         check((root/"data/history.json").read_bytes()==before,
               "Flagged source dry-run changed published history")
         require_supported_citations(reconciliation)
