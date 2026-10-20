@@ -122,6 +122,39 @@ def apply_resolutions(research, initial, decision, citations, calls):
             row['limitations']=str(row.get('limitations',''))+' '+' '.join(notes)
         if not urls and row.get('outcome')=='eligible_reporting_found':
             row['outcome']='inaccessible_or_incomplete'
+    # Source-quality annotations are a separate substantive claim; after a
+    # cited URL is explicitly replaced, its old characterization MUST NOT
+    # silently become proof about the newly located article. Reclassify
+    # replaced URLs conservatively as unverified for later review, and
+    # preserve original resolution decisions in the audit.
+    if "source_quality" in revised:
+        qualified={}
+        for row in revised["source_quality"]:
+            old=row.get("url")
+            entry=by_url.get(old)
+            if entry is not None and entry["action"]=="withdrawn":
+                continue
+            item=copy.deepcopy(row)
+            if entry is not None and entry["action"]=="replaced":
+                item["url"]=entry["replacement_url"]
+                item["kind"]="unverified"
+                item["origin"]="unknown"
+                item["corroborating_urls"]=[]
+                item["assessment"]=(
+                    "A corrective search found a citation-linked replacement, "
+                    "but its full source claims have not been independently verified.")
+                item["limitations"]=(
+                    "Original source was unsupported and required a replacement; "
+                    "the newly cited article's factual support and publication clock "
+                    "remain subject to explicit review.")
+            key=url_key(item.get("url"))
+            if key not in qualified:
+                qualified[key]=item
+            elif entry is not None and entry["action"]=="replaced":
+                qualified[key]["limitations"]+=(
+                    " A separate unsupported claim was merged into this link "
+                    "during audited citation correction; verify each claim explicitly.")
+        revised["source_quality"]=[qualified[k] for k in sorted(qualified)]
     # No metadata, freeze, reviewer or forecast can run before this exact gate.
     reconciliation=reconcile_source_citations(revised,citations,calls)
     require_supported_citations(reconciliation)
