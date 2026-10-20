@@ -971,6 +971,13 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         check(url is not None and url in {urlkey(x) for x in sources},
               "Source-quality audit includes URL not cited by research")
         metadata[url]=metadata_reader(url)
+    # Preserve the original URL lookup for freeze_evidence(), which retains
+    # the exact historic evidence link rather than rewriting it.
+    for item in result.get("evidence",[]):
+        if item.get("evidence_status","new")=="new":
+            key=url_key(item.get("source"))
+            if key in metadata:
+                metadata[item["source"]]=metadata[key]
     cutoff=now()
     quality=source_quality_audit(result,metadata,strict=(researcher is llm),
                                  cutoff=cutoff)
