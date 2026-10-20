@@ -109,10 +109,10 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
                 stamp=dt.datetime.fromisoformat(public_time.replace("Z","+00:00"))
                 _check(stamp.tzinfo is not None and stamp.utcoffset() is not None,
                        "Source publication metadata has no timezone")
-                if cutoff is not None:
-                    _check(stamp<=cutoff,"Source metadata publication time after research cutoff")
             except (ValueError,TypeError,AttributeError):
                 raise ValueError("Malformed precise source publication metadata") from None
+            if cutoff is not None:
+                _check(stamp<=cutoff,"Source metadata publication time after research cutoff")
         retrieval=status.get("retrieval_status")
         access=("source_metadata_captured" if retrieval=="retrieved"
                 else "source_unavailable" if retrieval and retrieval!="retrieved"
