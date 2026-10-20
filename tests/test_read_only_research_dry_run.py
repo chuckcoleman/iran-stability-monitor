@@ -14,7 +14,8 @@ sys.path.insert(0,str(ROOT/"scripts"))
 from automation_fixtures import fixture
 from assessment_pipeline import SOURCE_SCAN_GROUPS
 from read_only_research_dry_run import research_rehearsal
-from source_search_trace import observed_search_calls, verify_search_trace
+from source_search_trace import (observed_search_calls, verify_search_trace,
+                                 verify_claimed_source_links, load_matching_search_trace)
 
 
 class SearchToolTraceTests(unittest.TestCase):
@@ -37,6 +38,25 @@ class SearchToolTraceTests(unittest.TestCase):
         result=observed_search_calls([{"type":"message","content":[]}])
         with self.assertRaisesRegex(ValueError,"execution not evidenced"):
             verify_search_trace(result)
+
+    def test_uncorroborated_coverage_url_not_in_actual_tool_sources_rejected(self):
+        calls=observed_search_calls([{"type":"web_search_call",
+                 "action":{"sources":[{"url":"https://www.reuters.com/world/iran-original",
+                                       "title":"Original link"}]}}])
+        rows=[{"original_urls":["https://www.iranintl.com/en/202610209999"]}]
+        with self.assertRaisesRegex(ValueError,"never exposed"):
+            verify_claimed_source_links(rows,calls)
+
+    def test_exact_research_result_must_match_logged_tool_response(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/"response-1.json"
+            calls=observed_search_calls([{"type":"web_search_call",
+                     "action":{"sources":[{"url":"https://www.reuters.com/world/iran-original"}]}}])
+            path.write_text(json.dumps({"search":True,"result":{"evidence":[1]},
+                                         "tool_search_calls":calls}))
+            self.assertEqual(load_matching_search_trace(tmp,{"evidence":[1]}),calls)
+            with self.assertRaisesRegex(ValueError,"No actual web-search tool trace"):
+                load_matching_search_trace(tmp,{"evidence":[2]})
 
     def test_missing_exposed_queries_is_not_invented(self):
         calls=observed_search_calls([
