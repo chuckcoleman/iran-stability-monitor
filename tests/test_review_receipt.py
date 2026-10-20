@@ -3,6 +3,7 @@ import copy
 import datetime as dt
 import json
 import os
+import shutil
 from pathlib import Path
 import sys
 import tempfile
@@ -177,6 +178,15 @@ class ReceiptTests(unittest.TestCase):
 
 
 class OfflinePreparationTests(ReceiptTests):
+    def _historical_checkout(self, path):
+        """Isolate the October 4 baseline for October 11 legacy handoffs."""
+        (path/"data").mkdir(parents=True)
+        (path/"schema").mkdir()
+        (path/"data/history.json").write_text(
+            json.dumps(self.history,ensure_ascii=False)+"\n", encoding="utf-8")
+        shutil.copyfile(ROOT/"schema/history.schema.json",
+                        path/"schema/history.schema.json")
+
     def test_offline_review_refuses_github_actions_or_missing_local_key(self):
         with patch.dict(os.environ,{"GITHUB_ACTIONS":"true",
                                     "OPENAI_API_KEY":"local-fake"},clear=True):
@@ -189,13 +199,16 @@ class OfflinePreparationTests(ReceiptTests):
     def test_prepare_creates_only_external_reviewed_handoff(self):
         with tempfile.TemporaryDirectory() as tmp:
             target=Path(tmp)/"handoff"
+            checkout=Path(tmp)/"historical-checkout"
+            self._historical_checkout(checkout)
             def synthetic_producer(original,reviewer=None):
                 self.assertEqual(original,self.history)
                 assert reviewer is not None
                 Path(os.environ["IRAN_OFFLINE_REVIEW_DIR"]).joinpath(
                     "review-approval.json").write_text(json.dumps(self.approval))
                 return copy.deepcopy(self.candidate)
-            with patch.dict(os.environ,{"OPENAI_API_KEY":"synthetic-unused"},clear=True):
+            with patch.dict(os.environ,{"OPENAI_API_KEY":"synthetic-unused"},clear=True), \
+                 patch.object(prepare,"ROOT",checkout):
                 output=prepare.prepare(
                     target,now=self.opened,producer=synthetic_producer,
                     review_finished_at=self.opened+dt.timedelta(seconds=8))
@@ -226,9 +239,12 @@ class OfflinePreparationTests(ReceiptTests):
     def test_offline_handoff_is_rejected_without_clean_receipt(self):
         with tempfile.TemporaryDirectory() as tmp:
             target=Path(tmp)/"handoff"
+            checkout=Path(tmp)/"historical-checkout"
+            self._historical_checkout(checkout)
             def fake(original,reviewer=None):
                 return copy.deepcopy(self.candidate)
-            with patch.dict(os.environ,{"OPENAI_API_KEY":"synthetic-unused"},clear=True):
+            with patch.dict(os.environ,{"OPENAI_API_KEY":"synthetic-unused"},clear=True), \
+                 patch.object(prepare,"ROOT",checkout):
                 with self.assertRaisesRegex(RuntimeError,
                                             "Both external reviews have not"):
                     prepare.prepare(target,now=self.opened,producer=fake,
