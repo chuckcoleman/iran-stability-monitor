@@ -68,10 +68,10 @@ class ReportCoverageTests(unittest.TestCase):
             "items": items,
             "affirmative": {
               "draft_sha256": h, "approved": True, "issues": [],
-              "test_note": "Synthetic supportive review tests underlying source and arithmetic."},
+              "test_note": "Synthetic supportive review tests source and arithmetic in " + name},
             "critical": {
               "draft_sha256": h, "approved": True, "issues": [],
-              "test_note": "Synthetic adversarial review challenges competing explanations."}
+              "test_note": "Synthetic adversarial review challenges other explanations for " + name}
           } for name, items in expected.items()
         }
         self.assertTrue(validate_report_section_reviews(reviews,self.record,h,
@@ -86,9 +86,9 @@ class ReportCoverageTests(unittest.TestCase):
         reviews = {
           name: {"items": items,
                  "affirmative": {"draft_sha256":h,"approved":True,"issues":[],
-                                 "test_note":"Positive synthetic review examined every named report item."},
+                                 "test_note":"Positive synthetic review examined every named item in " + name},
                  "critical": {"draft_sha256":h,"approved":True,"issues":[],
-                              "test_note":"Negative synthetic test actively tried to falsify the claim."}}
+                              "test_note":"Negative synthetic test tried to falsify every item in " + name}}
           for name,items in report_inventory(self.record).items()
         }
         bad=reviews["houthi_support_and_independent_capability"]["critical"]
