@@ -3,6 +3,37 @@
 This is a **prospective operational research instruction**, not an amendment
 to frozen forecasting Protocol v1.0 or a revision of historical assessments.
 
+## Mandatory original-source quality audit, before forecast elicitation
+
+Every DISTINCT original public-HTTPS URL selected in the six source
+categories or as NEW evidence must receive one explicit assessment:
+`kind` (direct observation, attributed assertion, analytical opinion,
+unverified report, or background only), `origin` (original reporting,
+syndicated/reprint, official/advocacy claim, secondary analysis, unknown),
+specific assessment and limitations, and claimed corroborating original
+URLs (empty when none can be independently established).
+
+The source client attempts first-publication metadata extraction for
+**every URL**, including think-tank/background references not scored as
+new events. An inaccessible page, no timestamp, partial snippet, wire
+mirror or think-tank estimate is identified as such; never transform it
+into independently verified data merely because its URL was cited. The
+`source-quality-audit.json` records each URL's full role, exposure and
+timestamp limitations and the original editor's analytical classification.
+Publisher metadata timestamps are *publisher-supplied*, not externally
+authenticated release clocks. Keep historical carried-forward evidence
+immutable; do not invent retrospective source-publication times.
+A finding of an Houthi strike does not by itself demonstrate new Iranian
+material or technical resupply.
+
+The two alternating reviewers must assess **every URL separately**,
+record a substantive finding and either accept it as explicitly qualified
+support/background or reject its insufficient evidence. A missing row,
+unsupported independent-corroboration claim, unqualified material inference
+or a rejected source blocks a clean review or forecast publication. URL
+integrity, model assessments and the existence of the audit are not
+themselves proof of claim truth.
+
 ## Mandatory URL-level citation reconciliation
 
 Every newly selected media, original research, and think-tank link must
