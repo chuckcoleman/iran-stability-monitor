@@ -109,6 +109,7 @@ def validate_report_section_reviews(section_reviews, record, draft_hash,
     if not isinstance(section_reviews, dict) or set(section_reviews) != set(REPORT_SECTIONS):
         raise ValueError("Every report section needs both review perspectives")
     failed_by_role = {"affirmative": 0, "critical": 0}
+    notes_by_role = {"affirmative": set(), "critical": set()}
     for section in REPORT_SECTIONS:
         item = section_reviews[section]
         if not isinstance(item, dict) or set(item) != {"items", "affirmative", "critical"}:
@@ -135,6 +136,10 @@ def validate_report_section_reviews(section_reviews, record, draft_hash,
                 raise ValueError(role + " report section test incomplete: " + section)
             if approved != (len(issues) == 0):
                 raise ValueError(role + " report section verdict inconsistent: " + section)
+            note_key = note.strip().casefold()
+            if note_key in notes_by_role[role]:
+                raise ValueError(role + " report review repeated identical generic test notes")
+            notes_by_role[role].add(note_key)
             if not approved:
                 failed_by_role[role] += 1
     if role_approvals is not None:
