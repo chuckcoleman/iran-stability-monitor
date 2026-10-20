@@ -981,7 +981,7 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
     cutoff=now()
     quality=source_quality_audit(result,metadata,strict=(researcher is llm),
                                  cutoff=cutoff)
-    if audit_dir is not None:
+    if audit_dir is not None and (researcher is llm or "source_quality" in result):
         save_quality_audit(audit_dir,quality)
     # Live source gathering must document broad category coverage before
     # elicitation. Synthetic test researchers without a coverage field retain
