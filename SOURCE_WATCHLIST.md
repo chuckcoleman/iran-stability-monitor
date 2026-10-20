@@ -3,6 +3,20 @@
 This is a **prospective operational research instruction**, not an amendment
 to frozen forecasting Protocol v1.0 or a revision of historical assessments.
 
+## Mandatory URL-level citation reconciliation
+
+Every newly selected media, original research, and think-tank link must
+have the exact original public HTTPS URL visible in the API's actual
+search results and citation metadata. Source provenance is tracked by
+both the six-category sweep and the new evidence ledger, without
+accepting look-alike article IDs or unverified alternative publisher
+URLs. Record unsupported claims **unchanged** with their URL and reason
+in the private citation-reconciliation audit; do not silently remove,
+rewrite, or reclassify them as verified. A flagged claim blocks the
+closed source set, any new forecast or publication. A read-only
+diagnostic may end with a flagged failure report, retaining all
+questionable links for subsequent independent checking.
+
 ## Comprehensive media and think-tank discovery (controlling expansion)
 
 **Scope:** Search broadly across *all relevant, accessible, credible original
