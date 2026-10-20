@@ -21,6 +21,7 @@ from assessment_pipeline import (
     validate_source_coverage_audit, _review_issues,
 )
 from source_metadata import capture_metadata, url_key
+from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 
 
 SOURCE_REVIEW_COMMON = """
@@ -73,10 +74,22 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     for u in history["updates"]:
         saved.extend(u.get("evidence",[]))
     # Gather real or synthetic source results once; no forecast prompt anywhere.
-    result, citations=researcher(
-        RESEARCH.format(date=day, prior=json.dumps(saved,ensure_ascii=False)), True)
+    previous_audit=os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
+    os.environ["IRAN_OFFLINE_REVIEW_DIR"]=str(folder)
+    try:
+        result, citations=researcher(
+            RESEARCH.format(date=day, prior=json.dumps(saved,ensure_ascii=False)), True)
+    finally:
+        if previous_audit is None:
+            os.environ.pop("IRAN_OFFLINE_REVIEW_DIR",None)
+        else:
+            os.environ["IRAN_OFFLINE_REVIEW_DIR"]=previous_audit
     check(isinstance(result,dict), "Source model returned no structured evidence")
     coverage=validate_source_coverage_audit(result.get("coverage_audit"),citations)
+    actual_calls=[]
+    if researcher is llm:
+        actual_calls=load_matching_search_trace(folder,result)
+        verify_claimed_source_links(coverage,actual_calls)
     metadata={}
     for item in result.get("evidence",[]):
         if item.get("evidence_status","new") == "new":
@@ -104,7 +117,15 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                      "Adversarially challenge all substantive claims and source gaps. ") +
                     SOURCE_REVIEW_COMMON + "\nIdentical input SHA-256: " +
                     frozen_sha + "\nInput: " + canonical)
-            response,_=reviewer(prompt,False)
+            previous_audit=os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
+            os.environ["IRAN_OFFLINE_REVIEW_DIR"]=str(folder)
+            try:
+                response,_=reviewer(prompt,False)
+            finally:
+                if previous_audit is None:
+                    os.environ.pop("IRAN_OFFLINE_REVIEW_DIR",None)
+                else:
+                    os.environ["IRAN_OFFLINE_REVIEW_DIR"]=previous_audit
             issues=_review_issues(response,role)
             reviewers[role]={"approved":not bool(issues),"issues":issues,
                              "completed_at":now().isoformat(),"draft_sha256":frozen_sha}
@@ -120,6 +141,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "actual_cutoff":cutoff.isoformat(),"source_coverage":coverage,
             "source_metadata":metadata,"frozen_test_evidence":frozen,
             "source_citations":sorted(citations),
+            "actual_search_tool_calls":actual_calls,
             "actual_live_model_used":researcher is llm and reviewer is llm,
             "mode":"RESEARCH_ONLY_NONPUBLISHING",
             "prospective_forecasts":"NOT TESTED",
