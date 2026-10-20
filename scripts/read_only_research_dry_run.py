@@ -21,6 +21,7 @@ from assessment_pipeline import (
     validate_source_coverage_audit, _review_issues,
 )
 from source_metadata import capture_metadata, url_key
+from source_citation_resolution import resolve_source_citations
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 from source_citation_reconciliation import (
     reconcile_source_citations, save_reconciliation, require_supported_citations)
@@ -90,6 +91,8 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     actual_calls=None
     if researcher is llm:
         actual_calls=load_matching_search_trace(folder,result)
+        result,citations,actual_calls=resolve_source_citations(
+            result,citations,actual_calls,researcher=researcher,audit_dir=folder)
     reconciliation=reconcile_source_citations(result,citations,actual_calls)
     save_reconciliation(folder,reconciliation)
     if reconciliation["unsupported"]:
@@ -196,3 +199,4 @@ def main(argv=None):
 
 if __name__=="__main__":
     main()
+

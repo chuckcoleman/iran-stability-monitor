@@ -24,6 +24,7 @@ from responses_transport import request_response
 from source_citation_reconciliation import (
     reconcile_source_citations, save_reconciliation, require_supported_citations)
 from candidate_checks import dashboard_record, one_append
+from source_citation_resolution import resolve_source_citations
 
 ROOT=Path(__file__).resolve().parent.parent
 EST=ZoneInfo("America/New_York")
@@ -623,7 +624,10 @@ def assemble(history,assessment,evidence,cutoff,opened,issued):
     dashboard_record(u,prev)
     return u
 
-RESEARCH="""Today (Eastern) is {date}. Search the LIVE web for the newest publicly available Iran
+RESEARCH="""Copy source URLs verbatim from actual web-search tool results. Never reconstruct
+article slugs or infer URLs from headlines or IDs. If a source cannot be found,
+state the coverage limitation rather than supplying a guessed link.
+Today (Eastern) is {date}. Search the LIVE web for the newest publicly available Iran
 stability reporting. Gather a balanced, evidence-based ledger from Reuters, AP, primary
 sources, other independent journalists and experts. Include Hormuz, sanctions,
 FX, external settlement, food/medicine, energy, protests, elite/coercive reliability,
@@ -913,6 +917,8 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         check(audit_dir is not None,
               "Live source research lacks persistent web-search audit directory")
         search_calls=load_matching_search_trace(audit_dir,result)
+        result,sources,search_calls=resolve_source_citations(
+            result,sources,search_calls,researcher=researcher,audit_dir=audit_dir)
     if researcher is llm or "coverage_audit" in result:
         reconciliation=reconcile_source_citations(result,sources,search_calls)
         if audit_dir is not None:
@@ -1095,3 +1101,4 @@ def main():
 
 if __name__=="__main__":
     main()
+

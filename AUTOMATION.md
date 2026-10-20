@@ -843,3 +843,29 @@ of automated geopolitical judgments solely from schema tests or model review.
 
 Methodology proposals belong only in the non-operative v1.1 research register; this
 installation does not activate or amend that register.
+
+
+### Explicit pre-freeze citation resolution (20 October 2026)
+
+Live research now copies source URLs verbatim from actual tool output. When the
+initial citation reconciliation flags unsupported URLs, both the off-GitHub
+assessment path and the nonpublishing diagnostic permit **one** corrective live
+search before metadata retrieval, evidence freeze, forecasting, or review.
+Every flagged URL needs an explicit `verified`, `replaced`, or `withdrawn`
+decision with a substantive reason. A replacement must have actual cited search
+provenance and provide revised source-supported evidence for every affected
+item. Withdrawal is recorded as a coverage limitation; a category losing its
+only eligible link becomes incomplete. Unsupported new evidence cannot be
+relabeled as carried-forward evidence.
+
+`citation-resolution-initial.json` preserves the rejected research and initial
+flags. `citation-resolution.json` preserves the corrective decisions, actual
+search provenance, original/revised hashes, and outcome. Original API-response
+records are retained. The final exact-link reconciliation and every subsequent
+coverage, metadata, evidence, review, and publication gate still apply. Missing
+trace evidence, an unresolved link, malformed decisions, or a service failure
+stops the run; there is no unlimited retry and no automatic URL alias matching.
+This URL-level repair does not certify article truth or authorize publication.
+The diagnostic remains nonpublishing; no forecast history or site data is edited
+by this repair. Live effectiveness still requires a new `research-dry-run` on
+the repaired revision.
