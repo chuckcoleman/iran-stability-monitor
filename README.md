@@ -7,6 +7,7 @@ Public, timestamped scenario estimates and early-warning indicators for Iran.
 - `data/history.json` — machine-readable, append-only forecast history
 - `about.html` — definitions, evidence classes, source and revision policy
 - `SOURCE_WATCHLIST.md` — prospective weekly news-source scan and corroboration guidance
+- `REPORT_TEST_PROTOCOL.md` — reusable affirmative–critical tests for every report and test artifact
 - `special-reports.html` — longer event-driven analyses
 - `protocol-v1.html` — frozen prospective forecasting protocol
 - `history.html` — full immutable forecast history
