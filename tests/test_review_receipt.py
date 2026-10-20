@@ -110,6 +110,62 @@ class ReceiptTests(unittest.TestCase):
                 result=receipt.verify_repository_change("base",root,now=self.after)
                 self.assertIn("verified",result)
 
+    def test_legacy_v1_clean_receipt_rejected_for_october18_and_all_future_dates(self):
+        # Genuine-looking exact hashes and two clean old-format approvals must
+        # NEVER avoid the v3 fifteen-section mandate after its effective date.
+        archive=json.loads((ROOT/"data/history.json").read_text(encoding="utf-8"))
+        oct18_index=next(i for i,row in enumerate(archive["updates"])
+                         if row["date"]=="2026-10-18")
+        for baseline in (archive["updates"][:oct18_index], archive["updates"]):
+            original=copy.deepcopy(archive)
+            original["updates"]=copy.deepcopy(baseline)
+            history,analysis,observations,opened=fixture(history=original)
+            date=opened.date().isoformat()
+            with self.subTest(assessment_date=date):
+                self.assertGreaterEqual(date,"2026-10-18")
+                cutoff=opened-dt.timedelta(seconds=10)
+                frozen=pipeline.freeze_evidence(
+                    {"evidence":observations},
+                    {e["source"] for e in observations},
+                    history["updates"][-1], date, cutoff)
+                candidate=copy.deepcopy(history)
+                candidate["updates"].append(pipeline.assemble(
+                    history,analysis,frozen,cutoff,opened,
+                    opened+dt.timedelta(seconds=1)))
+                locked=copy.deepcopy(analysis["forecasts"])
+                sha="d"*64
+                old_receipt={
+                    "version":1,"origin":"off_github","status":"CLEAN",
+                    "date":date,"baseline_sha256":receipt.digest(history),
+                    "candidate_sha256":receipt.digest(candidate),
+                    "record_sha256":receipt.digest(candidate["updates"][-1]),
+                    "review_completed_at":(opened+dt.timedelta(seconds=8)).isoformat(),
+                    "approval":{
+                        "status":"CLEAN","round":1,"draft_sha256":sha,
+                        "forecast_sha256":receipt.digest(locked),
+                        "locked_forecasts":locked,
+                        "affirmative":{"approved":True,"issues":[],"draft_sha256":sha},
+                        "critical":{"approved":True,"issues":[],"draft_sha256":sha}}}
+                with self.assertRaisesRegex(ValueError,"Unknown or unauthorized review policy"):
+                    receipt.checked_receipt(
+                        history,candidate,old_receipt,
+                        now=opened+dt.timedelta(seconds=12))
+                # Exercise the actual PR validator entrypoint as well as the
+                # in-memory guard; an exact legacy receipt must not pass CI.
+                with tempfile.TemporaryDirectory() as tmp:
+                    root=Path(tmp)
+                    (root/"data/review-receipts").mkdir(parents=True)
+                    (root/"data/history.json").write_text(json.dumps(candidate))
+                    (root/"data/review-receipts"/(date+".json")).write_text(
+                        json.dumps(old_receipt))
+                    with patch.object(
+                        receipt.subprocess,"check_output",
+                        return_value=json.dumps(history).encode()):
+                        with self.assertRaisesRegex(
+                            ValueError,"Unknown or unauthorized review policy"):
+                            receipt.verify_repository_change(
+                                "base",root,now=opened+dt.timedelta(seconds=12))
+
     def test_code_only_change_does_not_require_receipt(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);(root/"data").mkdir()
@@ -152,6 +208,20 @@ class OfflinePreparationTests(ReceiptTests):
             self.assertEqual(json.loads((target/"data/history.json").read_text()),
                              self.candidate)
             self.assertNotIn("GH_TOKEN",os.environ)
+
+    def test_legacy_external_writer_rejects_future_before_any_model_call(self):
+        current,_,_,opened=fixture()
+        self.assertGreaterEqual(opened.date().isoformat(),"2026-10-25")
+        with tempfile.TemporaryDirectory() as tmp:
+            output=Path(tmp)/"should-not-exist"
+            with patch.dict(os.environ,{"OPENAI_API_KEY":"synthetic-unused"},
+                            clear=True):
+                with self.assertRaisesRegex(RuntimeError,"historical-only"):
+                    prepare.prepare(
+                        output, now=opened,
+                        producer=lambda history,reviewer=None:
+                            self.fail("Legacy producer must not be invoked"))
+            self.assertFalse(output.exists())
 
     def test_offline_handoff_is_rejected_without_clean_receipt(self):
         with tempfile.TemporaryDirectory() as tmp:
