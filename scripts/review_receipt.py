@@ -14,6 +14,7 @@ import subprocess
 from zoneinfo import ZoneInfo
 
 from candidate_checks import one_append
+from report_section_review import (REPORT_SECTIONS, validate_report_section_reviews)
 
 ROOT = Path(__file__).resolve().parent.parent
 HISTORY = ROOT / "data/history.json"
@@ -103,6 +104,13 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
                         role + " review report lacks an exact same-draft clean verdict")
             require("Both review perspectives are from one ChatGPT session" in report_text,
                     "Chat review provenance absent in report")
+            section_sha = digest(approval["rounds"][-1].get("section_reviews"))
+            require(receipt.get("report_section_review_sha256") == section_sha
+                    and "Section review matrix SHA-256: " + section_sha in report_text,
+                    "Full report section-review matrix is absent or unbound")
+            for name in REPORT_SECTIONS:
+                require("### " + name in report_text,
+                        "Full report lacks the " + name + " review section")
     for role in (("affirmative", "critical") if legacy or alternating else ("critical",)):
         decision = approval.get(role)
         require(isinstance(decision, dict)
@@ -148,6 +156,11 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
             critical_time = parsed_time(critical.get("completed_at"))
             require(validation_time <= affirmative_time < critical_time,
                     "Required order: validate, affirmative, critical")
+            validate_report_section_reviews(
+                item.get("section_reviews"), reviewed_record, round_hash,
+                final_round=(index == len(rounds) - 1),
+                role_approvals={"affirmative": affirmative.get("approved"),
+                                "critical": critical.get("approved")})
             for role, decision in (("affirmative", affirmative), ("critical", critical)):
                 require(decision.get("draft_sha256") == round_hash
                         and type(decision.get("approved")) is bool
