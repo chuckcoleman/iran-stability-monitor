@@ -22,6 +22,8 @@ from assessment_pipeline import (
 )
 from source_metadata import capture_metadata, url_key
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
+from source_citation_reconciliation import (
+    reconcile_source_citations, save_reconciliation, require_supported_citations)
 
 
 SOURCE_REVIEW_COMMON = """
@@ -85,10 +87,32 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         else:
             os.environ["IRAN_OFFLINE_REVIEW_DIR"]=previous_audit
     check(isinstance(result,dict), "Source model returned no structured evidence")
-    coverage=validate_source_coverage_audit(result.get("coverage_audit"),citations)
-    actual_calls=[]
+    actual_calls=None
     if researcher is llm:
         actual_calls=load_matching_search_trace(folder,result)
+    reconciliation=reconcile_source_citations(result,citations,actual_calls)
+    save_reconciliation(folder,reconciliation)
+    if reconciliation["unsupported"]:
+        # Preserve ALL claimed URLs and precisely why they cannot be admitted.
+        # This is a rejected test-only diagnostic, NOT reviewed evidence.
+        blocked={
+            "status":"UNSUPPORTED_CITATIONS_FLAGGED_NOT_PUBLISHABLE",
+            "source_citation_reconciliation":reconciliation,
+            "baseline_history_sha256":baseline_sha,
+            "prospective_forecasts":"NOT TESTED",
+            "affirmative_review":"NOT REACHED; PREFREEZE REJECTED",
+            "critical_review":"NOT REACHED; PREFREEZE REJECTED",
+            "freeze_evidence":"BLOCKED",
+            "GitHub_PR_or_Pages_or_X":"NOT INVOKED",
+            "limitations":"Uncited or unsupported URLs are kept as flagged claims, "
+                          "never silently dropped, rewritten or promoted to evidence."}
+        (folder/"research-dry-run.json").write_text(
+            json.dumps(blocked,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+        check((root/"data/history.json").read_bytes()==before,
+              "Flagged source dry-run changed published history")
+        require_supported_citations(reconciliation)
+    coverage=validate_source_coverage_audit(result.get("coverage_audit"),citations)
+    if researcher is llm:
         verify_claimed_source_links(coverage,actual_calls)
     metadata={}
     for item in result.get("evidence",[]):
@@ -136,12 +160,13 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         check((root/"data/history.json").read_bytes()==before,
               "Source dry-run altered the immutable published history")
     report={"status":status,"reviewers":reviewers,
+            "source_citation_reconciliation":reconciliation,
             "research_input_sha256":frozen_sha,
             "baseline_history_sha256":baseline_sha,
             "actual_cutoff":cutoff.isoformat(),"source_coverage":coverage,
             "source_metadata":metadata,"frozen_test_evidence":frozen,
             "source_citations":sorted(citations),
-            "actual_search_tool_calls":actual_calls,
+            "actual_search_tool_calls":actual_calls or [],
             "actual_live_model_used":researcher is llm and reviewer is llm,
             "mode":"RESEARCH_ONLY_NONPUBLISHING",
             "prospective_forecasts":"NOT TESTED",
