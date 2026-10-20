@@ -3,6 +3,102 @@
 This is a **prospective operational research instruction**, not an amendment
 to frozen forecasting Protocol v1.0 or a revision of historical assessments.
 
+## Comprehensive media and think-tank discovery (controlling expansion)
+
+**Scope:** Search broadly across *all relevant, accessible, credible original
+media and policy/academic research*, not a fixed whitelist of a few wire
+services. It is impossible to literally examine every reputable outlet in
+the world each week, so use **adaptive, topic-specific discovery plus a
+documented cross-category coverage sweep**, starting with the examples below
+and adding credible emerging sources. Names are **starting points, not
+blanket endorsements**, and no organization is automatically mandatory to
+cite. Maintain the named Iran International scan below.
+
+### Source categories to scan every Sunday
+
+1. **Official/primary evidence and direct observations:** government
+   ministries and central banks (including Iranian, Gulf, US and European
+   institutions); the IAEA; IMF, World Bank, BIS, UN agencies and UNCTAD;
+   IEA, EIA, OPEC, customs/trade and shipping authorities; primary maritime
+   vessel movement or energy-production datasets; contemporaneous
+   legislation, company filings, satellite imagery, and independently
+   documented eyewitness materials. Record institutional incentives and
+   measurement limitations; an official assertion is not automatically
+   factual corroboration.
+2. **International news and original wire reporting:** Reuters, AP and AFP;
+   BBC, Financial Times, Bloomberg, Wall Street Journal, New York Times,
+   Washington Post, The Guardian, The Economist, CNN, DW, France 24,
+   NPR, Nikkei and additional professionally edited outlets discovered
+   by topical searching. Separate original reporting from syndicated
+   copies, rewrites and opinion pieces.
+3. **Regional, Persian-language and affected-country media:** Iran
+   International, BBC Persian, Radio Farda/RFE-RL, DW Persian, IranWire,
+   Al Jazeera (English/Arabic), Al-Monitor, The National, Arab News,
+   Asharq Al-Awsat, Anadolu, Haaretz and other independently attributable
+   Gulf, Turkish, Israeli, Iraqi, Yemeni and Iranian reporting. Read
+   original Persian/Arabic reporting where reliable interpretation is
+   possible. Include Iranian state outlets such as IRNA/Fars/Tasnim as
+   **attributed regime claims**, not independent confirmation of those claims.
+4. **Specialist and investigative media/monitoring:** shipping, oil, gas
+   and payments coverage from Lloyd's List, S&P Global Commodity
+   Insights, Argus, verified maritime-data providers and specialist
+   financial press; Bellingcat and credible open-source investigators;
+   ACLED event data where methodology supports comparison; Amnesty
+   International, Human Rights Watch and other careful rights monitors
+   for verified repression/casualty reports. Explicitly distinguish
+   measured observations, modeled estimates, rumors and advocacy.
+5. **Security, diplomacy, conflict and regional think tanks:** IISS,
+   Chatham House, International Crisis Group, RUSI, CSIS, Carnegie
+   Endowment, Brookings, RAND, Stimson Center, Atlantic Council,
+   Middle East Institute, Wilson Center, SIPRI, Arab Gulf States
+   Institute in Washington, Gulf International Forum, Washington
+   Institute for Near East Policy, Quincy Institute, Foundation for
+   Defense of Democracies, and credible research institutions in
+   Iran, Israel, Gulf states, Europe and Asia. Treat viewpoints,
+   policy recommendations and scenario estimates as **analysis**,
+   not automatically as new observed events. Identify authors,
+   evidence base, affiliations and possible institutional bias.
+6. **Economic, humanitarian, academic and countervailing research:**
+   IMF, World Bank, IIF, UN agencies, central-bank/economic research,
+   peer-reviewed scholarship, humanitarian field reports, energy
+   studies and reputable regional economic institutes. Where evidence
+   favors sharply different interpretations, deliberately seek
+   well-supported **countervailing** assessments rather than sampling
+   only high-escalation or regime-collapse narratives.
+
+**Adaptive topical discovery:** Use broad queries plus source-specific and
+cross-language searches since the prior Sunday. Follow credible first-hand
+citations to original articles, newly publishing specialists and direct
+data rather than restricting results to a preselected outlet list. For
+each important topic (internal legitimacy/protests, elite/coercive cohesion,
+currency/payment stress, sanctions/oil/China credit, Hormuz/shipping,
+Houthis/regional military risk, inflation/humanitarian conditions), look
+for both confirming and contradicting reports across several different
+source categories when reporting exists.
+
+**Audit the sweep BEFORE the evidence cutoff and forecast elicitation:**
+Record actual scan time/window, topical searches, outlet classes inspected,
+links retrieved, access restrictions, item classifications and underlying
+source independence. For each class note at least one of "eligible original
+evidence found", "searched; no eligible new evidence", or "inaccessible /
+incomplete", with concrete support for the status; an empty result is not
+evidence of stability. The pre-cutoff **working coverage audit is separate**
+from the scored forecast objects and public evidence ledger. Never fabricate
+a search, retrieval, publication timestamp, report, conflict resolution, or
+the number of independent sources. Disclose meaningful coverage gaps.
+
+**Source-quality rules:** Evaluate **each claim**, not just an outlet's
+reputation. Check first publication time against cutoff, date of event,
+original URL/byline, corroboration, independence, methods and conflicts.
+Assign analytical confidence rather than mechanically giving every outlet
+equal weight. Think-tank estimates and advocacy opinions are NOT
+observations, and repeating a Reuters/AFP/AP wire, official claim or
+think-tank citation never creates another independent confirmation.
+Do not invent a numerical revision from a weakly supported claim.
+An inability to cover the entire world's media must not be represented
+as an exhaustive or successful universal scan; disclose the bounded,
+risk-focused breadth achieved and any missing material classes.
+
 ## Required Iran International coverage scan
 
 Every Sunday **before the evidence cutoff and before any probability elicitation**,
