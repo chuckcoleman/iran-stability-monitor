@@ -51,3 +51,41 @@ def verify_search_trace(result):
                for row in result):
         raise ValueError("Malformed web-search execution trace")
     return True
+
+
+def verify_claimed_source_links(coverage, calls):
+    """Fail closed if any claimed originally inspected URL lacks tool-source evidence.
+
+    Only tests whether the web-search service surfaced the URL, not whether
+    the article's contents, timing or factual assertions are verified.
+    """
+    verify_search_trace(calls)
+    surfaced={entry.get("url") for row in calls for entry in
+              row.get("citation_sources_exposed_by_api",[])
+              if isinstance(entry,dict)}
+    for category in coverage:
+        for url in category.get("original_urls",[]):
+            if url_key(url) not in surfaced:
+                raise ValueError("Research category claims URL never exposed by web-search tool")
+    return True
+
+
+def load_matching_search_trace(folder, research_result):
+    """Locate the actual saved Responses search record matching this model JSON.
+
+    Synthetic tests can bypass this with injected researchers; production may
+    not treat self-reported category claims as actual tool execution.
+    """
+    import json
+    from pathlib import Path
+    for path in reversed(sorted(Path(folder).glob("response-*.json"))):
+        try:
+            payload=json.loads(path.read_text(encoding="utf-8"))
+            if (payload.get("search") is True
+                    and payload.get("result") == research_result):
+                calls=payload.get("tool_search_calls")
+                verify_search_trace(calls)
+                return calls
+        except (OSError,ValueError,TypeError):
+            continue
+    raise ValueError("No actual web-search tool trace matches this source-sweep result")
