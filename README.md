@@ -6,6 +6,7 @@ Public, timestamped scenario estimates and early-warning indicators for Iran.
 - `index.html` — public dashboard
 - `data/history.json` — machine-readable, append-only forecast history
 - `about.html` — definitions, evidence classes, source and revision policy
+- `SOURCE_WATCHLIST.md` — prospective weekly news-source scan and corroboration guidance
 - `special-reports.html` — longer event-driven analyses
 - `protocol-v1.html` — frozen prospective forecasting protocol
 - `history.html` — full immutable forecast history
@@ -55,6 +56,18 @@ validation and two same-draft clean reviews may be submitted. Six cycles
 and the review time limit are failure ceilings, not successful outcomes.
 Unresolved defects, timeouts, invalid evidence or tool failures stop
 publication; no forecast or historical record may be silently changed.
+
+## Sunday source coverage
+
+Beginning October 25, 2026, Sunday research must separately check the latest
+original reporting from [Iran International](https://www.iranintl.com/en/latest)
+for protests, elite divisions, security-force behavior, the rial, shortages,
+and other potential stability indicators. Record the actual search and source
+dates before the evidence cutoff. Seek independent corroboration and
+deduplicate syndicated coverage; this is a mandatory **source check**, not
+a requirement to cite the outlet or accept any unsupported claim.
+See [SOURCE_WATCHLIST.md](SOURCE_WATCHLIST.md) for details.
+This change does not alter Protocol v1.0 or past forecasts.
 
 ## Sunday assessment automation (ChatGPT scheduled task)
 
