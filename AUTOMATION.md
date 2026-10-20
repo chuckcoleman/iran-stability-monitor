@@ -2,23 +2,35 @@
 
 ## Controlling source coverage from October 25, 2026
 
-Every Sunday **before evidence closure or forecast elicitation**, separately
-search original reporting from **Iran International**, using
-[the English latest-news feed](https://www.iranintl.com/en/latest), the
-[English site](https://www.iranintl.com/en) and date-bounded
-`iranintl.com` searches (including Persian reporting when it can be
-interpreted reliably). Focus on domestic protests, security-force behavior,
-elite divisions, the rial, shortages, economic pressures and regional risks.
-Preserve the actual scan time, original publication/event dates, candidate
-links, syndication identity, contradictory information and uncertainties in
-the **pre-cutoff working evidence audit**. Reconcile with Reuters/AP and
-earlier evidence IDs. **Do not force an Iran International citation or treat
-its claims as automatically established**: corroborate material allegations
-independently whenever possible and explicitly qualify unverifiable claims.
-A missing/blocked scan must be disclosed, never represented as completed.
-[Detailed operational source rules](SOURCE_WATCHLIST.md).
-This prospective research instruction changes neither historical records
-nor frozen forecasting Protocol v1.0.
+Before closing each Sunday's evidence set or eliciting any forecasts,
+conduct a **broad, bounded, adaptive worldwide media and think-tank scan**,
+not only Reuters, AP and Iran International. Search separately across:
+(1) primary authorities, official measurements and observed data;
+(2) original international news and wire reporting;
+(3) regional, Persian/Arabic, Gulf, Israeli and other local media;
+(4) specialist investigative, energy/shipping and human-rights reporting;
+(5) geopolitical/security and regional think tanks, with contrasting policy
+perspectives; and (6) economic/humanitarian/academic research and
+countervailing evidence.
+
+Use the examples, source-quality criteria and search methodology in
+[SOURCE_WATCHLIST.md](SOURCE_WATCHLIST.md) as starting points; discover
+other relevant reputable outlets rather than treating a list as exhaustive.
+Iran International remains a specific weekly scan, including original
+Persian reporting where it can be responsibly interpreted.
+
+**Log actual category-level coverage before the evidence cutoff:** search
+window, queries or topics, attempted outlets, original source URLs,
+reported event and first publication dates, supporting and contradictory
+claims, and any unavailable or weakly covered categories. Do not represent
+an unperformed or partial scan as exhaustive. Source reputation and a
+think-tank author's opinion are never sufficient to establish a material
+fact; confirm original evidence and qualify unsupported claims. Treat
+syndicated outlets or multiple analyses citing one report as a single
+underlying reporting source. No quota of cited media or think tanks;
+publish only source-backed, eligible and materially relevant information.
+Keep all previous evidence IDs, four prospective event definitions,
+frozen Protocol v1.0 and publication safeguards unchanged.
 
 ## Controlling review policy from October 25, 2026
 
