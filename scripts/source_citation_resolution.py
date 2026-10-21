@@ -198,7 +198,15 @@ def _restore_completed_resolution(folder, research, citations, calls, initial,
             and final.get('original_research_sha256') == digest(research)
             and final.get('attempt_limit') == 1,
             'Prior citation correction did not finish cleanly; no repeat search')
-    prompt = _correction_prompt(research, initial, calls)
+    # Compare the current values to the original audit above, but reproduce
+    # the original POST from its preserved insertion order. Stage checkpoints
+    # use sort_keys=True, and rebuilding this JSON prompt from those files
+    # changes its bytes, even when all source data are structurally identical.
+    # The exact original prompt/request digests must still match the model
+    # output AND accepted transport journal; no new POST is ever attempted.
+    prompt = _correction_prompt(
+        previous['research'], previous['reconciliation'],
+        previous['search_calls'])
     model = os.getenv('IRAN_FORECAST_MODEL') or 'gpt-6.1-sol'
     payload = responses_payload(prompt, True)
     payload['background'] = True
