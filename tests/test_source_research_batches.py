@@ -224,7 +224,7 @@ class BatchResearchTests(unittest.TestCase):
             self.dir / ("research-batch-" + category + ".json"))
             for category in CATEGORIES[:-1]}
         snap = read_json(self.dir / "research-snapshot.json")
-        with self.assertRaises(KeyError):
+        with self.assertRaisesRegex(ValueError, "Six independent source categories"):
             combine(stages, snap)
 
 
