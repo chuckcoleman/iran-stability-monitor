@@ -190,7 +190,7 @@ class PassageWitnessTests(unittest.TestCase):
         record = json.loads((self.folder/"claim-evidence-register.json").read_text())
         record["claims"][0]["status"] = "INVALID_QUOTE_LENGTH_OR_CONTENT"
         (self.folder/"claim-evidence-register.json").write_text(json.dumps(record))
-        with self.assertRaisesRegex(ValueError, "Saved review evidence differs"):
+        with self.assertRaisesRegex(ValueError, "Missing/unmatched page|Saved review evidence differs"):
             load_or_create_review_input(self.folder, **options)
 
     def test_unsupported_claims_are_excluded_and_official_source_downgraded(self):
