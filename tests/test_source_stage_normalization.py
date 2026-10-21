@@ -236,6 +236,28 @@ class StageNormalizationTests(unittest.TestCase):
             self._run(lambda *args: self.fail("No network"), resume=True, clock=LATER)
         self.assertEqual(len(list(self.folder.glob("research-batch-*.json"))), 6)
 
+    def test_changed_completed_response_or_request_journal_is_not_resumed(self):
+        self._run(self._response)
+        response_path = self.folder / "response-3.json"
+        original = response_path.read_bytes()
+        changed = read_json(response_path)
+        changed["result"]["coverage_audit"][0]["limitations"][0] = (
+            "A different unsupported claim was inserted after the paid research.")
+        response_path.write_text(json.dumps(changed))
+        with self.assertRaisesRegex(ValueError, "matching saved Responses output"):
+            self._run(lambda *args: self.fail("No replay POST"), resume=True,
+                      clock=LATER)
+        response_path.write_bytes(original)
+        journal_path = self.folder / "api-request-test-2.json"
+        original_journal = journal_path.read_bytes()
+        journal = read_json(journal_path)
+        journal["request_sha256"] = "0" * 64
+        journal_path.write_text(json.dumps(journal))
+        with self.assertRaisesRegex(ValueError, "matching completed API transport"):
+            self._run(lambda *args: self.fail("No replay POST"), resume=True,
+                      clock=LATER)
+        journal_path.write_bytes(original_journal)
+
     def test_unverified_responses_are_not_normalized_or_replayed(self):
         folder = self.folder
         snap = {"snapshot_sha256": "s"*64}
