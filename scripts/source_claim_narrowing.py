@@ -56,6 +56,8 @@ def narrow_to_passage(entry, witness):
     result["reliability"] = "Low"
     result["affects"] = []
     result["editorial_support_status"] = LIMITED_STATUS
+    result["editorial_role"] = "background_source_quote"
+    result["editorial_directional_admissible"] = False
     return result
 
 
@@ -112,6 +114,13 @@ def validate_narrowings(packet):
     require(isinstance(records, list),
             "Malformed editorial narrowing register")
     live = {item["id"]: item for item in packet["evidence"]}
+    separated = packet.get("quote_separation_version") == 2
+    background = {item["id"]: item for item in
+                  packet.get("background_quotes", [])}
+    if separated:
+        require(len(background) == len(packet.get("background_quotes", []))
+                and not (set(background) & set(live)),
+                "Quote-only context ID is duplicated or directional")
     seen = set()
     for record in records:
         require(isinstance(record, dict), "Malformed narrowed-claim record")
@@ -133,12 +142,22 @@ def validate_narrowings(packet):
         require(expected == revised,
                 "Narrowed evidence contains unsupported new interpretation")
         if key in live:
-            require(live[key] == revised,
-                    "Narrowed evidence differs from its immutable source passage")
+            require(not separated and live[key] == revised,
+                    "Narrowed background was promoted to directional evidence")
+        if key in background:
+            require(background[key] == revised,
+                    "Narrowed background differs from its original source passage")
         require(record.get("publication") == "NOT AUTHORIZED",
                 "Narrowing cannot authorize publication")
     for key, item in live.items():
         if item.get("editorial_support_status") == LIMITED_STATUS:
-            require(key in seen,
-                    "Quote-limited evidence lacks deterministic correction provenance")
+            require(not separated and key in seen,
+                    "Quote-only material may not count as directional evidence")
+    if separated:
+        require(all(key in seen for key in background),
+                "Background quotation lacks immutable correction provenance")
+        require(all(item.get("editorial_role") == "background_source_quote"
+                    and item.get("editorial_directional_admissible") is False
+                    for item in background.values()),
+                "Background quotation was promoted to evidence")
     return True
