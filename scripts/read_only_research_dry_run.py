@@ -31,6 +31,7 @@ from source_review_resume import (
     load_or_create_review_input)
 from source_review_cycles import run_alternating_review_cycles
 from source_passage_audit import build_claim_register
+from source_evidence_status import reconcile_before_freeze
 
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 from source_citation_reconciliation import (
@@ -157,13 +158,24 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     quality, metadata = load_or_capture_quality(
         folder, result, citations, metadata_reader, now, snapshot,
         baseline_sha, strict=(researcher is llm))
+    # Do not mutate or reserialize any paid research, citation, quality or
+    # history checkpoint. Strict status validation occurred at the source
+    # stage boundary. Only a verified OLD completed stage may restore a
+    # malformed historical carry-forward from the original archive.
+    effective_research, status_audit = reconcile_before_freeze(
+        result, saved, folder, snapshot,
+        verified_legacy_resume=(
+            researcher is LIVE_RESEARCHER and
+            os.getenv("IRAN_STAGED_RESUME") == "1" and
+            snapshot is not None and snapshot["version"] == 1))
     archive = {"evidence": saved}
     sample, frozen_sha, cutoff = load_or_create_review_input(
         folder, result=result, citations=citations, coverage=coverage,
         quality=quality, baseline_sha=baseline_sha, snapshot=snapshot,
         archive=archive, date=day, now=now,
+        status_reconciliation=status_audit,
         freeze=lambda obj, urls, old, date, stamp: freeze_evidence(
-            obj, urls, old, date, stamp, metadata),
+            effective_research, urls, old, date, stamp, metadata),
         claim_register_builder=(
             (lambda frozen: build_claim_register(
                 folder, research=result, frozen=frozen,
@@ -212,6 +224,8 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                 if "claim_evidence_register" in sample else None),
             "source_stage_snapshot_sha256": (
                 snapshot["snapshot_sha256"] if snapshot else None),
+            "evidence_status_reconciliation_sha256": (
+                status_audit["effective_research_sha256"] if status_audit else None),
             "completed_source_categories": (
                 list(CATEGORIES) if snapshot else []),
             "source_citation_reconciliation":reconciliation,
