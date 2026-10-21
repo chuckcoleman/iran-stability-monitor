@@ -60,13 +60,15 @@ _RESUMABLE = frozenset((
 ))
 
 
-def _resume_candidate(folder, fingerprint, model):
+def _resume_candidate(folder, fingerprint, model, *, exclude=None):
     """Only reuse a known, acknowledged ID for an identical research request."""
     folder = Path(folder)
     if not folder.is_dir():
         raise RuntimeError("Resume audit directory missing; no POST attempted")
     matches = []
     for path in sorted(folder.glob("api-request-*.json")):
+        if path == exclude:
+            continue
         try:
             row = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, ValueError):
@@ -136,7 +138,7 @@ def request_response(payload, *, search, token_supplier, audit_dir,
     if resume_dir is not None:
         try:
             response_id, previous_files, prior_polls = _resume_candidate(
-                resume_dir, fingerprint, payload.get("model"))
+                resume_dir, fingerprint, payload.get("model"), exclude=record_path)
         except RuntimeError:
             save("resume_rejected_no_post")
             raise
