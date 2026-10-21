@@ -75,7 +75,7 @@ class BatchResearchTests(unittest.TestCase):
         path.write_text(json.dumps(record), encoding="utf-8")
         return obj, {url}
 
-    def run(self, researcher=None, *, resume=False, when=STAMP, baseline=None):
+    def run_sweep(self, researcher=None, *, resume=False, when=STAMP, baseline=None):
         return batched_research(
             researcher=researcher or self.build_response,
             folder=self.dir, prior=[], day=when.date().isoformat(),
@@ -83,7 +83,7 @@ class BatchResearchTests(unittest.TestCase):
             resume=resume)
 
     def test_six_batches_complete_and_trace_is_preserved(self):
-        result, citations, calls, snap = self.run()
+        result, citations, calls, snap = self.run_sweep()
         self.assertEqual(self.prompts, list(CATEGORIES))
         self.assertEqual(len(result["coverage_audit"]), 6)
         self.assertEqual(len(result["source_quality"]), 6)
@@ -99,9 +99,9 @@ class BatchResearchTests(unittest.TestCase):
         self.assertEqual(snap["date"], "2026-10-20")
 
     def test_resume_after_all_stages_is_zero_new_posts(self):
-        original = self.run()
+        original = self.run_sweep()
         self.prompts.clear()
-        result = self.run(researcher=lambda p, s: self.fail("No paid calls"),
+        result = self.run_sweep(researcher=lambda p, s: self.fail("No paid calls"),
                           resume=True, when=LATER)
         self.assertEqual(self.prompts, [])
         self.assertEqual(result[:3], original[:3])
@@ -113,26 +113,26 @@ class BatchResearchTests(unittest.TestCase):
                 raise RuntimeError("Simulated transient research failure")
             return self.build_response(prompt, search)
         with self.assertRaisesRegex(RuntimeError, "transient research failure"):
-            self.run(researcher=stop_on_second)
+            self.run_sweep(researcher=stop_on_second)
         self.assertEqual(self.prompts, ["primary_data"])
         self.assertFalse((self.dir / "research-batches-merged.json").exists())
         self.prompts.clear()
-        _, _, _, snap = self.run(resume=True, when=LATER)
+        _, _, _, snap = self.run_sweep(resume=True, when=LATER)
         self.assertEqual(self.prompts, list(CATEGORIES)[1:])
         self.assertEqual(snap["date"], "2026-10-20")
         self.assertEqual(snap["cutoff_at"], STAMP.isoformat())
 
     def test_legacy_resume_without_snapshot_fails_before_paid_call(self):
         with self.assertRaisesRegex(ValueError, "legacy monolithic"):
-            self.run(researcher=lambda p, s: self.fail("No new request"),
+            self.run_sweep(researcher=lambda p, s: self.fail("No new request"),
                      resume=True, when=LATER)
         self.assertEqual(list(self.dir.glob("api-request-*.json")), [])
 
     def test_modified_history_rejected_even_when_old_stages_pass(self):
-        self.run()
+        self.run_sweep()
         self.prompts.clear()
         with self.assertRaisesRegex(ValueError, "immutable history"):
-            self.run(resume=True, when=LATER, baseline="a"*64,
+            self.run_sweep(resume=True, when=LATER, baseline="a"*64,
                      researcher=lambda p, s: self.fail("No new request"))
         self.assertEqual(self.prompts, [])
 
@@ -142,7 +142,7 @@ class BatchResearchTests(unittest.TestCase):
             obj["coverage_audit"][0]["category"] = "other"
             return obj, urls
         with self.assertRaisesRegex(ValueError, "wrong source category"):
-            self.run(researcher=wrong)
+            self.run_sweep(researcher=wrong)
         self.assertFalse((self.dir / "research-batch-primary_data.json").exists())
 
     def test_future_event_never_enters_stage(self):
@@ -151,7 +151,7 @@ class BatchResearchTests(unittest.TestCase):
             obj["evidence"][0]["event_date"] = "2026-10-22"
             return obj, urls
         with self.assertRaisesRegex(ValueError, "Post-snapshot event"):
-            self.run(researcher=future)
+            self.run_sweep(researcher=future)
         self.assertFalse((self.dir / "research-batches-merged.json").exists())
 
     def test_missing_source_classification_fails_closed(self):
@@ -160,10 +160,10 @@ class BatchResearchTests(unittest.TestCase):
             obj["source_quality"] = []
             return obj, urls
         with self.assertRaisesRegex(ValueError, "omits source URLs"):
-            self.run(researcher=omitted)
+            self.run_sweep(researcher=omitted)
 
     def test_post_snapshot_source_publication_rejected_but_late_retrieval_is_not(self):
-        self.run()
+        self.run_sweep()
         snap = read_json(self.dir / "research-snapshot.json")
         obj = read_json(self.dir / "research-batch-primary_data.json")["result"]
         src = obj["evidence"][0]["source"]
@@ -186,7 +186,7 @@ class BatchResearchTests(unittest.TestCase):
             "post_attempts": 1, "response_id": None,
             "status": "create_acknowledgement_unknown_no_replay"}))
         with self.assertRaisesRegex(ValueError, "no POST attempted"):
-            self.run(researcher=lambda p, s: self.fail("No network"))
+            self.run_sweep(researcher=lambda p, s: self.fail("No network"))
         self.assertFalse((self.dir / "research-batches-merged.json").exists())
 
     def test_prior_acknowledged_request_sets_get_only_for_exact_stage(self):
@@ -204,22 +204,22 @@ class BatchResearchTests(unittest.TestCase):
         def observe(prompt, search):
             env.append((CATEGORIES[len(env)], os.environ.get("IRAN_RESUME_AUDIT_DIR")))
             return self.build_response(prompt, search)
-        self.run(researcher=observe, resume=True, when=LATER)
+        self.run_sweep(researcher=observe, resume=True, when=LATER)
         self.assertEqual(env[0][1], str(self.dir))
         self.assertTrue(all(v is None for _, v in env[1:]))
 
     def test_checkpoint_trace_tampering_rejected_before_reuse(self):
-        self.run()
+        self.run_sweep()
         path = self.dir / "research-batch-primary_data.json"
         item = read_json(path)
         item["citations"].append("https://unrelated.example.org/false")
         path.write_text(json.dumps(item))
         with self.assertRaisesRegex(ValueError, "checkpoint differs"):
-            self.run(resume=True, when=LATER,
+            self.run_sweep(resume=True, when=LATER,
                      researcher=lambda p, s: self.fail("No new request"))
 
     def test_missing_category_cannot_be_approved(self):
-        self.run()
+        self.run_sweep()
         stages = {category: read_json(
             self.dir / ("research-batch-" + category + ".json"))
             for category in CATEGORIES[:-1]}
