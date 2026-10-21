@@ -618,7 +618,10 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
         require(archived_screen["screened_review_input_sha256"] == initial_digest
                 and archived_screen["screened_packet"] == sample
                 and archived_screen["source_review_requests"] ==
-                    "PERMITTED_AFTER_SCREEN",
+                    "PERMITTED_AFTER_SCREEN"
+                and archived_screen.get("status") ==
+                    "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY"
+                and not eligibility(sample)["failures"],
                 "Pre-review evidence was not admitted by original saved audit")
     rounds = []
     terminal_gate = None
