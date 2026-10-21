@@ -312,12 +312,15 @@ def _validate_batch(category, obj, citations, calls, snapshot, *,
                 len(quote.strip()) > 900):
             raise ValueError("Stage supplied an invalid or oversized claim quote")
         if snapshot["version"] >= 3 and item.get("evidence_status") == "new":
-            from source_pre_review_admissibility import ALL_EFFECTS
-            if item.get("effect_type") not in ALL_EFFECTS:
-                raise ValueError("New research needs an exact effect_type for pre-review screening")
-            basis = item.get("direction_basis")
-            if not isinstance(basis, str) or not 30 <= len(basis.strip()) <= 450:
-                raise ValueError("Missing or malformed directional quote rationale")
+            # Do NOT invalidate an otherwise completed, paid original-search
+            # checkpoint because a model omitted or misformatted an optional
+            # admissibility annotation. Missing/invalid type or rationale is
+            # a recorded PRE-REVIEW REJECTION, not a reason to replay research.
+            # Research-stage exact status, dates, source and tool provenance
+            # still fail closed as before.
+            if isinstance(item.get("direction_basis"), str) and (
+                    len(item["direction_basis"]) > 2000):
+                raise ValueError("Unsafe oversized directional claim rationale")
         try:
             event_day = dt.date.fromisoformat(item["event_date"])
         except (ValueError, TypeError, KeyError):
