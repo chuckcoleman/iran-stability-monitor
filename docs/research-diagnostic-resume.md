@@ -32,3 +32,47 @@ The original snapshot is mandatory. A changed original history baseline, changed
 **Old monolithic diagnostics such as runs `39509619816` and `39522021887` contain no six-stage research snapshot; they cannot be resumed through this staged mode.** Entering one of those IDs is rejected before any new paid POST. Run a new staged diagnostic first; if it is interrupted, use *that* run's ID to continue.
 
 All stages and reviews in this workflow remain **nonpublishing**. Passing these checks is not permission to make forecasts or deploy anything. The independent publication process retains its full validation and dual-review requirements.
+
+## Review-stage recovery after completed research
+
+A completed six-category sweep is reusable: the saved original-source correction,
+exact model/tool evidence, final citation reconciliation, and source-quality audit
+are verified and restored rather than overwritten or queried again. If an older
+artifact contains the completed source-quality audit but not the raw metadata
+checkpoint, only the metadata fields actually retained in that audit are
+reconstructed; missing original article retrieval instants remain explicitly
+unknown. New diagnostics also retain raw metadata checkpoints for exact reuse.
+
+After all research gates pass, the diagnostic saves the **exact closed
+source-review input** (including its cutoff and hash), then writes separate
+`source-review-affirmative.json` and `source-review-critical.json` files as
+each review succeeds. An interrupted later run validates the saved input and
+reuses a completed review only when its prompt, response, model and completed
+OpenAI request journal match. No missing review becomes an automatic approval.
+
+### Run #39608218460 (review POST acknowledgement lost)
+
+That run saved all six source categories, the citation correction, and the
+31-source quality audit. Its first review POST timed out **without an
+acknowledged response ID**; it may have been accepted and billed even though
+its output was not available. Resuming with `resume_run_id=39608218460`
+restores the completed source research, but **does not automatically resend**
+the ambiguous review request.
+
+To authorize a new, possibly billable **review only**, choose:
+
+- `mode`: `research-dry-run`
+- `resume_run_id`: `39608218460`
+- `allow_new_review_after_unknown`: `true`, only if you deliberately accept
+  that a previous review request may have been billed without producing a result.
+
+With the new-review option left false, the run is expected to fail closed
+at the unknown review acknowledgement. The option cannot redo a prior source
+search or bypass either required review. Once an affirmative or critical review
+is checkpointed, that completed verdict is reused automatically on later
+runs. If a different review POST loses its acknowledgement, a later invocation
+also requires explicit consent before another possible charge.
+
+A longer bounded (four-minute) non-search request timeout reduces premature
+review socket timeouts, but never turns a timeout into a pass. This diagnostic
+remains **read-only and nonpublishing**, regardless of review outcomes.
