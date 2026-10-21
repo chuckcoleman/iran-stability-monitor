@@ -41,6 +41,18 @@ def require(ok, message):
 
 def _prompt(role, packet, digest, common):
     """Exact first-round prompt retained for previous paid response recovery."""
+    if packet.get("pre_review_admission_version") == 1:
+        common += (
+            "\nV3 PRE-REVIEW ADMISSIBILITY: Only observations provisionally "
+            "screened for independent original-page passage availability, "
+            "publisher-reported pre-cutoff date, event date, claim-word "
+            "relevance and explicit model reasoning enter evidence. "
+            "The screening is NOT semantic verification, first-publication "
+            "proof or a demonstrated geopolitical direction. Evaluate each "
+            "surviving claim against the actual passage and its stated "
+            "direction, and reject unsupported model reasoning. "
+            "Held-out entries and originals remain in the closed audit "
+            "but must never be counted as directional observations. ")
     if packet.get("claim_evidence_register"):
         common += (
             "\nCLAIM-LEVEL VERIFICATION: For each retained evidence ID, examine "
@@ -480,11 +492,20 @@ def deterministic_review_issues(packet, original_cutoff):
                           "independent directional observations, publisher "
                           "diversity or four new observations: "
                           + ", ".join(failures)})
-    if (original_cutoff and packet.get("cutoff") != original_cutoff
-            and not packet.get("unsearched_interval")):
-        issues.append({"type": "cutoff_scope_mismatch",
-                       "location": "coverage / all six research categories",
-                       "reason": "Later review preparation was not part of the original search"})
+    if original_cutoff and packet.get("cutoff") != original_cutoff:
+        explicit_asof = (
+            packet.get("research_as_of") == original_cutoff and
+            packet.get("post_asof_window") == "NOT_SEARCHED")
+        archived_interval = (
+            isinstance(packet.get("unsearched_interval"), dict) and
+            packet["unsearched_interval"].get("start") == original_cutoff and
+            packet["unsearched_interval"].get("status") ==
+                "NOT_SEARCHED_OR_CLAIMED_AS_COVERED")
+        if not (explicit_asof or archived_interval):
+            issues.append({"type": "cutoff_scope_mismatch",
+                           "location": "coverage / all six research categories",
+                           "reason": "Later review preparation was not part of "
+                                     "the original source-research search window"})
     return issues
 
 
@@ -569,11 +590,39 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 "incompatible with directional eligibility. No new reviewer "
                 "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
+    screened = sample.get("pre_review_admission_version") == 1
+    original_evidence_for_witnesses = (
+        sample.get("pre_review_original_evidence") if screened else
+        sample.get("evidence"))
     if original_register is not None:
         from source_passage_audit import verify_register
-        verify_register(original_register, sample["evidence"],
+        verify_register(original_register, original_evidence_for_witnesses,
                         history_sha=sample.get("published_history_sha256"),
                         original_cutoff=sample.get("research_as_of"))
+    if screened:
+        require(isinstance(sample.get("pre_review_claim_decisions"), list)
+                and isinstance(sample.get("pre_review_held_original_evidence"), list),
+                "Screened review lacks an immutable original claim audit")
+        allowed_ids = [
+            x["id"] for x in sample["pre_review_claim_decisions"]
+            if x["decision"] ==
+               "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW"]
+        held_ids = [
+            x["id"] for x in sample["pre_review_claim_decisions"]
+            if x["decision"] == "HELD_OUT_BEFORE_PAID_REVIEW"]
+        require(allowed_ids == [e["id"] for e in sample["evidence"]]
+                and held_ids == [e["id"] for e in
+                                  sample["pre_review_held_original_evidence"]],
+                "Screened review changed admission decisions or directional entries")
+        archived_screen = read_json(folder / "source-pre-review-admissibility.json")
+        require(archived_screen["screened_review_input_sha256"] == initial_digest
+                and archived_screen["screened_packet"] == sample
+                and archived_screen["source_review_requests"] ==
+                    "PERMITTED_AFTER_SCREEN"
+                and archived_screen.get("status") ==
+                    "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY"
+                and not eligibility(sample)["failures"],
+                "Pre-review evidence was not admitted by original saved audit")
     rounds = []
     terminal_gate = None
     known_unknown = set()
@@ -587,6 +636,12 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
         if original_register is not None:
             require(packet.get("claim_evidence_register") == original_register,
                     "Revised evidence cannot alter original claim witness register")
+        if screened:
+            require(packet.get("pre_review_original_evidence") ==
+                        original_evidence_for_witnesses
+                    and packet.get("pre_review_claim_decisions") ==
+                        sample["pre_review_claim_decisions"],
+                    "Revised packet altered original admission and source provenance")
         digest = sha(packet)
         result = {}
         for role in ("affirmative", "critical"):

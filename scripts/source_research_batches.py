@@ -99,14 +99,14 @@ def prior_index(previous):
 
 
 def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
-                      resume=False):
+                      resume=False, fresh_version=2):
     """Freeze research date, first cutoff, model, and the exact history input."""
     folder = Path(folder)
     path = folder / SNAPSHOT
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -128,7 +128,9 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    snap = {"version": 2, "date": day, "cutoff_at": started_at.isoformat(),
+    if fresh_version not in (2, 3):
+        raise ValueError("Unsupported new research snapshot protocol")
+    snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
             "prior_index": reference, "model": model,
             "mode": "SOURCE_CATEGORY_RESEARCH_ONLY"}
@@ -234,13 +236,37 @@ def batch_prompt(category, snapshot):
         # Do NOT alter the actual paid request made in old staged diagnostics.
         # Exact original prompt SHA-256 is required for GET-only recovery.
         return prompt
-    return prompt.replace(
+    strict = prompt.replace(
         "(new or carried_forward with existing id)",
         "(EXACT string new OR EXACT string carried_forward; carried_forward "
         "requires a SEPARATE id field naming an existing historical E-YYYYMMDD-NN "
         "evidence record; the historical source, date, publisher, article title, "
         "category and observation MUST remain unchanged. Never embed the ID "
         "inside evidence_status. New evidence MUST NOT include an old ID.)")
+    if snapshot["version"] == 2:
+        return strict  # Reproduce the EXACT earlier paid v2 request.
+    return strict + (
+        "\nMANDATORY V3 PRE-REVIEW SOURCE ADMISSION. For each new evidence "
+        "candidate include effect_type EXACTLY one of observed_policy_action, "
+        "reported_event, measured_data, attributed_claim, analysis_or_forecast, "
+        "background_context. Only the first three may be provisionally "
+        "screened as directional evidence. Include direction_basis as a "
+        "specific 30-450-character sentence describing how the SAME "
+        "verbatim support_quote documents the observed event/change and "
+        "the proposed raises/lowers/ambiguous direction. The observation "
+        "must be a single narrow factual assertion actually present in "
+        "that quoted original-page text, not a bundle of surrounding "
+        "claims, caveats, counterpoints or causal assumptions. Request "
+        "the original publication date and avoid pages without a date "
+        "before the research cutoff. If full original text, publisher "
+        "timing, or directional support is unavailable, label the item "
+        "background_context or omit it instead of inventing a balanced "
+        "set of improving and worsening events. Do not treat analytical "
+        "forecasts, official accusations, wire republications or "
+        "publisher-supplied dates as independent measurements. The "
+        "pre-review gate checks retrieval, dates and quote-word grounding "
+        "before any affirmative/critical reviewer is called, but neither "
+        "that gate nor the model verifies source semantics automatically.")
 
 
 def _validate_batch(category, obj, citations, calls, snapshot, *,
@@ -285,6 +311,16 @@ def _validate_batch(category, obj, citations, calls, snapshot, *,
                 len(quote.strip().split()) > 25 or
                 len(quote.strip()) > 900):
             raise ValueError("Stage supplied an invalid or oversized claim quote")
+        if snapshot["version"] >= 3 and item.get("evidence_status") == "new":
+            # Do NOT invalidate an otherwise completed, paid original-search
+            # checkpoint because a model omitted or misformatted an optional
+            # admissibility annotation. Missing/invalid type or rationale is
+            # a recorded PRE-REVIEW REJECTION, not a reason to replay research.
+            # Research-stage exact status, dates, source and tool provenance
+            # still fail closed as before.
+            if isinstance(item.get("direction_basis"), str) and (
+                    len(item["direction_basis"]) > 2000):
+                raise ValueError("Unsafe oversized directional claim rationale")
         try:
             event_day = dt.date.fromisoformat(item["event_date"])
         except (ValueError, TypeError, KeyError):
@@ -449,9 +485,10 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     model = os.getenv("IRAN_FORECAST_MODEL") or "gpt-6.1-sol"
-    snapshot = research_snapshot(folder, day=day, prior=prior,
-                                 baseline_sha=baseline_sha, started_at=started_at,
-                                 model=model, resume=resume)
+    snapshot = research_snapshot(
+        folder, day=day, prior=prior, baseline_sha=baseline_sha,
+        started_at=started_at, model=model, resume=resume,
+        fresh_version=(3 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)

@@ -316,3 +316,69 @@ potentially billable, independently evidenced six-category searches,
 never an extension backdated to October 21. Only eligible versions then
 proceed through alternating affirmative and critical source reviews.
 No diagnostic changes published forecasts, pages, or social posts.
+
+## Fresh-source pre-review admissibility (new v3 snapshots)
+
+The next **fresh** live `research-dry-run` on `main` (with blank
+`resume_run_id`) creates a version-3 research snapshot. The six saved
+web searches now ask for **one narrow original-source observation per
+item**, its exact 4–25-word source passage, a declared
+`effect_type`, and a `direction_basis` sentence explaining why that
+specific original passage suggests the proposed `raises`, `lowers`,
+or `ambiguous` direction. The model must not invent an original article,
+a dated event, directional balance or independent corroboration. Original
+v1 and v2 snapshots and their paid request fingerprints are unchanged;
+a missing or malformed optional admission field in a v3 model response
+is logged and **held out** by the pre-review screen, not fixed by another
+paid search.
+
+After the full six-stage research, citation reconciliation, original
+metadata capture and bounded page-passage inspection, the
+**zero-additional-API-request** `source_pre_review_admissibility` gate
+checks every original frozen observation for:
+
+- independent direct-source passage retrieval (not just a citation or
+  publisher metadata), compatible source-quality classification and a
+  matching original URL;
+- an event date inside the conservative 90-day research-event window;
+- a publisher-reported pre-cutoff timestamp or a publisher-reported
+  date **strictly earlier than the research date**; a same-day date with
+  no verified clock, conflicting future time, or absent publication
+  metadata cannot establish pre-cutoff eligibility;
+- an actual short passage with meaningful original-language word
+  overlap against the claim and its model-supplied directional rationale,
+  and a declared observable policy action, reported event or measured
+  series rather than merely analytical/retrospective/attributed context.
+
+These tests are **screening conditions**, not independent proof that a
+claim happened, that a publisher's metadata is the first release instant,
+that sources are independent, or that a geopolitical effect has the
+reported sign. All included observations are explicitly labeled
+`PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW`. The two
+independent affirmative and critical reviews remain mandatory for the
+same immutable screened packet, and can reject any substantive assertion.
+A publisher statement, snippet, or model rationale never constitutes
+self-authenticating directional evidence.
+
+The new immutable
+`source-pre-review-admissibility.json` contains the original input hash,
+per-claim admission/hold reasons, the full screened candidate packet,
+the removed original claims, and the source/coverage reconciliation.
+If the admitted provisional evidence fails any of the four existing
+source-diversity/directional minima, a separate
+`research-pre-review-dry-run.json` records the precise deficiency,
+**neither reviewer is invoked**, and GitHub Actions exits with a
+failure. No source-review payment can be triggered by an unsuccessful
+pre-review gate, and there is no implied permission to publish. Resume
+of that same v3 snapshot verifies the immutable screen and reuses the
+original archived searches and passage captures without altering them.
+
+A previously **fully reviewed** version-2 failed research run (such as
+`39673989046`) is not retrospectively made admissible by version 3.
+Do not simply resume old rejected evidence for more paid reviews.
+To seek genuinely new original-direction evidence, start a
+**new dated** run with blank `resume_run_id` and leave the
+potential duplicate-review consent option off by default. New research
+searches and, only if the pre-screen passes, reviews may incur API costs.
+This test remains explicitly nonpublishing: no forecasts, historical
+numerical data, GitHub publishing PRs or social updates are changed.
