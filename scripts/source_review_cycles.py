@@ -217,6 +217,85 @@ def conservative_revision(previous, issues, original_cutoff):
                      "cutoff_gap_disclosed": bool(original_cutoff)}
 
 
+def validate_archived_conservative_revision(previous, revised, original_cutoff):
+    """Replay a pre-register rejected review packet without rewriting history.
+
+    This compatibility path is ONLY for an already-saved amendment, never a
+    reason to create fresh evidence or bypass review. Rejected historical
+    packets are immutable, and new audits must use current claim controls.
+    """
+    require(isinstance(previous, dict) and isinstance(revised, dict)
+            and not previous.get("claim_evidence_register")
+            and not revised.get("claim_evidence_register"),
+            "Historical replay cannot acquire fabricated claim witnesses")
+    parent_evidence = {r["id"]: r for r in previous["evidence"]}
+    candidate_evidence = revised.get("evidence")
+    require(isinstance(candidate_evidence, list)
+            and len({r["id"] for r in candidate_evidence}) ==
+                len(candidate_evidence)
+            and all(parent_evidence.get(r["id"]) == r
+                    for r in candidate_evidence),
+            "Historical amendment changed or invented evidence observations")
+    old_sources = {
+        row["url"]: row for row in previous["source_quality_audit"]["sources"]}
+    new_sources = revised["source_quality_audit"]["sources"]
+    require(len(old_sources) == len(new_sources)
+            and {r["url"] for r in new_sources} == set(old_sources),
+            "Historical amendment added or dropped original source records")
+    allowed = {
+        "direct_observation": {
+            "direct_observation", "attributed_claim", "unverified",
+            "background_only"},
+        "attributed_claim": {
+            "attributed_claim", "unverified", "background_only"},
+        "analysis": {"analysis", "unverified", "background_only"},
+        "unverified": {"unverified", "background_only"},
+        "background_only": {"background_only"}
+    }
+    for row in new_sources:
+        original = old_sources[row["url"]]
+        require(row.get("classification") in
+                allowed.get(original.get("classification"), set()),
+                "Historical amendment upgraded source factual status")
+        for field in ("source_publication_time", "access_status",
+                      "source_retrieval_status"):
+            require(row.get(field) == original.get(field),
+                    "Historical amendment fabricated source access or dates")
+        require(set(row.get("corroborating_urls", []))
+                <= set(original.get("corroborating_urls", [])),
+                "Historical amendment invented source corroboration")
+    old_coverage = {
+        r["category"]: r for r in previous.get("coverage", [])}
+    new_coverage = {
+        r["category"]: r for r in revised.get("coverage", [])}
+    require(set(old_coverage) == set(new_coverage),
+            "Historical amendment invented new source categories")
+    for name, row in new_coverage.items():
+        old = old_coverage[name]
+        require(row.get("original_urls") == old.get("original_urls"),
+                "Historical amendment added or changed original source URLs")
+        if old.get("outcome") in (
+                "searched_no_eligible_evidence", "inaccessible_or_incomplete"):
+            require(row.get("outcome") in (
+                    old.get("outcome"), "inaccessible_or_incomplete"),
+                    "Historical amendment upgraded source coverage")
+    require(revised.get("published_history_sha256") ==
+            previous.get("published_history_sha256"),
+            "Historical review packet changed published history")
+    require(revised.get("research_as_of") ==
+            previous.get("research_as_of"),
+            "Historical review packet changed original source-search as-of")
+    require(revised.get("cutoff") in (
+            previous.get("cutoff"), original_cutoff),
+            "Historical packet changed the research cutoff")
+    removed = set(parent_evidence) - {r["id"] for r in candidate_evidence}
+    exclusions = revised.get("excluded_evidence", [])
+    require(isinstance(exclusions, list) and removed <= {
+        r.get("id") for r in exclusions if isinstance(r, dict)},
+        "Historical exclusions do not explain removed evidence")
+    return True
+
+
 def deterministic_review_issues(packet, original_cutoff):
     """Independent fail-closed controls cannot be overridden by model approval."""
     issues = []
@@ -364,8 +443,19 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                     "correction": details,
                     "publication": "NOT AUTHORIZED"}
         if next_path.exists():
-            require(read_json(next_path) == expected,
-                    "Saved corrected packet differs from frozen reviewer issues")
+            archived = read_json(next_path)
+            if archived != expected:
+                require(original_register is None
+                        and archived.get("round") == number+1
+                        and archived.get("parent_sha256") == digest
+                        and archived.get("input_sha256") ==
+                            sha(archived.get("sample"))
+                        and archived.get("publication") == "NOT AUTHORIZED",
+                        "Saved corrected packet differs from frozen reviewer issues")
+                validate_archived_conservative_revision(
+                    packet, archived["sample"], original_cutoff)
+                # Only an existing, genuinely preserved legacy input may use
+                # this compatibility check; no new review packet is generated.
         else:
             save_new(next_path, expected)
     else:
