@@ -479,6 +479,55 @@ def deterministic_review_issues(packet, original_cutoff):
     return issues
 
 
+def save_terminal_evidence_gate(folder, round_number, parent_sha,
+                                corrected, correction):
+    """Checkpoint a correction that can NEVER satisfy a closed-snapshot gate.
+
+    No corrected review-input checkpoint and NO new paid review is created.
+    The full proposed correction is preserved separately from approved
+    evidence and the original reviewer round is immutable.
+    """
+    counts = eligibility(corrected)
+    require(counts["failures"] and
+            counts["irreversible_under_closed_source_corrections"],
+            "Terminal evidence gate requires an actual irreversible deficiency")
+    guard = corrected.get("source_diversity_guard")
+    require(isinstance(guard, dict)
+            and guard.get("status") == "BLOCKED_NOT_PUBLISHABLE"
+            and guard.get("eligibility") == counts,
+            "Source diversity gate does not match proposed corrected evidence")
+    record = {
+        "version": 1,
+        "status": "IRREVERSIBLE_EVIDENCE_DEFICIENCY_NO_MORE_PAID_REVIEWS",
+        "completed_review_round": round_number,
+        "blocked_next_review_round": round_number+1,
+        "parent_review_input_sha256": parent_sha,
+        "proposed_correction_sha256": sha(corrected),
+        "proposed_correction": corrected,
+        "correction_actions": correction,
+        "directional_eligibility": counts,
+        "research_needed": "NEW_DATED_SIX_CATEGORY_SOURCE_SNAPSHOT",
+        "reviewer_requests_after_block": "NOT PERMITTED",
+        "publication": "NOT AUTHORIZED",
+    }
+    path = Path(folder) / f"source-review-round-{round_number:02d}-terminal-gate.json"
+    if path.exists():
+        require(read_json(path) == record,
+                "Saved terminal source gate differs from frozen evidence")
+    else:
+        save_new(path, record)
+    return {
+        "status": record["status"],
+        "completed_review_round": round_number,
+        "blocked_next_review_round": round_number+1,
+        "parent_review_input_sha256": parent_sha,
+        "proposed_correction_sha256": record["proposed_correction_sha256"],
+        "directional_eligibility": counts,
+        "new_research_required": True,
+        "publication": "NOT AUTHORIZED",
+    }
+
+
 def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                                   now, common, original_cutoff=None,
                                   allow_new_after_unknown=False,
@@ -497,6 +546,19 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
     initial_digest = sha(sample)
     require(initial_digest == input_sha, "Initial closed review input changed")
     packet = copy.deepcopy(sample)
+    # Old completed quote-only review packets cannot be retroactively
+    # recertified under today's stronger directional standard. Fail BEFORE
+    # requesting another review and retain all of their original artifacts.
+    already_staged = folder / "source-review-round-02-input.json"
+    if sample.get("claim_evidence_register") and already_staged.exists():
+        old = read_json(already_staged)
+        require(isinstance(old, dict) and
+                isinstance(old.get("sample"), dict),
+                "Malformed previously staged source review")
+        require(old["sample"].get("quote_separation_version") == 2,
+                "Prior quote-only review packet is historical and already "
+                "incompatible with directional eligibility. No new reviewer "
+                "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
     if original_register is not None:
         from source_passage_audit import verify_register
@@ -504,6 +566,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                         history_sha=sample.get("published_history_sha256"),
                         original_cutoff=sample.get("research_as_of"))
     rounds = []
+    terminal_gate = None
     known_unknown = set()
     for number in range(1, max_rounds + 1):
         if number > 1:
@@ -566,6 +629,17 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 save_new(reason_path, details)
             break
         next_path = folder / f"source-review-round-{number+1:02d}-input.json"
+        if (original_register is not None and enforce_guards
+                and amended.get("quote_separation_version") == 2):
+            allowed = eligibility(amended)
+            if allowed["failures"]:
+                require(not next_path.exists(),
+                        "An unreviewable corrected packet was already staged; "
+                        "do not rewrite or repeat historical paid reviews")
+                terminal_gate = save_terminal_evidence_gate(
+                    folder, number, digest, amended, details)
+                status = "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE"
+                break
         expected = {"round": number+1, "parent_sha256": digest,
                     "input_sha256": sha(amended), "sample": amended,
                     "correction": details,
@@ -603,6 +677,12 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                "limitations": "All rejected review versions are preserved. "
                    "Only conservative exclusions and qualifications, not new "
                    "research verification, were permitted."}
+    if terminal_gate is not None:
+        outcome["terminal_evidence_gate"] = terminal_gate
+        outcome["limitations"] += (
+            " A monotone source-diversity failure blocked additional paid "
+            "affirmative/critical review before the next round. "
+            "New dated source research is required.")
     out = folder / "source-review-cycles-outcome.json"
     if out.exists():
         historical = read_json(out)
@@ -615,9 +695,11 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                         "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE"
                     and historical.get("original_review_input_sha256") == input_sha
                     and historical.get("original_research_cutoff") == original_cutoff
-                    and len(historical.get("review_rounds", [])) < len(rounds)
+                    and len(historical.get("review_rounds", [])) <= len(rounds)
                     and historical["review_rounds"] ==
                         outcome["review_rounds"][:len(historical["review_rounds"])]
+                    and (len(historical["review_rounds"]) < len(rounds)
+                         or terminal_gate is not None)
                     and (folder / "source-review-round-01-blocked.json").exists(),
                     "Prior alternating-review outcome differs from saved review record")
             # The compatibility file is an ADDITION, never a replacement.
