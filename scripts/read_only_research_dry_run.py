@@ -178,7 +178,8 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             original_cutoff=(snapshot["cutoff_at"] if snapshot else None),
             allow_new_after_unknown=(
                 os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"),
-            enable_corrections=(researcher is LIVE_RESEARCHER))
+            enable_corrections=(researcher is LIVE_RESEARCHER),
+            enforce_guards=(researcher is LIVE_RESEARCHER))
         status = cycles["status"]
         reviewers = cycles["final_reviewers"]
     finally:
