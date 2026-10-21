@@ -50,6 +50,17 @@ def _prompt(role, packet, digest, common):
             "a matched quote actually warrants its observation. "
             "A source metadata hit is not full-text inspection. "
             "Do not infer that the interval after research_as_of was searched. ")
+    if packet.get("editorial_narrowings"):
+        common += (
+            "\nEDITORIAL QUOTE-ONLY CORRECTION: The original claims and "
+            "every changed field are recorded in editorial_narrowings. "
+            "The new observation ONLY asserts that the original page "
+            "contained the specified exact quote; this does not validate "
+            "event truth, causal direction or probability. Challenge "
+            "semantic relevance, original source access, independence and "
+            "research cutoff. A rejected narrowed quotation must be "
+            "excluded, not rewritten repeatedly. Missing directional "
+            "balance is a deterministic blocker, never a passing review. ")
     return (
         "ROLE: " + role.upper() + " SOURCE QUALITY REVIEW. " +
         ("Seek verifiable supporting and disconfirming context. "
@@ -367,6 +378,10 @@ def deterministic_review_issues(packet, original_cutoff):
         claim_map = {item["evidence_id"]: item for item in register["claims"]}
         require(len(claim_map) == len(register["claims"]),
                 "Duplicate claim-passage evidence identifier")
+    if claim_map is not None:
+        validate_narrowings(packet)
+    narrowed_ids = {row["evidence_id"] for row in
+                    packet.get("editorial_narrowings", [])}
     source_map = {entry["url"]: entry
                   for entry in packet["source_quality_audit"]["sources"]}
     for item in packet["evidence"]:
@@ -389,8 +404,9 @@ def deterministic_review_issues(packet, original_cutoff):
             witness = claim_map.get(item.get("id"))
             if (not isinstance(witness, dict) or
                     witness.get("url") != url_key(item.get("source")) or
-                    witness.get("observation_sha256") !=
-                        hashlib.sha256(item["observation"].encode()).hexdigest() or
+                    (item.get("id") not in narrowed_ids and
+                     witness.get("observation_sha256") !=
+                        hashlib.sha256(item["observation"].encode()).hexdigest()) or
                     witness.get("status") != "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED"):
                 issues.append({"type": "claim_passage_not_demonstrated",
                                "location": item.get("id", "unknown"),
@@ -403,6 +419,34 @@ def deterministic_review_issues(packet, original_cutoff):
             issues.append({"type": "coverage_not_reconciled",
                            "location": category.get("category", "unknown"),
                            "reason": "No retained evidence in category after exclusions"})
+    if claim_map is not None and packet.get("source_diversity_guard"):
+        guard = packet["source_diversity_guard"]
+        require(isinstance(guard, dict)
+                and isinstance(guard.get("failures"), list),
+                "Malformed source evidence-diversity gate")
+        evidence = packet["evidence"]
+        publishers = {entry.get("publisher") for entry in evidence
+                      if entry.get("publisher")}
+        directions = {entry.get("direction") for entry in evidence}
+        failures = []
+        if len(evidence) < 6:
+            failures.append("fewer_than_six_source_observations")
+        if len(publishers) < 3:
+            failures.append("fewer_than_three_distinct_publishers")
+        if not {"raises", "lowers", "ambiguous"}.issubset(directions):
+            failures.append("missing_required_directional_balance")
+        if sum(e.get("evidence_status") == "new" for e in evidence) < 4:
+            failures.append("fewer_than_four_new_observations")
+        require(guard["failures"] == failures,
+                "Saved evidence-diversity safeguard contradicts revised evidence")
+        if failures:
+            issues.append({
+                "type": "insufficient_qualified_evidence_diversity",
+                "location": "corrected evidence set / source_diversity_guard",
+                "reason": "Quote-only source passages cannot substitute for "
+                          "the original minimum observational direction, "
+                          "publisher and new-evidence requirements: "
+                          + ", ".join(failures)})
     if (original_cutoff and packet.get("cutoff") != original_cutoff
             and not packet.get("unsearched_interval")):
         issues.append({"type": "cutoff_scope_mismatch",
