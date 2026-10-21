@@ -104,8 +104,11 @@ def conservative_revision(previous, issues, original_cutoff):
                       "excluded_evidence": dropped}
     effective_sources = {url_key(e["source"]) for e in kept}
     for src in quality["sources"]:
-        original_status = src["metadata_status"]
-        src["editorial_original_metadata_status"] = original_status
+        # Retain the TRUE original metadata status across all later rounds.
+        # Repeated correction cannot overwrite this provenance with an
+        # editorial label and falsely register a changed evidence version.
+        if "editorial_original_metadata_status" not in src:
+            src["editorial_original_metadata_status"] = src["metadata_status"]
         src["metadata_status"] = (
             "Publisher/site metadata only; original first-publication clock "
             "is not independently authenticated")
@@ -193,6 +196,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                                   now, common, original_cutoff=None,
                                   allow_new_after_unknown=False,
                                   enable_corrections=True,
+                                  enforce_guards=True,
                                   max_rounds=MAX_REVIEW_ROUNDS):
     """Both reviews of every immutable version, alternating until clean/capped.
 
@@ -228,7 +232,8 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 superseded_unknown_requests=known_unknown)
             known_unknown.update(response.pop("superseded_unknown_requests"))
             result[role] = response
-        invariant_issues = deterministic_review_issues(packet, original_cutoff)
+        invariant_issues = (deterministic_review_issues(packet, original_cutoff)
+                            if enforce_guards else [])
         clean = (all(r["approved"] and not r["issues"] for r in result.values())
                  and not invariant_issues)
         record = {"round": number, "input_sha256": digest,
