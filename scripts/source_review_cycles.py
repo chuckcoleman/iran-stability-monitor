@@ -320,7 +320,8 @@ def deterministic_review_issues(packet, original_cutoff):
             issues.append({"type": "unverified_evidence",
                            "location": item.get("id", "unknown"),
                            "reason": "Unverified source cannot support a scored directional claim"})
-        if (source and source.get("origin") == "official_or_advocacy_claim"
+        if (claim_map is not None and source
+                and source.get("origin") == "official_or_advocacy_claim"
                 and source.get("classification") == "direct_observation"):
             issues.append({"type": "official_claim_misclassified",
                            "location": item.get("id", "unknown"),
@@ -336,7 +337,7 @@ def deterministic_review_issues(packet, original_cutoff):
                                "location": item.get("id", "unknown"),
                                "reason": "Exact short original-page quotation absent "
                                          "or does not match the frozen claim"})
-    for category in packet.get("coverage", []):
+    for category in (packet.get("coverage", []) if claim_map is not None else []):
         if (category.get("original_outcome") == "eligible_reporting_found"
                 and not category.get("retained_evidence_ids")
                 and category.get("outcome") == "eligible_reporting_found"):
