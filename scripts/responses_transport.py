@@ -22,6 +22,7 @@ POLL_STATES = frozenset(("queued", "in_progress"))
 MAX_POLL_SECONDS = 1200
 POLL_INTERVAL_SECONDS = 6
 CREATE_TIMEOUT_SECONDS = 60
+NONSEARCH_CREATE_TIMEOUT_SECONDS = 240
 GET_TIMEOUT_SECONDS = 35
 MAX_GET_NETWORK_FAILURES = 3
 MAX_POLLS = 240
@@ -162,7 +163,8 @@ def request_response(payload, *, search, token_supplier, audit_dir,
                                               "Authorization": "Bearer " + token})
         save("create_sent_acknowledgement_pending", post_attempts=1)
         try:
-            with opener(req, timeout=CREATE_TIMEOUT_SECONDS) as response:
+            with opener(req, timeout=(CREATE_TIMEOUT_SECONDS if search else
+                                  NONSEARCH_CREATE_TIMEOUT_SECONDS)) as response:
                 initial = json.load(response)
         except urllib.error.HTTPError as exc:
             save("create_http_error", http_status=exc.code)
