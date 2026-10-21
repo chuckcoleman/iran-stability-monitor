@@ -204,7 +204,12 @@ def batch_prompt(category, snapshot):
         "public HTTPS URL), source_title, publisher, reliability (High, "
         "Medium-high, Medium or Low), affects (array), evidence_status "
         "(new or carried_forward with existing id), impact_magnitude "
-        "(minor/moderate/major), direction (raises/lowers/ambiguous). "
+        "(minor/moderate/major), direction (raises/lowers/ambiguous), "
+        "and support_quote (an EXACT four-to-twenty-five-word verbatim quote "
+        "from the original public article body, or null when unavailable). "
+        "Never invent a quote or copy a search snippet as original full text. "
+        "Each quoted original will be fetched separately and checked byte-for-byte "
+        "against the visible article text; unsupported claims remain unverified. "
         "Do not misrepresent older news as a new incident. "
         "One coverage row has category, queries (actual searched topic/outlet "
         "examples), outcome (eligible_reporting_found, searched_no_eligible_evidence, "
@@ -258,6 +263,12 @@ def _validate_batch(category, obj, citations, calls, snapshot):
     for item in evidence:
         if not isinstance(item, dict):
             raise ValueError("Malformed stage evidence item")
+        quote = item.get("support_quote")
+        if quote is not None and (
+                not isinstance(quote, str) or
+                len(quote.strip().split()) > 25 or
+                len(quote.strip()) > 900):
+            raise ValueError("Stage supplied an invalid or oversized claim quote")
         try:
             event_day = dt.date.fromisoformat(item["event_date"])
         except (ValueError, TypeError, KeyError):

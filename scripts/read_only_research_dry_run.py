@@ -30,6 +30,7 @@ from source_review_resume import (
     load_or_save_reconciliation, load_or_capture_quality,
     load_or_create_review_input)
 from source_review_cycles import run_alternating_review_cycles
+from source_passage_audit import build_claim_register
 
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 from source_citation_reconciliation import (
@@ -162,7 +163,12 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         quality=quality, baseline_sha=baseline_sha, snapshot=snapshot,
         archive=archive, date=day, now=now,
         freeze=lambda obj, urls, old, date, stamp: freeze_evidence(
-            obj, urls, old, date, stamp, metadata))
+            obj, urls, old, date, stamp, metadata),
+        claim_register_builder=(
+            (lambda frozen: build_claim_register(
+                folder, research=result, frozen=frozen,
+                baseline_sha=baseline_sha, snapshot=snapshot))
+            if researcher is LIVE_RESEARCHER else None))
     frozen = sample["evidence"]
     research_as_of = (snapshot["cutoff_at"] if snapshot is not None
                       else sample.get("research_as_of", cutoff.isoformat()))
@@ -198,6 +204,12 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     report={"status":status,"reviewers":reviewers,
             "review_rounds":cycles["review_rounds"],
             "final_review_input_sha256":cycles["final_review_input_sha256"],
+            "original_claim_evidence_register_sha256": (
+                hashlib.sha256(json.dumps(
+                    sample["claim_evidence_register"], sort_keys=True,
+                    ensure_ascii=False, separators=(",", ":"),
+                    allow_nan=False).encode()).hexdigest()
+                if "claim_evidence_register" in sample else None),
             "source_stage_snapshot_sha256": (
                 snapshot["snapshot_sha256"] if snapshot else None),
             "completed_source_categories": (

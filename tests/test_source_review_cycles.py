@@ -14,7 +14,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from source_research_batches import sha, read_json
 from source_review_cycles import (run_alternating_review_cycles,
-                                  conservative_revision, deterministic_review_issues)
+                                  conservative_revision, deterministic_review_issues,
+                                  validate_archived_conservative_revision)
 
 NOW = dt.datetime(2026, 10, 21, 15, 0, tzinfo=dt.timezone.utc)
 ORIGINAL = "2026-10-21T09:28:21-04:00"
@@ -171,6 +172,68 @@ class AlternatingCyclesTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "differs|invalid parent or hash"):
             self.run_review(reviewer=lambda *args:
                             self.fail("No new model call allowed"))
+
+    def test_coverage_outcome_reconciles_after_exclusion_and_official_claim_downgrades(self):
+        prior = packet()
+        excluded = prior["evidence"][0]
+        official = prior["evidence"][1]
+        prior["coverage"][0].update({
+            "outcome": "eligible_reporting_found",
+            "original_urls": [excluded["source"]]})
+        prior["source_quality_audit"]["sources"][1]["origin"] = (
+            "official_or_advocacy_claim")
+        prior["source_quality_audit"]["sources"][1]["classification"] = (
+            "direct_observation")
+        revised, changes = conservative_revision(prior, [{
+            "type": "unsupported",
+            "location": excluded["id"],
+            "reason": "The first source was not retrievable."
+        }], ORIGINAL)
+        self.assertIsNotNone(revised)
+        category = revised["coverage"][0]
+        self.assertEqual(category["original_outcome"],
+                         "eligible_reporting_found")
+        self.assertEqual(category["outcome"], "inaccessible_or_incomplete")
+        self.assertEqual(category["original_urls"], [excluded["source"]])
+        self.assertEqual(category["retained_evidence_ids"], [])
+        self.assertIn("no qualified new evidence",
+                      category["limitations"])
+        revised_official = next(
+            row for row in revised["source_quality_audit"]["sources"]
+            if row["url"] == official["source"])
+        self.assertEqual(revised_official["classification"],
+                         "attributed_claim")
+        self.assertIn("official_statement_downgraded_to_attributed_claim",
+                      revised_official["flags"])
+        self.assertEqual(prior["source_quality_audit"]["sources"][1][
+                         "classification"], "direct_observation")
+        self.assertEqual(len(changes["excluded_evidence"]), 1)
+
+    def test_historical_rejected_packet_replays_without_retroactive_rewrite(self):
+        parent = packet()
+        draft, _ = conservative_revision(
+            parent, [{"type": "unavailable",
+                      "location": "E-20261021-01",
+                      "reason": "Earlier source could not be inspected"}], ORIGINAL)
+        self.assertIsNotNone(draft)
+        # Simulate the immutable earlier conservative packet, saved before
+        # claim-register and category-outcome reconciliation were introduced.
+        old_saved = copy.deepcopy(draft)
+        for category in old_saved["coverage"]:
+            category.pop("original_outcome", None)
+            category.pop("retained_evidence_ids", None)
+        self.assertTrue(validate_archived_conservative_revision(
+            parent, old_saved, ORIGINAL))
+        altered = copy.deepcopy(old_saved)
+        altered["evidence"][0]["observation"] = (
+            "A new claim whose original source was never inspected")
+        with self.assertRaisesRegex(ValueError, "changed or invented"):
+            validate_archived_conservative_revision(parent, altered, ORIGINAL)
+        new_link = copy.deepcopy(old_saved)
+        new_link["coverage"][0]["original_urls"] = [
+            "https://unknown.example.org/unsupported"]
+        with self.assertRaisesRegex(ValueError, "original source URLs"):
+            validate_archived_conservative_revision(parent, new_link, ORIGINAL)
 
     def test_not_enough_qualified_evidence_blocks_instead_of_fabricating(self):
         draft = packet()
