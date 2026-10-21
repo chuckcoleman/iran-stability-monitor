@@ -295,7 +295,7 @@ def _normalize_limitation_lists(original):
                     or any(not isinstance(v, str) or not v.strip()
                            or len(v) > 6000 for v in value)):
                 raise ValueError("Malformed limitations list in source research")
-            joined = "\\n".join(v.strip() for v in value)
+            joined = "\n".join(v.strip() for v in value)
             if len(joined) > 24000:
                 raise ValueError("Source research limitations exceed normalization bound")
             entry["limitations"] = joined
