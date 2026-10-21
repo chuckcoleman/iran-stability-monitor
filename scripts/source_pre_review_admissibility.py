@@ -163,6 +163,23 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
                 "PUBLISHER_REPORTED_PRE_CUTOFF_TIME_NOT_FIRST_PUBLICATION_PROOF",
                 "PUBLISHER_PRIOR_DATE_NOT_FIRST_PUBLICATION_PROOF"):
             reasons.append(pub_status)
+        # A source cannot report a completed incident that had not yet
+        # happened on the publication date appearing on that very page.
+        # Publisher clocks are unverified but may still disprove impossible
+        # chronology. For a range of metadata candidates, use the latest.
+        try:
+            published_days = [
+                dt.date.fromisoformat(x)
+                for x in source.get("publication_dates_from_page", [])]
+            if source.get("source_publication_time"):
+                reported = dt.datetime.fromisoformat(
+                    source["source_publication_time"].replace("Z", "+00:00"))
+                published_days.append(reported.date())
+            event_day = dt.date.fromisoformat(entry["event_date"])
+            if published_days and event_day > max(published_days):
+                reasons.append("MODEL_EVENT_OCCURS_AFTER_ORIGINAL_REPORT_DATE")
+        except (ValueError, TypeError, AttributeError, KeyError):
+            reasons.append("INVALID_ORIGINAL_SOURCE_EVENT_CHRONOLOGY")
         if not original:
             reasons.append("NO_UNIQUE_ORIGINAL_MODEL_CLAIM")
             effect_type, basis = None, None
