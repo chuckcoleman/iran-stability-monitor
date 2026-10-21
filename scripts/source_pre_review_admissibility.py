@@ -43,7 +43,7 @@ def require(ok, message):
 
 def _words(text):
     require(isinstance(text, str), "Source-claim text is not a string")
-    return set(re.findall(r"[a-z]{4,}", text.lower())) - STOP
+    return set(re.findall(r"[^\\W\\d_]{4,}", text.casefold(), flags=re.UNICODE)) - STOP
 
 
 def _event_date_status(entry, cutoff):
