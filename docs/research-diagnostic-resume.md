@@ -204,3 +204,55 @@ run). As before, **both alternating affirmative and critical reviews**
 must independently approve the actual source passages and qualifications
 on the same closed evidence snapshot. This recovery does **not** certify
 substantive claims, current events or publication readiness.
+
+## Partial evidence corrections after completed independent reviews
+
+The diagnostic no longer excludes an entire original observation **solely because
+an affirmative or critical reviewer mentions its evidence ID**. When an
+original-source passage was independently captured, the correction can create
+a strictly weaker, **quote-only** candidate: it attributes the **exact** saved
+25-word-or-shorter excerpt to the source, makes no claim that it is factually
+correct, resets direction to `ambiguous`, reduces reliability and impact to
+`Low`/`minor`, and removes scored-event effects. It **does not** synthesize
+new facts, pull a new article, infer causal impact, or re-date evidence.
+`editorial_narrowings` saves the full original and replacement records,
+the exact passage digest, and every objection behind the change. The
+original saved source review and research body remain unchanged.
+
+A quotation is **not** admissible merely because its words were found.
+Unretrievable original passages, a passage with no substantive findings
+(such as a generic estimate caveat or a methodology-only excerpt), missing
+speaker/context, unresolved pre-cutoff timing, or a **second critical
+rejection** of an already-narrowed quotation cause exclusion rather than
+another automatic paraphrase. Original historical carried-forward
+observations may only be retained unchanged or excluded from the new
+diagnostic; they cannot be reinterpreted through a source quote.
+
+Source-quality annotations and each of the six coverage classes are
+reconciled against surviving evidence. The original classifications and
+claimed supporting URLs remain in immutable audits. Newly narrowed
+quotations **never count as demonstrated changes in Iranian stability**;
+they can be independently assessed by the next mandatory affirmative
+then critical review of the **same updated immutable evidence hash**.
+
+The original minimum evidence counts, publisher diversity and directional
+balance **remain blocking requirements**. A corrected source-only diagnostic
+can retain and review the provisional evidence version even when the
+required directions are absent, but the recorded
+`source_diversity_guard` independently prevents clean approval or any
+forecast/publication. Two reviewer approvals cannot overrule that block.
+If no defensible new correction remains, the diagnostic stops instead of
+paying repeatedly for unchanged evidence.
+
+### Continue rejected run 39649947370
+
+Use `mode=research-dry-run`, `resume_run_id=39649947370` and
+`allow_new_review_after_unknown=false` on `main`. The earlier six-category
+research, passage register and completed first affirmative/critical round
+are restored and verified without another paid research submission. The old
+`source-review-cycles-outcome.json` and rejected-round blocker are retained
+unchanged; a continuation writes
+`source-review-cycles-outcome-revised.json` with explicit parent hashes.
+Any **new** review round can entail new model charges. The closed initial
+research cutoff and recorded unsearched period remain unchanged.
+Nothing in this diagnostic authorizes publication.
