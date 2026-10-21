@@ -134,7 +134,8 @@ def load_or_capture_quality(folder, result, citations, metadata_reader, now,
 
 def load_or_create_review_input(folder, *, result, citations, coverage, quality,
                                 baseline_sha, snapshot, archive, date, now,
-                                freeze, claim_register_builder=None):
+                                freeze, claim_register_builder=None,
+                                status_reconciliation=None):
     folder = Path(folder)
     path = folder / "source-review-input.json"
     snap_sha = snapshot["snapshot_sha256"] if snapshot else None
@@ -148,6 +149,15 @@ def load_or_create_review_input(folder, *, result, citations, coverage, quality,
                and stored.get("source_quality_sha256") == quality_sha,
                "Preserved review-input snapshot differs from research or history")
         sample = stored.get("sample")
+        if status_reconciliation is not None:
+            _check(isinstance(sample, dict) and
+                   sample.get("historical_evidence_status_correction") ==
+                        status_reconciliation,
+                   "Saved review input lacks verified historical status correction")
+        else:
+            _check(isinstance(sample, dict) and
+                   "historical_evidence_status_correction" not in sample,
+                   "Unexpected historical status correction in prior review")
         _check(isinstance(sample, dict)
                and sample.get("published_history_sha256") == baseline_sha
                and sample.get("source_quality_audit") == quality
@@ -200,6 +210,13 @@ def load_or_create_review_input(folder, *, result, citations, coverage, quality,
                                  "that sources after research_as_of were searched."),
               "published_history_sha256": baseline_sha,
               "mode": "RESEARCH_ONLY_TEST_NO_SCORED_FORECASTS"}
+    if status_reconciliation is not None:
+        _check(status_reconciliation.get("original_research_sha256") ==
+               source_sha and
+               status_reconciliation.get("historical_evidence_sha256") is not None
+               and status_reconciliation.get("snapshot_sha256") == snap_sha,
+               "Historical status correction is not bound to original research")
+        sample["historical_evidence_status_correction"] = status_reconciliation
     if claim_register_builder is not None:
         from source_passage_audit import verify_register
         witness = claim_register_builder(frozen)
