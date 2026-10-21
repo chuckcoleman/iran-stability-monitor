@@ -154,7 +154,7 @@ class ResumeTests(unittest.TestCase):
         self.assertIn("timeout-minutes: 45", workflow)
         self.assertIn("resume_run_id:", workflow)
         self.assertIn("actions/download-artifact@v4", workflow)
-        self.assertIn("IRAN_RESUME_AUDIT_DIR:", workflow)
+        self.assertIn("IRAN_STAGED_RESUME:", workflow)
         self.assertIn("inputs.mode == 'research-dry-run'", workflow)
         self.assertIn("if: always()", workflow)
         self.assertNotIn("  schedule:", workflow)
