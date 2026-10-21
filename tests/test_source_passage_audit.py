@@ -161,6 +161,10 @@ class PassageWitnessTests(unittest.TestCase):
         bad["claims"][0]["first_publication_verified"] = True
         with self.assertRaisesRegex(ValueError, "promoted"):
             verify_register(bad, frozen())
+        bad_clock = copy.deepcopy(register)
+        bad_clock["claims"][0]["inspection_after_original_cutoff"] = False
+        with self.assertRaisesRegex(ValueError, "contradicts"):
+            verify_register(bad_clock, frozen(), original_cutoff=AS_OF)
 
     def test_new_review_input_binds_register_without_changing_legacy(self):
         snapshot = {"snapshot_sha256": "a"*64, "cutoff_at": AS_OF}
