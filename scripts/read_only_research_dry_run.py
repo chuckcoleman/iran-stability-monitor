@@ -108,6 +108,8 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         else:
             result,citations=researcher(
                 RESEARCH.format(date=day, prior=json.dumps(saved,ensure_ascii=False)), True)
+            if researcher is llm:
+                actual_calls=load_matching_search_trace(folder,result)
         check(isinstance(result,dict), "Source model returned no structured evidence")
         if researcher is llm:
             result,citations,actual_calls=resolve_source_citations(
