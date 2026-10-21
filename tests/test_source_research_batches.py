@@ -75,6 +75,14 @@ class BatchResearchTests(unittest.TestCase):
         path.write_text(json.dumps(record), encoding="utf-8")
         return obj, {url}
 
+    def update_synthetic_tool_record(self, obj):
+        """Make a malformed model output match the mocked API-returned record."""
+        files = sorted(self.dir.glob("response-*.json"))
+        self.assertTrue(files)
+        row = read_json(files[-1])
+        row["result"] = obj
+        files[-1].write_text(json.dumps(row), encoding="utf-8")
+
     def run_sweep(self, researcher=None, *, resume=False, when=STAMP, baseline=None):
         return batched_research(
             researcher=researcher or self.build_response,
@@ -140,6 +148,7 @@ class BatchResearchTests(unittest.TestCase):
         def wrong(prompt, search):
             obj, urls = self.build_response(prompt, search)
             obj["coverage_audit"][0]["category"] = "other"
+            self.update_synthetic_tool_record(obj)
             return obj, urls
         with self.assertRaisesRegex(ValueError, "wrong source category"):
             self.run_sweep(researcher=wrong)
@@ -149,6 +158,7 @@ class BatchResearchTests(unittest.TestCase):
         def future(prompt, search):
             obj, urls = self.build_response(prompt, search)
             obj["evidence"][0]["event_date"] = "2026-10-22"
+            self.update_synthetic_tool_record(obj)
             return obj, urls
         with self.assertRaisesRegex(ValueError, "Post-snapshot event"):
             self.run_sweep(researcher=future)
@@ -158,6 +168,7 @@ class BatchResearchTests(unittest.TestCase):
         def omitted(prompt, search):
             obj, urls = self.build_response(prompt, search)
             obj["source_quality"] = []
+            self.update_synthetic_tool_record(obj)
             return obj, urls
         with self.assertRaisesRegex(ValueError, "omits source URLs"):
             self.run_sweep(researcher=omitted)
