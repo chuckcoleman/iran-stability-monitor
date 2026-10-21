@@ -993,6 +993,9 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
             key=url_key(item.get("source"))
             if key in metadata:
                 metadata[item["source"]]=metadata[key]
+    if researcher is llm:
+        from source_research_batches import require_pre_snapshot_publication
+        require_pre_snapshot_publication(result, metadata, snapshot)
     cutoff=now()
     quality=source_quality_audit(result,metadata,strict=(researcher is llm),
                                  cutoff=cutoff)
