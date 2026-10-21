@@ -62,7 +62,7 @@ class VisiblePassages(HTMLParser):
             return
         if self.active and tag == self.active[-1][0]:
             _, pieces = self.active.pop()
-            value = normalize_text(" ".join(pieces))
+            value = normalize_text("".join(pieces))
             if len(value) >= 4:
                 self.blocks.append(value)
 
