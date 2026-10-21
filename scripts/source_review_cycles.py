@@ -492,11 +492,20 @@ def deterministic_review_issues(packet, original_cutoff):
                           "independent directional observations, publisher "
                           "diversity or four new observations: "
                           + ", ".join(failures)})
-    if (original_cutoff and packet.get("cutoff") != original_cutoff
-            and not packet.get("unsearched_interval")):
-        issues.append({"type": "cutoff_scope_mismatch",
-                       "location": "coverage / all six research categories",
-                       "reason": "Later review preparation was not part of the original search"})
+    if original_cutoff and packet.get("cutoff") != original_cutoff:
+        explicit_asof = (
+            packet.get("research_as_of") == original_cutoff and
+            packet.get("post_asof_window") == "NOT_SEARCHED")
+        archived_interval = (
+            isinstance(packet.get("unsearched_interval"), dict) and
+            packet["unsearched_interval"].get("start") == original_cutoff and
+            packet["unsearched_interval"].get("status") ==
+                "NOT_SEARCHED_OR_CLAIMED_AS_COVERED")
+        if not (explicit_asof or archived_interval):
+            issues.append({"type": "cutoff_scope_mismatch",
+                           "location": "coverage / all six research categories",
+                           "reason": "Later review preparation was not part of "
+                                     "the original source-research search window"})
     return issues
 
 
