@@ -14,8 +14,9 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from assessment_pipeline import responses_payload
 from source_research_batches import (
-    CATEGORIES, batch_prompt, batched_research, canonical, combine, prior_index,
-    read_json, research_snapshot, require_pre_snapshot_publication, sha)
+    CATEGORIES, _saved_response, batch_prompt, batched_research, canonical,
+    combine, prior_index, read_json, research_snapshot,
+    require_pre_snapshot_publication, sha)
 from source_search_trace import observed_search_calls
 
 STAMP = dt.datetime(2026, 10, 20, 20, 0, tzinfo=dt.timezone(dt.timedelta(hours=-4)))
@@ -228,6 +229,29 @@ class BatchResearchTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "checkpoint differs"):
             self.run_sweep(resume=True, when=LATER,
                      researcher=lambda p, s: self.fail("No new request"))
+
+    def test_restored_live_response_requires_matching_transport_journal(self):
+        self.run_sweep()
+        entry = read_json(self.dir / "response-1.json")
+        digest = entry["prompt_sha256"]
+        snap = read_json(self.dir / "research-snapshot.json")
+        prompt = batch_prompt(CATEGORIES[0], snap)
+        request = responses_payload(prompt, True)
+        request["background"] = True
+        request_sha = sha(request)
+        with self.assertRaisesRegex(ValueError, "matching completed API transport"):
+            _saved_response(self.dir, digest, "gpt-6.1-sol",
+                            request_sha=request_sha, require_transport=True)
+        (self.dir / "api-request-tested.json").write_text(json.dumps({
+            "request_sha256": request_sha, "response_id": entry["response_id"],
+            "status": "api_completed_output_not_yet_validated",
+            "post_attempts": 1}))
+        original = _saved_response(self.dir, digest, "gpt-6.1-sol",
+                                   request_sha=request_sha, require_transport=True)
+        self.assertEqual(original["result"], entry["result"])
+        with self.assertRaisesRegex(ValueError, "matching completed API transport"):
+            _saved_response(self.dir, digest, "gpt-6.1-sol",
+                            request_sha="wrong_sha", require_transport=True)
 
     def test_missing_category_cannot_be_approved(self):
         self.run_sweep()
