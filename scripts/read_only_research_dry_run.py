@@ -163,6 +163,16 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         freeze=lambda obj, urls, old, date, stamp: freeze_evidence(
             obj, urls, old, date, stamp, metadata))
     frozen = sample["evidence"]
+    research_as_of = (snapshot["cutoff_at"] if snapshot is not None
+                      else sample.get("research_as_of", cutoff.isoformat()))
+    research_scope = {
+        "research_as_of": research_as_of,
+        "metadata_processing_cutoff": cutoff.isoformat(),
+        "post_snapshot_interval": "NOT_SEARCHED",
+        "notice": ("Original reporting was searched as of research_as_of; "
+                   "later metadata capture or review does not constitute "
+                   "a search of the intervening period.")
+    }
     canonical = json.dumps(sample, ensure_ascii=False, sort_keys=True,
                            separators=(",", ":"), allow_nan=False)
     check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
@@ -175,7 +185,11 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                     ("Seek verifiable supporting and disconfirming context. "
                      if role=="affirmative" else
                      "Adversarially challenge all substantive claims and source gaps. ") +
-                    SOURCE_REVIEW_COMMON + "\nIdentical input SHA-256: " +
+                    SOURCE_REVIEW_COMMON +
+                    ("\nTIME-SCOPE DISTINCTION: "+json.dumps(research_scope,
+                        sort_keys=True, ensure_ascii=False)
+                     if "research_as_of" in sample else "") +
+                    "\nIdentical input SHA-256: " +
                     frozen_sha + "\nInput: " + canonical)
             previous_audit = os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
             os.environ["IRAN_OFFLINE_REVIEW_DIR"] = str(folder)
@@ -210,6 +224,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "baseline_history_sha256":baseline_sha,
             "actual_cutoff":cutoff.isoformat(),
             "original_research_cutoff": (snapshot["cutoff_at"] if snapshot else None),
+            "source_scope":research_scope,
             "source_coverage":coverage,
             "source_metadata":metadata,"source_quality_audit":quality,
             "frozen_test_evidence":frozen,
