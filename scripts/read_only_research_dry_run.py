@@ -215,6 +215,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
               "Source dry-run altered the immutable published history")
     report={"status":status,"reviewers":reviewers,
             "review_rounds":cycles["review_rounds"],
+            "terminal_evidence_gate":cycles.get("terminal_evidence_gate"),
             "final_review_input_sha256":cycles["final_review_input_sha256"],
             "original_claim_evidence_register_sha256": (
                 hashlib.sha256(json.dumps(
@@ -281,6 +282,13 @@ def main(argv=None):
     args=parser.parse_args(argv)
     summary=research_rehearsal(output=args.output_dir)
     print("SOURCE-ONLY LIVE TEST (NEVER PUBLISHABLE): "+summary["status"])
+    terminal = summary.get("terminal_evidence_gate")
+    if terminal:
+        missing = terminal["directional_eligibility"]["failures"]
+        print("TERMINAL CLOSED-SOURCE DEFICIENCY; NO FURTHER PAID REVIEWS: "
+              + ", ".join(missing)
+              + ". A NEW DATED SOURCE-RESEARCH SNAPSHOT IS REQUIRED.",
+              flush=True)
     # A reviewer approval is necessary but never sufficient. Terminal
     # evidence gates, missing directions, insufficient source counts,
     # incomplete corrections and other invariant failures MUST produce a
