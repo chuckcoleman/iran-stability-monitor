@@ -56,6 +56,7 @@ def fixture():
         row = sample["claim_evidence_register"]["claims"][i]
         row["observation_sha256"] = hashlib.sha256(
             entry["observation"].encode()).hexdigest()
+        row["content_type"] = "text/html"  # actual original-source fixture
         basis = (
             "The original source records limited statement numbered " +
             str(i+1) +
