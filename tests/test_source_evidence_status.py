@@ -296,6 +296,29 @@ class HistoricalStatusTests(unittest.TestCase):
         self.assertEqual(corrected["evidence"][-1]["id"], TARGET)
         self.assertEqual(audit["changes"][0]["index"], 6)
 
+    def test_v3_pre_review_prompt_and_missing_model_annotation_do_not_replay_paid_search(self):
+        category = CATEGORIES[0]
+        v2 = snapshot(self.historical, version=2)
+        v3 = snapshot(self.historical, version=3)
+        old_prompt = batch_prompt(category, v2)
+        new_prompt = batch_prompt(category, v3)
+        self.assertIn("SEPARATE id field", old_prompt)
+        self.assertNotIn("MANDATORY V3 PRE-REVIEW SOURCE ADMISSION", old_prompt)
+        self.assertIn("MANDATORY V3 PRE-REVIEW SOURCE ADMISSION", new_prompt)
+        self.assertIn("direction_basis", new_prompt)
+        self.assertIn("background_context", new_prompt)
+        self.assertNotEqual(hashlib.sha256(old_prompt.encode()).hexdigest(),
+                            hashlib.sha256(new_prompt.encode()).hexdigest())
+        # A model may omit effect_type/rationale. Once paid, preserve that
+        # source stage and let the free pre-review gate hold out the claim.
+        url = "https://example.org/iran/original-review"
+        data = synthetic_group(category, url)
+        calls = observed_search_calls([{
+            "type": "web_search_call", "action": {
+                "sources": [{"url": url, "title": "Synthetic original source"}]}}])
+        result = _validate_batch(category, data, {url}, calls, v3)
+        self.assertIsInstance(result, dict)
+
     def test_new_snapshot_changes_prompt_without_modifying_legacy_v1_prompt(self):
         old = batch_prompt("economic_humanitarian_academic", self.snapshot)
         newer = batch_prompt("economic_humanitarian_academic",
