@@ -26,6 +26,10 @@ from source_quality_audit import (
     source_inventory, source_quality_audit, save_quality_audit,
     validate_source_review)
 from source_citation_resolution import resolve_source_citations
+from source_review_resume import (
+    load_or_save_reconciliation, load_or_capture_quality,
+    load_or_create_review_input, review_with_checkpoint)
+
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 from source_citation_reconciliation import (
     reconcile_source_citations, save_reconciliation, require_supported_citations)
@@ -119,60 +123,51 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             os.environ.pop("IRAN_OFFLINE_REVIEW_DIR",None)
         else:
             os.environ["IRAN_OFFLINE_REVIEW_DIR"]=previous_audit
-    reconciliation=reconcile_source_citations(result,citations,actual_calls)
-    save_reconciliation(folder,reconciliation)
+    reconciliation = load_or_save_reconciliation(
+        folder, result, citations, actual_calls)
     if reconciliation["unsupported"]:
-        # Preserve ALL claimed URLs and precisely why they cannot be admitted.
-        # This is a rejected test-only diagnostic, NOT reviewed evidence.
-        blocked={
-            "status":"UNSUPPORTED_CITATIONS_FLAGGED_NOT_PUBLISHABLE",
-            "source_citation_reconciliation":reconciliation,
-            "baseline_history_sha256":baseline_sha,
-            "prospective_forecasts":"NOT TESTED",
-            "affirmative_review":"NOT REACHED; PREFREEZE REJECTED",
-            "critical_review":"NOT REACHED; PREFREEZE REJECTED",
-            "freeze_evidence":"BLOCKED",
-            "GitHub_PR_or_Pages_or_X":"NOT INVOKED",
-            "limitations":"Uncited or unsupported URLs are kept as flagged claims, "
-                          "never silently dropped, rewritten or promoted to evidence."}
-        (folder/"research-dry-run.json").write_text(
-            json.dumps(blocked,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-        check((root/"data/history.json").read_bytes()==before,
+        blocked = {
+            "status": "UNSUPPORTED_CITATIONS_FLAGGED_NOT_PUBLISHABLE",
+            "source_citation_reconciliation": reconciliation,
+            "baseline_history_sha256": baseline_sha,
+            "prospective_forecasts": "NOT TESTED",
+            "affirmative_review": "NOT REACHED; PREFREEZE REJECTED",
+            "critical_review": "NOT REACHED; PREFREEZE REJECTED",
+            "freeze_evidence": "BLOCKED",
+            "GitHub_PR_or_Pages_or_X": "NOT INVOKED",
+            "limitations": "Unsupported claimed URLs remain flagged; no publication."
+        }
+        blocked_path = folder / "research-dry-run.json"
+        if blocked_path.exists():
+            check(json.loads(blocked_path.read_text()) == blocked,
+                  "Existing rejected audit differs; no overwrite")
+        else:
+            from source_research_batches import save_new
+            save_new(blocked_path, blocked)
+        check((root / "data/history.json").read_bytes() == before,
               "Flagged source dry-run changed published history")
         require_supported_citations(reconciliation)
-    coverage=validate_source_coverage_audit(result.get("coverage_audit"),citations)
+
+    coverage = validate_source_coverage_audit(
+        result.get("coverage_audit"), citations)
     if researcher is llm:
-        verify_claimed_source_links(coverage,actual_calls)
-    metadata={}
-    for url in source_inventory(result):
-        check(url_key(url) in {url_key(u) for u in citations},
-              "Source quality audit URL missing from citations")
-        metadata[url]=metadata_reader(url)
-    # Preserve the original URL lookup for freeze_evidence(), which retains
-    # the exact historic evidence link rather than rewriting it.
-    for item in result.get("evidence",[]):
-        if item.get("evidence_status","new")=="new":
-            key=url_key(item.get("source"))
-            if key in metadata:
-                metadata[item["source"]]=metadata[key]
-    if snapshot is not None:
-        require_pre_snapshot_publication(result, metadata, snapshot)
-    # Source retrieval during recovery is dated truthfully to the later run.
-    # The original source-publication bound is checked separately above.
-    cutoff=now()
-    quality=source_quality_audit(result,metadata,strict=(researcher is llm),
-                                 cutoff=cutoff)
-    save_quality_audit(folder,quality)
-    archive={"evidence": saved}
-    frozen=freeze_evidence(result,citations,archive,day,cutoff,metadata)
-    reviewers={}
-    sample={"evidence":frozen,"coverage":coverage,"source_quality_audit":quality,
-            "cutoff":cutoff.isoformat(),
-            "published_history_sha256":baseline_sha,
-            "mode":"RESEARCH_ONLY_TEST_NO_SCORED_FORECASTS"}
-    canonical=json.dumps(sample,ensure_ascii=False,sort_keys=True,
-                         separators=(",",":"),allow_nan=False)
-    frozen_sha=hashlib.sha256(canonical.encode()).hexdigest()
+        verify_claimed_source_links(coverage, actual_calls)
+    quality, metadata = load_or_capture_quality(
+        folder, result, citations, metadata_reader, now, snapshot,
+        baseline_sha, strict=(researcher is llm))
+    archive = {"evidence": saved}
+    sample, frozen_sha, cutoff = load_or_create_review_input(
+        folder, result=result, citations=citations, coverage=coverage,
+        quality=quality, baseline_sha=baseline_sha, snapshot=snapshot,
+        archive=archive, date=day, now=now,
+        freeze=lambda obj, urls, old, date, stamp: freeze_evidence(
+            obj, urls, old, date, stamp, metadata))
+    frozen = sample["evidence"]
+    canonical = json.dumps(sample, ensure_ascii=False, sort_keys=True,
+                           separators=(",", ":"), allow_nan=False)
+    check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
+          "Frozen source-review input digest mismatch")
+    reviewers = {}
     try:
         for role in ("affirmative","critical"):
             prompt=("ROLE: "+role.upper()+" SOURCE QUALITY REVIEW. " +
@@ -181,21 +176,19 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                      "Adversarially challenge all substantive claims and source gaps. ") +
                     SOURCE_REVIEW_COMMON + "\nIdentical input SHA-256: " +
                     frozen_sha + "\nInput: " + canonical)
-            previous_audit=os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
-            os.environ["IRAN_OFFLINE_REVIEW_DIR"]=str(folder)
+            previous_audit = os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
+            os.environ["IRAN_OFFLINE_REVIEW_DIR"] = str(folder)
             try:
-                response,_=reviewer(prompt,False)
+                reviewers[role] = review_with_checkpoint(
+                    folder, role=role, prompt=prompt, input_sha=frozen_sha,
+                    quality=quality, reviewer=reviewer, now=now,
+                    allow_new_after_unknown=(
+                        os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"))
             finally:
                 if previous_audit is None:
-                    os.environ.pop("IRAN_OFFLINE_REVIEW_DIR",None)
+                    os.environ.pop("IRAN_OFFLINE_REVIEW_DIR", None)
                 else:
-                    os.environ["IRAN_OFFLINE_REVIEW_DIR"]=previous_audit
-            issues=_review_issues(response,role)
-            if reviewer is llm:
-                validate_source_review(response,quality,role)
-            reviewers[role]={"approved":not bool(issues),"issues":issues,
-                             "source_reviews":response.get("source_reviews",[]),
-                             "completed_at":now().isoformat(),"draft_sha256":frozen_sha}
+                    os.environ["IRAN_OFFLINE_REVIEW_DIR"] = previous_audit
         approved=all(x["approved"] for x in reviewers.values())
         status=("RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE" if approved
                 else "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
@@ -227,7 +220,12 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                           "public deployment or social posting were tested. "
                           "A model-reported category audit does not prove every query ran."}
     dest=folder/"research-dry-run.json"
-    dest.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    if dest.exists():
+        check(json.loads(dest.read_text(encoding="utf-8")) == report,
+              "Existing completed diagnostic report differs; no overwrite")
+    else:
+        from source_research_batches import save_new
+        save_new(dest, report)
     check((root/"data/history.json").read_bytes()==before,
           "Source dry-run changed published history after audit")
     return report
