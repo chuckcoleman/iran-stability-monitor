@@ -126,7 +126,13 @@ For a **new** `research-dry-run` (leave `resume_run_id` empty), every new
 source-category search asks for a short, verbatim `support_quote` from its
 original public source, **or null** if no original text can be inspected.
 A separate bounded public-HTTPS fetch checks the source itself, using no
-publisher login and no private addresses or redirects. The diagnostic saves
+publisher login and no private addresses or redirects. If the research model
+has no usable quote, the inspector may suggest an **exact, short paragraph
+fragment from the independently fetched page**, selected using conservative
+vocabulary overlap with the claim. This is marked as a lexical candidate
+rather than model-verbatim support; **both** reviewers must decide whether
+it substantively supports the observation. No textual match or overlap is
+accepted as proof by itself. The diagnostic saves
 `claim-evidence-register.json` before the first affirmative review.
 
 Each claim is identified by the exact frozen evidence ID, original URL and
