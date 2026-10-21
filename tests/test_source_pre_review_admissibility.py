@@ -33,6 +33,7 @@ SNAPSHOT = {
 def fixture():
     sample = registered_packet()
     sample["research_as_of"] = ORIGINAL
+    sample["post_asof_window"] = "NOT_SEARCHED"
     sample["published_history_sha256"] = "f" * 64
     original = []
     for i, entry in enumerate(sample["evidence"]):
