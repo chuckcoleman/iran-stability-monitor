@@ -135,6 +135,48 @@ class AuditRecoveryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "differs"):
             recovery.load_or_create_review_input(self.dir, **changed)
 
+    def test_review_declares_immutable_research_asof_separate_from_processing(self):
+        study_result = study()
+        quality = source_quality_audit(study_result, metadata(), cutoff=NOW)
+        snap = {"snapshot_sha256": "d"*64,
+                "cutoff_at": "2026-10-21T12:00:00+00:00"}
+        seen = []
+        args = dict(result=study_result, citations={URL},
+                    coverage=study_result["coverage_audit"], quality=quality,
+                    baseline_sha=BASE, snapshot=snap,
+                    archive={"evidence":[]}, date="2026-10-21",
+                    now=lambda: NOW,
+                    freeze=lambda obj, citations, history, day, cutoff:
+                        seen.append(cutoff) or copy.deepcopy(study_result["evidence"]))
+        original = recovery.load_or_create_review_input(self.dir, **args)
+        saved = original[0]
+        self.assertEqual(saved["research_as_of"], snap["cutoff_at"])
+        self.assertEqual(saved["cutoff"], NOW.isoformat())
+        self.assertEqual(saved["post_asof_window"], "NOT_SEARCHED")
+        self.assertIn("NOT a claim", saved["cutoff_meaning"])
+        self.assertEqual(seen, [NOW])
+        repeated = recovery.load_or_create_review_input(self.dir, **args)
+        self.assertEqual(original, repeated)
+        self.assertEqual(seen, [NOW])
+        changed = dict(args, snapshot={**snap,
+                     "cutoff_at":"2026-10-21T12:30:00+00:00"})
+        with self.assertRaisesRegex(ValueError, "unsupported post-snapshot coverage"):
+            recovery.load_or_create_review_input(self.dir, **changed)
+
+    def test_future_asof_cannot_be_backdated_as_completed_research(self):
+        study_result = study()
+        quality = source_quality_audit(study_result, metadata(), cutoff=NOW)
+        snap = {"snapshot_sha256":"e"*64,
+                "cutoff_at":"2026-10-21T14:00:00+00:00"}
+        with self.assertRaisesRegex(ValueError,"Source snapshot is after"):
+            recovery.load_or_create_review_input(
+                self.dir, result=study_result, citations={URL},
+                coverage=study_result["coverage_audit"], quality=quality,
+                baseline_sha=BASE, snapshot=snap,
+                archive={"evidence":[]}, date="2026-10-21",
+                now=lambda:NOW,
+                freeze=lambda *args:self.fail("No freeze after future as-of"))
+
     def test_both_reviews_checkpoint_and_reuse_without_post(self):
         quality = source_quality_audit(study(), metadata(), cutoff=NOW)
         calls = []
