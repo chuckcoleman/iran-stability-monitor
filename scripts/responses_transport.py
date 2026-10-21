@@ -62,7 +62,8 @@ _RESUMABLE = frozenset((
 
 def _resume_candidate(folder, fingerprint, model, *, exclude=None):
     """Only reuse a known, acknowledged ID for an identical research request."""
-    folder = Path(folder)
+    folder = Path(folder).resolve()
+    exclude = Path(exclude).resolve() if exclude is not None else None
     if not folder.is_dir():
         raise RuntimeError("Resume audit directory missing; no POST attempted")
     matches = []
