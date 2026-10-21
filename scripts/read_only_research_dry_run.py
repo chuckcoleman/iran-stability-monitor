@@ -28,7 +28,8 @@ from source_quality_audit import (
 from source_citation_resolution import resolve_source_citations
 from source_review_resume import (
     load_or_save_reconciliation, load_or_capture_quality,
-    load_or_create_review_input, review_with_checkpoint)
+    load_or_create_review_input)
+from source_review_cycles import run_alternating_review_cycles
 
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 from source_citation_reconciliation import (
@@ -167,40 +168,26 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                            separators=(",", ":"), allow_nan=False)
     check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
           "Frozen source-review input digest mismatch")
-    reviewers = {}
-    superseded_unknown_requests = set()
     try:
-        for role in ("affirmative","critical"):
-            prompt=("ROLE: "+role.upper()+" SOURCE QUALITY REVIEW. " +
-                    ("Seek verifiable supporting and disconfirming context. "
-                     if role=="affirmative" else
-                     "Adversarially challenge all substantive claims and source gaps. ") +
-                    SOURCE_REVIEW_COMMON + "\nIdentical input SHA-256: " +
-                    frozen_sha + "\nInput: " + canonical)
-            previous_audit = os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
-            os.environ["IRAN_OFFLINE_REVIEW_DIR"] = str(folder)
-            try:
-                checked = review_with_checkpoint(
-                    folder, role=role, prompt=prompt, input_sha=frozen_sha,
-                    quality=quality, reviewer=reviewer, now=now,
-                    allow_new_after_unknown=(
-                        os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"),
-                    superseded_unknown_requests=superseded_unknown_requests)
-                superseded_unknown_requests.update(
-                    checked.pop("superseded_unknown_requests"))
-                reviewers[role] = checked
-            finally:
-                if previous_audit is None:
-                    os.environ.pop("IRAN_OFFLINE_REVIEW_DIR", None)
-                else:
-                    os.environ["IRAN_OFFLINE_REVIEW_DIR"] = previous_audit
-        approved=all(x["approved"] for x in reviewers.values())
-        status=("RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE" if approved
-                else "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
+        # In every source-review version, require AFFIRMATIVE then CRITICAL.
+        # A rejection causes a strictly conservative revised packet, followed
+        # by BOTH reviews again. Every version retains independent checkpoints.
+        cycles = run_alternating_review_cycles(
+            folder=folder, sample=sample, input_sha=frozen_sha,
+            reviewer=reviewer, now=now, common=SOURCE_REVIEW_COMMON,
+            original_cutoff=(snapshot["cutoff_at"] if snapshot else None),
+            allow_new_after_unknown=(
+                os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"),
+            enable_corrections=(researcher is LIVE_RESEARCHER),
+            enforce_guards=(researcher is LIVE_RESEARCHER))
+        status = cycles["status"]
+        reviewers = cycles["final_reviewers"]
     finally:
         check((root/"data/history.json").read_bytes()==before,
               "Source dry-run altered the immutable published history")
     report={"status":status,"reviewers":reviewers,
+            "review_rounds":cycles["review_rounds"],
+            "final_review_input_sha256":cycles["final_review_input_sha256"],
             "source_stage_snapshot_sha256": (
                 snapshot["snapshot_sha256"] if snapshot else None),
             "completed_source_categories": (
@@ -226,8 +213,22 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                           "A model-reported category audit does not prove every query ran."}
     dest=folder/"research-dry-run.json"
     if dest.exists():
-        check(json.loads(dest.read_text(encoding="utf-8")) == report,
-              "Existing completed diagnostic report differs; no overwrite")
+        original_report = json.loads(dest.read_text(encoding="utf-8"))
+        check(isinstance(original_report, dict)
+              and original_report.get("baseline_history_sha256") == baseline_sha
+              and original_report.get("research_input_sha256") == frozen_sha
+              and original_report.get("source_stage_snapshot_sha256") ==
+                  (snapshot["snapshot_sha256"] if snapshot else None),
+              "Existing original diagnostic belongs to a different research snapshot")
+        # Never overwrite the formerly rejected review report. The complete
+        # corrected review outcome is kept under its own immutable filename.
+        from source_research_batches import save_new
+        final_path = folder / "research-dry-run-revised.json"
+        if final_path.exists():
+            check(json.loads(final_path.read_text(encoding="utf-8")) == report,
+                  "Revised source diagnostic differs from saved round history")
+        else:
+            save_new(final_path, report)
     else:
         from source_research_batches import save_new
         save_new(dest, report)

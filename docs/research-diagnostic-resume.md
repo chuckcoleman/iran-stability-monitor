@@ -76,3 +76,46 @@ also requires explicit consent before another possible charge.
 A longer bounded (four-minute) non-search request timeout reduces premature
 review socket timeouts, but never turns a timeout into a pass. This diagnostic
 remains **read-only and nonpublishing**, regardless of review outcomes.
+
+## Alternating affirmative and critical source reviews (mandatory)
+
+Each **live** source-review version now receives BOTH independent reviews in this
+order: **affirmative, critical**. An affirmative approval does not skip the critical
+review; a critical rejection cannot be overridden by affirmative approval.
+A clean result requires both to approve the **same frozen version**, plus the
+independent deterministic source-access and research-cutoff checks.
+
+When a round is rejected, the diagnostic attempts only conservative editorial
+correction of its closed sources: exclude explicitly challenged or unavailable
+original evidence, downclassify unsupported assertions, disclose that retrieved
+metadata is not independent proof of full-text inspection or first publication,
+and record the gap between the original research cutoff and later review
+preparation. Corrections do not introduce new links, invent missing inspection,
+alter historical forecasts or silently change the original research or its
+source-quality audit. If source diversity, directional balance or sufficient
+observations would be lost, the diagnostic fails rather than inventing evidence.
+If further conservative corrections make no change, stop and retain the
+rejection. No unchanged evidence version is re-reviewed to seek approval.
+
+At most **four complete affirmative→critical rounds** run in one diagnostic.
+A timeout, reviewer failure, unresolved objection, lack of qualified evidence,
+exhaustion of the review cap or inconsistent preserved record remains a failure.
+
+The original closed review and rejected verdicts remain in
+`source-review-input.json`, `source-review-affirmative.json` and
+`source-review-critical.json`. Each later version has an immutable
+`source-review-round-NN-input.json` and two `source-review-round-NN-{role}.json`
+files. The summary `source-review-cycles-outcome.json` records every review
+round, exact input hash and clean/rejected status. An existing failed
+`research-dry-run.json` is **never overwritten** by a revised result:
+`research-dry-run-revised.json` holds the new outcome.
+
+### Continuing rejected run 39629051453
+
+Choose `research-dry-run`, `resume_run_id=39629051453`, and leave
+`allow_new_review_after_unknown=false`. Both reviews in that run completed,
+so their original objections and all research records can be reused without
+repeating the earlier paid requests. **New** review rounds for a genuinely
+revised closed source packet can incur new API charges. Any future lost POST
+acknowledgement remains subject to explicit opt-in and never becomes a pass.
+This workflow is a nonpublishing diagnostic, not Sunday forecast issuance.
