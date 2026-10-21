@@ -161,14 +161,32 @@ def load_or_create_review_input(folder, *, result, citations, coverage, quality,
                and cutoff <= now(),
                "Invalid stored review cutoff")
         if snapshot:
-            _check(cutoff >= dt.datetime.fromisoformat(snapshot["cutoff_at"]),
-                   "Review cutoff predates the original source snapshot")
+            as_of = dt.datetime.fromisoformat(snapshot["cutoff_at"])
+            _check(cutoff >= as_of,
+                   "Review processing cutoff predates original research scope")
+            # Older immutable checkpoints predate explicit as-of tagging; never
+            # rewrite or claim they searched through the later review clock.
+            if "research_as_of" in sample:
+                _check(sample["research_as_of"] == snapshot["cutoff_at"]
+                       and sample.get("post_asof_window") == "NOT_SEARCHED",
+                       "Saved review claims unsupported post-snapshot coverage")
         return sample, stored["input_sha256"], cutoff
 
     cutoff = now()
+    # Research scope is fixed when its FIRST stage starts, often hours before
+    # metadata retrieval and later reviewer calls. Keep the processing cutoff
+    # for the freeze validator, but NEVER present it as the search-as-of time.
+    as_of = dt.datetime.fromisoformat(snapshot["cutoff_at"]) if snapshot else cutoff
+    _check(as_of.tzinfo is not None and as_of.utcoffset() is not None
+           and as_of <= cutoff,
+           "Source snapshot is after processing cutoff")
     frozen = freeze(result, citations, archive, date, cutoff)
     sample = {"evidence": frozen, "coverage": coverage,
               "source_quality_audit": quality, "cutoff": cutoff.isoformat(),
+              "research_as_of": as_of.isoformat(),
+              "post_asof_window": "NOT_SEARCHED",
+              "cutoff_meaning": ("Metadata/evidence processing clock; NOT a claim "
+                                 "that sources after research_as_of were searched."),
               "published_history_sha256": baseline_sha,
               "mode": "RESEARCH_ONLY_TEST_NO_SCORED_FORECASTS"}
     checkpoint = {
