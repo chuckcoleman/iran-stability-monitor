@@ -168,6 +168,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
           "Frozen source-review input digest mismatch")
     reviewers = {}
+    superseded_unknown_requests = set()
     try:
         for role in ("affirmative","critical"):
             prompt=("ROLE: "+role.upper()+" SOURCE QUALITY REVIEW. " +
@@ -179,11 +180,15 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             previous_audit = os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
             os.environ["IRAN_OFFLINE_REVIEW_DIR"] = str(folder)
             try:
-                reviewers[role] = review_with_checkpoint(
+                checked = review_with_checkpoint(
                     folder, role=role, prompt=prompt, input_sha=frozen_sha,
                     quality=quality, reviewer=reviewer, now=now,
                     allow_new_after_unknown=(
-                        os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"))
+                        os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"),
+                    superseded_unknown_requests=superseded_unknown_requests)
+                superseded_unknown_requests.update(
+                    checked.pop("superseded_unknown_requests"))
+                reviewers[role] = checked
             finally:
                 if previous_audit is None:
                     os.environ.pop("IRAN_OFFLINE_REVIEW_DIR", None)
