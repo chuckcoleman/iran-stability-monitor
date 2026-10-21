@@ -232,7 +232,7 @@ class HistoricalStatusTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "source-stage boundary"):
             _validate_batch(category, record, {url}, calls,
                             self.snapshot)
-        self.assertFalse((self.dir/"research-batch-"+category+".json").exists())
+        self.assertFalse((self.dir / ("research-batch-" + category + ".json")).exists())
 
     def test_old_v1_saved_stages_resume_without_any_new_model_calls(self):
         snap = self.snapshot
