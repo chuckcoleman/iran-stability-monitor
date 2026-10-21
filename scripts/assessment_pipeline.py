@@ -964,7 +964,7 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         result,sources,search_calls,snapshot=batched_research(
             researcher=researcher,folder=audit_dir,prior=evidence_history["evidence"],
             day=today,baseline_sha=baseline_sha,started_at=started,
-            resume=bool(os.getenv("IRAN_RESUME_AUDIT_DIR")))
+            resume=bool(os.getenv("IRAN_STAGED_RESUME")))
         check(snapshot["date"]==today,
               "Prior-day snapshot cannot initiate a new prospective assessment")
         result,sources,search_calls=resolve_source_citations(
