@@ -162,7 +162,7 @@ class AuditRecoveryTests(unittest.TestCase):
         quality = source_quality_audit(study(), metadata(), cutoff=NOW)
         (self.dir / "api-request-unknown.json").write_text(json.dumps({
             "phase": "non-search assessment/review", "post_attempts": 1,
-            "response_id": None,
+            "response_id": None, "request_sha256": "d" * 64,
             "status": "create_acknowledgement_unknown_no_replay"}))
         called = []
         def live_reviewer(prompt, search):
@@ -195,6 +195,7 @@ class AuditRecoveryTests(unittest.TestCase):
                 self.dir, **params, allow_new_after_unknown=True)
             self.assertTrue(first["approved"])
             self.assertEqual(len(called), 1)
+            self.assertEqual(first["superseded_unknown_requests"], ["d" * 64])
             second = recovery.review_with_checkpoint(self.dir, **params)
             self.assertEqual(first, second)
             self.assertEqual(len(called), 1)
