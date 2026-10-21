@@ -176,7 +176,8 @@ def load_or_create_review_input(folder, *, result, citations, coverage, quality,
             _check(register_path.exists(), "Registered claim passages missing from audit")
             witness = read_json(register_path)
             verify_register(witness, sample["evidence"], snapshot_sha=snap_sha,
-                            history_sha=baseline_sha)
+                            history_sha=baseline_sha,
+                            original_cutoff=(snapshot["cutoff_at"] if snapshot else None))
             _check(witness == sample["claim_evidence_register"],
                    "Saved review evidence differs from captured source passages")
         else:
@@ -203,7 +204,8 @@ def load_or_create_review_input(folder, *, result, citations, coverage, quality,
         from source_passage_audit import verify_register
         witness = claim_register_builder(frozen)
         verify_register(witness, frozen, snapshot_sha=snap_sha,
-                        history_sha=baseline_sha)
+                        history_sha=baseline_sha,
+                        original_cutoff=(snapshot["cutoff_at"] if snapshot else None))
         sample["claim_evidence_register"] = witness
     checkpoint = {
         "status": "CLOSED_SOURCE_REVIEW_INPUT_NOT_APPROVED",
