@@ -21,7 +21,7 @@ from assessment_pipeline import (
     validate_source_coverage_audit, _review_issues,
 )
 from source_metadata import capture_metadata, url_key
-from source_research_batches import batched_research, CATEGORIES
+from source_research_batches import batched_research, CATEGORIES, require_pre_snapshot_publication, _resume_get_only
 from source_quality_audit import (
     source_inventory, source_quality_audit, save_quality_audit,
     validate_source_review)
@@ -153,8 +153,11 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             key=url_key(item.get("source"))
             if key in metadata:
                 metadata[item["source"]]=metadata[key]
-    cutoff=(dt.datetime.fromisoformat(snapshot["cutoff_at"])
-            if snapshot is not None else now())
+    if snapshot is not None:
+        require_pre_snapshot_publication(result, metadata, snapshot)
+    # Source retrieval during recovery is dated truthfully to the later run.
+    # The original source-publication bound is checked separately above.
+    cutoff=now()
     quality=source_quality_audit(result,metadata,strict=(researcher is llm),
                                  cutoff=cutoff)
     save_quality_audit(folder,quality)
@@ -205,7 +208,9 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "source_citation_reconciliation":reconciliation,
             "research_input_sha256":frozen_sha,
             "baseline_history_sha256":baseline_sha,
-            "actual_cutoff":cutoff.isoformat(),"source_coverage":coverage,
+            "actual_cutoff":cutoff.isoformat(),
+            "original_research_cutoff": (snapshot["cutoff_at"] if snapshot else None),
+            "source_coverage":coverage,
             "source_metadata":metadata,"source_quality_audit":quality,
             "frozen_test_evidence":frozen,
             "source_citations":sorted(citations),
