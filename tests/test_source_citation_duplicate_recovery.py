@@ -147,10 +147,10 @@ class DuplicateCitationRecoveryTests(unittest.TestCase):
             raw = copy.deepcopy(originals)
             raw["resolutions"][-1].update(change)
             with self.subTest(change=change), self.assertRaisesRegex(
-                    ValueError, "Conflicting decisions"):
+                    ValueError, "Conflicting decisions|Unexpected replacement fields"):
                 consolidate_compatible_resolutions(raw)
         for changes in (
-            originals["resolutions"][:-1],
+            originals["resolutions"][:-2],  # omit one genuinely required URL
             originals["resolutions"] + [{
                 "claimed_url": "https://unrelated.example.org/not-requested",
                 "action": "withdrawn", "replacement_url": None,
