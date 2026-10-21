@@ -165,6 +165,49 @@ class PartialClaimCorrectionTests(unittest.TestCase):
         self.assertTrue((self.folder / "source-review-round-02-input.json").exists())
         self.assertEqual(result["publication"], "NOT AUTHORIZED")
 
+    def test_preserve_old_failed_outcome_when_resuming_with_narrowed_evidence(self):
+        calls = []
+        def reviewer(prompt, search):
+            role = "affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical"
+            calls.append(role)
+            if len(calls) <= 2:
+                return {"approved": False, "issues": [{
+                    "type": "unsupported_observation_details",
+                    "location": "E-20261021-02",
+                    "reason": "The original observation claimed more than the source said"
+                }]}, set()
+            return {"approved": True, "issues": []}, set()
+        options = dict(
+            folder=self.folder, sample=self.sample, input_sha=sha(self.sample),
+            reviewer=reviewer, now=lambda: NOW,
+            common="Original closed source snapshot only.",
+            original_cutoff=ORIGINAL, max_rounds=4)
+        previous = run_alternating_review_cycles(
+            **options, enable_corrections=False)
+        self.assertEqual(previous["rounds"], 1)
+        old_file = self.folder / "source-review-cycles-outcome.json"
+        original_bytes = old_file.read_bytes()
+        # A legacy workflow also preserved why whole-record deletion was blocked.
+        (self.folder / "source-review-round-01-blocked.json").write_text(
+            json.dumps({"reason": "Prior whole-record deletion was blocked"}))
+        completed = run_alternating_review_cycles(**options)
+        self.assertEqual(completed["rounds"], 2)
+        self.assertEqual(calls,
+                         ["affirmative", "critical", "affirmative", "critical"])
+        self.assertEqual(old_file.read_bytes(), original_bytes)
+        self.assertTrue((self.folder /
+                         "source-review-cycles-outcome-revised.json").exists())
+        self.assertEqual(
+            completed["original_rejected_outcome_sha256"], sha(previous))
+        self.assertEqual(
+            read_json(self.folder /
+                      "source-review-cycles-outcome-revised.json"), completed)
+        replay = run_alternating_review_cycles(
+            **dict(options, reviewer=lambda *args:
+                    self.fail("Resuming must not repeat completed reviews")))
+        self.assertEqual(replay, completed)
+        self.assertEqual(old_file.read_bytes(), original_bytes)
+
     def test_insufficient_directions_cannot_pass_even_after_dual_model_approval(self):
         sample = registered_packet()
         for entry in sample["source_quality_audit"]["sources"][1:]:
