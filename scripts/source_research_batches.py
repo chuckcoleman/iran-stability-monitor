@@ -345,6 +345,8 @@ def combine(stages, snapshot):
     evidence_keys = {}
     duplicate_evidence = []
     duplicate_sources = []
+    if set(stages) != set(CATEGORIES):
+        raise ValueError("Six independent source categories have not completed")
     for category in CATEGORIES:
         stage = stages[category]
         obj = stage["result"]
