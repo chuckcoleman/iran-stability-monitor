@@ -67,10 +67,54 @@ class VisiblePassages(HTMLParser):
                 self.blocks.append(value)
 
 
-def visible_text(raw, encoding="utf-8"):
+def visible_blocks(raw, encoding="utf-8"):
     parser = VisiblePassages()
     parser.feed(raw.decode(encoding or "utf-8", "replace"))
-    return normalize_text(" ".join(parser.blocks))[:MAX_TEXT_CHARS]
+    return parser.blocks
+
+
+def visible_text(raw, encoding="utf-8"):
+    return normalize_text(" ".join(visible_blocks(raw, encoding)))[:MAX_TEXT_CHARS]
+
+
+STOPWORDS = frozenset((
+    "about", "after", "before", "because", "between", "could", "from",
+    "have", "into", "many", "more", "over", "such", "than", "that",
+    "their", "there", "these", "this", "those", "through", "under",
+    "until", "were", "what", "when", "where", "which", "while",
+    "with", "would", "statement", "report", "reported", "source",
+))
+
+
+def lexical_candidate(raw, encoding, observation):
+    """Suggest existing original-page text, NEVER assert semantic verification.
+
+    Search only visible paragraph/heading blocks and require substantial
+    distinctive-word overlap. Select no candidate when the page cannot
+    furnish one. This is not a paraphrase or model-generated quotation.
+    """
+    keywords = set(re.findall(r"[a-z]{4,}", observation.casefold())) - STOPWORDS
+    if len(keywords) < 3:
+        return None
+    best_score = None
+    selected = None
+    for block in visible_blocks(raw, encoding):
+        words = list(re.finditer(r"\S+", block))
+        if len(words) < MIN_QUOTE_WORDS:
+            continue
+        for start in range(0, len(words), 4):
+            end = min(start + MAX_QUOTE_WORDS, len(words))
+            snippet = block[words[start].start():words[end-1].end()]
+            terms = set(re.findall(r"[a-z]{4,}", snippet.casefold())) - STOPWORDS
+            overlaps = keywords & terms
+            # A topical reference alone is never enough; require at least
+            # half the claim's distinguishing vocabulary to be on-page.
+            if len(overlaps) < max(3, (len(keywords) + 1) // 2):
+                continue
+            score = (len(overlaps), len(overlaps) / max(len(terms), 1))
+            if best_score is None or score > best_score:
+                best_score, selected = score, snippet
+    return selected
 
 
 def _fetch_public_html(url):
@@ -98,8 +142,9 @@ def capture_claim_passage(url, proposed_quote, *, observation, now=None,
                           fetcher=None, original_cutoff=None):
     """Return immutable, short source witness; never infer semantic truth.
 
-    A missing or guessed quote cannot be replaced with a model citation, a
-    metadata title, a search snippet, or automatically selected similar text.
+    A missing model quote can lead only to independently extracted candidate
+    text with substantial lexical overlap. That text is NEVER semantically
+    certified and must receive affirmative and critical review.
     """
     now = now or (lambda: dt.datetime.now(dt.timezone.utc))
     stamp = now()
@@ -120,6 +165,8 @@ def capture_claim_passage(url, proposed_quote, *, observation, now=None,
         "url": key, "observation_sha256": hashlib.sha256(
             observation.encode("utf-8")).hexdigest(),
         "proposed_quote": quote[:900],
+        "selection_method": ("model_supplied_verbatim" if quote else
+                             "independent_keyword_candidate"),
         "passage": None, "passage_offset": None,
         "source_body_sha256": None, "visible_text_sha256": None,
         "retrieved_url": None, "content_type": None,
@@ -138,8 +185,6 @@ def capture_claim_passage(url, proposed_quote, *, observation, now=None,
     }
     if status != "NO_VERBATIM_QUOTE":
         return record
-    if not quote:
-        return record
     try:
         body, final_url, content_type, charset = (
             fetcher(url) if fetcher is not None else _fetch_public_html(url))
@@ -156,11 +201,16 @@ def capture_claim_passage(url, proposed_quote, *, observation, now=None,
         text = visible_text(body, charset)
         record["source_body_sha256"] = hashlib.sha256(body).hexdigest()
         record["visible_text_sha256"] = hashlib.sha256(text.encode()).hexdigest()
-        offset = text.find(quote)
+        candidate = quote or lexical_candidate(body, charset, observation)
+        if not candidate:
+            record["status"] = ("QUOTE_NOT_FOUND_IN_ORIGINAL" if quote else
+                                "NO_RELEVANT_ORIGINAL_PASSAGE")
+            return record
+        offset = text.find(candidate)
         if offset < 0:
             record["status"] = "QUOTE_NOT_FOUND_IN_ORIGINAL"
             return record
-        record["passage"] = quote
+        record["passage"] = candidate
         record["passage_offset"] = offset
         record["status"] = "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED"
     except (OSError, ValueError, UnicodeError, urllib.error.HTTPError):
@@ -218,7 +268,12 @@ def verify_register(register, frozen, *, snapshot_sha=None, history_sha=None,
         if state == "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED":
             quote = item.get("passage")
             require(isinstance(quote, str)
-                    and quote == item.get("proposed_quote")
+                    and (
+                        (item.get("selection_method") == "model_supplied_verbatim"
+                         and quote == item.get("proposed_quote"))
+                        or (item.get("selection_method") ==
+                            "independent_keyword_candidate"
+                            and item.get("proposed_quote") == ""))
                     and MIN_QUOTE_WORDS <= len(quote.split()) <= MAX_QUOTE_WORDS
                     and type(item.get("passage_offset")) is int
                     and item["passage_offset"] >= 0
