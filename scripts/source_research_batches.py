@@ -4,6 +4,7 @@ This module does not publish or approve evidence. Six independent live searches
 are required; all artifacts and original tool traces remain inspectable.
 """
 from contextlib import contextmanager
+import copy
 import datetime as dt
 import hashlib
 import json
@@ -269,6 +270,86 @@ def batch_prompt(category, snapshot):
         "that gate nor the model verifies source semantics automatically.")
 
 
+def _normalize_limitation_lists(original):
+    """Lossless-in-substance formatting of a model's list of limitation notes.
+
+    Accept ONLY a nonempty, bounded list of nonempty strings at the two
+    explicitly allowed 'limitations' locations. Preserve ordering and the
+    original list in an independent audit. Every other field stays exact.
+    """
+    if not isinstance(original, dict):
+        raise ValueError("Research stage has no original JSON object")
+    effective = copy.deepcopy(original)
+    changes = []
+    for group in ("coverage_audit", "source_quality"):
+        entries = effective.get(group)
+        if not isinstance(entries, list):
+            continue  # The existing stage validator checks the structure.
+        for index, entry in enumerate(entries):
+            if not isinstance(entry, dict):
+                continue
+            value = entry.get("limitations")
+            if not isinstance(value, list):
+                continue
+            if (not 1 <= len(value) <= 32
+                    or any(not isinstance(v, str) or not v.strip()
+                           or len(v) > 6000 for v in value)):
+                raise ValueError("Malformed limitations list in source research")
+            joined = "\n".join(v.strip() for v in value)
+            if len(joined) > 24000:
+                raise ValueError("Source research limitations exceed normalization bound")
+            entry["limitations"] = joined
+            changes.append({
+                "path": [group, index, "limitations"],
+                "method": "join_ordered_nonempty_strings_with_newlines",
+                "original_value": copy.deepcopy(value),
+                "effective_value": joined})
+    return effective, changes
+
+
+def _verified_stage_normalization(folder, category, raw, *, snapshot,
+                                  prompt_sha, model, request_sha, response):
+    """Bind text-only normalization to one actual saved Responses transport.
+
+    A completed source request is never POSTed again merely to correct a
+    JSON field's shape. An unknown or mismatched response cannot be treated
+    as completed. The original model result remains byte-for-byte unchanged.
+    """
+    effective, changes = _normalize_limitation_lists(raw)
+    path = Path(folder) / ("research-stage-format-" + category + ".json")
+    if not changes:
+        if path.exists():
+            raise ValueError("Unexpected preserved source-normalization audit")
+        return effective, None
+    if (response is None or response.get("result") != raw
+            or response.get("prompt_sha256") != prompt_sha
+            or response.get("model") != model
+            or not _valid_id(response.get("response_id"))):
+        raise ValueError("Original paid source response not verified for formatting recovery")
+    audit = {
+        "version": 1,
+        "status": "TEXT_SHAPE_NORMALIZED_NOT_APPROVED",
+        "category": category,
+        "snapshot_sha256": snapshot["snapshot_sha256"],
+        "model": model,
+        "prompt_sha256": prompt_sha,
+        "request_sha256": request_sha,
+        "original_response_id": response["response_id"],
+        "original_result_sha256": sha(raw),
+        "effective_result_sha256": sha(effective),
+        "changes": changes,
+        "publication": "NOT AUTHORIZED",
+        "limitations": "Only explicitly recorded list-to-text shape changes "
+                       "are permitted. No source, claim, cited URL, event date, "
+                       "research cutoff, API response or forecast is changed."}
+    if path.exists():
+        if read_json(path) != audit:
+            raise ValueError("Preserved source-format normalization differs from original response")
+    else:
+        save_new(path, audit)
+    return effective, audit
+
+
 def _validate_batch(category, obj, citations, calls, snapshot, *,
                     verified_legacy_checkpoint=False):
     if not isinstance(obj, dict):
@@ -426,7 +507,7 @@ def combine(stages, snapshot):
         raise ValueError("Six independent source categories have not completed")
     for category in CATEGORIES:
         stage = stages[category]
-        obj = stage["result"]
+        obj = stage.get("effective_result", stage["result"])
         coverage.extend(obj["coverage_audit"])
         citations.update(stage["citations"])
         calls.extend(dict(call, research_category=category)
@@ -512,12 +593,29 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
                     obj, citations = researcher(prompt, True)
                 from source_search_trace import load_matching_search_trace
                 calls = load_matching_search_trace(folder, obj)
-            reconciliation = _validate_batch(category, obj, citations, calls, snapshot)
+                # The archived response and transport, not the newly returned
+                # object alone, authorize a no-POST formatting repair.
+                existing = _saved_response(
+                    folder, prompt_sha, model, request_sha=request_sha,
+                    require_transport=require_transport)
+                if existing is not None and (
+                    obj != existing.get("result")
+                    or sorted(citations) != sorted(existing.get("citations", []))
+                    or calls != existing.get("tool_search_calls")):
+                    raise ValueError("Research return differs from saved original Responses output")
+            effective, normalization = _verified_stage_normalization(
+                folder, category, obj, snapshot=snapshot,
+                prompt_sha=prompt_sha, model=model, request_sha=request_sha,
+                response=existing)
+            reconciliation = _validate_batch(category, effective, citations, calls, snapshot)
             stage = {"category": category, "snapshot_sha256": snapshot["snapshot_sha256"],
                      "prompt_sha256": prompt_sha, "model": model,
                      "result": obj, "citations": sorted(citations),
                      "search_calls": calls, "citation_reconciliation": reconciliation,
                      "status": "STAGE_COMPLETE_NOT_APPROVED"}
+            if normalization is not None:
+                stage["effective_result"] = effective
+                stage["normalization_sha256"] = sha(normalization)
             save_new(folder / ("research-batch-" + category + ".json"), stage)
         else:
             # Never trust checkpoint data without independent saved tool provenance.
@@ -529,8 +627,18 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
             if (sorted(stage.get("citations", [])) != sorted(prior_response["citations"])
                     or stage.get("search_calls") != prior_response["tool_search_calls"]):
                 raise ValueError("Stage checkpoint differs from original web-search trace")
+            effective, normalization = _verified_stage_normalization(
+                folder, category, stage["result"], snapshot=snapshot,
+                prompt_sha=prompt_sha, model=model, request_sha=request_sha,
+                response=prior_response)
+            if normalization is None:
+                if "effective_result" in stage or "normalization_sha256" in stage:
+                    raise ValueError("Unexpected normalized result in unchanged source stage")
+            elif (stage.get("effective_result") != effective
+                  or stage.get("normalization_sha256") != sha(normalization)):
+                raise ValueError("Saved source stage differs from original format-normalization audit")
             checked = _validate_batch(
-                category, stage["result"], stage["citations"],
+                category, effective, stage["citations"],
                 stage["search_calls"], snapshot,
                 verified_legacy_checkpoint=(
                     resume and snapshot["version"] == 1))
