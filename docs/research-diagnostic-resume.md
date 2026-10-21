@@ -119,3 +119,47 @@ repeating the earlier paid requests. **New** review rounds for a genuinely
 revised closed source packet can incur new API charges. Any future lost POST
 acknowledgement remains subject to explicit opt-in and never becomes a pass.
 This workflow is a nonpublishing diagnostic, not Sunday forecast issuance.
+
+## Original-page evidence register and fresh replacement evidence
+
+For a **new** `research-dry-run` (leave `resume_run_id` empty), every new
+source-category search asks for a short, verbatim `support_quote` from its
+original public source, **or null** if no original text can be inspected.
+A separate bounded public-HTTPS fetch checks the source itself, using no
+publisher login and no private addresses or redirects. The diagnostic saves
+`claim-evidence-register.json` before the first affirmative review.
+
+Each claim is identified by the exact frozen evidence ID, original URL and
+observation digest. The register stores a maximum **25-word** excerpt only when
+it matches independently fetched visible HTML, together with the page-content
+and extracted-text SHA-256, offset, retrieved URL, content type, and actual
+inspection time. The original research cutoff is retained; a later inspection
+is disclosed as later, **not** misrepresented as contemporaneous. Missing,
+paywalled, redirected, inaccessible, unsupported-PDF, guessed or nonmatching
+passages stay explicitly **unverified**. Full article text is not archived.
+Matching a few source words is **not** proof of the surrounding claim, event,
+first-publication time, independence or causal/directional implication.
+
+The complete register is included in and hashed with the **immutable closed
+review input** of new diagnostics. Its presence adds independent checks:
+every retained claim needs an exact original-page textual witness; official
+statements cannot be silently promoted to direct measurements; and each
+coverage category is reconciled with evidence removed during editorial
+corrections. Original source lists and rejected observations remain preserved
+for reproducibility. Both affirmative and critical reviews must still
+independently determine whether the actual passage supports the observation.
+
+The original audit from run `39637298150` predates this register. Its two
+rejected rounds remain intact and **must not** be retrospectively certified
+using web pages fetched later. Historic rejected packets can be replayed only
+with strict checks against invented links, new observations, or upgraded
+source access. Repeating that old run cannot fill a substantive evidence gap.
+
+**To obtain new replacement evidence**, start a fresh `research-dry-run` on
+`main` with **blank `resume_run_id`**. This begins a newly dated, potentially
+billable six-category search and creates new source-passage evidence
+checkpoints; it does not revise the earlier history or backdate a forecast.
+If the new run is interrupted, resume **that new run ID** and keep the
+original snapshot. The diagnostic still does not publish forecasts, pages,
+or social posts. Insufficient qualified evidence, incomplete reviewers, a
+timeout, or an unchanged set of unresolved objections remains a failure.
