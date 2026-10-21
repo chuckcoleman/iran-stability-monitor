@@ -284,9 +284,10 @@ def main(argv=None):
     print("SOURCE-ONLY LIVE TEST (NEVER PUBLISHABLE): "+summary["status"])
     terminal = summary.get("terminal_evidence_gate")
     if terminal:
-        missing = terminal["directional_eligibility"]["failures"]
+        gate = terminal.get("directional_eligibility", {})
+        missing = gate.get("failures", []) if isinstance(gate, dict) else []
         print("TERMINAL CLOSED-SOURCE DEFICIENCY; NO FURTHER PAID REVIEWS: "
-              + ", ".join(missing)
+              + (", ".join(missing) if missing else "incomplete eligibility")
               + ". A NEW DATED SOURCE-RESEARCH SNAPSHOT IS REQUIRED.",
               flush=True)
     # A reviewer approval is necessary but never sufficient. Terminal
