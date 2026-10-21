@@ -169,3 +169,38 @@ If the new run is interrupted, resume **that new run ID** and keep the
 original snapshot. The diagnostic still does not publish forecasts, pages,
 or social posts. Insufficient qualified evidence, incomplete reviewers, a
 timeout, or an unchanged set of unresolved objections remains a failure.
+
+## Recovering a historical carried-forward status formatting error
+
+Fresh staged research snapshots use version 2 prompts and **require** the exact
+`evidence_status` strings `new` or `carried_forward`. A carried-forward
+item must supply an independent `id` field that identifies an existing,
+unchanged historical observation; the ID is never part of the status text.
+Newly returned malformed statuses fail **before** a new source-category
+checkpoint is saved. A failed stage and its original API response remain
+available for diagnosis and cannot silently authorize publication.
+
+The earlier source audit from run **39641953320** used the original version 1
+research prompt. The economic/humanitarian batch contains the malformed string
+`carried_forward with existing id E-20261004-05`. The linked original AP
+article, its publication date, publisher and title match the existing
+published evidence record, but the model supplied a different category and
+interpretation. When resuming this **verified completed old stage only**, the
+pipeline restores exactly the archived `E-20261004-05` record and marks it
+`carried_forward`. Neither the later proposed category nor its new
+interpretation is allowed to overwrite historical evidence.
+
+The immutable `evidence-status-reconciliation.json` records the model's
+original entry, all differences, the unchanged archived record, and
+input/output SHA-256 fingerprints. This record is included in the
+closed review input. Original research responses, staged search records,
+citation corrections, audit metadata, forecasts and `data/history.json`
+are never changed.
+
+To resume without repeating six paid searches, choose `main`,
+`research-dry-run`, `resume_run_id=39641953320`, and
+`allow_new_review_after_unknown=false` (no review was submitted in that
+run). As before, **both alternating affirmative and critical reviews**
+must independently approve the actual source passages and qualifications
+on the same closed evidence snapshot. This recovery does **not** certify
+substantive claims, current events or publication readiness.
