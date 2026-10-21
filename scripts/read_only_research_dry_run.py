@@ -21,6 +21,7 @@ from assessment_pipeline import (
     validate_source_coverage_audit, _review_issues,
 )
 from source_metadata import capture_metadata, url_key
+from source_research_batches import batched_research, CATEGORIES
 from source_quality_audit import (
     source_inventory, source_quality_audit, save_quality_audit,
     validate_source_review)
@@ -45,7 +46,11 @@ conclusion. Review what the snapshot actually demonstrates. Distinguish
 searched-but-empty from inaccessible. The test is not a Sunday forecast.
 Return ONLY JSON {"approved": boolean, "issues": [
 {"type": "specific issue type", "location": "source ID/coverage category",
- "reason": "actual actionable defect"}]}.
+ "reason": "actual actionable defect"}],
+"source_reviews": [{"url": "exact source URL", "assessment":
+"specific >=30-character finding", "disposition":
+"supported_as_qualified|background_only|unverified_reject"}]}.
+No missing/extra source reviews; the global verdict must agree.
 Approve only for zero substantive unresolved issues.
 """
 
@@ -85,23 +90,33 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     saved=[]
     for u in history["updates"]:
         saved.extend(u.get("evidence",[]))
-    # Gather real or synthetic source results once; no forecast prompt anywhere.
+    # Only the real OpenAI researcher uses staged source searches. Synthetic
+    # fixtures retain the original one-call contract for deterministic tests.
     previous_audit=os.environ.get("IRAN_OFFLINE_REVIEW_DIR")
     os.environ["IRAN_OFFLINE_REVIEW_DIR"]=str(folder)
+    actual_calls=None
+    snapshot=None
     try:
-        result, citations=researcher(
-            RESEARCH.format(date=day, prior=json.dumps(saved,ensure_ascii=False)), True)
+        if researcher is llm:
+            result,citations,actual_calls,snapshot=batched_research(
+                researcher=researcher,folder=folder,prior=saved,
+                day=day,baseline_sha=baseline_sha,started_at=stamp,
+                resume=bool(os.getenv("IRAN_RESUME_AUDIT_DIR")))
+            day=snapshot["date"]  # Do not backdate or change the original scope.
+            check(day>=history["updates"][-1]["date"],
+                  "Original snapshot predates the latest historical assessment")
+        else:
+            result,citations=researcher(
+                RESEARCH.format(date=day, prior=json.dumps(saved,ensure_ascii=False)), True)
+        check(isinstance(result,dict), "Source model returned no structured evidence")
+        if researcher is llm:
+            result,citations,actual_calls=resolve_source_citations(
+                result,citations,actual_calls,researcher=researcher,audit_dir=folder)
     finally:
         if previous_audit is None:
             os.environ.pop("IRAN_OFFLINE_REVIEW_DIR",None)
         else:
             os.environ["IRAN_OFFLINE_REVIEW_DIR"]=previous_audit
-    check(isinstance(result,dict), "Source model returned no structured evidence")
-    actual_calls=None
-    if researcher is llm:
-        actual_calls=load_matching_search_trace(folder,result)
-        result,citations,actual_calls=resolve_source_citations(
-            result,citations,actual_calls,researcher=researcher,audit_dir=folder)
     reconciliation=reconcile_source_citations(result,citations,actual_calls)
     save_reconciliation(folder,reconciliation)
     if reconciliation["unsupported"]:
@@ -138,7 +153,8 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             key=url_key(item.get("source"))
             if key in metadata:
                 metadata[item["source"]]=metadata[key]
-    cutoff=now()
+    cutoff=(dt.datetime.fromisoformat(snapshot["cutoff_at"])
+            if snapshot is not None else now())
     quality=source_quality_audit(result,metadata,strict=(researcher is llm),
                                  cutoff=cutoff)
     save_quality_audit(folder,quality)
@@ -182,6 +198,10 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         check((root/"data/history.json").read_bytes()==before,
               "Source dry-run altered the immutable published history")
     report={"status":status,"reviewers":reviewers,
+            "source_stage_snapshot_sha256": (
+                snapshot["snapshot_sha256"] if snapshot else None),
+            "completed_source_categories": (
+                list(CATEGORIES) if snapshot else []),
             "source_citation_reconciliation":reconciliation,
             "research_input_sha256":frozen_sha,
             "baseline_history_sha256":baseline_sha,
