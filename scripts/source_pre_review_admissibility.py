@@ -186,7 +186,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         else:
             effect_type = original.get("effect_type")
             basis = original.get("direction_basis")
-        if effect_type not in ACCEPTED_EFFECTS:
+        if not isinstance(effect_type, str) or effect_type not in ACCEPTED_EFFECTS:
             reasons.append("NO_SUBSTANTIVE_OBSERVED_DIRECTION_BASIS")
         if not isinstance(basis, str) or not 30 <= len(basis.strip()) <= 450:
             reasons.append("MISSING_OR_MALFORMED_DIRECTION_RATIONALE")
