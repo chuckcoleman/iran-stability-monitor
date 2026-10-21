@@ -281,7 +281,11 @@ def main(argv=None):
     args=parser.parse_args(argv)
     summary=research_rehearsal(output=args.output_dir)
     print("SOURCE-ONLY LIVE TEST (NEVER PUBLISHABLE): "+summary["status"])
-    if not all(v["approved"] for v in summary["reviewers"].values()):
+    # A reviewer approval is necessary but never sufficient. Terminal
+    # evidence gates, missing directions, insufficient source counts,
+    # incomplete corrections and other invariant failures MUST produce a
+    # nonzero Actions exit status even if both reviewers said approved.
+    if summary["status"] != "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE":
         raise SystemExit(1)
 
 
