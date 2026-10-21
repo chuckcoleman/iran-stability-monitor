@@ -22,6 +22,7 @@ from source_review_cycles import (
     conservative_revision, deterministic_review_issues,
     run_alternating_review_cycles,
 )
+from source_directional_eligibility import eligibility
 from test_source_review_cycles import ORIGINAL, REVIEW, packet
 
 NOW = dt.datetime(2026, 10, 21, 16, 0, tzinfo=dt.timezone.utc)
@@ -80,28 +81,35 @@ class PartialClaimCorrectionTests(unittest.TestCase):
         self.assertIsNotNone(revised)
         self.assertEqual(original, self.sample)
         evidence = {e["id"]: e for e in revised["evidence"]}
-        self.assertIn("E-20261021-02", evidence)
-        self.assertIn("E-20261021-03", evidence)
+        self.assertNotIn("E-20261021-02", evidence)
+        self.assertNotIn("E-20261021-03", evidence)
         self.assertNotIn("E-20261021-01", evidence)  # original source inaccessible
         self.assertNotIn("E-20261021-04", evidence)  # methodological caveat
-        self.assertEqual(evidence["E-20261021-02"]["direction"], "ambiguous")
-        self.assertEqual(evidence["E-20261021-02"]["reliability"], "Low")
-        self.assertEqual(evidence["E-20261021-02"]["affects"], [])
-        self.assertEqual(evidence["E-20261021-02"]["editorial_support_status"],
+        quotes = {e["id"]: e for e in revised["background_quotes"]}
+        self.assertEqual(set(quotes), {"E-20261021-02", "E-20261021-03"})
+        self.assertEqual(quotes["E-20261021-02"]["direction"], "ambiguous")
+        self.assertEqual(quotes["E-20261021-02"]["reliability"], "Low")
+        self.assertEqual(quotes["E-20261021-02"]["affects"], [])
+        self.assertEqual(quotes["E-20261021-02"]["editorial_support_status"],
                          LIMITED_STATUS)
+        self.assertFalse(quotes["E-20261021-02"]["editorial_directional_admissible"])
         self.assertIn("limited statement numbered 2",
-                      evidence["E-20261021-02"]["observation"])
+                      quotes["E-20261021-02"]["observation"])
         self.assertEqual(len(detail["narrowed_evidence_ids"]), 2)
         self.assertTrue(validate_narrowings(revised))
         self.assertFalse(any(
             x["type"] == "claim_passage_not_demonstrated"
             for x in deterministic_review_issues(revised, ORIGINAL)))
-        self.assertEqual(revised["source_diversity_guard"]["failures"], [])
+        self.assertEqual(revised["source_diversity_guard"]["failures"],
+                         ["fewer_than_six_source_observations"])
+        self.assertEqual(eligibility(revised)["directional_observations"], 5)
+        self.assertEqual(eligibility(revised)["background_quote_ids"],
+                         ["E-20261021-02", "E-20261021-03"])
         changes = {r["evidence_id"]: r for r in revised["editorial_narrowings"]}
         self.assertEqual(changes["E-20261021-02"]["original_evidence"],
                          original["evidence"][1])
         self.assertEqual(changes["E-20261021-02"]["revised_evidence"],
-                         evidence["E-20261021-02"])
+                         quotes["E-20261021-02"])
 
     def test_forged_quote_limited_observation_is_rejected(self):
         revised, _ = conservative_revision(self.sample, [{
@@ -116,7 +124,7 @@ class PartialClaimCorrectionTests(unittest.TestCase):
             validate_narrowings(tampered)
         with self.assertRaisesRegex(ValueError, "differs"):
             tampered = copy.deepcopy(revised)
-            tampered["evidence"][0]["observation"] = "Invented substantive claim"
+            tampered["background_quotes"][0]["observation"] = "Invented substantive claim"
             validate_narrowings(tampered)
         with self.assertRaisesRegex(ValueError, "passage"):
             tampered = copy.deepcopy(revised)
@@ -135,7 +143,9 @@ class PartialClaimCorrectionTests(unittest.TestCase):
             "reason": "Even the limited quote lacks any relevance to the event"
         }], ORIGINAL)
         self.assertIsNotNone(second)
-        self.assertNotIn("E-20261021-02", [e["id"] for e in second["evidence"]])
+        self.assertNotIn("E-20261021-02", [e["id"] for e in second["background_quotes"]])
+        self.assertIn("E-20261021-02",
+                      [e["id"] for e in second["excluded_evidence"]])
         self.assertEqual(len(second["editorial_narrowings"]), 1)
         self.assertTrue(validate_narrowings(second))
 
@@ -221,15 +231,29 @@ class PartialClaimCorrectionTests(unittest.TestCase):
             reviewer=accept_everything, now=lambda: NOW,
             common="Closed original sources only.", original_cutoff=ORIGINAL)
         self.assertEqual(result["status"], "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
-        self.assertGreaterEqual(len(seen), 4)
-        revisions = read_json(self.folder / "source-review-round-02-input.json")
-        self.assertEqual(revisions["sample"]["source_diversity_guard"]["status"],
-                         "BLOCKED_NOT_PUBLISHABLE")
-        round2 = read_json(self.folder / "source-review-round-02.json")
-        self.assertFalse(round2["both_clean"])
-        self.assertTrue(any(
-            i["type"] == "insufficient_qualified_evidence_diversity"
-            for i in round2["deterministic_issues"]))
+        self.assertEqual(seen, ["affirmative", "critical"])
+        self.assertEqual(result["rounds"], 1)
+        self.assertFalse((self.folder / "source-review-round-02-input.json").exists())
+        self.assertFalse((self.folder / "source-review-round-02.json").exists())
+        terminal = read_json(self.folder / "source-review-round-01-terminal-gate.json")
+        self.assertEqual(terminal["status"],
+                         "IRREVERSIBLE_EVIDENCE_DEFICIENCY_NO_MORE_PAID_REVIEWS")
+        self.assertEqual(terminal["directional_eligibility"]["directional_observations"], 0)
+        self.assertIn("missing_required_directional_balance",
+                      terminal["directional_eligibility"]["failures"])
+        self.assertEqual(result["terminal_evidence_gate"]["blocked_next_review_round"], 2)
+        self.assertTrue(result["terminal_evidence_gate"]["new_research_required"])
+        self.assertEqual(terminal["publication"], "NOT AUTHORIZED")
+        first = self.folder / "source-review-round-01.json"
+        self.assertTrue(first.exists())
+        self.assertFalse(read_json(first)["both_clean"])
+        # Resume must reconstruct existing results without new paid review.
+        repeat = run_alternating_review_cycles(
+            folder=self.folder, sample=sample, input_sha=sha(sample),
+            reviewer=lambda *args: self.fail("No repeat review on terminal gate"),
+            now=lambda: NOW, common="Closed original sources only.",
+            original_cutoff=ORIGINAL)
+        self.assertEqual(result, repeat)
 
     def test_no_legacy_quote_only_insertion_without_register(self):
         previous = packet()
