@@ -258,6 +258,54 @@ class DuplicateCitationRecoveryTests(unittest.TestCase):
                 self.original, self.citations, self.search_calls,
                 researcher=LIVE_RESEARCHER, audit_dir=self.folder)
 
+    def test_new_compatible_duplicate_correction_records_complete_audit_and_replays(self):
+        from source_research_batches import save_new
+        invoked = []
+        original_decisions = decision()
+        def one_paid_correction(prompt, search):
+            self.assertTrue(search)
+            invoked.append(prompt)
+            output = copy.deepcopy(original_decisions)
+            response_id = "resp_new_citation_recovery_81"
+            payload = responses_payload(prompt, True)
+            payload["background"] = True
+            save_new(self.folder / "response-8.json", {
+                "search": True, "model": "gpt-6.1-sol",
+                "response_id": response_id,
+                "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+                "result": output, "citations": [UKMTO, NATIONAL],
+                "tool_search_calls": trace(UKMTO, NATIONAL)})
+            save_new(self.folder / "api-request-eight.json", {
+                "request_sha256": sha(payload), "response_id": response_id,
+                "post_attempts": 1,
+                "status": "api_completed_output_not_yet_validated"})
+            return output, {UKMTO, NATIONAL}
+        with patch.dict(os.environ, {"IRAN_FORECAST_MODEL": "gpt-6.1-sol"},
+                        clear=False):
+            first = resolve_source_citations(
+                self.original, self.citations, self.search_calls,
+                researcher=one_paid_correction, audit_dir=self.folder)
+        self.assertEqual(len(invoked), 1)
+        saved = json.loads((self.folder / "citation-resolution.json").read_text())
+        self.assertEqual(saved["status"],
+                         "CITATIONS_RESOLVED_PENDING_ALL_OTHER_GATES")
+        self.assertEqual(saved["decision"], original_decisions)
+        self.assertEqual(saved["decision_normalization"]["original_decision_count"], 9)
+        self.assertEqual(saved["decision_normalization"]["distinct_claimed_url_count"], 8)
+        self.assertEqual(saved["final_reconciliation"]["unsupported"], [])
+        self.assertFalse((self.folder / "citation-resolution-recovery.json").exists())
+        preserved = {
+            p: p.read_bytes()
+            for p in (self.folder/"response-8.json",
+                      self.folder/"api-request-eight.json",
+                      self.folder/"citation-resolution.json")
+        }
+        second = self._resume()
+        self.assertEqual(first, second)
+        self.assertEqual(len(invoked), 1)
+        for path, data in preserved.items():
+            self.assertEqual(path.read_bytes(), data)
+
     def test_failed_archived_duplicates_recover_without_a_second_paid_call(self):
         self._save_failed_archive()
         raw_path = self.folder / "response-7.json"
