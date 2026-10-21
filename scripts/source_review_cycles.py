@@ -109,7 +109,8 @@ def conservative_revision(previous, issues, original_cutoff):
         src["metadata_status"] = (
             "Publisher/site metadata only; original first-publication clock "
             "is not independently authenticated")
-        src["limitations"] = src.get("limitations", "") + " " + ADDITIONAL_CAVEAT
+        if ADDITIONAL_CAVEAT not in src.get("limitations", ""):
+            src["limitations"] = src.get("limitations", "") + " " + ADDITIONAL_CAVEAT
         # Metadata availability is not a proxy for full article availability.
         src["editorial_full_text_access_status"] = (
             "not_demonstrated_by_saved_metadata_or_search_snippet")
@@ -134,8 +135,9 @@ def conservative_revision(previous, issues, original_cutoff):
     quality["context_only_source_count"] = sum(
         r["role"] == "coverage_context_only" for r in quality["sources"])
     for category in revised.get("coverage", []):
-        category["limitations"] = (
-            str(category.get("limitations", "")) + " " + ADDITIONAL_CAVEAT)
+        if ADDITIONAL_CAVEAT not in category.get("limitations", ""):
+            category["limitations"] = (
+                str(category.get("limitations", "")) + " " + ADDITIONAL_CAVEAT)
     initial_cutoff = revised.get("review_prepared_at", revised["cutoff"])
     if original_cutoff:
         original_time = dt.datetime.fromisoformat(original_cutoff)
@@ -162,6 +164,29 @@ def conservative_revision(previous, issues, original_cutoff):
         return None, {"reason": "No further safe evidence correction is possible"}
     return revised, {"excluded_evidence": dropped,
                      "cutoff_gap_disclosed": bool(original_cutoff)}
+
+
+def deterministic_review_issues(packet, original_cutoff):
+    """Independent fail-closed controls cannot be overridden by model approval."""
+    issues = []
+    source_map = {entry["url"]: entry
+                  for entry in packet["source_quality_audit"]["sources"]}
+    for item in packet["evidence"]:
+        source = source_map.get(url_key(item.get("source")))
+        if not source or source.get("access_status") != "source_metadata_captured":
+            issues.append({"type": "uninspected_original",
+                           "location": item.get("id", "unknown"),
+                           "reason": "Source inspection not demonstrated in frozen metadata"})
+        elif source.get("classification") == "unverified":
+            issues.append({"type": "unverified_evidence",
+                           "location": item.get("id", "unknown"),
+                           "reason": "Unverified source cannot support a scored directional claim"})
+    if (original_cutoff and packet.get("cutoff") != original_cutoff
+            and not packet.get("unsearched_interval")):
+        issues.append({"type": "cutoff_scope_mismatch",
+                       "location": "coverage / all six research categories",
+                       "reason": "Later review preparation was not part of the original search"})
+    return issues
 
 
 def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
@@ -203,8 +228,11 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 superseded_unknown_requests=known_unknown)
             known_unknown.update(response.pop("superseded_unknown_requests"))
             result[role] = response
-        clean = all(r["approved"] and not r["issues"] for r in result.values())
+        invariant_issues = deterministic_review_issues(packet, original_cutoff)
+        clean = (all(r["approved"] and not r["issues"] for r in result.values())
+                 and not invariant_issues)
         record = {"round": number, "input_sha256": digest,
+                  "deterministic_issues": invariant_issues,
                   "affirmative": result["affirmative"],
                   "critical": result["critical"], "both_clean": clean,
                   "status": "DUAL_REVIEW_CLEAN_NOT_PUBLISHABLE" if clean
@@ -224,7 +252,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
             status = "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE"
             break
         amended, details = conservative_revision(
-            packet, _reviewed_issues(result), original_cutoff)
+            packet, _reviewed_issues(result) + invariant_issues, original_cutoff)
         if amended is None:
             status = "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE"
             record["correction_blocker"] = details
