@@ -12,6 +12,11 @@ on:
           - check-services
           - api-probe
           - research-dry-run
+      resume_run_id:
+        description: 'Optional previous diagnostic run ID for GET-only research resume (research-dry-run only)'
+        required: false
+        default: ''
+        type: string
 permissions:
   contents: read
   actions: read
@@ -23,7 +28,7 @@ concurrency:
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       GITHUB_EVENT_NAME: ${{ github.event_name }}
       IRAN_FORECAST_MODEL: ${{ vars.IRAN_FORECAST_MODEL }}
@@ -47,6 +52,26 @@ jobs:
           node --check assets/app.js
       - name: Discard synthetic offline-test audit files
         run: rm -rf -- .automation-audit
+      - name: Validate optional resume source
+        if: inputs.resume_run_id != ''
+        env:
+          RESUME_RUN_ID: ${{ inputs.resume_run_id }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+        run: |
+          python - <<'PY'
+          import os, re
+          assert os.environ['REQUESTED_MODE'] == 'research-dry-run', 'Resume is research-only'
+          assert re.fullmatch(r'[1-9][0-9]*', os.environ['RESUME_RUN_ID']), 'Invalid diagnostic run ID'
+          PY
+      - name: Restore previous response audit for GET-only resume
+        if: inputs.mode == 'research-dry-run' && inputs.resume_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.resume_run_id }}
+          pattern: integration-diagnostics-${{ inputs.resume_run_id }}-*
+          merge-multiple: true
+          github-token: ${{ github.token }}
+          path: .automation-audit
       - name: Mint short-lived diagnostic GitHub App token
         id: app-preflight
         if: inputs.mode == 'healthcheck' || inputs.mode == 'check-services'
@@ -70,6 +95,8 @@ jobs:
         run: python scripts/sunday_automation.py api-probe
       - name: Run actual research and both source-only reviews (paid, NEVER PUBLISHABLE)
         if: inputs.mode == 'research-dry-run'
+        env:
+          IRAN_RESUME_AUDIT_DIR: ${{ inputs.resume_run_id != '' && '.automation-audit' || '' }}
         run: python scripts/read_only_research_dry_run.py
       - name: Preserve diagnostic audit (no credentials)
         if: always()

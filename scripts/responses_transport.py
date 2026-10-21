@@ -19,12 +19,12 @@ import uuid
 
 ENDPOINT = "https://api.openai.com/v1/responses"
 POLL_STATES = frozenset(("queued", "in_progress"))
-MAX_POLL_SECONDS = 540
+MAX_POLL_SECONDS = 1200
 POLL_INTERVAL_SECONDS = 6
 CREATE_TIMEOUT_SECONDS = 60
 GET_TIMEOUT_SECONDS = 35
 MAX_GET_NETWORK_FAILURES = 3
-MAX_POLLS = 150
+MAX_POLLS = 240
 
 
 def _timestamp():
@@ -52,9 +52,53 @@ def _valid_id(value):
     return isinstance(value, str) and bool(re.fullmatch(r"resp_[A-Za-z0-9_-]{2,128}", value))
 
 
+_RESUMABLE = frozenset((
+    "acknowledged", "poll_acknowledged", "safe_get_retry_pending",
+    "background_timeout_no_replay", "poll_transport_failed_no_post_retry",
+    "poll_http_error_no_post_retry", "api_completed_output_not_yet_validated",
+    "resuming_existing_response",
+))
+
+
+def _resume_candidate(folder, fingerprint, model, *, exclude=None):
+    """Only reuse a known, acknowledged ID for an identical research request."""
+    folder = Path(folder).resolve()
+    exclude = Path(exclude).resolve() if exclude is not None else None
+    if not folder.is_dir():
+        raise RuntimeError("Resume audit directory missing; no POST attempted")
+    matches = []
+    for path in sorted(folder.glob("api-request-*.json")):
+        if path == exclude:
+            continue
+        try:
+            row = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            raise RuntimeError("Unreadable resume audit; no POST attempted") from None
+        if not isinstance(row, dict):
+            raise RuntimeError("Malformed resume audit; no POST attempted")
+        if row.get("request_sha256") == fingerprint:
+            matches.append((path, row))
+    if not matches:
+        raise RuntimeError("No exact matching background request audit; no POST attempted")
+    for _, row in matches:
+        if (row.get("model") != model or row.get("background") is not True
+                or row.get("store") is not False
+                or row.get("status") not in _RESUMABLE
+                or row.get("post_attempts") not in (0, 1)
+                or not _valid_id(row.get("response_id"))):
+            raise RuntimeError("Resume audit not resumable; no POST attempted")
+    ids = {row["response_id"] for _, row in matches}
+    if len(ids) != 1:
+        raise RuntimeError("Ambiguous matching response IDs; no POST attempted")
+    return next(iter(ids)), sorted(p.name for p, _ in matches), sum(
+        row.get("poll_count", 0) for _, row in matches
+        if type(row.get("poll_count")) is int and row["poll_count"] >= 0)
+
+
 def request_response(payload, *, search, token_supplier, audit_dir,
                      http_error_formatter, opener=None, sleeper=None,
-                     monotonic=None, max_poll_seconds=MAX_POLL_SECONDS):
+                     monotonic=None, max_poll_seconds=MAX_POLL_SECONDS,
+                     resume_dir=None):
     """POST once, then poll the acknowledged background Response with GET.
 
     A lost POST acknowledgement may represent a billable accepted job: NEVER
@@ -69,6 +113,8 @@ def request_response(payload, *, search, token_supplier, audit_dir,
         payload["background"] = True
     if payload.get("store") is not False:
         raise ValueError("Iran Responses requests must keep store=false")
+    if resume_dir is not None and not search:
+        raise ValueError("Only background web research can be resumed")
     audit_dir = Path(audit_dir)
     audit_dir.mkdir(parents=True, exist_ok=True)
     record_path = audit_dir / ("api-request-" + uuid.uuid4().hex + ".json")
@@ -90,32 +136,47 @@ def request_response(payload, *, search, token_supplier, audit_dir,
         _atomic_json(record_path, record)
 
     save("prepared_not_sent")
-    try:
-        token = token_supplier()
-    except Exception as exc:
-        save("authentication_failed", exception_class=type(exc).__name__)
-        raise
-    req = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode(), method="POST",
-                                 headers={"Content-Type": "application/json",
-                                          "X-Client-Request-Id": client_request_id,
-                                          "Authorization": "Bearer " + token})
-    save("create_sent_acknowledgement_pending", post_attempts=1)
-    try:
-        with opener(req, timeout=CREATE_TIMEOUT_SECONDS) as response:
-            initial = json.load(response)
-    except urllib.error.HTTPError as exc:
-        save("create_http_error", http_status=exc.code)
-        raise http_error_formatter(exc, search) from None
-    except (OSError, TimeoutError, ValueError, TypeError) as exc:
-        save("create_acknowledgement_unknown_no_replay", exception_class=type(exc).__name__)
-        raise RuntimeError("OpenAI Responses CREATE " + type(exc).__name__ +
-                           "; request acceptance unknown; no automatic POST retry") from None
-    if not isinstance(initial, dict) or not _valid_id(initial.get("id")):
-        save("invalid_create_acknowledgement")
-        raise RuntimeError("OpenAI Responses returned no usable response ID; no POST retry")
-    response_id = initial["id"]
-    status = initial.get("status")
-    save("acknowledged", response_id=response_id, remote_status=status)
+    if resume_dir is not None:
+        try:
+            response_id, previous_files, prior_polls = _resume_candidate(
+                resume_dir, fingerprint, payload.get("model"), exclude=record_path)
+        except RuntimeError:
+            save("resume_rejected_no_post")
+            raise
+        # First GET also retrieves a previously completed response.
+        # No billable POST is issued when resumption is explicitly requested.
+        status = "queued"
+        initial = {"id": response_id, "status": status}
+        save("resuming_existing_response", response_id=response_id,
+             resumed_from_audits=previous_files, previous_poll_count=prior_polls,
+             remote_status="unknown_until_GET")
+    else:
+        try:
+            token = token_supplier()
+        except Exception as exc:
+            save("authentication_failed", exception_class=type(exc).__name__)
+            raise
+        req = urllib.request.Request(ENDPOINT, data=json.dumps(payload).encode(), method="POST",
+                                     headers={"Content-Type": "application/json",
+                                              "X-Client-Request-Id": client_request_id,
+                                              "Authorization": "Bearer " + token})
+        save("create_sent_acknowledgement_pending", post_attempts=1)
+        try:
+            with opener(req, timeout=CREATE_TIMEOUT_SECONDS) as response:
+                initial = json.load(response)
+        except urllib.error.HTTPError as exc:
+            save("create_http_error", http_status=exc.code)
+            raise http_error_formatter(exc, search) from None
+        except (OSError, TimeoutError, ValueError, TypeError) as exc:
+            save("create_acknowledgement_unknown_no_replay", exception_class=type(exc).__name__)
+            raise RuntimeError("OpenAI Responses CREATE " + type(exc).__name__+
+                               "; request acceptance unknown; no automatic POST retry") from None
+        if not isinstance(initial, dict) or not _valid_id(initial.get("id")):
+            save("invalid_create_acknowledgement")
+            raise RuntimeError("OpenAI Responses returned no usable response ID; no POST retry")
+        response_id = initial["id"]
+        status = initial.get("status")
+        save("acknowledged", response_id=response_id, remote_status=status)
     if not search:
         if status != "completed":
             save("nonsearch_not_completed", remote_status=status)
