@@ -21,6 +21,7 @@ from source_claim_narrowing import (
     LIMITED_STATUS, narrow_to_passage, narrowing_record,
     permitted_narrowing, validate_narrowings,
 )
+from source_directional_eligibility import eligibility
 from source_quality_audit import validate_source_review
 
 MAX_REVIEW_ROUNDS = 4
@@ -105,6 +106,17 @@ def conservative_revision(previous, issues, original_cutoff):
     dropped, kept = [], []
     narrowed = copy.deepcopy(previous.get("editorial_narrowings", []))
     narrowed_ids = {entry["evidence_id"] for entry in narrowed}
+    background = []
+    for context in previous.get("background_quotes", []):
+        if context["id"] in issues_by_id:
+            dropped.append({
+                "id": context["id"], "url": url_key(context["source"]),
+                "reasons": ["Both reviews must reconsider source context; "
+                            "a renewed objection excludes previously narrowed "
+                            "quoted background"],
+                "disposition": "EXCLUDED_QUOTATION_FROM_BACKGROUND"})
+        else:
+            background.append(copy.deepcopy(context))
     for entry in evidence:
         identifier = entry["id"]
         url = url_key(entry.get("source"))
@@ -129,7 +141,10 @@ def conservative_revision(previous, issues, original_cutoff):
                             "disposition": "EXCLUDED_NOT_EVIDENCE"})
         elif relevant_issues and permitted_narrowing(entry, witness, relevant_issues):
             changed = narrow_to_passage(entry, witness)
-            kept.append(changed)
+            # Quotations have ZERO directional admissibility. They are not
+            # part of the retained observations used by any forecast,
+            # publisher-diversity count or directional balance test.
+            background.append(changed)
             narrowed.append(narrowing_record(
                 entry, changed, witness, relevant_issues))
         elif relevant_issues:
@@ -146,19 +161,13 @@ def conservative_revision(previous, issues, original_cutoff):
     revised["evidence"] = kept
     if claim_map is not None:
         revised["editorial_narrowings"] = narrowed
-    # An editorial correction may NOT evade the original substantive evidence
-    # diversity requirements by declaring a small sample clean.
-    publishers = {r.get("publisher") for r in kept if r.get("publisher")}
-    directions = {r.get("direction") for r in kept}
-    guard_failures = []
-    if len(kept) < 6:
-        guard_failures.append("fewer_than_six_source_observations")
-    if len(publishers) < 3:
-        guard_failures.append("fewer_than_three_distinct_publishers")
-    if not {"raises", "lowers", "ambiguous"}.issubset(directions):
-        guard_failures.append("missing_required_directional_balance")
-    if sum(r.get("evidence_status") == "new" for r in kept) < 4:
-        guard_failures.append("fewer_than_four_new_observations")
+        revised["background_quotes"] = background
+        revised["quote_separation_version"] = 2
+    # Conservatively corrected text is not directionally informative.
+    # Every minimum must be recomputed from the UNALTERED directional
+    # observations, never from background quotes or their old categories.
+    eligibility_report = eligibility(revised)
+    guard_failures = eligibility_report["failures"]
     # Unscored source diagnostics may assess a provisional quote-only revision
     # even when it fails diversity checks; that version can NEVER be approved
     # or used for forecasts. Legacy source-only fixtures keep the old block.
@@ -173,6 +182,7 @@ def conservative_revision(previous, issues, original_cutoff):
             "status": ("BLOCKED_NOT_PUBLISHABLE" if guard_failures
                        else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
             "failures": guard_failures,
+            "eligibility": eligibility_report,
             "scope": "SOURCE_DIAGNOSTIC_ONLY_NO_SCORED_FORECASTS"}
     effective_sources = {url_key(e["source"]) for e in kept}
     for src in quality["sources"]:
@@ -269,12 +279,12 @@ def conservative_revision(previous, issues, original_cutoff):
         (previous.get("excluded_evidence", []) + dropped),
         key=lambda x: x["id"])
     revised["editorial_provenance"] = (
-        "This corrected source-only diagnostic preserves only attributed "
-        "verbatim source passages where independently captured text warrants "
-        "a limited quotation and excludes unsupported original claims. "
-        "Quote-only records assert no measured stability direction. The "
-        "correction creates no new sources, independently verified events, "
-        "original publication times, forecasts or permission to publish.")
+        "Verbatim quotations appear solely in background_quotes, not in "
+        "directional evidence. The original cited claims are either "
+        "preserved unchanged or excluded; sources are never manufactured. "
+        "Quoted context contributes to no measured stability direction, "
+        "publisher minimum, forecast, or publication approval. Original "
+        "first-publication times and source credibility remain unverified.")
     if claim_map is not None:
         validate_narrowings(revised)
     # An unchanged correction cannot be used to purchase repeated approvals.
@@ -283,6 +293,8 @@ def conservative_revision(previous, issues, original_cutoff):
     return revised, {
         "excluded_evidence": dropped,
         "narrowed_evidence_ids": [r["evidence_id"] for r in narrowed],
+        "background_quote_ids": [r["id"] for r in background],
+        "directional_evidence_ids": eligibility_report["directional_evidence_ids"],
         "source_diversity_failures": guard_failures,
         "cutoff_gap_disclosed": bool(original_cutoff)}
 
