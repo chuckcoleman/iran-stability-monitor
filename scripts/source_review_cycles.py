@@ -436,28 +436,40 @@ def deterministic_review_issues(packet, original_cutoff):
         require(isinstance(guard, dict)
                 and isinstance(guard.get("failures"), list),
                 "Malformed source evidence-diversity gate")
-        evidence = packet["evidence"]
-        publishers = {entry.get("publisher") for entry in evidence
-                      if entry.get("publisher")}
-        directions = {entry.get("direction") for entry in evidence}
-        failures = []
-        if len(evidence) < 6:
-            failures.append("fewer_than_six_source_observations")
-        if len(publishers) < 3:
-            failures.append("fewer_than_three_distinct_publishers")
-        if not {"raises", "lowers", "ambiguous"}.issubset(directions):
-            failures.append("missing_required_directional_balance")
-        if sum(e.get("evidence_status") == "new" for e in evidence) < 4:
-            failures.append("fewer_than_four_new_observations")
-        require(guard["failures"] == failures,
-                "Saved evidence-diversity safeguard contradicts revised evidence")
+        if packet.get("quote_separation_version") == 2:
+            counts = eligibility(packet)
+            require(guard.get("eligibility") == counts
+                    and guard.get("failures") == counts["failures"]
+                    and guard.get("status") == (
+                        "BLOCKED_NOT_PUBLISHABLE" if counts["failures"]
+                        else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
+                    "Saved evidence-diversity safeguard contradicts revised evidence")
+            failures = counts["failures"]
+        else:
+            # Historical packets from before independent background storage
+            # stay immutable. Their old reviewers are not silently rewritten.
+            evidence = packet["evidence"]
+            publishers = {entry.get("publisher") for entry in evidence
+                          if entry.get("publisher")}
+            directions = {entry.get("direction") for entry in evidence}
+            failures = []
+            if len(evidence) < 6:
+                failures.append("fewer_than_six_source_observations")
+            if len(publishers) < 3:
+                failures.append("fewer_than_three_distinct_publishers")
+            if not {"raises", "lowers", "ambiguous"}.issubset(directions):
+                failures.append("missing_required_directional_balance")
+            if sum(e.get("evidence_status") == "new" for e in evidence) < 4:
+                failures.append("fewer_than_four_new_observations")
+            require(guard["failures"] == failures,
+                    "Saved evidence-diversity safeguard contradicts revised evidence")
         if failures:
             issues.append({
                 "type": "insufficient_qualified_evidence_diversity",
                 "location": "corrected evidence set / source_diversity_guard",
-                "reason": "Quote-only source passages cannot substitute for "
-                          "the original minimum observational direction, "
-                          "publisher and new-evidence requirements: "
+                "reason": "Background quotations cannot substitute for "
+                          "independent directional observations, publisher "
+                          "diversity or four new observations: "
                           + ", ".join(failures)})
     if (original_cutoff and packet.get("cutoff") != original_cutoff
             and not packet.get("unsearched_interval")):
