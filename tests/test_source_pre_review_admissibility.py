@@ -51,7 +51,7 @@ def fixture():
             "access_status": "source_metadata_captured",
             "classification": "attributed_claim",
             "origin": "original_reporting",
-            "publication_dates_from_page": ["2026-10-19"],
+            "publication_dates_from_page": ["2026-10-20"],
             "source_publication_time": None
         })
         row = sample["claim_evidence_register"]["claims"][i]
@@ -142,6 +142,26 @@ class PreReviewAdmissibilityTests(unittest.TestCase):
         self.assertIn("OLD_EVENT_CONTEXT_ONLY",
                       status["E-20261021-02"]["reasons"])
         self.assertFalse(status["E-20261021-02"]["first_publication_verified"])
+
+    def test_model_event_after_original_report_date_is_held_out(self):
+        self.sample["evidence"][0]["event_date"] = "2026-10-20"
+        self.sample["source_quality_audit"]["sources"][0][
+            "publication_dates_from_page"] = ["2026-10-19"]
+        self.sample["claim_evidence_register"]["evidence_sha256"] = sha(
+            self.sample["evidence"])
+        decision = self.screen()
+        reasons = decision["per_claim"][0]["reasons"]
+        self.assertIn("MODEL_EVENT_OCCURS_AFTER_ORIGINAL_REPORT_DATE", reasons)
+        self.assertNotIn("E-20261021-01", decision["admitted_original_ids"])
+        self.assertIn("E-20261021-01", decision["held_original_ids"])
+
+    def test_unicode_quote_words_are_screened_without_english_only_tokenizer(self):
+        from source_pre_review_admissibility import _words
+        persian = "برگزاری اعتراضات گسترده در شهرهای مختلف"
+        arabic = "ارتفاع الأسعار وتراجع الخدمات الحكومية"
+        self.assertIn("اعتراضات", _words(persian))
+        self.assertIn("الخدمات", _words(arabic))
+        self.assertIn("prices", _words("Food prices were rising"))
 
     def test_analytical_opinion_and_missing_direction_basis_do_not_count(self):
         self.research["evidence"][0]["effect_type"] = "analysis_or_forecast"
