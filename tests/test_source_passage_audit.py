@@ -104,8 +104,19 @@ class PassageWitnessTests(unittest.TestCase):
     def test_metadata_only_or_no_quote_never_counts_as_source_witness(self):
         no_quote = capture_claim_passage(
             URL, None, observation=OBS,
-            fetcher=lambda u: self.fail("No need to fetch absent quote"))
-        self.assertEqual(no_quote["status"], "NO_VERBATIM_QUOTE")
+            fetcher=lambda u: (
+                b"<html><body><article><p>A page about gardening and flowers.</p>"
+                b"</article></body></html>", u, "text/html", "utf-8"))
+        self.assertEqual(no_quote["status"], "NO_RELEVANT_ORIGINAL_PASSAGE")
+        independent = capture_claim_passage(
+            URL, None, observation=OBS, fetcher=get_html, now=lambda: NOW)
+        self.assertEqual(independent["status"],
+                         "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED")
+        self.assertEqual(independent["selection_method"],
+                         "independent_keyword_candidate")
+        self.assertIn("shipping", independent["passage"])
+        self.assertEqual(independent["semantic_support"],
+                         "NOT_INDEPENDENTLY_ESTABLISHED")
         bogus = capture_claim_passage(
             URL, "A made up statement from the website.",
             observation=OBS, fetcher=get_html)
@@ -201,7 +212,10 @@ class PassageWitnessTests(unittest.TestCase):
         selected = frozen()
         qualified = source_quality()
         no_quote = capture_claim_passage(
-            URL, None, observation=OBS)
+            URL, None, observation=OBS,
+            fetcher=lambda u: (
+                b"<html><p>Completely unrelated sports coverage.</p></html>",
+                u, "text/html", "utf-8"))
         register = {
             "claims": [dict(no_quote, evidence_id=selected[0]["id"])],
             "status": "PASSAGES_ONLY_NOT_APPROVED"}
