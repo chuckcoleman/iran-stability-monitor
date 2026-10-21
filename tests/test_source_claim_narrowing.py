@@ -294,7 +294,8 @@ class PartialClaimCorrectionTests(unittest.TestCase):
     def test_terminal_saved_packet_tampering_blocks_without_new_reviews(self):
         options = dict(
             folder=self.folder, sample=self.sample, input_sha=sha(self.sample),
-            reviewer=lambda prompt, search: {"approved": True, "issues": []},
+            reviewer=lambda prompt, search: (
+                {"approved": True, "issues": []}, set()),
             now=lambda: NOW, common="Closed original sources only.",
             original_cutoff=ORIGINAL)
         for entry in self.sample["source_quality_audit"]["sources"][1:]:
