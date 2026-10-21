@@ -425,3 +425,50 @@ requests, after which the new no-review-cost source admissibility
 screen runs. Only an admissible candidate set can proceed to
 alternating affirmative and critical review. No diagnostic run
 authorizes publication or changes historical forecasts.
+
+## Resuming a completed citation-correction request with duplicate URL decisions
+
+The original v3 diagnostic **39688687012** completed all six research
+categories and a single corrective citation search. It then failed because
+that saved corrective response supplied **nine** decisions for **eight**
+distinct URL strings: the same ACLED Sistan/Baluchestan original appeared
+once as a coverage citation and again as an evidence citation. Both
+decisions said `withdrawn`, with different explanations. This is a
+formatting/repetition error in one completed paid response, not
+authorization to invent a URL or silently accept a withdrawn observation.
+
+The pipeline now deterministically consolidates **only** responses that
+refer to the **same exact** `claimed_url`, request the same
+`verified`, `replaced`, or `withdrawn` action, and have compatible
+replacement URLs and evidence edits. Disjoint replacement edits may be
+combined, but repeated edits of one evidence index must match exactly.
+Distinct claimed URLs are never conflated through guessed aliases.
+Conflicting actions, unsupported replacements, missing URLs, or conflicting
+changes still fail. The effective merged reason preserves **each
+separate original reviewer/model explanation**, in its original order.
+
+The unmodified corrective model output remains in the original
+`citation-resolution.json` with status `FAILED_NOT_PUBLISHABLE`.
+A failed record is recoverable only when the original research, original
+citation flags, actual web-search calls, completed corrective Responses
+record, exact prompt/request fingerprints, model, response ID and
+acknowledged API transport all agree. The full independent citation gate
+is then rerun against the effective eight-URL decisions. A successful,
+verified recovery produces a separate immutable
+`citation-resolution-recovery.json` containing the original failed
+record hash, the exact original and effective decision digests, both
+original ACLED reasons, the completed response ID, the final source
+reconciliation, the corrected research and its hash. Neither the
+original failed record nor paid response is overwritten.
+
+For this specific recovery, run `research-dry-run` on `main` with
+`resume_run_id=39688687012`. Leave the optional checkbox that allows
+a new potentially billable replacement **review** POST **unchecked**.
+This should reuse the completed six searches and the existing corrective
+search with **no new paid corrective POST**. It then continues through
+source metadata, claim-passage inspection and the stricter pre-review
+admissibility gate. Only if admissible directional candidates survive
+should fresh alternating affirmative and critical reviews be requested,
+which may incur normal costs. Every failure still blocks publication
+and leaves `data/history.json` and all previously scored forecasts
+unchanged.
