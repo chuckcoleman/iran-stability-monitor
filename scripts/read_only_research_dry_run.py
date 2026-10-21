@@ -164,6 +164,16 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         freeze=lambda obj, urls, old, date, stamp: freeze_evidence(
             obj, urls, old, date, stamp, metadata))
     frozen = sample["evidence"]
+    research_as_of = (snapshot["cutoff_at"] if snapshot is not None
+                      else sample.get("research_as_of", cutoff.isoformat()))
+    research_scope = {
+        "research_as_of": research_as_of,
+        "metadata_processing_cutoff": cutoff.isoformat(),
+        "post_snapshot_interval": "NOT_SEARCHED",
+        "notice": ("Research covers the original snapshot as-of time; "
+                   "metadata capture and later reviews do not extend the "
+                   "observational search window.")
+    }
     canonical = json.dumps(sample, ensure_ascii=False, sort_keys=True,
                            separators=(",", ":"), allow_nan=False)
     check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
@@ -197,6 +207,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "baseline_history_sha256":baseline_sha,
             "actual_cutoff":cutoff.isoformat(),
             "original_research_cutoff": (snapshot["cutoff_at"] if snapshot else None),
+            "source_scope":research_scope,
             "source_coverage":coverage,
             "source_metadata":metadata,"source_quality_audit":quality,
             "frozen_test_evidence":frozen,
