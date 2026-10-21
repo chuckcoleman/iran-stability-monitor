@@ -224,7 +224,8 @@ def llm(prompt,search):
     audit_dir = Path(os.getenv("IRAN_OFFLINE_REVIEW_DIR") or ROOT / ".automation-audit")
     raw = request_response(payload, search=search,
             token_supplier=openai_bearer_token, audit_dir=audit_dir,
-            http_error_formatter=_safe_responses_error)
+            http_error_formatter=_safe_responses_error,
+            resume_dir=(os.getenv("IRAN_RESUME_AUDIT_DIR") or None) if search else None)
     check(raw.get("status")=="completed","OpenAI response incomplete")
     output=raw.get("output",[])
     call_trace = observed_search_calls(output) if search else []
