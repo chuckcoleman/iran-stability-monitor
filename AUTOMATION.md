@@ -1,5 +1,23 @@
 # Iran assessment — reviews before GitHub publication
 
+## Explicit research-as-of versus processing cutoff
+
+Six-category source sweeps are scoped to their IMMUTABLE `research-snapshot.json.cutoff_at`.
+On interrupted/resumed runs, later article metadata extraction, citation repair,
+response review or final audit compilation never extends the original research
+window. A new `source-review-input.json` retains **both**
+`research_as_of` and the separate processing `cutoff`, plus
+`post_asof_window: NOT_SEARCHED`. The source-only review prompt and final
+diagnostic report make this distinction explicit, including the unsearched
+interval; no original metadata time is invented. The processing clock is
+still used for the pre-existing evidence-retrieval and freeze guards, so
+late metadata extraction cannot be disguised as contemporaneous source
+discovery. Archived immutable review checkpoints remain unmodified; old
+records without the new field remain auditable under their original hashes
+rather than receiving fabricated backdated information.
+
+
+
 ## Mandatory source-by-source evidence quality (prospective)
 
 After successful citation reconciliation and BEFORE any scored
