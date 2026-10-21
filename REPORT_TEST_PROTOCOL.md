@@ -1,5 +1,23 @@
 # Complete alternating review checklist for all Iran Monitor reports
 
+## Research time-scope integrity
+
+For staged source research, assert that the six searches are fixed to the
+original signed/hashed research snapshot cutoff. The later metadata retrieval,
+reconciliation and reviewer processing cutoff MUST be recorded separately,
+and `post_asof_window: NOT_SEARCHED` must accompany the new closed
+review-input hash. A resumed audit must fail if its saved research as-of field
+differs from the original snapshot. Post-snapshot reporting is unsearched,
+not silently classified as negative evidence or proof that nothing changed.
+Do not alter historic snapshots or fabricate original availability timestamps.
+
+
+**Effective:** 2026-10-25. Companion to [REVIEW_POLICY.md](REVIEW_POLICY.md).
+Applies to prospective weekly/special assessments, research digests,
+six-source-category audits, calculations, scenarios, figures, tables,
+public summaries, X drafts, and **nonpublishing test reports**.
+
+
 **Effective:** 2026-10-25. Companion to [REVIEW_POLICY.md](REVIEW_POLICY.md).
 Applies to prospective weekly/special assessments, research digests,
 six-source-category audits, calculations, scenarios, figures, tables,
