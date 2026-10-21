@@ -85,7 +85,8 @@ class PreReviewAdmissibilityTests(unittest.TestCase):
 
     def test_narrow_quote_grounded_event_becomes_provisional_not_verified(self):
         audit = self.screen()
-        self.assertEqual(audit["status"], "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY")
+        self.assertEqual(audit["status"], "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY",
+                         [(x["id"], x["reasons"]) for x in audit["per_claim"]])
         self.assertEqual(len(audit["admitted_original_ids"]), 9)
         self.assertEqual(audit["held_original_ids"], [])
         self.assertEqual(audit["source_review_requests"], "PERMITTED_AFTER_SCREEN")
