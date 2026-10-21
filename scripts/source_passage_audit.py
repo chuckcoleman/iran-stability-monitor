@@ -182,7 +182,8 @@ def _quote_for_frozen(raw_research, frozen):
     return matches[0].get("support_quote")
 
 
-def verify_register(register, frozen, *, snapshot_sha=None, history_sha=None):
+def verify_register(register, frozen, *, snapshot_sha=None, history_sha=None,
+                    original_cutoff=None):
     """Validate shape, source binding and all textual witness invariants."""
     require(isinstance(register, dict) and register.get("version") == 1
             and register.get("status") == "PASSAGES_ONLY_NOT_APPROVED",
@@ -237,6 +238,19 @@ def verify_register(register, frozen, *, snapshot_sha=None, history_sha=None):
             raise ValueError("Malformed claim inspection timestamp") from None
         require(inspected.tzinfo is not None and inspected.utcoffset() is not None,
                 "Naive claim inspection timestamp")
+        cutoff = item.get("original_cutoff")
+        if original_cutoff is not None:
+            require(cutoff == original_cutoff,
+                    "Claim passage uses a different original research cutoff")
+        if cutoff is not None:
+            try:
+                bound = dt.datetime.fromisoformat(cutoff)
+            except (TypeError, ValueError):
+                raise ValueError("Malformed original source research cutoff") from None
+            require(bound.tzinfo is not None and bound.utcoffset() is not None
+                    and item.get("inspection_after_original_cutoff") is
+                        (inspected > bound),
+                    "Captured source inspection time contradicts original research cutoff")
     return True
 
 
@@ -253,7 +267,8 @@ def build_claim_register(folder, *, research, frozen, baseline_sha, snapshot,
         previous = read_json(destination)
         verify_register(
             previous, frozen, history_sha=baseline_sha,
-            snapshot_sha=snapshot["snapshot_sha256"] if snapshot else None)
+            snapshot_sha=snapshot["snapshot_sha256"] if snapshot else None,
+            original_cutoff=snapshot["cutoff_at"] if snapshot else None)
         return previous
     inspector = inspector or capture_claim_passage
     rows = []
@@ -280,6 +295,7 @@ def build_claim_register(folder, *, research, frozen, baseline_sha, snapshot,
             "until both independent reviews accept the same closed version.")
     }
     verify_register(register, frozen, history_sha=baseline_sha,
-                    snapshot_sha=snapshot["snapshot_sha256"] if snapshot else None)
+                    snapshot_sha=snapshot["snapshot_sha256"] if snapshot else None,
+                    original_cutoff=snapshot["cutoff_at"] if snapshot else None)
     save_new(destination, register)
     return register
