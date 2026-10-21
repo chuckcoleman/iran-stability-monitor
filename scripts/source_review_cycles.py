@@ -581,8 +581,31 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                    "research verification, were permitted."}
     out = folder / "source-review-cycles-outcome.json"
     if out.exists():
-        require(read_json(out) == outcome,
-                "Prior alternating-review outcome differs from saved review record")
+        historical = read_json(out)
+        if historical != outcome:
+            # A previously rejected diagnostic may have stopped at the old
+            # whole-record-exclusion rule. Its failure report and rejected
+            # source versions MUST remain unchanged; only the original,
+            # fully matching rejected rounds may be followed by this revision.
+            require(historical.get("status") ==
+                        "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE"
+                    and historical.get("original_review_input_sha256") == input_sha
+                    and historical.get("original_research_cutoff") == original_cutoff
+                    and len(historical.get("review_rounds", [])) < len(rounds)
+                    and historical["review_rounds"] ==
+                        outcome["review_rounds"][:len(historical["review_rounds"])]
+                    and (folder / "source-review-round-01-blocked.json").exists(),
+                    "Prior alternating-review outcome differs from saved review record")
+            # The compatibility file is an ADDITION, never a replacement.
+            outcome["original_rejected_outcome_sha256"] = sha(historical)
+            outcome["original_rejected_blocker_sha256"] = sha(
+                read_json(folder / "source-review-round-01-blocked.json"))
+            new_out = folder / "source-review-cycles-outcome-revised.json"
+            if new_out.exists():
+                require(read_json(new_out) == outcome,
+                        "Corrected review outcome differs from prior immutable revisions")
+            else:
+                save_new(new_out, outcome)
     else:
         save_new(out, outcome)
     return outcome
