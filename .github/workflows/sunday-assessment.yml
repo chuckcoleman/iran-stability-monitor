@@ -13,7 +13,7 @@ on:
           - api-probe
           - research-dry-run
       resume_run_id:
-        description: 'Optional previous diagnostic run ID for GET-only research resume (research-dry-run only)'
+        description: 'Optional previous STAGED diagnostic run ID; reuse completed stages and GET-resume acknowledged requests'
         required: false
         default: ''
         type: string
@@ -72,6 +72,13 @@ jobs:
           merge-multiple: true
           github-token: ${{ github.token }}
           path: .automation-audit
+      - name: Require a prior staged snapshot before continuing
+        if: inputs.mode == 'research-dry-run' && inputs.resume_run_id != ''
+        run: |
+          test -s .automation-audit/research-snapshot.json || {
+            echo 'No staged research snapshot in earlier artifact. Legacy monolithic runs cannot be reused; refusing new billable POST.' >&2
+            exit 1
+          }
       - name: Mint short-lived diagnostic GitHub App token
         id: app-preflight
         if: inputs.mode == 'healthcheck' || inputs.mode == 'check-services'
@@ -96,8 +103,10 @@ jobs:
       - name: Run actual research and both source-only reviews (paid, NEVER PUBLISHABLE)
         if: inputs.mode == 'research-dry-run'
         env:
-          IRAN_RESUME_AUDIT_DIR: ${{ inputs.resume_run_id != '' && '.automation-audit' || '' }}
-        run: python scripts/read_only_research_dry_run.py
+          IRAN_STAGED_RESUME: ${{ inputs.resume_run_id != '' && '1' || '' }}
+        # Keep a buffer before the hard job deadline so always() can upload
+        # completed source-category checkpoints and redacted response IDs.
+        run: timeout --signal=TERM --kill-after=30s 38m python scripts/read_only_research_dry_run.py
       - name: Preserve diagnostic audit (no credentials)
         if: always()
         uses: actions/upload-artifact@v4
