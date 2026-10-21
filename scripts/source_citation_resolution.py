@@ -306,10 +306,21 @@ def _restore_completed_resolution(folder, research, citations, calls, initial,
         'citations': sorted(citations), 'search_calls': calls,
         'reconciliation': initial
     }, 'Prior citation-resolution initial evidence differs; no repeat search')
-    require(final.get('status') == 'CITATIONS_RESOLVED_PENDING_ALL_OTHER_GATES'
+    state = final.get('status')
+    require(state in ('CITATIONS_RESOLVED_PENDING_ALL_OTHER_GATES',
+                      'FAILED_NOT_PUBLISHABLE')
             and final.get('original_research_sha256') == digest(research)
             and final.get('attempt_limit') == 1,
-            'Prior citation correction did not finish cleanly; no repeat search')
+            'Prior citation correction is not an identifiable single request')
+    if state == 'FAILED_NOT_PUBLISHABLE':
+        # Only the exact archived error in which the raw model provided
+        # duplicate URL decisions can be recovered. The old failure and
+        # original response are immutable; every other error remains blocked.
+        require(set(final) == {
+            'status', 'attempt_limit', 'original_research_sha256',
+            'decision', 'citations', 'search_calls', 'error_type'
+        } and final.get('error_type') == 'ValueError',
+            'A prior failed correction is not an eligible duplicate-URL recovery')
     # Compare the current values to the original audit above, but reproduce
     # the original POST from its preserved insertion order. Stage checkpoints
     # use sort_keys=True, and rebuilding this JSON prompt from those files
@@ -336,6 +347,67 @@ def _restore_completed_resolution(folder, research, citations, calls, initial,
     require(sorted(merged) == final.get('citations')
             and combined == final.get('search_calls'),
             'Corrective citation/tool provenance differs; no repeat search')
+    effective, normalization = consolidate_compatible_resolutions(
+        logged['result'])
+    if state == 'FAILED_NOT_PUBLISHABLE':
+        require(normalization is not None and normalization['merges']
+                and normalization['original_decision_count'] >
+                    normalization['distinct_claimed_url_count'],
+                'Earlier correction failure cannot be repaired by duplicate decisions')
+        # The precise old error must be the duplicate-URL rejection. The
+        # original raw model output is kept as the historical failure; only
+        # the new, compatible view can advance through all existing gates.
+        original_urls = [
+            item.get('claimed_url') for item in logged['result']['resolutions']
+        ]
+        require(len(set(original_urls)) < len(original_urls),
+                'Saved failed correction has no duplicate claimed URL')
+        revised, reconciliation = apply_resolutions(
+            research, initial, logged['result'], merged, combined)
+        # Preserve the previously FAILED correction checkpoint unchanged.
+        # New recovery artifacts bind every byte-level request/response ID
+        # and original failure hash to one deterministic effective decision.
+        recovery = {
+            'version': 1,
+            'status': 'CITATION_RESOLUTIONS_RECOVERED_FROM_VERIFIED_DUPLICATES',
+            'original_failed_checkpoint_sha256': digest(final),
+            'original_research_sha256': digest(research),
+            'initial_reconciliation_sha256': digest(initial),
+            'original_prompt_sha256': hashlib.sha256(
+                prompt.encode('utf-8')).hexdigest(),
+            'original_request_sha256': sha(payload),
+            'original_response_id': logged['response_id'],
+            'original_decision_sha256': digest(logged['result']),
+            'normalization': normalization,
+            'effective_decision_sha256': digest(effective),
+            'citations': sorted(merged),
+            'search_calls_sha256': digest(combined),
+            'revised_research': revised,
+            'revised_research_sha256': digest(revised),
+            'final_reconciliation': reconciliation,
+            'publication': 'NOT AUTHORIZED',
+            'limitations': (
+                'This recovery does not repeat paid research or the citation '
+                'resolution search. It retains the original FAILED_NOT_PUBLISHABLE '
+                'record and all original model decisions; compatible duplicate '
+                'entries are consolidated only after verified source traces.')
+        }
+        recovery_path = folder / 'citation-resolution-recovery.json'
+        if recovery_path.exists():
+            saved_recovery = json.loads(recovery_path.read_text(
+                encoding='utf-8'))
+            require(saved_recovery == recovery,
+                    'Saved citation recovery differs from original paid response')
+        else:
+            save(folder, 'citation-resolution-recovery.json', recovery)
+        return revised, merged, combined
+
+    require(final.get('decision_normalization') == normalization
+            if normalization is not None else
+            'decision_normalization' not in final,
+            'Saved successful correction normalization differs from model output')
+    require(not (folder / 'citation-resolution-recovery.json').exists(),
+            'Unexpected recovery record for already successful citation resolution')
     revised, reconciliation = apply_resolutions(
         research, initial, logged['result'], merged, combined)
     require(revised == final.get('revised_research')
@@ -380,6 +452,10 @@ def resolve_source_citations(research, citations, calls, *, researcher, audit_di
         os.environ['IRAN_OFFLINE_REVIEW_DIR'] = str(folder)
         decision, additional = researcher(prompt, True)
         audit['decision'] = decision
+        _effective_decision, normalization = consolidate_compatible_resolutions(
+            decision)
+        if normalization is not None:
+            audit['decision_normalization'] = normalization
         extra_calls = load_matching_search_trace(folder, decision)
         merged = set(citations) | set(additional)
         combined = list(calls) + extra_calls
