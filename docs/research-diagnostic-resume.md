@@ -382,3 +382,46 @@ potential duplicate-review consent option off by default. New research
 searches and, only if the pre-screen passes, reviews may incur API costs.
 This test remains explicitly nonpublishing: no forecasts, historical
 numerical data, GitHub publishing PRs or social updates are changed.
+
+## Recovery of a completed research response with list-valued limitations
+
+Fresh v3 diagnostic **39682616579** completed the primary-data and
+international-media research stages. Its third (regional/multilingual)
+OpenAI search also completed and its original response, request journal
+and web-search trace were saved, but stage validation stopped because
+`coverage_audit[0].limitations` contained **11 nonempty strings**
+instead of one prose string. This is a representational formatting
+problem, not permission to discard the 11 caveats or regenerate the
+paid research.
+
+When a **saved, independently verified** response supplies a bounded,
+nonempty list of strings in `coverage_audit[].limitations` or
+`source_quality[].limitations`, the pipeline constructs a newline-
+separated string in a distinct **effective** stage result. The original
+`response-N.json` and completed transport remain unchanged. For each
+corrected field the immutable
+`research-stage-format-regional_multilingual_media.json` (or matching
+category name) stores the original ordered list, effective text,
+snapshot, prompt SHA-256, exact API request fingerprint, response ID,
+model, original result digest and effective result digest. The
+research-stage checkpoint retains both the raw `result` and the
+separate `effective_result`, tied to the normalization audit. A
+resumed checkpoint recomputes and verifies all of them before reuse.
+
+Normalization refuses empty arrays, invalid elements, oversized
+inputs, mismatched Responses/transport journals, altered prior
+checkpoints and any attempt to normalize other types of field.
+The normalizer does **not** fix unsupported citations, manufacture
+evidence, change event dates or cutoff, or approve source-quality
+assertions. No live research prompt for v1, v2 or v3 was changed.
+
+To continue **39682616579**, use `main`, `research-dry-run`,
+`resume_run_id=39682616579`, and leave the checkbox about a possible
+billable replacement review **unchecked**. The first two category
+checkpoints are reused byte-for-byte; the saved third response is
+validated and normalized with **no repeat search POST**. The
+remaining three source categories may generate normal paid research
+requests, after which the new no-review-cost source admissibility
+screen runs. Only an admissible candidate set can proceed to
+alternating affirmative and critical review. No diagnostic run
+authorizes publication or changes historical forecasts.
