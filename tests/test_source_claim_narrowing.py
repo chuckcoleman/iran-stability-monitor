@@ -255,6 +255,86 @@ class PartialClaimCorrectionTests(unittest.TestCase):
             original_cutoff=ORIGINAL)
         self.assertEqual(result, repeat)
 
+    def test_quote_only_context_cannot_repair_missing_direction(self):
+        before = registered_packet()
+        initial = eligibility(before)
+        self.assertEqual(initial["directional_observations"], 9)
+        self.assertEqual(initial["failures"], [])
+        # Quotes refer to original source passages but are not observations;
+        # replacing all worsening-direction claims makes the closed set
+        # irreversibly unable to satisfy the minimum directional balance.
+        issues = [{
+            "type": "unsupported_original_direction",
+            "location": "E-20261021-01; E-20261021-04; E-20261021-07",
+            "reason": "These source fragments do not demonstrate worsening."
+        }]
+        amended, details = conservative_revision(before, issues, ORIGINAL)
+        self.assertIsNotNone(amended)
+        self.assertEqual(amended["quote_separation_version"], 2)
+        self.assertTrue(validate_narrowings(amended))
+        counts = eligibility(amended)
+        self.assertIn("missing_required_directional_balance",
+                      counts["failures"])
+        self.assertEqual(counts["directional_observations"], 6)
+        self.assertEqual(counts["background_quote_ids"],
+                         ["E-20261021-04", "E-20261021-07"])
+        self.assertEqual(counts["directional_evidence_ids"],
+                         [e["id"] for e in amended["evidence"]])
+        self.assertEqual(amended["source_diversity_guard"]["eligibility"], counts)
+        self.assertEqual(amended["source_diversity_guard"]["status"],
+                         "BLOCKED_NOT_PUBLISHABLE")
+        # A forged raises direction in the background cannot undo the block.
+        forged = copy.deepcopy(amended)
+        forged["background_quotes"][0]["direction"] = "raises"
+        self.assertIn("missing_required_directional_balance",
+                      eligibility(forged)["failures"])
+        with self.assertRaisesRegex(ValueError, "background differs"):
+            validate_narrowings(forged)
+
+    def test_terminal_saved_packet_tampering_blocks_without_new_reviews(self):
+        options = dict(
+            folder=self.folder, sample=self.sample, input_sha=sha(self.sample),
+            reviewer=lambda prompt, search: {"approved": True, "issues": []},
+            now=lambda: NOW, common="Closed original sources only.",
+            original_cutoff=ORIGINAL)
+        for entry in self.sample["source_quality_audit"]["sources"][1:]:
+            entry["access_status"] = "source_unavailable"
+        options["input_sha"] = sha(self.sample)
+        first = run_alternating_review_cycles(**options)
+        self.assertEqual(first["rounds"], 1)
+        file = self.folder / "source-review-round-01-terminal-gate.json"
+        checkpoint = read_json(file)
+        checkpoint["directional_eligibility"]["failures"] = []
+        file.write_text(json.dumps(checkpoint))
+        with self.assertRaisesRegex(ValueError, "terminal source gate differs"):
+            run_alternating_review_cycles(
+                **dict(options, reviewer=lambda *args:
+                       self.fail("No repeated review POST permitted")))
+
+    def test_completed_old_quote_only_round_is_rejected_without_model_call(self):
+        # This represents fully reviewed legacy diagnostic 39654094747,
+        # whose second-round packet still counted narrowed quotes as evidence.
+        future = self.folder / "source-review-round-02-input.json"
+        future.write_text(json.dumps({
+            "sample": {"evidence": [{
+                "id": "E-20261021-02",
+                "editorial_support_status": LIMITED_STATUS,
+                "direction": "ambiguous"}],
+                "claim_evidence_register": self.sample["claim_evidence_register"]
+            },
+            "round": 2,
+            "input_sha256": "saved-old-audit",
+            "parent_sha256": sha(self.sample)
+        }))
+        with self.assertRaisesRegex(ValueError, "historical"):
+            run_alternating_review_cycles(
+                folder=self.folder, sample=self.sample,
+                input_sha=sha(self.sample),
+                reviewer=lambda *args: self.fail("No new paid review"),
+                now=lambda: NOW, common="Preserved original source review.",
+                original_cutoff=ORIGINAL)
+        self.assertTrue(future.exists())
+
     def test_no_legacy_quote_only_insertion_without_register(self):
         previous = packet()
         previous["editorial_narrowings"] = [{"evidence_id": "E-20261021-02"}]
