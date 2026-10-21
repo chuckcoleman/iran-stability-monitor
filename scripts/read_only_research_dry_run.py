@@ -32,6 +32,7 @@ from source_review_resume import (
 from source_review_cycles import run_alternating_review_cycles
 from source_passage_audit import build_claim_register
 from source_evidence_status import reconcile_before_freeze
+from source_pre_review_admissibility import screen_or_restore
 
 from source_search_trace import load_matching_search_trace, verify_claimed_source_links
 from source_citation_reconciliation import (
@@ -181,6 +182,55 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                 folder, research=result, frozen=frozen,
                 baseline_sha=baseline_sha, snapshot=snapshot))
             if researcher is LIVE_RESEARCHER else None))
+    # STRICT LIVE V3: perform exact original-text, publication chronology,
+    # event-date, source-quality and directional-rationale screening BEFORE
+    # ANY paid affirmative/critical review. The original immutable source
+    # snapshot stays untouched; only a separately hashed screened input may
+    # enter review. Synthetic and pre-v3 recovery remain on their original
+    # already-checkpointed contract and cannot gain retroactive certification.
+    preflight = None
+    if researcher is LIVE_RESEARCHER and snapshot and snapshot["version"] >= 3:
+        preflight = screen_or_restore(
+            folder, sample, result, baseline_sha=baseline_sha,
+            snapshot=snapshot)
+        if preflight["status"] == "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS":
+            blocked = {
+                "status": "PRE_REVIEW_EVIDENCE_INSUFFICIENT_NOT_PUBLISHABLE",
+                "source_pre_review_status": preflight["status"],
+                "source_pre_review_admissibility_sha256":
+                    hashlib.sha256(json.dumps(preflight, ensure_ascii=False,
+                        sort_keys=True, separators=(",", ":"),
+                        allow_nan=False).encode()).hexdigest(),
+                "source_pre_review_admitted_ids": preflight["admitted_original_ids"],
+                "source_pre_review_held_ids": preflight["held_original_ids"],
+                "source_pre_review_directional_counts":
+                    preflight["directional_candidate_counts"],
+                "original_source_review_input_sha256": frozen_sha,
+                "original_research_snapshot_sha256": snapshot["snapshot_sha256"],
+                "baseline_history_sha256": baseline_sha,
+                "source_review_rounds": "NOT STARTED",
+                "affirmative_review": "NOT INVOKED",
+                "critical_review": "NOT INVOKED",
+                "publication": "NOT AUTHORIZED",
+                "mode": "RESEARCH_ONLY_NONPUBLISHING",
+                "required_next_action": preflight["required_next_action"],
+                "limitations": "No forecasts or publication tested. Screening is "
+                    "necessary, not sufficient proof of claim or direction. "
+                    "New source evidence with a new dated cutoff is required."}
+            blocked_path = folder / "research-pre-review-dry-run.json"
+            from source_research_batches import save_new, read_json
+            if blocked_path.exists():
+                check(read_json(blocked_path) == blocked,
+                      "Saved pre-review failure differs; never overwrite")
+            else:
+                save_new(blocked_path, blocked)
+            check((root/"data/history.json").read_bytes() == before,
+                  "Source screening changed immutable published history")
+            return blocked
+        # A passing screen is not review approval. The independently selected
+        # packet alone becomes the exact input for both paid review roles.
+        sample = preflight["screened_packet"]
+        frozen_sha = preflight["screened_review_input_sha256"]
     frozen = sample["evidence"]
     research_as_of = (snapshot["cutoff_at"] if snapshot is not None
                       else sample.get("research_as_of", cutoff.isoformat()))
@@ -215,6 +265,15 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
               "Source dry-run altered the immutable published history")
     report={"status":status,"reviewers":reviewers,
             "review_rounds":cycles["review_rounds"],
+            "pre_review_admissibility_sha256": (
+                hashlib.sha256(json.dumps(preflight, sort_keys=True,
+                    ensure_ascii=False, separators=(",", ":"),
+                    allow_nan=False).encode()).hexdigest()
+                if preflight else None),
+            "pre_review_admitted_evidence_ids": (
+                preflight["admitted_original_ids"] if preflight else None),
+            "pre_review_held_evidence_ids": (
+                preflight["held_original_ids"] if preflight else None),
             "terminal_evidence_gate":cycles.get("terminal_evidence_gate"),
             "final_review_input_sha256":cycles["final_review_input_sha256"],
             "original_claim_evidence_register_sha256": (
