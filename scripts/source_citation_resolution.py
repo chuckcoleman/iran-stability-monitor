@@ -161,47 +161,122 @@ def apply_resolutions(research, initial, decision, citations, calls):
     return revised,reconciliation
 
 
-def resolve_source_citations(research, citations, calls, *, researcher, audit_dir):
-    """Return unchanged clean research, or one explicitly audited corrective attempt.
+def _correction_prompt(research, initial, calls):
+    """The exact original request is stable across interrupted reruns."""
+    return RESOLUTION_PROMPT + json.dumps({
+        'research': research, 'flagged': initial['unsupported'],
+        'existing_api_source_urls': sorted({
+            item.get('url') for call in calls
+            for item in call.get('citation_sources_exposed_by_api', [])
+            if isinstance(item, dict) and item.get('url')
+        })
+    }, ensure_ascii=False)
 
-    Original and corrective API records remain intact. Unioned provenance is
-    used only after both actual search traces have independently been checked.
-    Corrections cannot silently drop evidence or bypass the original gate.
+
+def _restore_completed_resolution(folder, research, citations, calls, initial,
+                                  researcher):
+    """Recompute the entire correction from its audited tool result.
+
+    Never trust a preserved 'resolved' flag or model-authored URLs alone.
+    The exact source sweep, corrective response and transport must agree.
+    """
+    from assessment_pipeline import responses_payload, LIVE_RESEARCHER
+    from source_research_batches import _saved_response, sha
+    from source_search_trace import verify_search_trace
+
+    previous = json.loads((folder / 'citation-resolution-initial.json').read_text(
+        encoding='utf-8'))
+    final = json.loads((folder / 'citation-resolution.json').read_text(
+        encoding='utf-8'))
+    require(previous == {
+        'status': 'FLAGGED_BEFORE_CORRECTIVE_SEARCH',
+        'research': research, 'research_sha256': digest(research),
+        'citations': sorted(citations), 'search_calls': calls,
+        'reconciliation': initial
+    }, 'Prior citation-resolution initial evidence differs; no repeat search')
+    require(final.get('status') == 'CITATIONS_RESOLVED_PENDING_ALL_OTHER_GATES'
+            and final.get('original_research_sha256') == digest(research)
+            and final.get('attempt_limit') == 1,
+            'Prior citation correction did not finish cleanly; no repeat search')
+    prompt = _correction_prompt(research, initial, calls)
+    model = os.getenv('IRAN_FORECAST_MODEL') or 'gpt-6.1-sol'
+    payload = responses_payload(prompt, True)
+    payload['background'] = True
+    logged = _saved_response(
+        folder, hashlib.sha256(prompt.encode('utf-8')).hexdigest(),
+        model, request_sha=sha(payload),
+        require_transport=researcher is LIVE_RESEARCHER)
+    require(logged is not None and logged.get('result') == final.get('decision'),
+            'Corrective decision lacks matching original model/tool output')
+    corrective_calls = logged.get('tool_search_calls')
+    verify_search_trace(corrective_calls)
+    additional = set(logged.get('citations', []))
+    merged = set(citations) | additional
+    combined = list(calls) + corrective_calls
+    require(sorted(merged) == final.get('citations')
+            and combined == final.get('search_calls'),
+            'Corrective citation/tool provenance differs; no repeat search')
+    revised, reconciliation = apply_resolutions(
+        research, initial, logged['result'], merged, combined)
+    require(revised == final.get('revised_research')
+            and digest(revised) == final.get('revised_research_sha256')
+            and reconciliation == final.get('final_reconciliation'),
+            'Previously corrected research fails deterministic replay')
+    return revised, merged, combined
+
+
+def resolve_source_citations(research, citations, calls, *, researcher, audit_dir):
+    """One corrective search, or an entirely verified replay without paid requests.
+
+    A failed/incomplete pre-existing correction never triggers another POST.
     """
     from source_search_trace import verify_search_trace
     verify_search_trace(calls)
-    initial=reconcile_source_citations(research,citations,calls)
+    initial = reconcile_source_citations(research, citations, calls)
+    folder = Path(audit_dir)
+    initial_path = folder / 'citation-resolution-initial.json'
+    final_path = folder / 'citation-resolution.json'
     if not initial['unsupported']:
-        return research,citations,calls
-    folder=Path(audit_dir);folder.mkdir(parents=True,exist_ok=True)
-    save(folder,'citation-resolution-initial.json',{
-        'status':'FLAGGED_BEFORE_CORRECTIVE_SEARCH','research':research,
-        'research_sha256':digest(research),'citations':sorted(citations),
-        'search_calls':calls,'reconciliation':initial})
-    prompt=RESOLUTION_PROMPT+json.dumps({
-        'research':research,'flagged':initial['unsupported'],
-        'existing_api_source_urls':sorted({s.get('url') for c in calls
-            for s in c.get('citation_sources_exposed_by_api',[]) if isinstance(s,dict) and s.get('url')})},
-        ensure_ascii=False)
-    audit={'status':'FAILED_NOT_PUBLISHABLE','attempt_limit':1,
-           'original_research_sha256':digest(research)}
-    previous=os.environ.get('IRAN_OFFLINE_REVIEW_DIR')
+        require(not initial_path.exists() and not final_path.exists(),
+                'Unexpected correction audit for initially clean evidence')
+        return research, citations, calls
+    folder.mkdir(parents=True, exist_ok=True)
+    if initial_path.exists() or final_path.exists():
+        require(initial_path.exists() and final_path.exists(),
+                'Incomplete prior citation correction; no repeat paid request')
+        return _restore_completed_resolution(
+            folder, research, citations, calls, initial, researcher)
+
+    save(folder, 'citation-resolution-initial.json', {
+        'status': 'FLAGGED_BEFORE_CORRECTIVE_SEARCH',
+        'research': research, 'research_sha256': digest(research),
+        'citations': sorted(citations), 'search_calls': calls,
+        'reconciliation': initial})
+    prompt = _correction_prompt(research, initial, calls)
+    audit = {'status': 'FAILED_NOT_PUBLISHABLE', 'attempt_limit': 1,
+             'original_research_sha256': digest(research)}
+    previous = os.environ.get('IRAN_OFFLINE_REVIEW_DIR')
     try:
-        os.environ['IRAN_OFFLINE_REVIEW_DIR']=str(folder)
-        decision,additional=researcher(prompt,True)
-        audit['decision']=decision
-        extra_calls=load_matching_search_trace(folder,decision)
-        merged=set(citations)|set(additional); combined=list(calls)+extra_calls
-        audit.update(citations=sorted(merged),search_calls=combined)
-        revised,final=apply_resolutions(research,initial,decision,merged,combined)
+        os.environ['IRAN_OFFLINE_REVIEW_DIR'] = str(folder)
+        decision, additional = researcher(prompt, True)
+        audit['decision'] = decision
+        extra_calls = load_matching_search_trace(folder, decision)
+        merged = set(citations) | set(additional)
+        combined = list(calls) + extra_calls
+        audit.update(citations=sorted(merged), search_calls=combined)
+        revised, final = apply_resolutions(
+            research, initial, decision, merged, combined)
         audit.update(status='CITATIONS_RESOLVED_PENDING_ALL_OTHER_GATES',
-                     revised_research=revised,revised_research_sha256=digest(revised),
+                     revised_research=revised,
+                     revised_research_sha256=digest(revised),
                      final_reconciliation=final)
-        return revised,merged,combined
+        return revised, merged, combined
     except Exception as exc:
-        audit['error_type']=type(exc).__name__
+        audit['error_type'] = type(exc).__name__
         raise
     finally:
-        if previous is None: os.environ.pop('IRAN_OFFLINE_REVIEW_DIR',None)
-        else: os.environ['IRAN_OFFLINE_REVIEW_DIR']=previous
-        save(folder,'citation-resolution.json',audit)
+        if previous is None:
+            os.environ.pop('IRAN_OFFLINE_REVIEW_DIR', None)
+        else:
+            os.environ['IRAN_OFFLINE_REVIEW_DIR'] = previous
+        save(folder, 'citation-resolution.json', audit)
