@@ -51,6 +51,15 @@ def _prompt(role, packet, digest, common):
             "a matched quote actually warrants its observation. "
             "A source metadata hit is not full-text inspection. "
             "Do not infer that the interval after research_as_of was searched. ")
+    if packet.get("quote_separation_version") == 2:
+        common += (
+            "\nSOURCE CONTEXT IS NOT DIRECTIONAL EVIDENCE: "
+            "background_quotes are short, unverified textual context, "
+            "not observed improvements, worsening, independent publishers "
+            "or eligible new directional observations. Only the unchanged "
+            "substantive items in evidence can be evaluated for a directional "
+            "claim. Any incomplete minimum is a deterministic fail, and "
+            "neither review can waive it. ")
     if packet.get("editorial_narrowings"):
         common += (
             "\nEDITORIAL QUOTE-ONLY CORRECTION: The original claims and "
