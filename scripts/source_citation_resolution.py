@@ -53,10 +53,122 @@ by changing the claimed search provenance. Existing verified sources may be
 used if their content supports the revised observation. Data follows:\n"""
 
 
+
+def consolidate_compatible_resolutions(decision):
+    """Fold repeat decisions for the *same exact* claimed URL, never URL aliases.
+
+    The paid model may resolve one URL twice because it appeared in both
+    coverage_audit and an evidence.source record. Preserve every separate
+    rationale and replacement instruction; disagreement is a hard failure.
+    No source is thereby verified, since apply_resolutions independently
+    rechecks all citations and actual web-search tool provenance.
+    """
+    require(isinstance(decision, dict) and
+            isinstance(decision.get('resolutions'), list),
+            'Missing explicit citation resolutions')
+    groups = {}
+    for index, entry in enumerate(decision['resolutions']):
+        require(isinstance(entry, dict), 'Malformed citation resolution')
+        old = entry.get('claimed_url')
+        action = entry.get('action')
+        reason = entry.get('reason')
+        edits = entry.get('evidence_replacements')
+        require(isinstance(old, str) and bool(old),
+                'Missing citation resolution claimed_url')
+        require(action in ('verified', 'replaced', 'withdrawn'),
+                'Unknown citation resolution action')
+        require(isinstance(reason, str) and len(reason.strip()) >= 20,
+                'Specific citation resolution reason required')
+        require(isinstance(edits, list),
+                'Explicit evidence replacement list required')
+        if action != 'replaced':
+            require(entry.get('replacement_url') is None and edits == [],
+                    'Unexpected replacement fields')
+        else:
+            require(isinstance(entry.get('replacement_url'), str),
+                    'Replacement requires an actual new URL')
+            # Reject duplicate indices within each individual record. Two
+            # repeated records may safely refer to the same index only if
+            # they supply the identical complete replacement.
+            seen_indices = set()
+            for edit in edits:
+                require(isinstance(edit, dict) and
+                        type(edit.get('evidence_index')) is int and
+                        isinstance(edit.get('replacement'), dict),
+                        'Malformed evidence replacement in citation resolution')
+                require(edit['evidence_index'] not in seen_indices,
+                        'Duplicate evidence replacement index within decision')
+                seen_indices.add(edit['evidence_index'])
+        if old not in groups:
+            groups[old] = {'entries': [copy.deepcopy(entry)],
+                           'indices': [index], 'action': action,
+                           'replacement_url': entry.get('replacement_url')}
+        else:
+            group = groups[old]
+            require(action == group['action'] and
+                    entry.get('replacement_url') == group['replacement_url'],
+                    'Conflicting decisions for the same citation URL')
+            group['entries'].append(copy.deepcopy(entry))
+            group['indices'].append(index)
+    duplicated = [url for url, group in groups.items()
+                  if len(group['entries']) > 1]
+    if not duplicated:
+        return decision, None
+
+    resolved = []
+    merges = []
+    for old, group in groups.items():
+        entries = group['entries']
+        merged = copy.deepcopy(entries[0])
+        if len(entries) > 1:
+            reasons = [item['reason'] for item in entries]
+            merged['reason'] = ' '.join(
+                f'Original decision {i}/{len(reasons)}: {reason}'
+                for i, reason in enumerate(reasons, 1))
+            if group['action'] == 'replaced':
+                by_index = {}
+                ordered = []
+                for entry in entries:
+                    for edit in entry['evidence_replacements']:
+                        n = edit['evidence_index']
+                        if n in by_index:
+                            require(by_index[n] == edit['replacement'],
+                                    'Conflicting replacement instructions for same evidence index')
+                        else:
+                            by_index[n] = copy.deepcopy(edit['replacement'])
+                            ordered.append(copy.deepcopy(edit))
+                merged['evidence_replacements'] = ordered
+            merges.append({
+                'claimed_url': old,
+                'original_entry_indices': group['indices'],
+                'original_entries': copy.deepcopy(entries),
+                'original_reasons': reasons,
+                'effective_entry': copy.deepcopy(merged),
+                'effect': 'COMPATIBLE_DUPLICATES_COLLAPSED_WITH_ALL_REASONS_RETAINED'})
+        resolved.append(merged)
+    effective = copy.deepcopy(decision)
+    effective['resolutions'] = resolved
+    audit = {
+        'version': 1,
+        'status': 'DUPLICATE_CITATION_DECISIONS_CONSOLIDATED_NOT_APPROVED',
+        'original_decision_sha256': digest(decision),
+        'effective_decision_sha256': digest(effective),
+        'original_decision_count': len(decision['resolutions']),
+        'distinct_claimed_url_count': len(resolved),
+        'merges': merges,
+        'publication': 'NOT AUTHORIZED',
+        'limitations': (
+            'All original model decisions and reasons are preserved. '
+            'Compatible repeated decisions about one exact URL are only '
+            'consolidated for subsequent independent citation validation; '
+            'no cited URL or reported fact is authenticated by this step.')
+    }
+    return effective, audit
+
+
 def apply_resolutions(research, initial, decision, citations, calls):
     """Apply only declared edits; validate every retained source against real traces."""
-    require(isinstance(decision, dict) and isinstance(decision.get('resolutions'), list),
-            'Missing explicit citation resolutions')
+    decision, _normalization = consolidate_compatible_resolutions(decision)
     required=set(initial['unsupported_unique_urls'])
     entries=decision['resolutions']; by_url={}
     cited={url_key(u) for u in citations}; cited.discard(None)
