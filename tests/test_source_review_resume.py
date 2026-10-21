@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 import assessment_pipeline as pipeline
 import source_review_resume as recovery
-from source_citation_resolution import resolve_source_citations
+from source_citation_resolution import resolve_source_citations, _correction_prompt
 from source_citation_reconciliation import reconcile_source_citations
 from source_quality_audit import source_quality_audit
 from source_research_batches import sha
@@ -227,10 +227,33 @@ class AuditRecoveryTests(unittest.TestCase):
             initial, {A}, calls, researcher=correct, audit_dir=self.dir)
         self.assertEqual(len(attempted), 1)
         self.assertEqual(initial, before)
+        # A real staged-research artifact is saved with sort_keys=True,
+        # while citation-resolution-initial.json preserves original insertion
+        # order. The same exact data therefore generate different prompt bytes.
+        sorted_research = json.loads(json.dumps(initial, sort_keys=True))
+        sorted_calls = json.loads(json.dumps(calls, sort_keys=True))
+        self.assertEqual(sorted_research, initial)
+        self.assertEqual(sorted_calls, calls)
+        changed_order_prompt = _correction_prompt(
+            sorted_research,
+            reconcile_source_citations(sorted_research, {A}, sorted_calls),
+            sorted_calls)
+        self.assertNotEqual(
+            hashlib.sha256(attempted[0].encode()).hexdigest(),
+            hashlib.sha256(changed_order_prompt.encode()).hexdigest())
         with patch.object(pipeline, "LIVE_RESEARCHER", correct):
             second = resolve_source_citations(
-                initial, {A}, calls, researcher=correct, audit_dir=self.dir)
+                sorted_research, {A}, sorted_calls,
+                researcher=correct, audit_dir=self.dir)
         self.assertEqual(first, second)
+        self.assertEqual(len(attempted), 1)
+        tampered_research = copy.deepcopy(sorted_research)
+        tampered_research["evidence"][0]["observation"] = (
+            "A materially different unsupported claim")
+        with self.assertRaisesRegex(ValueError, "initial evidence differs"):
+            resolve_source_citations(
+                tampered_research, {A}, sorted_calls,
+                researcher=correct, audit_dir=self.dir)
         self.assertEqual(len(attempted), 1)
         saved_file = self.dir / "citation-resolution.json"
         changed = json.loads(saved_file.read_text())
