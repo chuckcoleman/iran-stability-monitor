@@ -101,7 +101,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             result,citations,actual_calls,snapshot=batched_research(
                 researcher=researcher,folder=folder,prior=saved,
                 day=day,baseline_sha=baseline_sha,started_at=stamp,
-                resume=bool(os.getenv("IRAN_RESUME_AUDIT_DIR")))
+                resume=bool(os.getenv("IRAN_STAGED_RESUME")))
             day=snapshot["date"]  # Do not backdate or change the original scope.
             check(day>=history["updates"][-1]["date"],
                   "Original snapshot predates the latest historical assessment")
