@@ -288,13 +288,27 @@ def _resume_get_only(directory, use_existing):
             os.environ["IRAN_RESUME_AUDIT_DIR"] = previous
 
 
-def _saved_response(folder, prompt_digest, model):
+def _saved_response(folder, prompt_digest, model, *,
+                    request_sha=None, require_transport=False):
+    """Read model output only with its actual accepted request journal in live mode."""
     matches = []
     for path in Path(folder).glob("response-*.json"):
         entry = read_json(path)
         if entry.get("prompt_sha256") == prompt_digest and entry.get("search") is True:
             if entry.get("model") != model or not _valid_id(entry.get("response_id")):
                 raise ValueError("Saved research response model or ID differs")
+            if require_transport:
+                original = [
+                    read_json(j) for j in Path(folder).glob("api-request-*.json")
+                ]
+                if not any(
+                    row.get("request_sha256") == request_sha
+                    and row.get("response_id") == entry["response_id"]
+                    and row.get("status") == "api_completed_output_not_yet_validated"
+                    and row.get("post_attempts") in (0, 1)
+                    for row in original
+                ):
+                    raise ValueError("Saved research output lacks matching completed API transport journal")
             matches.append(entry)
     if len(matches) > 1:
         if any(canonical(e) != canonical(matches[0]) for e in matches[1:]):
@@ -404,7 +418,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     Restored artifacts are untrusted until snapshot, request, source quality
     and web-search tool provenance checks pass. No partial results are approved.
     """
-    from assessment_pipeline import responses_payload
+    from assessment_pipeline import responses_payload, LIVE_RESEARCHER
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     model = os.getenv("IRAN_FORECAST_MODEL") or "gpt-6.1-sol"
@@ -415,17 +429,20 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
         prompt_sha = hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+        payload = responses_payload(prompt, True)
+        payload["background"] = True
+        request_sha = sha(payload)
+        require_transport = researcher is LIVE_RESEARCHER
         stage = _load_stage(folder, category, prompt_sha, snapshot, model)
         if stage is None:
-            existing = _saved_response(folder, prompt_sha, model)
+            existing = _saved_response(folder, prompt_sha, model,
+                                       request_sha=request_sha,
+                                       require_transport=require_transport)
             if existing is not None:
                 obj = existing["result"]
                 citations = set(existing["citations"])
                 calls = existing["tool_search_calls"]
             else:
-                payload = responses_payload(prompt, True)
-                payload["background"] = True
-                request_sha = sha(payload)
                 get_only = _transport_state(folder, request_sha)
                 with _resume_get_only(folder, get_only):
                     obj, citations = researcher(prompt, True)
