@@ -17,7 +17,7 @@ from pathlib import Path
 import sys
 
 from assessment_pipeline import (
-    ROOT, RESEARCH, check, clock, llm, freeze_evidence,
+    ROOT, RESEARCH, check, clock, llm, LIVE_RESEARCHER, freeze_evidence,
     validate_source_coverage_audit, _review_issues,
 )
 from source_metadata import capture_metadata, url_key
@@ -97,7 +97,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     actual_calls=None
     snapshot=None
     try:
-        if researcher is llm:
+        if researcher is LIVE_RESEARCHER:
             result,citations,actual_calls,snapshot=batched_research(
                 researcher=researcher,folder=folder,prior=saved,
                 day=day,baseline_sha=baseline_sha,started_at=stamp,
