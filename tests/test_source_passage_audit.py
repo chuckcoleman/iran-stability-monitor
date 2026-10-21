@@ -238,7 +238,15 @@ class PassageWitnessTests(unittest.TestCase):
                             for x in issues))
         revised, blocked = conservative_revision(
             packet, issues, AS_OF)
-        self.assertIsNone(revised)
+        # A quote-register diagnostic may checkpoint an empty provisional
+        # version for both reviewers, but it remains deterministically blocked
+        # from approval and never becomes a forecast-eligible source set.
+        self.assertIsNotNone(revised)
+        self.assertEqual(revised["evidence"], [])
+        self.assertEqual(revised["source_diversity_guard"]["status"],
+                         "BLOCKED_NOT_PUBLISHABLE")
+        self.assertIn("fewer_than_six_source_observations",
+                      revised["source_diversity_guard"]["failures"])
         self.assertEqual(len(blocked["excluded_evidence"]), 1)
         # With enough independently recorded publishers, correcting one
         # official classification cannot silently upgrade it to measured data.
