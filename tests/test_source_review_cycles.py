@@ -173,6 +173,42 @@ class AlternatingCyclesTests(unittest.TestCase):
             self.run_review(reviewer=lambda *args:
                             self.fail("No new model call allowed"))
 
+    def test_coverage_outcome_reconciles_after_exclusion_and_official_claim_downgrades(self):
+        prior = packet()
+        excluded = prior["evidence"][0]
+        official = prior["evidence"][1]
+        prior["coverage"][0].update({
+            "outcome": "eligible_reporting_found",
+            "original_urls": [excluded["source"]]})
+        prior["source_quality_audit"]["sources"][1]["origin"] = (
+            "official_or_advocacy_claim")
+        prior["source_quality_audit"]["sources"][1]["classification"] = (
+            "direct_observation")
+        revised, changes = conservative_revision(prior, [{
+            "type": "unsupported",
+            "location": excluded["id"],
+            "reason": "The first source was not retrievable."
+        }], ORIGINAL)
+        self.assertIsNotNone(revised)
+        category = revised["coverage"][0]
+        self.assertEqual(category["original_outcome"],
+                         "eligible_reporting_found")
+        self.assertEqual(category["outcome"], "inaccessible_or_incomplete")
+        self.assertEqual(category["original_urls"], [excluded["source"]])
+        self.assertEqual(category["retained_evidence_ids"], [])
+        self.assertIn("no qualified new evidence",
+                      category["limitations"])
+        revised_official = next(
+            row for row in revised["source_quality_audit"]["sources"]
+            if row["url"] == official["source"])
+        self.assertEqual(revised_official["classification"],
+                         "attributed_claim")
+        self.assertIn("official_statement_downgraded_to_attributed_claim",
+                      revised_official["flags"])
+        self.assertEqual(prior["source_quality_audit"]["sources"][1][
+                         "classification"], "direct_observation")
+        self.assertEqual(len(changes["excluded_evidence"]), 1)
+
     def test_historical_rejected_packet_replays_without_retroactive_rewrite(self):
         parent = packet()
         draft, _ = conservative_revision(
