@@ -255,6 +255,44 @@ class PartialClaimCorrectionTests(unittest.TestCase):
             original_cutoff=ORIGINAL)
         self.assertEqual(result, repeat)
 
+    def test_recovery_of_old_rejected_round_creates_terminal_outcome_without_review(self):
+        sample = registered_packet()
+        for source in sample["source_quality_audit"]["sources"][1:]:
+            source["access_status"] = "source_unavailable"
+        called = []
+        def approve(prompt, search):
+            called.append("affirmative" if "ROLE: AFFIRMATIVE" in prompt
+                          else "critical")
+            return {"approved": True, "issues": []}, set()
+        options = dict(
+            folder=self.folder, sample=sample, input_sha=sha(sample),
+            reviewer=approve, now=lambda: NOW,
+            common="Closed original sources only.", original_cutoff=ORIGINAL)
+        historical = run_alternating_review_cycles(
+            **options, enable_corrections=False)
+        self.assertEqual(called, ["affirmative", "critical"])
+        self.assertEqual(historical["status"],
+                         "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
+        old_path = self.folder / "source-review-cycles-outcome.json"
+        old_bytes = old_path.read_bytes()
+        (self.folder / "source-review-round-01-blocked.json").write_text(
+            json.dumps({"reason": "Older whole-record correction blocked"}))
+        recovered = run_alternating_review_cycles(
+            **dict(options, reviewer=lambda *args:
+                    self.fail("Completed reviews must never be repeated")))
+        self.assertEqual(called, ["affirmative", "critical"])
+        self.assertEqual(recovered["rounds"], 1)
+        self.assertEqual(recovered["terminal_evidence_gate"]["blocked_next_review_round"], 2)
+        self.assertEqual(recovered["original_rejected_outcome_sha256"],
+                         sha(historical))
+        self.assertEqual(old_path.read_bytes(), old_bytes)
+        self.assertTrue((self.folder /
+                         "source-review-cycles-outcome-revised.json").exists())
+        self.assertFalse((self.folder /
+                          "source-review-round-02-input.json").exists())
+        self.assertFalse((self.folder /
+                          "source-review-round-02-affirmative.json").exists())
+
     def test_quote_only_context_cannot_repair_missing_direction(self):
         before = registered_packet()
         initial = eligibility(before)
