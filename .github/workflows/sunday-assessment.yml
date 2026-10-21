@@ -104,7 +104,9 @@ jobs:
         if: inputs.mode == 'research-dry-run'
         env:
           IRAN_STAGED_RESUME: ${{ inputs.resume_run_id != '' && '1' || '' }}
-        run: python scripts/read_only_research_dry_run.py
+        # Keep a buffer before the hard job deadline so always() can upload
+        # completed source-category checkpoints and redacted response IDs.
+        run: timeout --signal=TERM --kill-after=30s 38m python scripts/read_only_research_dry_run.py
       - name: Preserve diagnostic audit (no credentials)
         if: always()
         uses: actions/upload-artifact@v4
