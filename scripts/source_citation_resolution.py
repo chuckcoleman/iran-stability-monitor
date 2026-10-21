@@ -402,10 +402,12 @@ def _restore_completed_resolution(folder, research, citations, calls, initial,
             save(folder, 'citation-resolution-recovery.json', recovery)
         return revised, merged, combined
 
-    require(final.get('decision_normalization') == normalization
-            if normalization is not None else
-            'decision_normalization' not in final,
-            'Saved successful correction normalization differs from model output')
+    if normalization is None:
+        require('decision_normalization' not in final,
+                'Unexpected normalization of unchanged completed source decision')
+    else:
+        require(final.get('decision_normalization') == normalization,
+                'Saved successful correction normalization differs from model output')
     require(not (folder / 'citation-resolution-recovery.json').exists(),
             'Unexpected recovery record for already successful citation resolution')
     revised, reconciliation = apply_resolutions(
