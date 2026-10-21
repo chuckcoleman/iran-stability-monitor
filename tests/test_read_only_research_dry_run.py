@@ -13,6 +13,7 @@ ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/"scripts"))
 from automation_fixtures import fixture
 from assessment_pipeline import SOURCE_SCAN_GROUPS
+import read_only_research_dry_run as diagnostic
 from read_only_research_dry_run import research_rehearsal
 from source_search_trace import (observed_search_calls, verify_search_trace,
                                  verify_claimed_source_links, load_matching_search_trace)
@@ -131,6 +132,25 @@ class ReadOnlySourceDryRunTests(unittest.TestCase):
         self.assertEqual(result["status"],"RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
         self.assertFalse(result["reviewers"]["critical"]["approved"])
         self.assertEqual((self.root/"data/history.json").read_bytes(),self.original)
+
+    def test_terminal_guard_fails_actions_even_with_both_reviewers_approving(self):
+        # An unpublishable evidence set is never a successful diagnostic simply
+        # because the two model reviewers returned affirmative verdicts.
+        summary = {
+            "status": "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE",
+            "reviewers": {
+                "affirmative": {"approved": True, "issues": []},
+                "critical": {"approved": True, "issues": []},
+            },
+            "terminal_evidence_gate": {
+                "new_research_required": True,
+                "reason": "Missing directional balance after conservative correction",
+            },
+        }
+        with patch.object(diagnostic, "research_rehearsal", return_value=summary):
+            with self.assertRaises(SystemExit) as failure:
+                diagnostic.main(["--output-dir", str(self.audit)])
+        self.assertEqual(failure.exception.code, 1)
 
     def test_no_github_or_metricool_token_accepted(self):
         with patch.dict(os.environ,{"GH_TOKEN":"synthetic-secret"},clear=True):

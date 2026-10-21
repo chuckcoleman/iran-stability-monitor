@@ -215,6 +215,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
               "Source dry-run altered the immutable published history")
     report={"status":status,"reviewers":reviewers,
             "review_rounds":cycles["review_rounds"],
+            "terminal_evidence_gate":cycles.get("terminal_evidence_gate"),
             "final_review_input_sha256":cycles["final_review_input_sha256"],
             "original_claim_evidence_register_sha256": (
                 hashlib.sha256(json.dumps(
@@ -281,7 +282,19 @@ def main(argv=None):
     args=parser.parse_args(argv)
     summary=research_rehearsal(output=args.output_dir)
     print("SOURCE-ONLY LIVE TEST (NEVER PUBLISHABLE): "+summary["status"])
-    if not all(v["approved"] for v in summary["reviewers"].values()):
+    terminal = summary.get("terminal_evidence_gate")
+    if terminal:
+        gate = terminal.get("directional_eligibility", {})
+        missing = gate.get("failures", []) if isinstance(gate, dict) else []
+        print("TERMINAL CLOSED-SOURCE DEFICIENCY; NO FURTHER PAID REVIEWS: "
+              + (", ".join(missing) if missing else "incomplete eligibility")
+              + ". A NEW DATED SOURCE-RESEARCH SNAPSHOT IS REQUIRED.",
+              flush=True)
+    # A reviewer approval is necessary but never sufficient. Terminal
+    # evidence gates, missing directions, insufficient source counts,
+    # incomplete corrections and other invariant failures MUST produce a
+    # nonzero Actions exit status even if both reviewers said approved.
+    if summary["status"] != "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE":
         raise SystemExit(1)
 
 

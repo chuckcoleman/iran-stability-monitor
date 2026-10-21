@@ -256,3 +256,63 @@ unchanged; a continuation writes
 Any **new** review round can entail new model charges. The closed initial
 research cutoff and recorded unsearched period remain unchanged.
 Nothing in this diagnostic authorizes publication.
+
+## Fail early if the closed source snapshot cannot meet directional minimums
+
+After each completed **affirmative then critical** review pair, the diagnostic
+may prepare a strictly conservative corrected packet. Every excerpt narrowed
+to a quoted original-page passage now resides **only** in
+`background_quotes`, never in the pool of directional observations in
+`evidence`. Each background row has the exact original source witness and
+`editorial_directional_admissible=false`; its original claim and replacement
+remain independently audited in `editorial_narrowings`. A quotation—even one
+with words about an improving or worsening economy—does not count as an
+observed directional change. It cannot satisfy publisher diversity or the
+minimum number of new observations. An old quote-only packet that previously
+put such quotations under `evidence` is preserved as historical, not
+retroactively converted or certified.
+
+The `source_directional_eligibility` gate independently recomputes four
+conditions from **substantive, not quote-only** items: at least six observations,
+three identified publishers, four new observations, and all of `raises`,
+`lowers`, `ambiguous`. These are minimum candidate counts, **not** a finding
+that an underlying report is true. Source access, original publication timing,
+semantic support, evidence independence and BOTH reviews remain separate
+blocking requirements.
+
+Under a closed original research snapshot, corrective editing may only
+exclude or weaken evidence, never add an unsearched observation, restore a
+lost direction or invent a new original source. Consequently a failed
+candidate-count or direction minimum is **irreversible in that snapshot**.
+As soon as the *proposed correction* fails one of these minima, the workflow
+records an immutable
+`source-review-round-NN-terminal-gate.json`: exact parent and correction
+hashes, entire unapproved correction, explicit missing directions and other
+deficiencies, the original reviewer objections and instructions for a
+**new dated source research snapshot**. It stops **before** creating the
+next round input or making another billable affirmative/critical request.
+Both reviewer approvals can never overrule this gate. Exhausted evidence
+is not converted into success, and the original reports are never
+overwritten.
+
+### Diagnosing the October 21 rejected source run efficiently
+
+To verify this early-stop repair without paying for the previous six source
+searches or new reviewers, select `main`, `research-dry-run`,
+`resume_run_id=39649947370`, and
+`allow_new_review_after_unknown=false`. This restores the original
+completed source research, passage register, and first two independent
+reviews. The corrected proposal is now expected to fail the directional
+eligibility gate **before any second review pair**; that is an accurate
+diagnostic failure, not permission to publish.
+
+Run `39654094747` already holds four complete **historical** rounds under
+the older source-quotation rules. Do not resume that fully rejected record:
+the workflow refuses to reinterpret its former quote-only directional
+classification or to charge more reviews. To acquire genuinely new
+improving/worsening observations, start a **fresh** `research-dry-run`
+with a **blank** `resume_run_id`. That creates a new cutoff and new
+potentially billable, independently evidenced six-category searches,
+never an extension backdated to October 21. Only eligible versions then
+proceed through alternating affirmative and critical source reviews.
+No diagnostic changes published forecasts, pages, or social posts.
