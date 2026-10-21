@@ -93,8 +93,10 @@ class ResolutionTests(unittest.TestCase):
         self.assertEqual(row['outcome'],'inaccessible_or_incomplete')
         self.assertIn('withdrawn',row['limitations'])
 
-    def test_missing_duplicate_extra_decisions_rejected(self):
-        for entries in ([],decision()['resolutions']*2,
+    def test_missing_conflicting_duplicate_extra_decisions_rejected(self):
+        incompatible=[decision()['resolutions'][0],
+                      decision('withdrawn')['resolutions'][0]]
+        for entries in ([], incompatible,
                         [dict(decision()['resolutions'][0],claimed_url=A)]):
             with self.subTest(entries=entries),self.assertRaises(ValueError):
                 self.apply(plan={'resolutions':entries})

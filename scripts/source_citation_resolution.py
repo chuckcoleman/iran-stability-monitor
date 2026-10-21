@@ -53,10 +53,122 @@ by changing the claimed search provenance. Existing verified sources may be
 used if their content supports the revised observation. Data follows:\n"""
 
 
+
+def consolidate_compatible_resolutions(decision):
+    """Fold repeat decisions for the *same exact* claimed URL, never URL aliases.
+
+    The paid model may resolve one URL twice because it appeared in both
+    coverage_audit and an evidence.source record. Preserve every separate
+    rationale and replacement instruction; disagreement is a hard failure.
+    No source is thereby verified, since apply_resolutions independently
+    rechecks all citations and actual web-search tool provenance.
+    """
+    require(isinstance(decision, dict) and
+            isinstance(decision.get('resolutions'), list),
+            'Missing explicit citation resolutions')
+    groups = {}
+    for index, entry in enumerate(decision['resolutions']):
+        require(isinstance(entry, dict), 'Malformed citation resolution')
+        old = entry.get('claimed_url')
+        action = entry.get('action')
+        reason = entry.get('reason')
+        edits = entry.get('evidence_replacements')
+        require(isinstance(old, str) and bool(old),
+                'Missing citation resolution claimed_url')
+        require(action in ('verified', 'replaced', 'withdrawn'),
+                'Unknown citation resolution action')
+        require(isinstance(reason, str) and len(reason.strip()) >= 20,
+                'Specific citation resolution reason required')
+        require(isinstance(edits, list),
+                'Explicit evidence replacement list required')
+        if action != 'replaced':
+            require(entry.get('replacement_url') is None and edits == [],
+                    'Unexpected replacement fields')
+        else:
+            require(isinstance(entry.get('replacement_url'), str),
+                    'Replacement requires an actual new URL')
+            # Reject duplicate indices within each individual record. Two
+            # repeated records may safely refer to the same index only if
+            # they supply the identical complete replacement.
+            seen_indices = set()
+            for edit in edits:
+                require(isinstance(edit, dict) and
+                        type(edit.get('evidence_index')) is int and
+                        isinstance(edit.get('replacement'), dict),
+                        'Malformed evidence replacement in citation resolution')
+                require(edit['evidence_index'] not in seen_indices,
+                        'Duplicate evidence replacement index within decision')
+                seen_indices.add(edit['evidence_index'])
+        if old not in groups:
+            groups[old] = {'entries': [copy.deepcopy(entry)],
+                           'indices': [index], 'action': action,
+                           'replacement_url': entry.get('replacement_url')}
+        else:
+            group = groups[old]
+            require(action == group['action'] and
+                    entry.get('replacement_url') == group['replacement_url'],
+                    'Conflicting decisions for the same citation URL')
+            group['entries'].append(copy.deepcopy(entry))
+            group['indices'].append(index)
+    duplicated = [url for url, group in groups.items()
+                  if len(group['entries']) > 1]
+    if not duplicated:
+        return decision, None
+
+    resolved = []
+    merges = []
+    for old, group in groups.items():
+        entries = group['entries']
+        merged = copy.deepcopy(entries[0])
+        if len(entries) > 1:
+            reasons = [item['reason'] for item in entries]
+            merged['reason'] = ' '.join(
+                f'Original decision {i}/{len(reasons)}: {reason}'
+                for i, reason in enumerate(reasons, 1))
+            if group['action'] == 'replaced':
+                by_index = {}
+                ordered = []
+                for entry in entries:
+                    for edit in entry['evidence_replacements']:
+                        n = edit['evidence_index']
+                        if n in by_index:
+                            require(by_index[n] == edit['replacement'],
+                                    'Conflicting replacement instructions for same evidence index')
+                        else:
+                            by_index[n] = copy.deepcopy(edit['replacement'])
+                            ordered.append(copy.deepcopy(edit))
+                merged['evidence_replacements'] = ordered
+            merges.append({
+                'claimed_url': old,
+                'original_entry_indices': group['indices'],
+                'original_entries': copy.deepcopy(entries),
+                'original_reasons': reasons,
+                'effective_entry': copy.deepcopy(merged),
+                'effect': 'COMPATIBLE_DUPLICATES_COLLAPSED_WITH_ALL_REASONS_RETAINED'})
+        resolved.append(merged)
+    effective = copy.deepcopy(decision)
+    effective['resolutions'] = resolved
+    audit = {
+        'version': 1,
+        'status': 'DUPLICATE_CITATION_DECISIONS_CONSOLIDATED_NOT_APPROVED',
+        'original_decision_sha256': digest(decision),
+        'effective_decision_sha256': digest(effective),
+        'original_decision_count': len(decision['resolutions']),
+        'distinct_claimed_url_count': len(resolved),
+        'merges': merges,
+        'publication': 'NOT AUTHORIZED',
+        'limitations': (
+            'All original model decisions and reasons are preserved. '
+            'Compatible repeated decisions about one exact URL are only '
+            'consolidated for subsequent independent citation validation; '
+            'no cited URL or reported fact is authenticated by this step.')
+    }
+    return effective, audit
+
+
 def apply_resolutions(research, initial, decision, citations, calls):
     """Apply only declared edits; validate every retained source against real traces."""
-    require(isinstance(decision, dict) and isinstance(decision.get('resolutions'), list),
-            'Missing explicit citation resolutions')
+    decision, _normalization = consolidate_compatible_resolutions(decision)
     required=set(initial['unsupported_unique_urls'])
     entries=decision['resolutions']; by_url={}
     cited={url_key(u) for u in citations}; cited.discard(None)
@@ -194,10 +306,21 @@ def _restore_completed_resolution(folder, research, citations, calls, initial,
         'citations': sorted(citations), 'search_calls': calls,
         'reconciliation': initial
     }, 'Prior citation-resolution initial evidence differs; no repeat search')
-    require(final.get('status') == 'CITATIONS_RESOLVED_PENDING_ALL_OTHER_GATES'
+    state = final.get('status')
+    require(state in ('CITATIONS_RESOLVED_PENDING_ALL_OTHER_GATES',
+                      'FAILED_NOT_PUBLISHABLE')
             and final.get('original_research_sha256') == digest(research)
             and final.get('attempt_limit') == 1,
-            'Prior citation correction did not finish cleanly; no repeat search')
+            'Prior citation correction is not an identifiable single request')
+    if state == 'FAILED_NOT_PUBLISHABLE':
+        # Only the exact archived error in which the raw model provided
+        # duplicate URL decisions can be recovered. The old failure and
+        # original response are immutable; every other error remains blocked.
+        require(set(final) == {
+            'status', 'attempt_limit', 'original_research_sha256',
+            'decision', 'citations', 'search_calls', 'error_type'
+        } and final.get('error_type') == 'ValueError',
+            'A prior failed correction is not an eligible duplicate-URL recovery')
     # Compare the current values to the original audit above, but reproduce
     # the original POST from its preserved insertion order. Stage checkpoints
     # use sort_keys=True, and rebuilding this JSON prompt from those files
@@ -224,6 +347,69 @@ def _restore_completed_resolution(folder, research, citations, calls, initial,
     require(sorted(merged) == final.get('citations')
             and combined == final.get('search_calls'),
             'Corrective citation/tool provenance differs; no repeat search')
+    effective, normalization = consolidate_compatible_resolutions(
+        logged['result'])
+    if state == 'FAILED_NOT_PUBLISHABLE':
+        require(normalization is not None and normalization['merges']
+                and normalization['original_decision_count'] >
+                    normalization['distinct_claimed_url_count'],
+                'Earlier correction failure cannot be repaired by duplicate decisions')
+        # The precise old error must be the duplicate-URL rejection. The
+        # original raw model output is kept as the historical failure; only
+        # the new, compatible view can advance through all existing gates.
+        original_urls = [
+            item.get('claimed_url') for item in logged['result']['resolutions']
+        ]
+        require(len(set(original_urls)) < len(original_urls),
+                'Saved failed correction has no duplicate claimed URL')
+        revised, reconciliation = apply_resolutions(
+            research, initial, logged['result'], merged, combined)
+        # Preserve the previously FAILED correction checkpoint unchanged.
+        # New recovery artifacts bind every byte-level request/response ID
+        # and original failure hash to one deterministic effective decision.
+        recovery = {
+            'version': 1,
+            'status': 'CITATION_RESOLUTIONS_RECOVERED_FROM_VERIFIED_DUPLICATES',
+            'original_failed_checkpoint_sha256': digest(final),
+            'original_research_sha256': digest(research),
+            'initial_reconciliation_sha256': digest(initial),
+            'original_prompt_sha256': hashlib.sha256(
+                prompt.encode('utf-8')).hexdigest(),
+            'original_request_sha256': sha(payload),
+            'original_response_id': logged['response_id'],
+            'original_decision_sha256': digest(logged['result']),
+            'normalization': normalization,
+            'effective_decision_sha256': digest(effective),
+            'citations': sorted(merged),
+            'search_calls_sha256': digest(combined),
+            'revised_research': revised,
+            'revised_research_sha256': digest(revised),
+            'final_reconciliation': reconciliation,
+            'publication': 'NOT AUTHORIZED',
+            'limitations': (
+                'This recovery does not repeat paid research or the citation '
+                'resolution search. It retains the original FAILED_NOT_PUBLISHABLE '
+                'record and all original model decisions; compatible duplicate '
+                'entries are consolidated only after verified source traces.')
+        }
+        recovery_path = folder / 'citation-resolution-recovery.json'
+        if recovery_path.exists():
+            saved_recovery = json.loads(recovery_path.read_text(
+                encoding='utf-8'))
+            require(saved_recovery == recovery,
+                    'Saved citation recovery differs from original paid response')
+        else:
+            save(folder, 'citation-resolution-recovery.json', recovery)
+        return revised, merged, combined
+
+    if normalization is None:
+        require('decision_normalization' not in final,
+                'Unexpected normalization of unchanged completed source decision')
+    else:
+        require(final.get('decision_normalization') == normalization,
+                'Saved successful correction normalization differs from model output')
+    require(not (folder / 'citation-resolution-recovery.json').exists(),
+            'Unexpected recovery record for already successful citation resolution')
     revised, reconciliation = apply_resolutions(
         research, initial, logged['result'], merged, combined)
     require(revised == final.get('revised_research')
@@ -268,6 +454,10 @@ def resolve_source_citations(research, citations, calls, *, researcher, audit_di
         os.environ['IRAN_OFFLINE_REVIEW_DIR'] = str(folder)
         decision, additional = researcher(prompt, True)
         audit['decision'] = decision
+        _effective_decision, normalization = consolidate_compatible_resolutions(
+            decision)
+        if normalization is not None:
+            audit['decision_normalization'] = normalization
         extra_calls = load_matching_search_trace(folder, decision)
         merged = set(citations) | set(additional)
         combined = list(calls) + extra_calls
