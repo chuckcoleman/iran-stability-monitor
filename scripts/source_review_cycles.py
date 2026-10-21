@@ -294,7 +294,8 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
     if original_register is not None:
         from source_passage_audit import verify_register
         verify_register(original_register, sample["evidence"],
-                        history_sha=sample.get("published_history_sha256"))
+                        history_sha=sample.get("published_history_sha256"),
+                        original_cutoff=sample.get("research_as_of"))
     rounds = []
     known_unknown = set()
     for number in range(1, max_rounds + 1):
