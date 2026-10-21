@@ -329,6 +329,37 @@ class PartialClaimCorrectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "background differs"):
             validate_narrowings(forged)
 
+    def test_stop_before_second_review_when_only_required_direction_disappears(self):
+        calls = []
+        def reject_unsupported_direction(prompt, search):
+            role = "affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical"
+            calls.append(role)
+            return {"approved": False, "issues": [{
+                "type": "unsupported_original_direction",
+                "location": "E-20261021-04; E-20261021-07",
+                "reason": "Original text cannot substantiate the worsening-direction inference."
+            }]}, set()
+        outcome = run_alternating_review_cycles(
+            folder=self.folder, sample=self.sample, input_sha=sha(self.sample),
+            reviewer=reject_unsupported_direction, now=lambda: NOW,
+            common="Require original passage support before direction.",
+            original_cutoff=ORIGINAL, max_rounds=4)
+        self.assertEqual(calls, ["affirmative", "critical"])
+        self.assertEqual(outcome["rounds"], 1)
+        eligibility_gate = outcome["terminal_evidence_gate"]["directional_eligibility"]
+        self.assertEqual(eligibility_gate["directional_observations"], 6)
+        self.assertEqual(eligibility_gate["distinct_directional_publishers"], 6)
+        self.assertEqual(eligibility_gate["new_directional_observations"], 6)
+        self.assertEqual(eligibility_gate["missing_directions"], ["raises"])
+        self.assertEqual(eligibility_gate["failures"],
+                         ["missing_required_directional_balance"])
+        self.assertEqual(eligibility_gate["background_quote_ids"],
+                         ["E-20261021-04", "E-20261021-07"])
+        self.assertFalse((self.folder / "source-review-round-02-input.json").exists())
+        self.assertFalse((self.folder / "source-review-round-02-critical.json").exists())
+        self.assertEqual(outcome["status"],
+                         "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
+
     def test_terminal_saved_packet_tampering_blocks_without_new_reviews(self):
         options = dict(
             folder=self.folder, sample=self.sample, input_sha=sha(self.sample),
