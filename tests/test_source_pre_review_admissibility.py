@@ -183,6 +183,24 @@ class PreReviewAdmissibilityTests(unittest.TestCase):
         self.assertNotIn("E-20261021-03", [
             x["id"] for x in audit["screened_packet"]["evidence"]])
 
+    def test_malformed_model_effect_annotations_are_audited_not_replayed(self):
+        self.research["evidence"][0]["effect_type"] = {"invalid": "object"}
+        self.research["evidence"][1].pop("effect_type")
+        self.research["evidence"][2]["direction_basis"] = None
+        result = self.screen()
+        reasons = {item["id"]: item["reasons"] for item in result["per_claim"]}
+        self.assertIn("NO_SUBSTANTIVE_OBSERVED_DIRECTION_BASIS",
+                      reasons["E-20261021-01"])
+        self.assertIn("NO_SUBSTANTIVE_OBSERVED_DIRECTION_BASIS",
+                      reasons["E-20261021-02"])
+        self.assertIn("MISSING_OR_MALFORMED_DIRECTION_RATIONALE",
+                      reasons["E-20261021-03"])
+        self.assertEqual(result["held_original_ids"], [
+            "E-20261021-01", "E-20261021-02", "E-20261021-03"])
+        self.assertEqual(result["source_review_requests"],
+                         "NOT_PERMITTED" if result["directional_candidate_counts"][
+                             "failures"] else "PERMITTED_AFTER_SCREEN")
+
     def test_missing_direction_is_an_immediate_no_review_gate(self):
         for idx in (0, 3, 6):  # Three proposed raises observations
             self.research["evidence"][idx]["effect_type"] = "background_context"
