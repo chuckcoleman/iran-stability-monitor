@@ -1,24 +1,34 @@
-# Recovering an interrupted research diagnostic
+# Checkpointed research diagnostics and recovery
 
-The `Iran diagnostics and nonpublishing source rehearsal` workflow is a **read-only, nonpublishing** manual workflow. Its `research-dry-run` mode performs real OpenAI web research and source-only reviews; it never issues scored forecasts or updates the public monitor.
+The manual **Iran diagnostics and nonpublishing source rehearsal** workflow gathers live sources but does **not** issue forecasts, change `data/history.json`, publish the website, or post to social media.
 
-## Normal research diagnostic
+## How the staged source sweep works
 
-From **Actions → Iran diagnostics and nonpublishing source rehearsal → Run workflow**, choose `research-dry-run`. Leave `resume_run_id` empty for an intentional new paid research request. The polling allowance is 1,200 seconds with at most 240 polls; the workflow job has a 45-minute limit. Exceeding a limit is a **failure**, never approval.
+The source inquiry is now six independent and separately journaled searches:
 
-## Resume a known background response
+1. Primary and official observations.
+2. Independent international reporting.
+3. Regional and multilingual reporting.
+4. Specialist investigation, shipping, energy and rights monitoring.
+5. Research institutes and think tanks.
+6. Economic, humanitarian and academic evidence, including credible counterevidence.
 
-If the prior run ended with `background_timeout_no_replay` and preserved its diagnostic artifact, start the same workflow again with:
+Each search produces exactly one coverage row, zero to four evidence candidates, explicit source-quality annotations, a real web-search trace, and a redacted OpenAI request journal. Stages can report no eligible evidence without inventing any. Checkpoints `research-batch-<category>.json` are saved as soon as each stage completes; the diagnostic artifact preserves them on subsequent failure. No category is silently omitted. Conflicting duplicated source classifications cause failure rather than unreviewed promotion to evidence.
 
-- `mode`: `research-dry-run`
-- `resume_run_id`: the numeric GitHub Actions run ID that contains `integration-diagnostics-<run-id>-<attempt>`, for example `39509619816`.
+Before **any** research request, `research-snapshot.json` freezes the originally intended Eastern date, historical evidence digest, model and cutoff. On recovery, the same original prompt, source bound and evidence baseline are required. Source retrieval on a later recovery date is recorded truthfully as later retrieval, while demonstrably post-snapshot published sources are prohibited. Unverifiable first-publication times remain explicitly uncertain.
 
-The workflow downloads that run's diagnostic JSON files before live research. The transport checks that the original recorded request's SHA-256 fingerprint, model, request mode, and known response ID exactly match the new request. If there is an acceptable unique match, it **only issues authenticated GET polls** to the saved response ID. It never retries the chargeable POST. The new run preserves its own diagnostic JSON alongside the recovered history.
+Only after all six valid stages are assembled may citation reconciliation, original-source metadata gathering, evidence freezing and **both** source-only reviews proceed. An unverified URL, failed category, incomplete response, timeout, conflicting annotations, failed review, or missing audit blocks approval.
 
-**Important:** The research prompt includes the current Eastern date and historical evidence. A later date, changed history, model, payload, incomplete audit, ambiguous response IDs, or terminal failure can make recovery impossible. The workflow **must fail without POST** rather than silently starting new research. Completed background responses are only retrievable while OpenAI retains them; expired or unavailable responses are also failures.
+## Running a new staged diagnostic
 
-Do not rerun a paid diagnostic without `resume_run_id` unless a new research request and possible additional charge are intentional. A lost CREATE acknowledgment has no reliable response ID and cannot be safely replayed.
+Open **Actions → Iran diagnostics and nonpublishing source rehearsal → Run workflow**, choose `research-dry-run`, leave `resume_run_id` empty and start. This intentionally starts new paid API calls as the six stages are reached. Completed stages may take several minutes and are retained even when a later stage cannot finish. The 45-minute job budget and bounded individual API polling remain safety limits, not measures of analytic validity.
 
-## Publication boundary
+## Continuing a staged run
 
-Neither successfully recovering the response nor passing the research and source-only reviews authorizes publication. Forecast issuance, complete draft review, history mutation, a GitHub pull request, Pages deployment, and social posting remain out of scope. The two-review and all-deterministic-check requirements of the separate publication process are unchanged.
+For an interrupted **staged** run, choose the same mode and set `resume_run_id` to its GitHub Actions run ID. The workflow downloads its diagnostic artifact first. All completed stage/checkpoint records are revalidated and reused without another POST. For a pending, acknowledged Responses ID whose **full original request fingerprint** matches, polling continues through GET requests only. A source category not yet begun can make its first new paid POST; continuing the complete sweep is **not guaranteed to be cost-free**. A previously submitted request with unknown acceptance must not be posted again.
+
+The original snapshot is mandatory. A changed original history baseline, changed model/prompt, unreadable artifact, ambiguous response IDs, terminal failed response or missing prior snapshot causes **fail-closed**, never an invented pass. An expired provider response can be unrecoverable. The diagnosis includes exact stage completion and limitations.
+
+**Old monolithic diagnostics such as runs `39509619816` and `39522021887` contain no six-stage research snapshot; they cannot be resumed through this staged mode.** Entering one of those IDs is rejected before any new paid POST. Run a new staged diagnostic first; if it is interrupted, use *that* run's ID to continue.
+
+All stages and reviews in this workflow remain **nonpublishing**. Passing these checks is not permission to make forecasts or deploy anything. The independent publication process retains its full validation and dual-review requirements.
