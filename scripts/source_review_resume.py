@@ -225,7 +225,8 @@ def _unacknowledged_reviews(folder):
 
 
 def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
-                           reviewer, now, allow_new_after_unknown=False):
+                           reviewer, now, allow_new_after_unknown=False,
+                           superseded_unknown_requests=()):
     """Check a review once or reuse its verified result without another POST.
 
     A lost acknowledgement is never replayed automatically. Explicit opt-in
@@ -239,6 +240,10 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
     model = os.getenv("IRAN_FORECAST_MODEL") or "gpt-6.1-sol"
     live = reviewer is LIVE_RESEARCHER
     prior = read_json(path) if path.exists() else None
+    superseded = set(superseded_unknown_requests)
+    _check(all(isinstance(item, str) and len(item) == 64
+               for item in superseded),
+           "Invalid previously authorized uncertain-review reference")
     if prior is not None:
         _check(prior.get("status") == "COMPLETED_NOT_PUBLISHABLE"
                and prior.get("role") == role
@@ -254,9 +259,11 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
         response = _matching_completed_response(folder, prompt, model)
     else:
         response = None
+    new_superseded = set(prior.get("superseded_unknown_requests", [])) if prior else set()
     if response is None:
         if live:
-            unknown = _unacknowledged_reviews(folder)
+            unknown = [item for item in _unacknowledged_reviews(folder)
+                       if item.get("request_sha256") not in superseded]
             if unknown:
                 _check(allow_new_after_unknown
                        and all(item.get("status") in (
@@ -265,6 +272,10 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                            for item in unknown),
                        "OpenAI review POST acceptance unknown; no automatic paid retry. "
                        "Explicit new-review opt-in required.")
+                new_superseded.update(item["request_sha256"] for item in unknown
+                                      if isinstance(item.get("request_sha256"), str))
+                _check(len(new_superseded) == len(unknown),
+                       "Unknown review request identity is missing; no paid retry")
         response, _ = reviewer(prompt, False)
     issues = _review_issues(response, role)
     if live:
@@ -280,6 +291,7 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
         "prompt_sha256": prompt_sha,
         "completed_at": (prior.get("completed_at") if prior is not None
                          else now().isoformat()),
+        "superseded_unknown_requests": sorted(new_superseded),
         "publication": "NOT AUTHORIZED"}
     if prior is not None:
         _check(prior == result,
@@ -288,4 +300,5 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
         save_new(path, result)
     return {"approved": result["approved"], "issues": issues,
             "source_reviews": result["source_reviews"],
-            "completed_at": result["completed_at"], "draft_sha256": input_sha}
+            "completed_at": result["completed_at"], "draft_sha256": input_sha,
+            "superseded_unknown_requests": result["superseded_unknown_requests"]}
