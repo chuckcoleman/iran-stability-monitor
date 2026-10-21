@@ -226,7 +226,7 @@ def _unacknowledged_reviews(folder):
 
 def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                            reviewer, now, allow_new_after_unknown=False,
-                           superseded_unknown_requests=()):
+                           superseded_unknown_requests=(), round_number=1):
     """Check a review once or reuse its verified result without another POST.
 
     A lost acknowledgement is never replayed automatically. Explicit opt-in
@@ -235,7 +235,11 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
     """
     _check(role in ("affirmative", "critical"), "Unknown source review role")
     folder = Path(folder)
-    path = folder / ("source-review-" + role + ".json")
+    _check(type(round_number) is int and 1 <= round_number <= 6,
+           "Invalid bounded source-review round")
+    filename = ("source-review-" + role + ".json" if round_number == 1 else
+                f"source-review-round-{round_number:02d}-{role}.json")
+    path = folder / filename
     prompt_sha = digest_prompt(prompt)
     model = os.getenv("IRAN_FORECAST_MODEL") or "gpt-6.1-sol"
     live = reviewer is LIVE_RESEARCHER
