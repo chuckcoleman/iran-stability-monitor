@@ -17,6 +17,11 @@ on:
         required: false
         default: ''
         type: string
+      allow_new_review_after_unknown:
+        description: 'Opt in to a NEW potentially billable source-review POST if prior acknowledgement was lost'
+        required: false
+        default: false
+        type: boolean
 permissions:
   contents: read
   actions: read
@@ -63,6 +68,16 @@ jobs:
           assert os.environ['REQUESTED_MODE'] == 'research-dry-run', 'Resume is research-only'
           assert re.fullmatch(r'[1-9][0-9]*', os.environ['RESUME_RUN_ID']), 'Invalid diagnostic run ID'
           PY
+      - name: Validate paid review retry consent
+        if: inputs.allow_new_review_after_unknown
+        env:
+          RESUME_RUN_ID: ${{ inputs.resume_run_id }}
+          REQUESTED_MODE: ${{ inputs.mode }}
+        run: |
+          test "$REQUESTED_MODE" = 'research-dry-run' && test -n "$RESUME_RUN_ID" || {
+            echo 'New-review permission requires a specific staged resume run ID.' >&2
+            exit 1
+          }
       - name: Restore previous response audit for GET-only resume
         if: inputs.mode == 'research-dry-run' && inputs.resume_run_id != ''
         uses: actions/download-artifact@v4
@@ -104,6 +119,7 @@ jobs:
         if: inputs.mode == 'research-dry-run'
         env:
           IRAN_STAGED_RESUME: ${{ inputs.resume_run_id != '' && '1' || '' }}
+          IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN: ${{ inputs.allow_new_review_after_unknown && '1' || '' }}
         # Keep a buffer before the hard job deadline so always() can upload
         # completed source-category checkpoints and redacted response IDs.
         run: timeout --signal=TERM --kill-after=30s 38m python scripts/read_only_research_dry_run.py
