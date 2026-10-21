@@ -1,5 +1,16 @@
 # Sunday research source watchlist — effective 2026-10-25
 
+## As-of time versus review-processing time
+
+A completed six-category sweep covers only information eligible at the
+original immutable snapshot as-of time. A later metadata check or delayed
+review is NOT a fresh search through the intervening period. Source audits
+must label the original as-of time, later processing clock and unsearched
+post-snapshot interval separately; unknown first publication stays unknown.
+This protects a prior-day resumed diagnostic from being misrepresented as
+current-day coverage.
+
+
 This is a **prospective operational research instruction**, not an amendment
 to frozen forecasting Protocol v1.0 or a revision of historical assessments.
 
