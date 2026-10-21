@@ -137,6 +137,41 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     return snap
 
 
+def require_pre_snapshot_publication(result, metadata, snapshot):
+    """Reject provably late publication, not post-run metadata retrieval.
+
+    An interrupted diagnostic may inspect old articles on a later day. That
+    retrieval is logged as late; it is NOT evidence of contemporaneous access.
+    """
+    cutoff = dt.datetime.fromisoformat(snapshot["cutoff_at"])
+    for url, entry in metadata.items():
+        if not isinstance(entry, dict):
+            continue
+        for field in ("source_publication_time",):
+            value = entry.get(field)
+            if value is None:
+                continue
+            try:
+                timestamp = dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+            except (TypeError, ValueError, AttributeError):
+                raise ValueError("Malformed publication timestamp") from None
+            if timestamp.tzinfo is None or timestamp.utcoffset() is None or timestamp > cutoff:
+                raise ValueError("Original source publication is after research snapshot cutoff")
+        for candidate in entry.get("publication_candidates", []):
+            stamp = dt.datetime.fromisoformat(candidate.replace("Z", "+00:00"))
+            if stamp.tzinfo is None or stamp > cutoff:
+                raise ValueError("Publication candidate after research snapshot cutoff")
+        for date_string in entry.get("publication_dates", []):
+            if dt.date.fromisoformat(date_string) > cutoff.date():
+                raise ValueError("Publication date after original snapshot")
+    for item in result.get("evidence", []):
+        value = item.get("source_publication_time")
+        if value:
+            claimed = dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
+            if claimed.tzinfo is None or claimed > cutoff:
+                raise ValueError("Model claims a post-snapshot published source")
+
+
 def batch_prompt(category, snapshot):
     """One modest web-search task; never elicit a score, forecast, or approval."""
     if category not in CATEGORIES:
