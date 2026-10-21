@@ -263,6 +263,9 @@ def llm(prompt,search):
         (audit/name).write_text(json.dumps(record,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     return obj,citations
 
+LIVE_RESEARCHER = llm  # Stable identity; patchable synthetic fixtures stay monolithic.
+
+
 def urlkey(url):
     return url_key(url)
 
@@ -951,7 +954,7 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
     # Fixture researchers preserve the existing synthetic single-call interface.
     audit_dir=_review_audit_dir()
     search_calls=None
-    if researcher is llm:
+    if researcher is LIVE_RESEARCHER:
         check(audit_dir is not None,
               "Live source research lacks persistent web-search audit directory")
         from source_research_batches import batched_research
@@ -969,6 +972,12 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
     else:
         result,sources=researcher(
             RESEARCH.format(date=today,prior=json.dumps(evidence_history["evidence"])),True)
+        # Preserve recorded synthetic test research and corrective-search tests.
+        if researcher is llm:
+            check(audit_dir is not None,"Source research needs an audit directory")
+            search_calls=load_matching_search_trace(audit_dir,result)
+            result,sources,search_calls=resolve_source_citations(
+                result,sources,search_calls,researcher=researcher,audit_dir=audit_dir)
     if researcher is llm or "coverage_audit" in result:
         reconciliation=reconcile_source_citations(result,sources,search_calls)
         if audit_dir is not None:
