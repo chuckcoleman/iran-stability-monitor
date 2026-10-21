@@ -17,6 +17,10 @@ from assessment_pipeline import _review_issues
 from source_metadata import url_key
 from source_research_batches import canonical, sha, save_new, read_json
 from source_review_resume import review_with_checkpoint
+from source_claim_narrowing import (
+    LIMITED_STATUS, narrow_to_passage, narrowing_record,
+    permitted_narrowing, validate_narrowings,
+)
 from source_quality_audit import validate_source_review
 
 MAX_REVIEW_ROUNDS = 4
@@ -79,47 +83,86 @@ def conservative_revision(previous, issues, original_cutoff):
     register = previous.get("claim_evidence_register")
     claim_map = ({r["evidence_id"]: r for r in register["claims"]}
                  if isinstance(register, dict) else None)
-    flagged = set()
+    issues_by_id = {}
     for issue in issues:
-        require(isinstance(issue, dict), "Malformed original reviewer issue")
-        location = str(issue.get("location") or "")
-        flagged.update(re.findall(r"E-\d{8}-\d{2}", location))
-    dropped = []
-    kept = []
+        require(isinstance(issue, dict)
+                and all(isinstance(issue.get(key), str) and issue[key].strip()
+                        for key in ("type", "location", "reason")),
+                "Malformed original reviewer issue")
+        for ident in set(re.findall(r"E-\d{8}-\d{2}", issue["location"])):
+            issues_by_id.setdefault(ident, []).append(issue)
+    dropped, kept = [], []
+    narrowed = copy.deepcopy(previous.get("editorial_narrowings", []))
+    narrowed_ids = {entry["evidence_id"] for entry in narrowed}
     for entry in evidence:
         identifier = entry["id"]
         url = url_key(entry.get("source"))
         src = sources.get(url)
         require(src is not None, "Evidence has no original source audit")
+        witness = claim_map.get(identifier) if claim_map is not None else None
+        relevant_issues = issues_by_id.get(identifier, [])
         reasons = []
-        if identifier in flagged:
-            reasons.append("Named by affirmative or critical reviewer objection")
         if src.get("access_status") != "source_metadata_captured":
-            reasons.append("Original source access not demonstrated")
+            reasons.append("Original source metadata could not be retrieved")
         if src.get("classification") == "unverified":
-            reasons.append("Unverified source not admissible as substantive observation")
+            reasons.append("Unverified original source cannot support evidence")
         if claim_map is not None and (
-                not isinstance(claim_map.get(identifier), dict)
-                or claim_map[identifier].get("status") !=
-                    "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED"):
-            reasons.append("No exact passage captured from the original public article")
+                not isinstance(witness, dict)
+                or witness.get("status") !=
+                   "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED"):
+            reasons.append("Original page lacks a matched short passage")
+        if identifier in narrowed_ids and relevant_issues:
+            reasons.append("Independent reviewer rejected previously narrowed passage")
         if reasons:
             dropped.append({"id": identifier, "url": url, "reasons": reasons,
                             "disposition": "EXCLUDED_NOT_EVIDENCE"})
+        elif relevant_issues and permitted_narrowing(entry, witness, relevant_issues):
+            changed = narrow_to_passage(entry, witness)
+            kept.append(changed)
+            narrowed.append(narrowing_record(
+                entry, changed, witness, relevant_issues))
+        elif relevant_issues:
+            # A named objection with no defensible narrowing must not survive
+            # as an apparently unchallenged source observation.
+            dropped.append({
+                "id": identifier, "url": url,
+                "reasons": ["Substantive source objection not resolved by "
+                            "an attributable original-page passage"] +
+                           [x["type"] for x in relevant_issues],
+                "disposition": "EXCLUDED_NOT_EVIDENCE"})
         else:
             kept.append(entry)
     revised["evidence"] = kept
+    if claim_map is not None:
+        revised["editorial_narrowings"] = narrowed
     # An editorial correction may NOT evade the original substantive evidence
     # diversity requirements by declaring a small sample clean.
     publishers = {r.get("publisher") for r in kept if r.get("publisher")}
     directions = {r.get("direction") for r in kept}
-    if (len(kept) < 6 or len(publishers) < 3 or
-            not {"raises", "lowers", "ambiguous"}.issubset(directions) or
-            sum(r.get("evidence_status") == "new" for r in kept) < 4):
+    guard_failures = []
+    if len(kept) < 6:
+        guard_failures.append("fewer_than_six_source_observations")
+    if len(publishers) < 3:
+        guard_failures.append("fewer_than_three_distinct_publishers")
+    if not {"raises", "lowers", "ambiguous"}.issubset(directions):
+        guard_failures.append("missing_required_directional_balance")
+    if sum(r.get("evidence_status") == "new" for r in kept) < 4:
+        guard_failures.append("fewer_than_four_new_observations")
+    # Unscored source diagnostics may assess a provisional quote-only revision
+    # even when it fails diversity checks; that version can NEVER be approved
+    # or used for forecasts. Legacy source-only fixtures keep the old block.
+    if guard_failures and claim_map is None:
         return None, {"reason": "Not enough independently qualified evidence "
                       "remains after conservative exclusions; new verified research "
                       "would be necessary; never fabricate replacements",
+                      "guard_failures": guard_failures,
                       "excluded_evidence": dropped}
+    if claim_map is not None:
+        revised["source_diversity_guard"] = {
+            "status": ("BLOCKED_NOT_PUBLISHABLE" if guard_failures
+                       else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
+            "failures": guard_failures,
+            "scope": "SOURCE_DIAGNOSTIC_ONLY_NO_SCORED_FORECASTS"}
     effective_sources = {url_key(e["source"]) for e in kept}
     for src in quality["sources"]:
         # Retain the TRUE original metadata status across all later rounds.
@@ -130,6 +173,15 @@ def conservative_revision(previous, issues, original_cutoff):
         src["metadata_status"] = (
             "Publisher/site metadata only; original first-publication clock "
             "is not independently authenticated")
+        if claim_map is not None:
+            if "editorial_original_assessment" not in src:
+                src["editorial_original_assessment"] = src.get("assessment")
+            src["assessment"] = (
+                "A public source URL was returned in the original web search. "
+                "Original-page passage access and its observed limits appear "
+                "in the separately retained claim evidence register; factual "
+                "claims, first-publication time and corroboration remain "
+                "independently unestablished.")
         if ADDITIONAL_CAVEAT not in src.get("limitations", ""):
             src["limitations"] = src.get("limitations", "") + " " + ADDITIONAL_CAVEAT
         # Metadata availability is not a proxy for full article availability.
@@ -206,15 +258,22 @@ def conservative_revision(previous, issues, original_cutoff):
         (previous.get("excluded_evidence", []) + dropped),
         key=lambda x: x["id"])
     revised["editorial_provenance"] = (
-        "This corrected source-only diagnostic excludes original evidence "
-        "whose claims or source access were rejected. It creates no new "
-        "citations, independent corroboration, original publication times, "
-        "verified observations, forecasts or permission to publish.")
+        "This corrected source-only diagnostic preserves only attributed "
+        "verbatim source passages where independently captured text warrants "
+        "a limited quotation and excludes unsupported original claims. "
+        "Quote-only records assert no measured stability direction. The "
+        "correction creates no new sources, independently verified events, "
+        "original publication times, forecasts or permission to publish.")
+    if claim_map is not None:
+        validate_narrowings(revised)
     # An unchanged correction cannot be used to purchase repeated approvals.
     if sha(revised) == sha(previous):
         return None, {"reason": "No further safe evidence correction is possible"}
-    return revised, {"excluded_evidence": dropped,
-                     "cutoff_gap_disclosed": bool(original_cutoff)}
+    return revised, {
+        "excluded_evidence": dropped,
+        "narrowed_evidence_ids": [r["evidence_id"] for r in narrowed],
+        "source_diversity_failures": guard_failures,
+        "cutoff_gap_disclosed": bool(original_cutoff)}
 
 
 def validate_archived_conservative_revision(previous, revised, original_cutoff):
