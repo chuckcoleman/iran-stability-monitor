@@ -134,7 +134,7 @@ def load_or_capture_quality(folder, result, citations, metadata_reader, now,
 
 def load_or_create_review_input(folder, *, result, citations, coverage, quality,
                                 baseline_sha, snapshot, archive, date, now,
-                                freeze):
+                                freeze, claim_register_builder=None):
     folder = Path(folder)
     path = folder / "source-review-input.json"
     snap_sha = snapshot["snapshot_sha256"] if snapshot else None
@@ -170,6 +170,18 @@ def load_or_create_review_input(folder, *, result, citations, coverage, quality,
                 _check(sample["research_as_of"] == snapshot["cutoff_at"]
                        and sample.get("post_asof_window") == "NOT_SEARCHED",
                        "Saved review claims unsupported post-snapshot coverage")
+        register_path = folder / "claim-evidence-register.json"
+        if "claim_evidence_register" in sample:
+            from source_passage_audit import verify_register
+            _check(register_path.exists(), "Registered claim passages missing from audit")
+            witness = read_json(register_path)
+            verify_register(witness, sample["evidence"], snapshot_sha=snap_sha,
+                            history_sha=baseline_sha)
+            _check(witness == sample["claim_evidence_register"],
+                   "Saved review evidence differs from captured source passages")
+        else:
+            _check(not register_path.exists(),
+                   "Unexpected claim register for legacy review input")
         return sample, stored["input_sha256"], cutoff
 
     cutoff = now()
@@ -187,6 +199,12 @@ def load_or_create_review_input(folder, *, result, citations, coverage, quality,
                                  "that sources after research_as_of were searched."),
               "published_history_sha256": baseline_sha,
               "mode": "RESEARCH_ONLY_TEST_NO_SCORED_FORECASTS"}
+    if claim_register_builder is not None:
+        from source_passage_audit import verify_register
+        witness = claim_register_builder(frozen)
+        verify_register(witness, frozen, snapshot_sha=snap_sha,
+                        history_sha=baseline_sha)
+        sample["claim_evidence_register"] = witness
     checkpoint = {
         "status": "CLOSED_SOURCE_REVIEW_INPUT_NOT_APPROVED",
         "baseline_history_sha256": baseline_sha,
