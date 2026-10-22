@@ -23,7 +23,8 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import assessment_pipeline
 from assessment_pipeline import responses_payload
 from source_research_batches import (
-    CATEGORIES, _normalize_limitation_lists, _verified_stage_normalization,
+    CATEGORIES, _normalize_grouped_query_disclosures,
+    _normalize_limitation_lists, _verified_stage_normalization,
     batched_research, canonical, read_json, sha, save_new)
 from source_search_trace import observed_search_calls
 
@@ -257,6 +258,110 @@ class StageNormalizationTests(unittest.TestCase):
             self._run(lambda *args: self.fail("No replay POST"), resume=True,
                       clock=LATER)
         journal_path.write_bytes(original_journal)
+
+    def test_v5_grouped_directional_queries_replay_without_paid_post(self):
+        groups = [
+            {"purpose": "Potentially raises instability",
+             "actual_queries": ["site:primary.test Iran protest October 2026"]},
+            {"purpose": "Potentially lowers instability",
+             "actual_queries": ["site:primary.test Iran sanctions relief October 2026"]},
+            {"purpose": "Ambiguous, contrary evidence and attribution checks",
+             "actual_queries": ["site:primary.test Iran inspection October 2026"]},
+        ]
+        actual_queries = [g["actual_queries"][0] for g in groups] + [
+            "site:primary.test Iran additional unattributed search"]
+
+        def original_paid_response(prompt, search):
+            obj, urls = self._response(prompt, search)
+            if "category: primary_data" in prompt:
+                obj["coverage_audit"][0]["queries"] = copy.deepcopy(groups)
+                original_path = self.folder / "response-1.json"
+                recorded = read_json(original_path)
+                recorded["result"] = copy.deepcopy(obj)
+                recorded["tool_search_calls"] = observed_search_calls([{
+                    "type": "web_search_call", "action": {
+                        "type": "search", "queries": actual_queries,
+                        "sources": [{"url": next(iter(urls)),
+                                     "title": "Original synthetic source"}]}}])
+                original_path.write_text(json.dumps(recorded), encoding="utf-8")
+            return obj, urls
+
+        result, _, _, snapshot = self._run(original_paid_response)
+        self.assertEqual(snapshot["version"], 5)
+        original_path = self.folder / "response-1.json"
+        original_bytes = original_path.read_bytes()
+        stage = read_json(self.folder / "research-batch-primary_data.json")
+        self.assertEqual(stage["result"]["coverage_audit"][0]["queries"], groups)
+        self.assertEqual(len(stage["effective_result"]["coverage_audit"][0]["queries"]), 3)
+        self.assertTrue(all(isinstance(q, str) and "API-exposed search query" in q
+                            for q in result["coverage_audit"][0]["queries"]))
+        audit = read_json(self.folder / "research-stage-format-primary_data.json")
+        change = audit["changes"][0]
+        self.assertEqual(change["path"], ["coverage_audit", 0, "queries"])
+        self.assertEqual(change["reported_matched_query_count"], 3)
+        self.assertEqual(change["api_observed_query_count"], 4)
+        self.assertEqual(change["api_queries_not_reported_in_groups"],
+                         ["site:primary.test Iran additional unattributed search"])
+        self.assertEqual(audit["original_result_sha256"],
+                         sha(read_json(original_path)["result"]))
+        self.assertEqual(audit["publication"], "NOT AUTHORIZED")
+        self.assertEqual(original_path.read_bytes(), original_bytes)
+
+        self.calls.clear()
+        replay = self._run(
+            lambda *args: self.fail("A completed paid source query cannot be posted again"),
+            resume=True, clock=LATER)
+        self.assertEqual(self.calls, [])
+        self.assertEqual(replay[0], result)
+        self.assertEqual(original_path.read_bytes(), original_bytes)
+
+    def test_grouped_query_recovery_rejects_unobserved_or_ambiguous_queries(self):
+        groups = [
+            {"purpose": "Potentially raises instability",
+             "actual_queries": ["Iran unrest official site October 2026"]},
+            {"purpose": "Potentially lowers instability",
+             "actual_queries": ["Iran sanctions relief official site October 2026"]},
+            {"purpose": "Ambiguous, contrary evidence and attribution checks",
+             "actual_queries": ["Iran safeguards official site October 2026"]},
+        ]
+        observed = observed_search_calls([{
+            "type": "web_search_call",
+            "action": {"type": "search",
+                       "queries": [g["actual_queries"][0] for g in groups],
+                       "sources": []}}])
+        original = {"coverage_audit": [{"queries": copy.deepcopy(groups)}]}
+        untouched = copy.deepcopy(original)
+        normalized, changes = _normalize_grouped_query_disclosures(
+            original, observed, version=5)
+        self.assertEqual(original, untouched)
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(len(normalized["coverage_audit"][0]["queries"]), 3)
+        legacy, changed = _normalize_grouped_query_disclosures(
+            original, observed, version=4)
+        self.assertEqual(legacy, original)
+        self.assertEqual(changed, [])
+
+        for edit in ("unobserved", "duplicate", "unknown_label",
+                     "extra_field", "empty_group"):
+            bad = copy.deepcopy(original)
+            groups2 = bad["coverage_audit"][0]["queries"]
+            if edit == "unobserved":
+                groups2[0]["actual_queries"] = ["Invented query not in API"]
+            elif edit == "duplicate":
+                groups2[1]["actual_queries"] = groups2[0]["actual_queries"]
+            elif edit == "unknown_label":
+                groups2[1]["purpose"] = "Verified lowering of instability"
+            elif edit == "extra_field":
+                groups2[0]["approved"] = True
+            elif edit == "empty_group":
+                groups2[0]["actual_queries"] = []
+            with self.subTest(edit=edit):
+                with self.assertRaises(ValueError):
+                    _normalize_grouped_query_disclosures(
+                        bad, observed, version=5)
+        with self.assertRaises(ValueError):
+            _normalize_grouped_query_disclosures(original, [], version=5)
+        self.assertEqual(original, untouched)
 
     def test_unverified_responses_are_not_normalized_or_replayed(self):
         folder = self.folder
