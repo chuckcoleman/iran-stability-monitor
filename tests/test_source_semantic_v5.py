@@ -325,6 +325,36 @@ class SearchAndReviewV5Tests(unittest.TestCase):
         self.assertIn("source_body_sha256", prompt)
         self.assertIn("source_query_balance_review", prompt)
 
+    def test_v6_forward_only_original_admission_prompt_preserves_v5(self):
+        template = {"prior_index": [], "date": "2026-10-22",
+                    "cutoff_at": "2026-10-22T17:06:38-04:00"}
+        for category in CATEGORIES:
+            old = batch_prompt(category, dict(template, version=5))
+            new = batch_prompt(category, dict(template, version=6))
+            self.assertTrue(new.startswith(old))
+            self.assertNotIn("V6 FORWARD-ONLY", old)
+            self.assertIn("V6 FORWARD-ONLY", new)
+            self.assertIn("first-party measured value", new)
+            self.assertIn("SAME DAY", new)
+            self.assertIn("not purpose-labelled objects", new)
+            self.assertNotIn("six-source", old)
+            self.assertNotEqual(sha(new), sha(old))
+        # The new version still uses the same strict observable-query
+        # pre-screen, provisional evidence gate and dual reviewer requirement.
+        self.snapshot = dict(self.snapshot, version=6)
+        result = self.screen()
+        self.assertEqual(result["version"], 3)
+        self.assertEqual(
+            result["screened_packet"]["pre_review_admission_version"], 3)
+        self.assertEqual(
+            len(result["screened_packet"]["pre_review_actual_search_queries"]),
+            6)
+        self.assertEqual(result["source_review_requests"],
+                         "PERMITTED_AFTER_SCREEN")
+        with self.assertRaisesRegex(ValueError, "six source categories"):
+            self.calls = self.calls[:-1]
+            self.screen()
+
     def test_both_reviewers_must_bind_exact_page_quote_hash_and_real_queries(self):
         result = self.screen()
         packet = result["screened_packet"]
