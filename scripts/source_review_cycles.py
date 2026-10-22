@@ -851,6 +851,12 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                     and packet.get("pre_review_claim_decisions") ==
                         sample["pre_review_claim_decisions"],
                     "Revised packet altered original admission and source provenance")
+            if sample.get("pre_review_admission_version") == 3:
+                require(packet.get("pre_review_actual_search_queries") ==
+                            sample.get("pre_review_actual_search_queries")
+                        and packet.get("pre_review_original_input_sha256") ==
+                            sample.get("pre_review_original_input_sha256"),
+                        "V5 review revision changed actual source searches or original audit")
         digest = sha(packet)
         result = {}
         for role in ("affirmative", "critical"):
