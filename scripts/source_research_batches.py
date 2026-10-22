@@ -323,7 +323,7 @@ def batch_prompt(category, snapshot):
     if snapshot["version"] != 6:
         raise ValueError("Unsupported source-research prompt version")
     return v5 + (
-        "\\nV6 FORWARD-ONLY ADMISSION-READY ORIGINAL SOURCE RESEARCH. "
+        "\nV6 FORWARD-ONLY ADMISSION-READY ORIGINAL SOURCE RESEARCH. "
         "Seek several INDEPENDENT original, accessible publishers per source "
         "category, not just one illustrative item. Choose zero to four "
         "narrow, genuinely supported observations where they exist, never "
