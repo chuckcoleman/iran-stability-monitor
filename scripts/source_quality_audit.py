@@ -130,7 +130,22 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
         if annotation["kind"] in ("analysis","unverified") and any(
             row.get("direction") in ("raises","lowers") for row in evidence_rows):
             flags.append("directional_claim_needs_explicit_review")
+        details = {}
+        if "publication_date_evidence" in status:
+            witnesses = status["publication_date_evidence"]
+            _check(isinstance(witnesses, list)
+                   and all(isinstance(w, dict)
+                           and w.get("origin") ==
+                              "article_headline_adjacent_visible_date"
+                           and isinstance(w.get("date"), str)
+                           and w.get("first_publication_verified") is False
+                           for w in witnesses),
+                   "Malformed claimed visible article-date provenance")
+            details = {
+                "publication_date_evidence": witnesses,
+                "publisher_date_not_first_publication_proof": True}
         audit.append({
+            **details,
             "url":url, "coverage_categories":sorted(item["coverage_categories"]),
             "new_evidence_indices":sorted(item["evidence_indices"]),
             "role":"new_evidence" if item["evidence_indices"] else "coverage_context_only",
