@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3):
+    if fresh_version not in (2, 3, 4):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -246,7 +246,7 @@ def batch_prompt(category, snapshot):
         "inside evidence_status. New evidence MUST NOT include an old ID.)")
     if snapshot["version"] == 2:
         return strict  # Reproduce the EXACT earlier paid v2 request.
-    return strict + (
+    v3_prompt = strict + (
         "\nMANDATORY V3 PRE-REVIEW SOURCE ADMISSION. For each new evidence "
         "candidate include effect_type EXACTLY one of observed_policy_action, "
         "reported_event, measured_data, attributed_claim, analysis_or_forecast, "
@@ -268,6 +268,36 @@ def batch_prompt(category, snapshot):
         "pre-review gate checks retrieval, dates and quote-word grounding "
         "before any affirmative/critical reviewer is called, but neither "
         "that gate nor the model verifies source semantics automatically.")
+    if snapshot["version"] == 3:
+        return v3_prompt  # Exact old v3 paid prompts MUST remain unchanged.
+    return v3_prompt + (
+        "\nV4 EVENT-VERSUS-DIRECTION AND MULTILINGUAL REVIEW PROTOCOL: "
+        "Every NEW candidate must include event_basis, a specific 30-450 "
+        "character explanation of how the verbatim original-page quote "
+        "documents the asserted historical event, measurement or policy action. "
+        "Keep direction_basis a SEPARATE 30-450 character analytical explanation "
+        "of why the event might raise, lower or ambiguously change stability. "
+        "Do NOT fabricate a quote connecting the event to a probability effect; "
+        "the quoted text need not use the model's causal/forecast language. "
+        "For every original-language quote, include source_language as a "
+        "lowercase BCP47 language tag such as en, ar, fa or tr. If it is not "
+        "English, include support_quote_translation: a careful 30-900-character "
+        "English translation of that SAME quoted string and explicitly treat "
+        "the translation as an UNVERIFIED model proposal for bilingual "
+        "affirmative and critical reviewers, NEVER original-language evidence "
+        "or independent verification. The exact native-language support_quote "
+        "must still appear in the independently fetched original page body. "
+        "When an ANALYTICAL article contains original dated satellite-image "
+        "observations, distinguish direct observations from the analyst's "
+        "interpretation; use original_method=direct_original_satellite_imagery "
+        "ONLY if the original text actually describes the observed image "
+        "comparison, otherwise original_method=none. Original imagery "
+        "analysis can be proposed for factual semantic review, but does not "
+        "prove restored operational capability or favorable stability effects. "
+        "Older opinion, forecasts, think-tank commentary and unsupported "
+        "coercive-loyalty interpretations remain background context, not "
+        "recent directional observations. Supply zero new items rather than "
+        "invent unsupported balancing positive or negative events.")
 
 
 def _normalize_limitation_lists(original):
@@ -569,7 +599,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(3 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(4 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)

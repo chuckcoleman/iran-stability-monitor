@@ -46,6 +46,94 @@ def _words(text):
     return set(re.findall(r"[^\W\d_]{4,}", text.casefold(), flags=re.UNICODE)) - STOP
 
 
+def _source_script(text):
+    """A transparent script indicator, NOT a model-determined language ID."""
+    if not isinstance(text, str):
+        return "unknown"
+    arabic = sum("\u0600" <= ch <= "\u06ff" or "\u0750" <= ch <= "\u077f"
+                 for ch in text)
+    cyrillic = sum("\u0400" <= ch <= "\u052f" for ch in text)
+    latin = sum("a" <= ch.casefold() <= "z" for ch in text)
+    counts = {"arabic": arabic, "cyrillic": cyrillic, "latin": latin}
+    maximum = max(counts.values())
+    leaders = [k for k, value in counts.items() if value == maximum]
+    return leaders[0] if maximum >= 4 and len(leaders) == 1 else "undetermined"
+
+
+def _v4_event_grounding(entry, original, quote):
+    """Separate limited factual quote grounding from *interpretive* direction.
+
+    An explicit model translation can make a cross-script claim reviewable,
+    but it cannot certify source semantics and cannot replace the exact
+    original-language passage. Rationale for direction is deliberately NOT
+    scored by overlapping causal words: source documents rarely contain
+    the political effect implied by a researcher.
+    """
+    event_basis = original.get("event_basis") if original else None
+    direction_basis = original.get("direction_basis") if original else None
+    language = original.get("source_language") if original else None
+    translation = original.get("support_quote_translation") if original else None
+    method = original.get("original_method") if original else None
+    original_script = _source_script(quote)
+    observation_script = _source_script(entry.get("observation", ""))
+    reasons = []
+    if not isinstance(language, str) or not re.fullmatch(
+            r"[a-z]{2,3}(?:-[a-z0-9]{2,8})?", language):
+        reasons.append("MISSING_OR_MALFORMED_ORIGINAL_LANGUAGE")
+    if original_script == "arabic" and language not in ("ar", "fa", "ur", "ps"):
+        reasons.append("SOURCE_LANGUAGE_CONTRADICTS_QUOTE_SCRIPT")
+    if original_script == "cyrillic" and language in ("en", "ar", "fa"):
+        reasons.append("SOURCE_LANGUAGE_CONTRADICTS_QUOTE_SCRIPT")
+    if original_script == "latin" and language in ("ar", "fa", "ur", "ps"):
+        reasons.append("SOURCE_LANGUAGE_CONTRADICTS_QUOTE_SCRIPT")
+    translated = (isinstance(language, str) and language != "en") or (
+        original_script not in ("latin", "undetermined") and
+        observation_script == "latin")
+    if translated:
+        if (not isinstance(translation, str)
+                or not 30 <= len(translation.strip()) <= 900
+                or not re.search(r"[a-z]{4,}", translation.casefold())):
+            reasons.append("UNVERIFIED_TRANSLATION_MISSING_OR_MALFORMED")
+            comparison_text = ""
+        else:
+            comparison_text = translation
+    else:
+        comparison_text = quote
+        if translation not in (None, ""):
+            reasons.append("ENGLISH_ORIGINAL_MUST_NOT_USE_EXTRA_TRANSLATION")
+    if not isinstance(event_basis, str) or not 30 <= len(event_basis.strip()) <= 450:
+        reasons.append("MISSING_OR_MALFORMED_FACTUAL_EVENT_BASIS")
+        event_basis = ""
+    if not isinstance(direction_basis, str) or not 30 <= len(direction_basis.strip()) <= 450:
+        reasons.append("MISSING_OR_MALFORMED_DIRECTION_RATIONALE")
+    event_overlap = sorted(_words(event_basis) & _words(comparison_text))
+    observation_overlap = sorted(_words(entry.get("observation", "")) &
+                                 _words(comparison_text))
+    if len(event_overlap) < 2:
+        reasons.append("FACTUAL_EVENT_BASIS_NOT_GROUNDED_IN_ORIGINAL_OR_TRANSLATION")
+    if len(observation_overlap) < 2:
+        reasons.append("OBSERVATION_NOT_GROUNDED_IN_ORIGINAL_OR_TRANSLATION")
+    return {
+        "reasons": reasons,
+        "original_quote": quote,
+        "original_quote_sha256": hashlib.sha256(quote.encode("utf-8")).hexdigest(),
+        "source_script": original_script,
+        "observation_script": observation_script,
+        "source_language_model_declaration": language,
+        "model_translation": translation if translated else None,
+        "translation_status": ("MODEL_PROPOSED_UNVERIFIED_REQUIRES_BILINGUAL_CHECK"
+                               if translated else "ORIGINAL_QUOTE_USED_NO_TRANSLATION"),
+        "translation_independently_checked": False,
+        "factual_event_basis": event_basis,
+        "factual_event_basis_overlap": event_overlap,
+        "observation_quote_or_translation_overlap": observation_overlap,
+        "direction_basis": direction_basis,
+        "directional_effect_status": "MODEL_INTERPRETATION_NOT_SOURCE_VERIFIED",
+        "original_method_declaration": method,
+        "factual_support_status": "PROVISIONAL_TEXTUAL_RELEVANCE_NOT_EVENT_VERIFICATION",
+    }
+
+
 def _event_date_status(entry, cutoff):
     try:
         observed = dt.date.fromisoformat(entry["event_date"])
@@ -105,11 +193,12 @@ def _corresponding_original(original, frozen):
 def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") == 3,
+            and snapshot.get("version") in (3, 4),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
             "Admissibility cannot move the frozen search cutoff or history")
+    protocol_v4 = snapshot["version"] == 4
     cutoff = dt.datetime.fromisoformat(snapshot["cutoff_at"])
     require(cutoff.utcoffset() is not None, "Missing timezone-aware search cutoff")
     source_rows = packet["source_quality_audit"]["sources"]
@@ -142,10 +231,18 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         if (source.get("access_status") != "source_metadata_captured" or
                 source.get("source_retrieval_status") != "retrieved"):
             reasons.append("ORIGINAL_SOURCE_METADATA_UNAVAILABLE")
-        if (source.get("classification") not in
-                ("direct_observation", "attributed_claim") or
-                source.get("origin") in
-                ("analytical_secondary", "syndicated_reprint", "unknown")):
+        imagery_observation = (
+            protocol_v4 and source.get("classification") == "analysis"
+            and source.get("origin") == "original_reporting"
+            and isinstance(original, dict)
+            and original.get("original_method") ==
+                "direct_original_satellite_imagery"
+            and original.get("effect_type") in ("reported_event", "measured_data"))
+        if (not imagery_observation
+                and source.get("classification") not in
+                    ("direct_observation", "attributed_claim")
+                or source.get("origin") in
+                    ("analytical_secondary", "syndicated_reprint", "unknown")):
             reasons.append("ANALYSIS_SYNDICATION_OR_UNVERIFIED_CLASS")
         if witness.get("status") != "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED":
             reasons.append("NO_EXACT_RETRIEVED_ORIGINAL_BODY_PASSAGE")
@@ -195,10 +292,16 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         rationale_overlap = (
             sorted(_words(basis) & _words(quote)) if isinstance(basis, str)
             else [])
-        if len(overlap) < 2:
-            reasons.append("ORIGINAL_PASSAGE_NOT_RELEVANT_TO_CLAIM_TEXT")
-        if len(rationale_overlap) < 2:
-            reasons.append("DIRECTION_REASON_NOT_GROUNDED_IN_PASSAGE_TEXT")
+        semantic_screen = None
+        if protocol_v4:
+            semantic_screen = _v4_event_grounding(entry, original, quote)
+            reasons.extend(semantic_screen["reasons"])
+        else:
+            # Historical v3 rules and saved decisions are preserved exactly.
+            if len(overlap) < 2:
+                reasons.append("ORIGINAL_PASSAGE_NOT_RELEVANT_TO_CLAIM_TEXT")
+            if len(rationale_overlap) < 2:
+                reasons.append("DIRECTION_REASON_NOT_GROUNDED_IN_PASSAGE_TEXT")
         reasons = sorted(set(reasons))
         decision = {
             "id": identifier,
@@ -218,6 +321,15 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
             "reasons": reasons,
             "decision": ADMISSION if not reasons else REJECT,
         }
+        if protocol_v4:
+            decision["v4_separate_factual_and_directional_checks"] = semantic_screen
+            decision["publisher_heading_date_evidence"] = source.get(
+                "publisher_heading_date_evidence", [])
+            decision["publisher_heading_admitted_day"] = source.get(
+                "publisher_heading_admitted_day")
+            decision["publisher_report_date_not_first_publication_proof"] = True
+            decision["original_imagery_eligible_only_for_dual_review"] = (
+                imagery_observation and not reasons)
         decisions.append(decision)
         if reasons:
             held.append(copy.deepcopy(entry))
@@ -231,10 +343,22 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
     amended["pre_review_admission_version"] = GATE_VERSION
+    if protocol_v4:
+        amended["pre_review_screen_protocol"] = (
+            "v4_separate_factual_direction_and_original_language")
+        amended["pre_review_v4_source_claim_language_warning"] = (
+            "Exact original-page passages and any model translations are "
+            "distinct. Translation is NOT independently checked; reviewers "
+            "must examine original-language meaning, factual event support "
+            "and causal-direction inference separately.")
     amended["pre_review_limitations"] = (
-        "Text overlap and page dates are necessary screening features only. "
-        "No first-publication time, semantic direction, source independence "
-        "or observed geopolitical consequence was thereby verified.")
+        ("Event-word overlap or unverified model translation offers only "
+         "provisional factual relevance. The direction rationale is a "
+         "separate analytical claim with NO automatic semantic approval. "
+         if protocol_v4 else
+         "Text overlap and page dates are necessary screening features only. ")
+        + "No first-publication time, semantic direction, source independence "
+          "or observed geopolitical consequence was thereby verified.")
     # Preserve every original URL; update only the reviewed packet's
     # classification of which sources support currently admitted evidence.
     quality = amended["source_quality_audit"]

@@ -130,7 +130,7 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
         if annotation["kind"] in ("analysis","unverified") and any(
             row.get("direction") in ("raises","lowers") for row in evidence_rows):
             flags.append("directional_claim_needs_explicit_review")
-        audit.append({
+        row = {
             "url":url, "coverage_categories":sorted(item["coverage_categories"]),
             "new_evidence_indices":sorted(item["evidence_indices"]),
             "role":"new_evidence" if item["evidence_indices"] else "coverage_context_only",
@@ -146,7 +146,22 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
             "metadata_status":status.get("metadata_status","not independently retrieved"),
             "flags":flags,
             "factual_verification":"not_automatically_established",
-        })
+        }
+        # New source captures retain precisely where the publisher displayed
+        # a date; legacy metadata/audits are not retroactively rewritten.
+        if "publisher_heading_date_evidence" in status:
+            evidence = status["publisher_heading_date_evidence"]
+            _check(isinstance(evidence, list) and all(
+                isinstance(e, dict) and isinstance(e.get("date"), str)
+                and isinstance(e.get("raw"), str)
+                and isinstance(e.get("location"), str) for e in evidence),
+                "Publisher heading date evidence malformed")
+            row["publisher_heading_date_evidence"] = evidence
+            row["publisher_heading_date_status"] = status.get(
+                "publisher_heading_date_status")
+            row["publisher_heading_admitted_day"] = status.get(
+                "publisher_heading_admitted_day")
+        audit.append(row)
     return {
         "status":"SOURCE_BY_SOURCE_REVIEW_REQUIRED",
         "sources":audit,"source_count":len(audit),

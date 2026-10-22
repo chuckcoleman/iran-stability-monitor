@@ -66,6 +66,13 @@ def _metadata_from_quality(prior, result):
             "publication_dates": item.get("publication_dates_from_page", []),
             "metadata_status": item.get("metadata_status")
         }
+        if "publisher_heading_date_evidence" in item:
+            metadata[url]["publisher_heading_date_evidence"] = item[
+                "publisher_heading_date_evidence"]
+            metadata[url]["publisher_heading_date_status"] = item.get(
+                "publisher_heading_date_status")
+            metadata[url]["publisher_heading_admitted_day"] = item.get(
+                "publisher_heading_admitted_day")
     _check(set(metadata) == expected, "Incomplete preserved source-quality inventory")
     return metadata
 
