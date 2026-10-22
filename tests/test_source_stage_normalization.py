@@ -431,7 +431,7 @@ class StageNormalizationTests(unittest.TestCase):
             return obj, citations
 
         result, _, _, snap = self._run(synthetic_paid_research)
-        self.assertEqual(snap["version"], 5)
+        self.assertEqual(snap["version"], 6)
         original_path = self.folder / "response-1.json"
         original_bytes = original_path.read_bytes()
         journal_path = self.folder / "api-request-test-0.json"
@@ -541,7 +541,7 @@ class StageNormalizationTests(unittest.TestCase):
             return obj, urls
 
         result, _, _, snap = self._run(recorded_research)
-        self.assertEqual(snap["version"], 5)
+        self.assertEqual(snap["version"], 6)
         response_path = self.folder / "response-2.json"
         response_bytes = response_path.read_bytes()
         journal_path = self.folder / "api-request-test-1.json"
