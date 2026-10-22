@@ -389,8 +389,17 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
         if (not isinstance(grouped, list) or not grouped
                 or all(isinstance(q, str) for q in grouped)):
             continue  # Do not coerce absent, empty or ordinary query lists.
-        if (len(grouped) != 3
-                or any(not isinstance(entry, dict) for entry in grouped)):
+        if any(not isinstance(entry, dict) for entry in grouped):
+            raise ValueError("Malformed grouped research query disclosure")
+        # Live V5 responses have used both three purpose-labelled query lists
+        # and individually purpose-labelled query strings. Permit only these
+        # two narrowly identified representations, never a mixed or unknown
+        # object structure. Original payloads remain unmodified.
+        individually_labelled = all(
+            set(entry) == {"purpose", "query"} for entry in grouped)
+        three_groups = (len(grouped) == 3 and all(
+            set(entry) == {"purpose", "actual_queries"} for entry in grouped))
+        if not individually_labelled and not three_groups:
             raise ValueError("Malformed grouped research query disclosure")
         verify_search_trace(search_calls)
         observed = set()
@@ -408,34 +417,54 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
         purposes = set()
         used = set()
         flattened = []
-        for group in grouped:
-            if set(group) != {"purpose", "actual_queries"}:
-                raise ValueError("Malformed grouped research query fields")
-            purpose = group["purpose"]
-            queries = group["actual_queries"]
-            if (not isinstance(purpose, str)
-                    or purpose not in _QUERY_PURPOSE_LABELS
-                    or purpose in purposes
-                    or not isinstance(queries, list)
-                    or not 1 <= len(queries) <= 32):
-                raise ValueError("Ambiguous grouped research query purpose")
-            purposes.add(purpose)
-            for q in queries:
-                if (not isinstance(q, str) or not 5 <= len(q) <= 450
-                        or q != q.strip() or q in used):
-                    raise ValueError("Malformed or duplicate grouped research query")
+        if individually_labelled:
+            if len(grouped) > 96:
+                raise ValueError("Excessive individually labelled research queries")
+            for group in grouped:
+                purpose, q = group["purpose"], group["query"]
+                if (not isinstance(purpose, str) or
+                        not 5 <= len(purpose) <= 160 or
+                        purpose != purpose.strip() or
+                        any(ch in purpose for ch in "\r\n\t")):
+                    raise ValueError("Malformed model-labelled research query purpose")
+                if (not isinstance(q, str) or not 5 <= len(q) <= 450 or
+                        q != q.strip() or q in used):
+                    raise ValueError("Malformed or duplicate labelled research query")
                 if q not in observed:
-                    raise ValueError("Grouped research claims an unobserved API query")
+                    raise ValueError("Labelled research claims an unobserved API query")
                 used.add(q)
                 flattened.append(
                     "Model-labelled purpose [" + purpose
                     + "]; API-exposed search query: " + q)
-        if purposes != _QUERY_PURPOSE_LABELS or len(flattened) > 96:
-            raise ValueError("Missing or excessive directional query groups")
+            method = "flatten_individually_labelled_queries_with_exact_api_query_match"
+        else:
+            for group in grouped:
+                purpose = group["purpose"]
+                queries = group["actual_queries"]
+                if (not isinstance(purpose, str)
+                        or purpose not in _QUERY_PURPOSE_LABELS
+                        or purpose in purposes
+                        or not isinstance(queries, list)
+                        or not 1 <= len(queries) <= 32):
+                    raise ValueError("Ambiguous grouped research query purpose")
+                purposes.add(purpose)
+                for q in queries:
+                    if (not isinstance(q, str) or not 5 <= len(q) <= 450
+                            or q != q.strip() or q in used):
+                        raise ValueError("Malformed or duplicate grouped research query")
+                    if q not in observed:
+                        raise ValueError("Grouped research claims an unobserved API query")
+                    used.add(q)
+                    flattened.append(
+                        "Model-labelled purpose [" + purpose
+                        + "]; API-exposed search query: " + q)
+            if purposes != _QUERY_PURPOSE_LABELS or len(flattened) > 96:
+                raise ValueError("Missing or excessive directional query groups")
+            method = "flatten_model_purpose_groups_with_exact_api_query_match"
         row["queries"] = flattened
         changes.append({
             "path": ["coverage_audit", index, "queries"],
-            "method": "flatten_model_purpose_groups_with_exact_api_query_match",
+            "method": method,
             "original_value": copy.deepcopy(grouped),
             "effective_value": copy.deepcopy(flattened),
             "reported_matched_query_count": len(used),
