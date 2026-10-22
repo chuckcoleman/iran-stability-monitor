@@ -156,8 +156,18 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         result.get("coverage_audit"), citations)
     if researcher is llm:
         verify_claimed_source_links(coverage, actual_calls)
+    # New v4 captures may record a strictly located publisher-heading date.
+    # Old v1-v3 snapshots retain their exact historical metadata behavior
+    # and never gain retroactive eligibility or altered audit hashes.
+    effective_metadata_reader = (
+        (lambda url: capture_metadata(
+            url, include_visible_heading_date=True))
+        if (metadata_reader is capture_metadata
+            and researcher is LIVE_RESEARCHER and snapshot
+            and snapshot["version"] >= 4)
+        else metadata_reader)
     quality, metadata = load_or_capture_quality(
-        folder, result, citations, metadata_reader, now, snapshot,
+        folder, result, citations, effective_metadata_reader, now, snapshot,
         baseline_sha, strict=(researcher is llm))
     # Do not mutate or reserialize any paid research, citation, quality or
     # history checkpoint. Strict status validation occurred at the source
