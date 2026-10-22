@@ -91,6 +91,49 @@ class BackgroundTransportTests(unittest.TestCase):
         self.assertIsNone(audit["response_id"])
         self.assertEqual(audit["exception_class"],"RemoteDisconnected")
 
+    def test_auth_failure_after_ack_keeps_id_and_allows_get_only_resume(self):
+        requests = []
+        token_calls = 0
+        def supplier():
+            nonlocal token_calls
+            token_calls += 1
+            if token_calls == 1:
+                return "TOP_SECRET_BEARER"
+            raise RuntimeError("GitHub OIDC token request HTTP 503 after bounded GET retries")
+        def opener(req, timeout):
+            requests.append(req.get_method())
+            self.assertEqual(req.get_method(), "POST")
+            return response({"id": "resp_savedoidc123", "status": "queued"})
+        with self.assertRaisesRegex(RuntimeError, "GitHub OIDC token request HTTP 503"):
+            request_response(payload(), search=True, token_supplier=supplier,
+                audit_dir=self.folder, http_error_formatter=formatter,
+                opener=opener, sleeper=lambda seconds: None,
+                monotonic=lambda: 0)
+        self.assertEqual(requests, ["POST"])
+        audits = list(self.folder.glob("api-request-*.json"))
+        self.assertEqual(len(audits), 1)
+        original = json.loads(audits[0].read_text())
+        self.assertEqual(original["status"],
+                         "poll_authentication_failed_no_post_retry")
+        self.assertEqual(original["response_id"], "resp_savedoidc123")
+        self.assertEqual(original["post_attempts"], 1)
+        self.assertEqual(original["exception_class"], "RuntimeError")
+        self.assertNotIn("TOP_SECRET_BEARER", audits[0].read_text())
+        self.assertNotIn("GitHub OIDC token request", audits[0].read_text())
+        def resume_opener(req, timeout):
+            requests.append(req.get_method())
+            self.assertEqual(req.get_method(), "GET")
+            return response({"id": "resp_savedoidc123", "status": "completed"})
+        result = request_response(payload(), search=True,
+            token_supplier=lambda: "NEW_ACCESS_TOKEN", audit_dir=self.folder,
+            http_error_formatter=formatter, opener=resume_opener,
+            sleeper=lambda seconds: None, monotonic=lambda: 0,
+            resume_dir=self.folder)
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(requests, ["POST", "GET"])
+        self.assertEqual(len(list(self.folder.glob("api-request-*.json"))), 2)
+        self.assertEqual(json.loads(audits[0].read_text()), original)
+
     def test_poll_network_fault_retries_only_get_after_ack(self):
         count=0
         def opener(req,timeout):
