@@ -234,6 +234,7 @@ class V4CrossLanguageScreenTests(unittest.TestCase):
                                   "qualified and bounded by competing evidence."}]
             })
         for role in ("affirmative", "critical"):
+            responses[0]["translation_checks"] = []
             issues = v4_required_interpretation_issues(
                 packet, role, responses)
             self.assertEqual({x["type"] for x in issues},
