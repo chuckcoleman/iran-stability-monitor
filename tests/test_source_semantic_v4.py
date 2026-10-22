@@ -216,29 +216,50 @@ class V4CrossLanguageScreenTests(unittest.TestCase):
     def test_two_reviewers_cannot_approve_unchecked_translation(self):
         packet = self.screening()["screened_packet"]
         url = packet["evidence"][0]["source"]
-        row = {"url": url, "translation_checks": [], "direction_checks": []}
-        for role in ("affirmative", "critical"):
-            issues = v4_required_interpretation_issues(packet, role, [row])
-            self.assertEqual({i["type"] for i in issues},
-                             {"v4_translation_not_independently_reviewed",
-                              "v4_claim_or_direction_not_substantively_reviewed"})
-            verified = {
-                "url": url,
-                "translation_checks": [{
-                    "evidence_id": packet["evidence"][0]["id"],
-                    "fidelity": "supported_from_original_language",
-                    "assessment": "The original Arabic phrase describes "
-                                  "repair work, not verified operational readiness."}],
+        original_id = packet["evidence"][0]["id"]
+        # Each directional candidate is now reviewed separately. All other
+        # candidates receive complete qualified sign reviews; the translated
+        # original remains deliberately UNVERIFIED in the first check.
+        responses = []
+        for entry in packet["evidence"]:
+            responses.append({
+                "url": entry["source"],
+                "translation_checks": [],
                 "direction_checks": [{
-                    "evidence_id": packet["evidence"][0]["id"],
+                    "evidence_id": entry["id"],
                     "factual_event": "supported_as_qualified",
                     "direction_sign": "warranted_as_qualified",
-                    "assessment": "Original image-based reporting is "
-                                  "conditionally relevant but warrants cautious interpretation."}]
-            }
+                    "assessment": "The source directly supports the narrow "
+                                  "event; the proposed sign remains "
+                                  "qualified and bounded by competing evidence."}]
+            })
+        for role in ("affirmative", "critical"):
             issues = v4_required_interpretation_issues(
-                packet, role, [verified])
+                packet, role, responses)
+            self.assertEqual({x["type"] for x in issues},
+                             {"v4_translation_not_independently_reviewed"})
+            responses[0]["translation_checks"] = [{
+                "evidence_id": original_id,
+                "fidelity": "supported_from_original_language",
+                "assessment": "The original Arabic phrase describes "
+                              "repair work, not verified operational readiness."}]
+            issues = v4_required_interpretation_issues(
+                packet, role, responses)
             self.assertEqual(issues, [])
+            # Failure to address even an uncontroversial English passage's
+            # directional effect independently is not a clean review.
+            responses[1]["direction_checks"] = []
+            issues = v4_required_interpretation_issues(
+                packet, role, responses)
+            self.assertEqual([x["location"] for x in issues],
+                             [packet["evidence"][1]["id"]])
+            responses[1]["direction_checks"] = [{
+                "evidence_id": packet["evidence"][1]["id"],
+                "factual_event": "supported_as_qualified",
+                "direction_sign": "warranted_as_qualified",
+                "assessment": "The original source supports the narrower "
+                              "event; proposed direction was separately "
+                              "evaluated against its explicit limitations."}]
 
     def test_old_v3_screen_fingerprint_and_prompt_are_unchanged(self):
         from source_pre_review_admissibility import screen_original_packet
