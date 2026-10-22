@@ -156,7 +156,9 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
             "source_publication_time":public_time,
             "first_publication_clock_status":(
                 "publisher_supplied_metadata_not_independently_confirmed"
-                if public_time is not None else "unknown"),
+                if public_time is not None else
+                "publisher_reported_date_only_not_independently_confirmed"
+                if details else "unknown"),
             "publication_dates_from_page":status.get("publication_dates",[]),
             "metadata_status":status.get("metadata_status","not independently retrieved"),
             "flags":flags,
