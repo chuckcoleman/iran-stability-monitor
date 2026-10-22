@@ -53,6 +53,27 @@ def _prompt(role, packet, digest, common):
             "direction, and reject unsupported model reasoning. "
             "Held-out entries and originals remain in the closed audit "
             "but must never be counted as directional observations. ")
+    if packet.get("pre_review_admission_version") == 2:
+        common += (
+            "\nV4 ORIGINAL-LANGUAGE AND SUBSTANTIVE REVIEW: Inspect the EXACT "
+            "original-language quotation and the separately fingerprinted, "
+            "UNTRUSTED preliminary English translation for every translated "
+            "record. Independently check whether the source actually states "
+            "the narrower reported event and whether its translation omits "
+            "qualifications. Never use English/Arabic or Persian word overlap "
+            "as proof of event truth or predicted causal direction. Address "
+            "each semantic_reviewer_flags item, separating observed event, "
+            "claimed effect, alternative explanations, and counterevidence; "
+            "reject incorrect or unsupported translations or signs. "
+            "An original satellite-image comparison documents only a "
+            "claimed comparison, not independently verified flight readiness. "
+            "An original government sanction designation shows the announced "
+            "official action, not the truth of alleged behavior or measured "
+            "FX disruption. Publisher-displayed dates are not authenticated "
+            "first-release times. All six independent source categories "
+            "must have been searched, including adverse and stabilizing "
+            "evidence, but do not demand an observation in each direction; "
+            "record missing directions without fabricating observations. ")
     if packet.get("claim_evidence_register"):
         common += (
             "\nCLAIM-LEVEL VERIFICATION: For each retained evidence ID, examine "
@@ -430,9 +451,22 @@ def deterministic_review_issues(packet, original_cutoff):
         if (claim_map is not None and source
                 and source.get("origin") == "official_or_advocacy_claim"
                 and source.get("classification") == "direct_observation"):
-            issues.append({"type": "official_claim_misclassified",
-                           "location": item.get("id", "unknown"),
-                           "reason": "Official assertion is not itself a direct observation"})
+            # v4 may examine a documented *action of the agency itself* as
+            # official primary evidence; it never authenticates the agency's
+            # allegations or proves resulting macroeconomic consequences.
+            verdict = next((row for row in packet.get(
+                "pre_review_claim_decisions", []) if row.get("id") ==
+                           item.get("id")), {})
+            documented_action = (
+                packet.get("pre_review_admission_version") == 2
+                and verdict.get("model_effect_type") == "observed_policy_action"
+                and verdict.get("scope_of_supported_inference") ==
+                    "OBSERVED_ACTION_ONLY_NOT_OFFICIAL_ALLEGATION")
+            if not documented_action:
+                issues.append({"type": "official_claim_misclassified",
+                               "location": item.get("id", "unknown"),
+                               "reason": "Official allegation is not itself a "
+                                         "verified direct observation"})
         if claim_map is not None:
             witness = claim_map.get(item.get("id"))
             if (not isinstance(witness, dict) or
@@ -457,7 +491,8 @@ def deterministic_review_issues(packet, original_cutoff):
         require(isinstance(guard, dict)
                 and isinstance(guard.get("failures"), list),
                 "Malformed source evidence-diversity gate")
-        if packet.get("quote_separation_version") == 2:
+        if (packet.get("quote_separation_version") == 2 or
+                packet.get("source_balance_policy_version") == 2):
             counts = eligibility(packet)
             require(guard.get("eligibility") == counts
                     and guard.get("failures") == counts["failures"]
@@ -590,7 +625,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 "incompatible with directional eligibility. No new reviewer "
                 "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
-    screened = sample.get("pre_review_admission_version") == 1
+    screened = sample.get("pre_review_admission_version") in (1, 2)
     original_evidence_for_witnesses = (
         sample.get("pre_review_original_evidence") if screened else
         sample.get("evidence"))
