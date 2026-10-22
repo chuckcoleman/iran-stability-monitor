@@ -189,7 +189,7 @@ class StageNormalizationTests(unittest.TestCase):
             return self._response(prompt, search)
         result, cited, trace, snapshot = self._run(finish, resume=True, clock=LATER)
         self.assertEqual(self.calls, list(CATEGORIES)[3:])
-        self.assertEqual(snapshot["version"], 3)
+        self.assertEqual(snapshot["version"], 4)  # New live research uses v4; old v3 snapshots stay replayable
         self.assertEqual(len(result["coverage_audit"]), 6)
         self.assertEqual(len(cited), 6)
         self.assertEqual(len(trace), 6)
