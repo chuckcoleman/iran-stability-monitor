@@ -107,7 +107,7 @@ class ArticleMetadata(HTMLParser):
 MONTHS = ("January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December")
 HEADING_DATE = re.compile(
-    r"^(?:" + "|".join(MONTHS) + r")\\s+([0-3]?\\d),\\s+(20\\d\\d)$")
+    r"^(?:" + "|".join(MONTHS) + r")\s+([0-3]?\d),\s+(20\d\d)$")
 ARTICLE_DATE_ELEMENTS = frozenset(("time", "span", "div", "p"))
 
 
@@ -166,7 +166,7 @@ class PublisherHeadingDates(HTMLParser):
                 return
         elif origin == "article_heading_time_datetime":
             try:
-                if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", value):
+                if re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
                     day = dt.date.fromisoformat(value).isoformat()
                 else:
                     timestamp = dt.datetime.fromisoformat(
