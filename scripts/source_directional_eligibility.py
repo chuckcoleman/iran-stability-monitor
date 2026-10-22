@@ -57,23 +57,24 @@ def eligibility(packet):
     directions = {x.get("direction") for x in active}
     missing = sorted(DIRECTIONS - directions)
     count_new = sum(x.get("evidence_status") == "new" for x in active)
-    # V5 corrects the previous methodological error: actual search effort
-    # must seek both confirming and disconfirming evidence, but the observed
-    # world need not supply a "raises", "lowers" AND "ambiguous" event.
-    # Require the same count, source diversity, and four genuinely new
-    # observations. Missing directions are explicitly disclosed to both
-    # reviewers; they are not an artificial evidence-production quota.
-    search_balance_not_outcome_quota = (
-        packet.get("pre_review_admission_version") == 3)
+    # Historical protocols retain their exact old count/diversity gates.
+    # V5/V6 removed directional-outcome quotas, but retained minimum counts.
+    # New V7 has NO numeric minimum for observations, new observations,
+    # publishers or observed directions. Source verification and the two
+    # independent reviews are separate mandatory gates.
+    protocol = packet.get("pre_review_admission_version")
+    no_count_quota = protocol == 4
+    search_balance_not_outcome_quota = protocol in (3, 4)
     failures = []
-    if len(active) < MIN_OBSERVATIONS:
-        failures.append("fewer_than_six_source_observations")
-    if len(real_publishers) < MIN_PUBLISHERS:
-        failures.append("fewer_than_three_distinct_publishers")
+    if not no_count_quota:
+        if len(active) < MIN_OBSERVATIONS:
+            failures.append("fewer_than_six_source_observations")
+        if len(real_publishers) < MIN_PUBLISHERS:
+            failures.append("fewer_than_three_distinct_publishers")
+        if count_new < MIN_NEW_OBSERVATIONS:
+            failures.append("fewer_than_four_new_observations")
     if missing and not search_balance_not_outcome_quota:
         failures.append("missing_required_directional_balance")
-    if count_new < MIN_NEW_OBSERVATIONS:
-        failures.append("fewer_than_four_new_observations")
     result = {
         "version": 1,
         "directional_evidence_ids": [x["id"] for x in active],
@@ -98,5 +99,21 @@ def eligibility(packet):
             "required_source_review":
                 "Review observed search queries for support and disconfirmation; "
                 "no direction can be fabricated to achieve representational balance.",
+        })
+    if no_count_quota:
+        result.update({
+            "version": 3,
+            "evidence_quantity_policy":
+                "NO_MINIMUM_OBSERVATIONS_NEW_OBSERVATIONS_OR_PUBLISHERS",
+            "accepted_evidence_count_is_not_an_approval": True,
+            "zero_admitted_observations": len(active) == 0,
+            "source_coverage_warning":
+                "Low or zero admitted evidence may limit conclusions; "
+                "both reviewers must assess adequacy without numeric quotas.",
+            "required_source_review":
+                "Assess exact original-source support, six-category search "
+                "coverage, contrary evidence, and what conclusions are "
+                "actually warranted by the admitted observations. No numeric "
+                "minimum or invented replacement observations.",
         })
     return result
