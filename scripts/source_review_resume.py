@@ -350,12 +350,24 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                          else now().isoformat()),
         "superseded_unknown_requests": sorted(new_superseded),
         "publication": "NOT AUTHORIZED"}
+    # V4 bilingual review fields are recorded only when the reviewer
+    # supplied them. Older saved v1-v3 review hashes and checkpoints are
+    # unaffected. Their absence in v4 is a deterministic rejection later.
+    if "translation_reviews" in response:
+        result["translation_reviews"] = response["translation_reviews"]
+    if "directional_reviews" in response:
+        result["directional_reviews"] = response["directional_reviews"]
     if prior is not None:
         _check(prior == result,
                "Saved source-review checkpoint differs from validated result")
     else:
         save_new(path, result)
-    return {"approved": result["approved"], "issues": issues,
+    returned = {"approved": result["approved"], "issues": issues,
             "source_reviews": result["source_reviews"],
             "completed_at": result["completed_at"], "draft_sha256": input_sha,
             "superseded_unknown_requests": result["superseded_unknown_requests"]}
+    if "translation_reviews" in result:
+        returned["translation_reviews"] = result["translation_reviews"]
+    if "directional_reviews" in result:
+        returned["directional_reviews"] = result["directional_reviews"]
+    return returned
