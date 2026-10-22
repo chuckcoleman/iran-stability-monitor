@@ -56,8 +56,8 @@ def _valid_id(value):
 _RESUMABLE = frozenset((
     "acknowledged", "poll_acknowledged", "safe_get_retry_pending",
     "background_timeout_no_replay", "poll_transport_failed_no_post_retry",
-    "poll_http_error_no_post_retry", "api_completed_output_not_yet_validated",
-    "resuming_existing_response",
+    "poll_http_error_no_post_retry", "poll_authentication_failed_no_post_retry",
+    "api_completed_output_not_yet_validated", "resuming_existing_response",
 ))
 
 
@@ -200,6 +200,14 @@ def request_response(payload, *, search, token_supplier, audit_dir,
         url = ENDPOINT + "/" + urllib.parse.quote(response_id, safe="") + "?" + query
         try:
             token = token_supplier()  # Can rotate short-lived GitHub WIF tokens.
+        except Exception as exc:
+            # GitHub OIDC can be unavailable after the OpenAI response has
+            # already been acknowledged. Record the recoverable interruption
+            # without relabeling it an OpenAI GET or repeating a paid POST.
+            save("poll_authentication_failed_no_post_retry",
+                 exception_class=type(exc).__name__, remote_status=status)
+            raise
+        try:
             get = urllib.request.Request(url, method="GET",
                        headers={"Authorization": "Bearer " + token,
                                 "Accept": "application/json"})

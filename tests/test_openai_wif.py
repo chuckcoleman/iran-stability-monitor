@@ -96,6 +96,89 @@ class WIFTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "GitHub OIDC token request HTTP 403"):
                 a.openai_bearer_token()
 
+    def test_oidc_503_is_retried_by_get_before_one_exchange(self):
+        env = {
+            "OPENAI_IDENTITY_PROVIDER_ID": "idp_fake",
+            "OPENAI_SERVICE_ACCOUNT_ID": "user_fake",
+            "ACTIONS_ID_TOKEN_REQUEST_URL": "https://token.actions.example/oidc",
+            "ACTIONS_ID_TOKEN_REQUEST_TOKEN": "SECRET_GITHUB_REQUEST_TOKEN",
+        }
+        calls, sleeps = [], []
+        def fake_open(req, timeout=0):
+            calls.append(req)
+            if req.get_method() == "GET":
+                self.assertEqual(req.headers["Authorization"],
+                                 "bearer SECRET_GITHUB_REQUEST_TOKEN")
+                if len(calls) <= 2:
+                    raise urllib.error.HTTPError(
+                        req.full_url, 503, "Service Unavailable", {},
+                        io.BytesIO(b"SECRET_ERROR_BODY_MUST_NOT_LEAK"))
+                return FakeResponse({"value": "SECRET_OIDC_JWT"})
+            self.assertEqual(req.get_method(), "POST")
+            self.assertEqual(req.full_url, "https://auth.openai.com/oauth/token")
+            return FakeResponse({"access_token": "FINAL_ACCESS_TOKEN",
+                                 "expires_in": 3600})
+        with patch.dict(os.environ, env, clear=True), \
+             patch.object(a.urllib.request, "urlopen", side_effect=fake_open), \
+             patch.object(a.time, "sleep", side_effect=sleeps.append), \
+             patch.object(a.time, "time", return_value=1000):
+            self.assertEqual(a.openai_bearer_token(), "FINAL_ACCESS_TOKEN")
+        self.assertEqual([req.get_method() for req in calls],
+                         ["GET", "GET", "GET", "POST"])
+        self.assertEqual(sleeps, [1, 2])
+
+    def test_oidc_503_exhaustion_fails_closed_without_token_exchange(self):
+        env = {
+            "OPENAI_IDENTITY_PROVIDER_ID": "idp_fake",
+            "OPENAI_SERVICE_ACCOUNT_ID": "user_fake",
+            "ACTIONS_ID_TOKEN_REQUEST_URL": "https://token.actions.example/oidc",
+            "ACTIONS_ID_TOKEN_REQUEST_TOKEN": "SECRET_GITHUB_REQUEST_TOKEN",
+        }
+        calls, sleeps = [], []
+        def fail(req, timeout=0):
+            calls.append(req)
+            raise urllib.error.HTTPError(req.full_url, 503,
+                "Service Unavailable", {}, io.BytesIO(b"SECRET_RESPONSE_BODY"))
+        with patch.dict(os.environ, env, clear=True), \
+             patch.object(a.urllib.request, "urlopen", side_effect=fail), \
+             patch.object(a.time, "sleep", side_effect=sleeps.append):
+            with self.assertRaisesRegex(RuntimeError,
+                    "GitHub OIDC token request HTTP 503 after bounded GET retries") as ctx:
+                a.openai_bearer_token()
+        self.assertEqual(len(calls), a._GITHUB_OIDC_MAX_ATTEMPTS)
+        self.assertEqual([req.get_method() for req in calls], ["GET"] * 4)
+        self.assertEqual(sleeps, [1, 2, 4])
+        self.assertNotIn("SECRET_GITHUB_REQUEST_TOKEN", str(ctx.exception))
+        self.assertNotIn("SECRET_RESPONSE_BODY", str(ctx.exception))
+
+    def test_oidc_urLError_retries_but_exchange_http_503_not_replayed(self):
+        env = {
+            "OPENAI_IDENTITY_PROVIDER_ID": "idp_fake",
+            "OPENAI_SERVICE_ACCOUNT_ID": "user_fake",
+            "ACTIONS_ID_TOKEN_REQUEST_URL": "https://token.actions.example/oidc",
+            "ACTIONS_ID_TOKEN_REQUEST_TOKEN": "SECRET_GITHUB_REQUEST_TOKEN",
+        }
+        calls, sleeps = [], []
+        def first_network_failure(req, timeout=0):
+            calls.append(req)
+            if len(calls) == 1:
+                raise urllib.error.URLError("SENSITIVE_NETWORK_MESSAGE")
+            if req.get_method() == "GET":
+                return FakeResponse({"value": "SECRET_OIDC_JWT"})
+            raise urllib.error.HTTPError(req.full_url, 503,
+                "Service Unavailable", {}, io.BytesIO(b"SECRET_OAUTH_ERROR"))
+        with patch.dict(os.environ, env, clear=True), \
+             patch.object(a.urllib.request,"urlopen", side_effect=first_network_failure), \
+             patch.object(a.time, "sleep", side_effect=sleeps.append):
+            with self.assertRaisesRegex(RuntimeError,
+                                        "OpenAI token exchange HTTP 503") as ctx:
+                a.openai_bearer_token()
+        self.assertEqual([req.get_method() for req in calls],
+                         ["GET", "GET", "POST"])
+        self.assertEqual(sleeps, [1])
+        self.assertNotIn("SECRET_OIDC_JWT", str(ctx.exception))
+        self.assertNotIn("SECRET_OAUTH_ERROR", str(ctx.exception))
+
     def test_public_oidc_claims_never_include_signed_jwt_or_unlisted_secrets(self):
         values = {
             "iss": "https://token.actions.githubusercontent.com",

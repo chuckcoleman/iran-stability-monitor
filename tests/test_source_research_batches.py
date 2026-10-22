@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from assessment_pipeline import responses_payload
 from source_research_batches import (
-    CATEGORIES, _saved_response, batch_prompt, batched_research, canonical,
+    CATEGORIES, _saved_response, _transport_state, batch_prompt, batched_research, canonical,
     combine, prior_index, read_json, research_snapshot,
     require_pre_snapshot_publication, sha)
 from source_search_trace import observed_search_calls
@@ -219,6 +219,22 @@ class BatchResearchTests(unittest.TestCase):
         self.run_sweep(researcher=observe, resume=True, when=LATER)
         self.assertEqual(env[0][1], str(self.dir))
         self.assertTrue(all(v is None for _, v in env[1:]))
+
+    def test_known_response_id_remains_get_only_after_oidc_503(self):
+        snap = research_snapshot(self.dir, day="2026-10-20", prior=[],
+                                 baseline_sha=self.baseline, started_at=STAMP,
+                                 model="gpt-6.1-sol", resume=False)
+        prompt = batch_prompt(CATEGORIES[0], snap)
+        payload = responses_payload(prompt, True)
+        payload["background"] = True
+        digest = sha(payload)
+        (self.dir / "api-request-oidc-interrupted.json").write_text(
+            json.dumps({"request_sha256": digest,
+                        "post_attempts": 1,
+                        "response_id": "resp_knownoidc123",
+                        "status": "poll_authentication_failed_no_post_retry"}))
+        self.assertTrue(_transport_state(self.dir, digest))
+        self.assertFalse((self.dir / "research-batch-primary_data.json").exists())
 
     def test_checkpoint_trace_tampering_rejected_before_reuse(self):
         self.run_sweep()

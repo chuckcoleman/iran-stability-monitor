@@ -47,6 +47,37 @@ def clock():
     return dt.datetime.now(dt.timezone.utc).astimezone(EST)
 
 _OPENAI_WIF_CACHE={"access_token":None,"expires_at":0.0}
+_GITHUB_OIDC_TRANSIENT_HTTP = frozenset((408, 429, 500, 502, 503, 504))
+_GITHUB_OIDC_MAX_ATTEMPTS = 4
+
+
+def _github_oidc_identity(req):
+    """Retry only transient GitHub OIDC *GET* failures, never an OpenAI POST.
+
+    Authentication is needed again during background-response polling when
+    the cached bearer approaches expiry. Four bounded GET attempts tolerate
+    an intermittent GitHub 503 while the acknowledged Responses ID stays
+    fixed in its audit. Neither headers nor response bodies are logged.
+    """
+    check(req.get_method() == "GET", "GitHub OIDC retry must be GET-only")
+    for attempt in range(_GITHUB_OIDC_MAX_ATTEMPTS):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as response:
+                return json.load(response)
+        except urllib.error.HTTPError as exc:
+            if (exc.code not in _GITHUB_OIDC_TRANSIENT_HTTP or
+                    attempt == _GITHUB_OIDC_MAX_ATTEMPTS - 1):
+                suffix = (" after bounded GET retries" if
+                          exc.code in _GITHUB_OIDC_TRANSIENT_HTTP else "")
+                raise RuntimeError("GitHub OIDC token request HTTP " +
+                                   str(exc.code) + suffix) from None
+        except (OSError, TimeoutError) as exc:
+            if attempt == _GITHUB_OIDC_MAX_ATTEMPTS - 1:
+                raise RuntimeError(
+                    "GitHub OIDC token GET transport failed after bounded retries (" +
+                    type(exc).__name__ + ")") from None
+        time.sleep(2 ** attempt)
+
 
 
 def _public_oidc_claims(token):
@@ -99,11 +130,8 @@ def openai_bearer_token():
         oidc_url=urllib.parse.urlunparse(parsed._replace(query=urllib.parse.urlencode(query)))
         oidc_req=urllib.request.Request(
             oidc_url,headers={"Authorization":"bearer "+request_token})
-        try:
-            with urllib.request.urlopen(oidc_req,timeout=30) as response:
-                oidc=json.load(response)
-        except urllib.error.HTTPError as exc:
-            raise RuntimeError("GitHub OIDC token request HTTP " + str(exc.code)) from None
+        oidc=_github_oidc_identity(oidc_req)
+        check(isinstance(oidc, dict), "GitHub OIDC token response was not an object")
         subject=oidc.get("value")
         check(subject,"GitHub OIDC token response missing value")
         if os.getenv("OPENAI_WIF_AUDIT_CLAIMS")=="true":
