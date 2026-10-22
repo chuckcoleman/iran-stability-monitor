@@ -162,8 +162,16 @@ class HeadlineDateScanner(HTMLParser):
         # establish the publication date, even if it is the first paragraph
         # after the headline. Only a standalone heading-adjacent date label
         # or time/date element is eligible for the bounded scanner.
-        if self.after_headline and tag in ("p", "section", "figure", "table"):
-            self.after_headline = False
+        if self.after_headline:
+            attrs_map = dict(attrs)
+            date_label = " ".join(
+                str(attrs_map.get(x) or "") for x in ("class", "id", "itemprop"))
+            explicitly_dated = bool(re.search(
+                r"(?:^|[\\s_-])(?:date|published|pubdate|release|timestamp)",
+                date_label, re.IGNORECASE))
+            if tag in ("section", "figure", "table") or (
+                    tag == "p" and not explicitly_dated):
+                self.after_headline = False
         if tag in ("script", "style", "noscript"):
             self.skip += 1
         if tag == "title":
