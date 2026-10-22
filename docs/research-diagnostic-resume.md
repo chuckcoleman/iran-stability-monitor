@@ -641,3 +641,35 @@ This workflow is diagnostic and **never publishes forecasts**. The
 site and archived scored histories are unchanged. New v5 research
 may incur API charges; old completed stages are never replayed simply
 because a later protocol version exists.
+
+## V5 provisional freeze must not preempt source review
+
+An integration boundary remained after the forward-only v5 adoption:
+`assessment_pipeline.freeze_evidence` still applied the older production
+requirements of six observations, three publishers, four new observations and
+**all three observed direction classes** before the independent v5
+source-admissibility gate could issue its audit. Thus one-sided but
+independently searched research, or a genuinely sparse or empty six-category
+snapshot, could raise an exception without the v5 failure certificate.
+
+For **new nonpublishing v5** `research-dry-run` snapshots only, the
+`provisional_source_only_v5` freeze flag now defers *aggregate*
+observation-count, publisher-diversity, new-observation and observed-direction
+requirements to the existing independently recomputed
+`source-pre-review-admissibility.json` gate. Individual evidence remains
+subject to exact citations, statuses, chronology, publisher metadata bounds,
+and all prior integrity checks. Empty research is eligible for an explicit
+nonpublishing insufficiency report, **never** for review or publication.
+
+V5 then requires at least six provisionally admissible observations, at least
+three distinct publishers and at least four new observations to permit any
+paid dual review; the actual executed search-query ledger must demonstrate
+balanced searches even when the world supplies no events of a particular
+direction. The historical v1–v4 source-checkpoint fingerprints and the default
+governed production `freeze_evidence` contract are unchanged. Tests verify
+that older issuance still rejects missing observed directions, while the v5
+diagnostic reaches its gate with one-sided or empty research and never requests
+review on insufficient evidence.
+
+Do not apply this correction retroactively to the October 21 diagnostic or
+rewrite its failed evidence: a new dated v5 search is required for new events.
