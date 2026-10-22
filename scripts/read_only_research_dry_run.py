@@ -179,7 +179,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             effective_research, urls, old, date, stamp, metadata,
             provisional_source_only_v5=(
                 researcher is LIVE_RESEARCHER and
-                isinstance(snapshot, dict) and snapshot.get("version") == 5)),
+                isinstance(snapshot, dict) and snapshot.get("version") >= 5)),
         claim_register_builder=(
             (lambda frozen: build_claim_register(
                 folder, research=result, frozen=frozen,
