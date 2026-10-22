@@ -220,7 +220,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         translation_record = None
         reviewer_flags = []
         if v4:
-            quote_non_latin = bool(re.search(r"[\\u0600-\\u06FF]", quote))
+            quote_non_latin = bool(re.search(r"[\u0600-\u06FF]", quote))
             claim_latin = bool(re.search(r"[A-Za-z]{4,}", entry.get(
                 "observation", "")))
             cross_language = quote_non_latin and claim_latin
