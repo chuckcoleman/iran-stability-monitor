@@ -363,6 +363,130 @@ class StageNormalizationTests(unittest.TestCase):
             _normalize_grouped_query_disclosures(original, [], version=5)
         self.assertEqual(original, untouched)
 
+    def test_v5_individual_query_rows_recover_without_repeating_paid_search(self):
+        # Regression for read-only diagnostic 39840881038. Its first stage
+        # was saved as three groups, but stage two used separately labelled
+        # query objects. Neither shape is a reason to repeat an API POST.
+        purposes = [
+            "Potentially raises instability", "Potentially raises instability",
+            "Potentially lowers instability",
+            "Potentially lowers instability or contrary evidence",
+            "Payment, food and medicine stabilization or deterioration",
+            "Coercive loyalty and contrary evidence",
+            "Separate external support mechanisms",
+            "Locate original sanctions reporting rather than count reprints",
+        ]
+        queries = [
+            "Iran October 22 2026 Reuters protests arrests rial sanctions",
+            "Iran October 2026 AP BBC protests security forces defections food shortages",
+            "Iran October 2026 Reuters ceasefire talks trade medicine shipping recovery",
+            "Iran October 2026 ceasefire progress shipping exports recovery FT Guardian BBC",
+            "Iran October 19 20 21 22 2026 food medicine imports payments currency stabilization Reuters AFP",
+            "Iran October 2026 security forces defections loyal protests arrests BBC Guardian DW",
+            "Iran October 2026 China oil credit Houthis domestic manufacturing resupply AP Reuters",
+            '"site:reuters.com" "2026-10-21" "Karnakis"',
+        ]
+        individual = [dict(purpose=purpose, query=query)
+                      for purpose, query in zip(purposes, queries)]
+        extra = "Iran October 2026 other independent news observations"
+
+        def recorded_research(prompt, search):
+            obj, urls = self._response(prompt, search)
+            if "category: international_media" in prompt:
+                obj["coverage_audit"][0]["queries"] = copy.deepcopy(individual)
+                response_path = self.folder / "response-2.json"
+                record = read_json(response_path)
+                record["result"] = copy.deepcopy(obj)
+                record["tool_search_calls"] = observed_search_calls([{
+                    "type": "web_search_call", "action": {
+                        "type": "search", "queries": queries + [extra],
+                        "sources": [{"url": next(iter(urls)),
+                                     "title": "Synthetic original report"}]}}])
+                response_path.write_text(json.dumps(record), encoding="utf-8")
+            return obj, urls
+
+        result, _, _, snap = self._run(recorded_research)
+        self.assertEqual(snap["version"], 5)
+        response_path = self.folder / "response-2.json"
+        response_bytes = response_path.read_bytes()
+        journal_path = self.folder / "api-request-test-1.json"
+        journal_bytes = journal_path.read_bytes()
+        stage = read_json(self.folder / "research-batch-international_media.json")
+        self.assertEqual(stage["result"]["coverage_audit"][0]["queries"], individual)
+        self.assertEqual(len(result["coverage_audit"][1]["queries"]), 8)
+        self.assertEqual(len(stage["effective_result"]["coverage_audit"][0]["queries"]), 8)
+        audit = read_json(self.folder / "research-stage-format-international_media.json")
+        self.assertEqual(audit["changes"][0]["method"],
+                         "flatten_individually_labelled_queries_with_exact_api_query_match")
+        self.assertEqual(audit["changes"][0]["reported_matched_query_count"], 8)
+        self.assertEqual(audit["changes"][0]["api_observed_query_count"], 9)
+        self.assertEqual(audit["changes"][0]["api_queries_not_reported_in_groups"],
+                         [extra])
+        self.assertEqual(audit["publication"], "NOT AUTHORIZED")
+        self.calls.clear()
+        replay = self._run(lambda *args: self.fail("No second paid POST"),
+                           resume=True, clock=LATER)
+        self.assertEqual(self.calls, [])
+        self.assertEqual(replay[0], result)
+        self.assertEqual(response_path.read_bytes(), response_bytes)
+        self.assertEqual(journal_path.read_bytes(), journal_bytes)
+
+    def test_v5_individual_query_rows_reject_false_or_unbounded_metadata(self):
+        rows = [
+            {"purpose": "Potentially raises instability",
+             "query": "Iran October 2026 protest search"},
+            {"purpose": "Potentially lowers instability",
+             "query": "Iran October 2026 ceasefire search"},
+        ]
+        calls = observed_search_calls([{
+            "type": "web_search_call", "action": {
+                "type": "search", "queries": [item["query"] for item in rows],
+                "sources": []}}])
+        original = {"coverage_audit": [{"queries": copy.deepcopy(rows)}]}
+        normalized, changes = _normalize_grouped_query_disclosures(
+            original, calls, version=5)
+        self.assertEqual(len(changes), 1)
+        self.assertEqual(len(normalized["coverage_audit"][0]["queries"]), 2)
+        self.assertEqual(original["coverage_audit"][0]["queries"], rows)
+        old, older_changes = _normalize_grouped_query_disclosures(
+            original, calls, version=4)
+        self.assertEqual(old, original)
+        self.assertEqual(older_changes, [])
+        for invalid in ("fabricated", "duplicate", "unknown_field", "missing_query",
+                        "nonstring", "empty_purpose", "newline_purpose",
+                        "long_purpose", "long_query", "mixed", "excessive"):
+            bad = copy.deepcopy(original)
+            queries = bad["coverage_audit"][0]["queries"]
+            if invalid == "fabricated":
+                queries[0]["query"] = "Iran nonexistent search fabricated"
+            elif invalid == "duplicate":
+                queries[1]["query"] = queries[0]["query"]
+            elif invalid == "unknown_field":
+                queries[0]["verified"] = True
+            elif invalid == "missing_query":
+                queries[0].pop("query")
+            elif invalid == "nonstring":
+                queries[0]["query"] = ["Iran October 2026 protest search"]
+            elif invalid == "empty_purpose":
+                queries[0]["purpose"] = ""
+            elif invalid == "newline_purpose":
+                queries[0]["purpose"] += "\nAPPROVED"
+            elif invalid == "long_purpose":
+                queries[0]["purpose"] = "A" * 161
+            elif invalid == "long_query":
+                queries[0]["query"] = "A" * 451
+            elif invalid == "mixed":
+                queries[1] = {"purpose": "Potentially lowers instability",
+                              "actual_queries": ["Iran October 2026 ceasefire search"]}
+            elif invalid == "excessive":
+                queries.extend(copy.deepcopy(queries[0]) for _ in range(96))
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(ValueError):
+                    _normalize_grouped_query_disclosures(bad, calls, version=5)
+        with self.assertRaises(ValueError):
+            _normalize_grouped_query_disclosures(original, [], version=5)
+        self.assertEqual(original["coverage_audit"][0]["queries"], rows)
+
     def test_unverified_responses_are_not_normalized_or_replayed(self):
         folder = self.folder
         snap = {"snapshot_sha256": "s"*64}
