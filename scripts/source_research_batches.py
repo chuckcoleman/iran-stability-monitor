@@ -357,6 +357,94 @@ def _normalize_limitation_lists(original):
     return effective, changes
 
 
+_QUERY_PURPOSE_LABELS = frozenset((
+    "Potentially raises instability",
+    "Potentially lowers instability",
+    "Ambiguous, contrary evidence and attribution checks",
+))
+
+
+def _normalize_grouped_query_disclosures(original, search_calls, *, version):
+    """Flatten a narrowly bounded V5 model format, never invent a search.
+
+    The purpose of each group is the model's description, not a conclusion
+    certified by an API search tool. Every copied search query MUST be present
+    verbatim in the archived Responses tool-call trace. The original nested
+    format remains preserved in the immutable paid response and format audit.
+    Earlier protocol versions and already-flat query rows are unchanged.
+    """
+    if not isinstance(original, dict):
+        raise ValueError("Research stage has no original JSON object")
+    effective = copy.deepcopy(original)
+    changes = []
+    if version != 5:
+        return effective, changes
+    rows = effective.get("coverage_audit")
+    if not isinstance(rows, list):
+        return effective, changes  # Structural validation still fails later.
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            continue
+        grouped = row.get("queries")
+        if (not isinstance(grouped, list) or not grouped
+                or all(isinstance(q, str) for q in grouped)):
+            continue  # Do not coerce absent, empty or ordinary query lists.
+        if (len(grouped) != 3
+                or any(not isinstance(entry, dict) for entry in grouped)):
+            raise ValueError("Malformed grouped research query disclosure")
+        verify_search_trace(search_calls)
+        observed = set()
+        for call in search_calls:
+            candidates = call.get("queries_exposed_by_api")
+            if not isinstance(candidates, list):
+                raise ValueError("Grouped query lacks API search query provenance")
+            for q in candidates:
+                if (not isinstance(q, str) or not 5 <= len(q) <= 450
+                        or q != q.strip()):
+                    raise ValueError("Malformed API-observed research query")
+                observed.add(q)
+        if not observed or len(observed) > 96:
+            raise ValueError("Grouped query has no bounded API search ledger")
+        purposes = set()
+        used = set()
+        flattened = []
+        for group in grouped:
+            if set(group) != {"purpose", "actual_queries"}:
+                raise ValueError("Malformed grouped research query fields")
+            purpose = group["purpose"]
+            queries = group["actual_queries"]
+            if (not isinstance(purpose, str)
+                    or purpose not in _QUERY_PURPOSE_LABELS
+                    or purpose in purposes
+                    or not isinstance(queries, list)
+                    or not 1 <= len(queries) <= 32):
+                raise ValueError("Ambiguous grouped research query purpose")
+            purposes.add(purpose)
+            for q in queries:
+                if (not isinstance(q, str) or not 5 <= len(q) <= 450
+                        or q != q.strip() or q in used):
+                    raise ValueError("Malformed or duplicate grouped research query")
+                if q not in observed:
+                    raise ValueError("Grouped research claims an unobserved API query")
+                used.add(q)
+                flattened.append(
+                    "Model-labelled purpose [" + purpose
+                    + "]; API-exposed search query: " + q)
+        if purposes != _QUERY_PURPOSE_LABELS or len(flattened) > 96:
+            raise ValueError("Missing or excessive directional query groups")
+        row["queries"] = flattened
+        changes.append({
+            "path": ["coverage_audit", index, "queries"],
+            "method": "flatten_model_purpose_groups_with_exact_api_query_match",
+            "original_value": copy.deepcopy(grouped),
+            "effective_value": copy.deepcopy(flattened),
+            "reported_matched_query_count": len(used),
+            "api_observed_query_count": len(observed),
+            "api_queries_not_reported_in_groups": sorted(observed - used),
+        })
+    return effective, changes
+
+
 def _verified_stage_normalization(folder, category, raw, *, snapshot,
                                   prompt_sha, model, request_sha, response):
     """Bind text-only normalization to one actual saved Responses transport.
@@ -366,6 +454,11 @@ def _verified_stage_normalization(folder, category, raw, *, snapshot,
     as completed. The original model result remains byte-for-byte unchanged.
     """
     effective, changes = _normalize_limitation_lists(raw)
+    saved_calls = (response.get("tool_search_calls")
+                   if isinstance(response, dict) else None)
+    effective, query_changes = _normalize_grouped_query_disclosures(
+        effective, saved_calls, version=snapshot.get("version"))
+    changes.extend(query_changes)
     path = Path(folder) / ("research-stage-format-" + category + ".json")
     if not changes:
         if path.exists():
@@ -389,9 +482,12 @@ def _verified_stage_normalization(folder, category, raw, *, snapshot,
         "effective_result_sha256": sha(effective),
         "changes": changes,
         "publication": "NOT AUTHORIZED",
-        "limitations": "Only explicitly recorded list-to-text shape changes "
-                       "are permitted. No source, claim, cited URL, event date, "
-                       "research cutoff, API response or forecast is changed."}
+        "limitations": "Only recorded limitation list-to-text changes and "
+                       "V5 grouped-query flattening matched to original API "
+                       "search text are permitted. Query purposes remain "
+                       "model-reported and unverified. No source, claim, cited "
+                       "URL, event date, research cutoff, original API response "
+                       "or forecast is changed."}
     if path.exists():
         if read_json(path) != audit:
             raise ValueError("Preserved source-format normalization differs from original response")
