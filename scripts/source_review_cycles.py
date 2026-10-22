@@ -142,11 +142,14 @@ def _prompt(role, packet, digest, common):
             "event truth, causal direction or probability. Challenge "
             "semantic relevance, original source access, independence and "
             "research cutoff. A rejected narrowed quotation must be "
-            "excluded, not rewritten repeatedly. Missing directional "
-            "balance is a deterministic blocker, never a passing review. ")
+            "excluded, not rewritten repeatedly. " +
+            ("Observed directions have no required quota. "
+             if packet.get("pre_review_admission_version") == 4 else
+             "Missing directional balance is a deterministic blocker, "
+             "never a passing review. "))
     if packet.get("pre_review_admission_version") == 4:
         common += (
-            "\\nV7 NO EVIDENCE QUOTA: There are no fixed minimum counts "
+            "\nV7 NO EVIDENCE QUOTA: There are no fixed minimum counts "
             "for accepted observations, new evidence, publishers or observed "
             "direction categories. Never invent sources or claim support "
             "to reach a count. Both reviewers MUST independently submit "
@@ -428,8 +431,8 @@ def conservative_revision(previous, issues, original_cutoff):
         revised["background_quotes"] = background
         revised["quote_separation_version"] = 2
     # Conservatively corrected text is not directionally informative.
-    # Every minimum must be recomputed from the UNALTERED directional
-    # observations, never from background quotes or their old categories.
+    # Recompute historical minimums or the V7 no-quota review policy from
+    # retained directional observations, never from background quotes.
     eligibility_report = eligibility(revised)
     guard_failures = eligibility_report["failures"]
     # Unscored source diagnostics may assess a provisional quote-only revision
@@ -444,6 +447,8 @@ def conservative_revision(previous, issues, original_cutoff):
     if claim_map is not None:
         revised["source_diversity_guard"] = {
             "status": ("BLOCKED_NOT_PUBLISHABLE" if guard_failures
+                       else "NO_QUANTITY_QUOTA_DUAL_REVIEW_REQUIRED"
+                       if revised.get("pre_review_admission_version") == 4
                        else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
             "failures": guard_failures,
             "eligibility": eligibility_report,
@@ -722,6 +727,8 @@ def deterministic_review_issues(packet, original_cutoff):
                     and guard.get("failures") == counts["failures"]
                     and guard.get("status") == (
                         "BLOCKED_NOT_PUBLISHABLE" if counts["failures"]
+                        else "NO_QUANTITY_QUOTA_DUAL_REVIEW_REQUIRED"
+                        if packet.get("pre_review_admission_version") == 4
                         else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
                     "Saved evidence-diversity safeguard contradicts revised evidence")
             failures = counts["failures"]
