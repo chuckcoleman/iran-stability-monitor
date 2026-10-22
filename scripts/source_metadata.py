@@ -218,6 +218,19 @@ def parse_metadata(text):
             continue
     publisher_dates = visible_publisher_dates(text)
     dates.update(item["date"] for item in publisher_dates)
+    # Only a scoped original article <time datetime=...> with an actual
+    # timezone is precise enough to contribute a publisher-supplied clock.
+    # The visible month/day heading alone NEVER supplies a clock.
+    for item in publisher_dates:
+        if item["method"] != "time_datetime":
+            continue
+        try:
+            stamp = dt.datetime.fromisoformat(
+                item["publisher_visible_excerpt"].replace("Z", "+00:00"))
+            if stamp.utcoffset() is not None:
+                instants.add(stamp.astimezone(UTC).isoformat())
+        except (TypeError, ValueError):
+            continue
     report = {
         "page_title": " ".join(" ".join(parser.title).split())[:500],
         "source_publication_time": next(iter(instants)) if len(instants) == 1 else None,
