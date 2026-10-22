@@ -55,9 +55,9 @@ def _quote_language_mismatch(original_quote, observation):
     if not isinstance(original_quote, str) or not isinstance(observation, str):
         return False
     has_non_latin = any(
-        ("\\u0600" <= c <= "\\u06ff" or
-         "\\u0400" <= c <= "\\u052f" or
-         "\\u4e00" <= c <= "\\u9fff")
+        (0x0600 <= ord(c) <= 0x06FF or
+         0x0400 <= ord(c) <= 0x052F or
+         0x4E00 <= ord(c) <= 0x9FFF)
         for c in original_quote)
     has_latin_observation = bool(re.search(r"[A-Za-z]{4,}", observation))
     return has_non_latin and has_latin_observation
