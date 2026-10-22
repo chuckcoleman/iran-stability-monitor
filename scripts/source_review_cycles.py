@@ -53,6 +53,32 @@ def _prompt(role, packet, digest, common):
             "direction, and reject unsupported model reasoning. "
             "Held-out entries and originals remain in the closed audit "
             "but must never be counted as directional observations. ")
+    if packet.get("pre_review_screen_protocol") == (
+            "v4_separate_factual_direction_and_original_language"):
+        common += (
+            "\nV4 SEPARATE FACT AND INTERPRETATION AUDIT: For EACH admitted "
+            "evidence ID, first assess whether the independently fetched "
+            "ORIGINAL-language quoted passage actually establishes the "
+            "narrow reported event, date or directly observed imagery; "
+            "second evaluate the MODEL-PROPOSED stability direction against "
+            "counterevidence, baseline, and uncertainty. These are separate "
+            "tests: no lexical overlap of political-causal language with "
+            "original event reporting is required or sufficient to validate "
+            "a stability direction. For non-English originals, the displayed "
+            "English translation is MODEL-PROPOSED AND UNVERIFIED, never "
+            "independent evidence. Check its fidelity using the original text "
+            "and source context; if unable to do so confidently, REJECT the "
+            "affected observation, identify its ID and disclose why. "
+            "The raw original quote, source-body hash, model event_basis, "
+            "model direction_basis, proposed translation, source-language "
+            "declaration, publisher-reported date witness and textual "
+            "overlap flags are all available in pre_review_claim_decisions. "
+            "The Treasury-type publisher heading date is a reported date, "
+            "NOT a certified first release instant. An original analytical "
+            "article may offer direct satellite imagery observations without "
+            "proving restored military capability; challenge that inference "
+            "separately. Treat old think-tank interpretation as background "
+            "and never count it as current directional evidence. ")
     if packet.get("claim_evidence_register"):
         common += (
             "\nCLAIM-LEVEL VERIFICATION: For each retained evidence ID, examine "
