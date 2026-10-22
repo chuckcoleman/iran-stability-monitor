@@ -21,7 +21,7 @@ from assessment_pipeline import (
     validate_source_coverage_audit, _review_issues,
 )
 from source_metadata import capture_metadata, url_key
-from source_research_batches import batched_research, CATEGORIES, require_pre_snapshot_publication, _resume_get_only
+from source_research_batches import batched_research, CATEGORIES, require_pre_snapshot_publication, _resume_get_only, sha
 from source_quality_audit import (
     source_inventory, source_quality_audit, save_quality_audit,
     validate_source_review)
