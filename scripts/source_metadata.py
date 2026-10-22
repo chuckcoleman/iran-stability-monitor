@@ -108,7 +108,7 @@ class ArticleMetadata(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
-        if tag in ("style", "nav", "footer", "aside", "noscript", "template"):
+        if tag in ("script", "style", "nav", "footer", "aside", "noscript", "template"):
             self._ignored.append(tag)
         if tag == "title":
             self.in_title = True
