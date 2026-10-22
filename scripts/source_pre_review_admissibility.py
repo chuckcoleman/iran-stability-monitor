@@ -232,6 +232,11 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         source_language = None
         translation_overlap = []
         if version >= 4:
+            # Every v4 candidate's event and stability direction must be
+            # evaluated separately by BOTH source reviewers; a word
+            # overlap never establishes the model's causal sign.
+            semantic_flags.append(
+                "DIRECTIONAL_EFFECT_REQUIRES_DUAL_REVIEW")
             # The original-language quote remains unchanged and byte-hashed
             # in the source witness. An unverified model-draft translation is
             # accepted for lexical TRIAGE only, and both later reviewers must
