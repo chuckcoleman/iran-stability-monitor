@@ -357,11 +357,14 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
             # assertions, not an independently proven release instant.
             # If source metadata differ by more than one day, record the
             # ambiguity and require both reviewers to address it.
-            pub_days = sorted({
-                dt.date.fromisoformat(x)
-                for x in source.get("publication_dates_from_page", [])
-                if isinstance(x, str)
-            })
+            try:
+                pub_days = sorted({
+                    dt.date.fromisoformat(x)
+                    for x in source.get("publication_dates_from_page", [])
+                    if isinstance(x, str)
+                })
+            except (ValueError, TypeError):
+                pub_days = []  # Invalid metadata was already held out above.
             date_disagreement = (
                 len(pub_days) > 1 and
                 (pub_days[-1] - pub_days[0]).days > 1)
