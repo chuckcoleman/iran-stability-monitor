@@ -100,7 +100,7 @@ class AcceptedEvidenceNoQuotaTests(unittest.TestCase):
         self.assertEqual(admitted[0]["direction"], "ambiguous")
         self.assertEqual(admitted[0]["evidence_status"], "new")
         self.assertEqual(admitted[0]["source"], url)
-        with self.assertRaisesRegex(ValueError, "Source not verified"):
+        with self.assertRaisesRegex(ValueError, "Research source citations missing"):
             freeze_evidence(single, set(), {"evidence": []}, day, cutoff,
                             no_accepted_evidence_quota=True)
         with self.assertRaisesRegex(ValueError, "Invalid evidence gate settings"):
