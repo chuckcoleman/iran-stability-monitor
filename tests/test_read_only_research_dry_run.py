@@ -216,6 +216,80 @@ class ReadOnlySourceDryRunTests(unittest.TestCase):
         self.assertEqual((self.root/"data/history.json").read_bytes(),
                          self.original)
 
+    def test_live_v5_diagnostic_uses_provisional_freeze_before_review(self):
+        """Do not abort on one-sided source research before source eligibility."""
+        from source_research_batches import sha
+        research = {"evidence": copy.deepcopy(self.evidence),
+                    "coverage_audit": [], "source_quality": []}
+        first_source = self.evidence[0]["source"]
+        snapshot = {"version": 5, "date": self.opened.date().isoformat(),
+                    "cutoff_at": self.opened.isoformat(),
+                    "snapshot_sha256": "c"*64}
+        original_review = {
+            "evidence": [], "research_as_of": self.opened.isoformat(),
+            "published_history_sha256": "original-historical-source-record",
+        }
+        seen_freeze_flags = []
+        def fake_freeze(*args, **kwargs):
+            seen_freeze_flags.append(kwargs)
+            self.assertEqual(kwargs, {"provisional_source_only_v5": True})
+            return []
+        def fake_input(*, freeze, result, citations, archive, date, now, **unused):
+            self.assertEqual(
+                freeze(result, citations, archive, date, now()), [])
+            return original_review, sha(original_review), self.opened
+        blocked = {
+            "status": "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS",
+            "admitted_original_ids": [], "held_original_ids": [],
+            "directional_candidate_counts": {
+                "failures": [
+                    "fewer_than_six_source_observations",
+                    "fewer_than_three_distinct_publishers",
+                    "fewer_than_four_new_observations"],
+                "missing_directions": ["ambiguous", "lowers"]},
+            "required_next_action":
+                "NEW_DATED_SOURCE_RESEARCH_SNAPSHOT_WITH_BETTER_ORIGINAL_EVIDENCE",
+        }
+        with patch.dict(os.environ, {"GITHUB_ACTIONS": "false"}, clear=True):
+            with patch.object(diagnostic, "batched_research",
+                    return_value=(research, {first_source}, [], snapshot)), \
+                 patch.object(diagnostic, "resolve_source_citations",
+                    return_value=(research, {first_source}, [])), \
+                 patch.object(diagnostic, "load_or_save_reconciliation",
+                    return_value={"unsupported": []}), \
+                 patch.object(diagnostic, "validate_source_coverage_audit",
+                    return_value=[]), \
+                 patch.object(diagnostic, "verify_claimed_source_links"), \
+                 patch.object(diagnostic, "load_or_capture_quality",
+                    return_value=({"sources": []}, {})), \
+                 patch.object(diagnostic, "reconcile_before_freeze",
+                    return_value=(research, None)), \
+                 patch.object(diagnostic, "freeze_evidence",
+                    side_effect=fake_freeze), \
+                 patch.object(diagnostic, "load_or_create_review_input",
+                    side_effect=fake_input), \
+                 patch.object(diagnostic, "screen_or_restore",
+                    return_value=blocked) as screen_call, \
+                 patch.object(diagnostic, "run_alternating_review_cycles",
+                    side_effect=AssertionError("No reviewer may be called")):
+                result = research_rehearsal(
+                    root=self.root, output=self.audit,
+                    researcher=diagnostic.LIVE_RESEARCHER,
+                    reviewer=lambda *args: self.fail("Paid review not permitted"),
+                    metadata_reader=lambda *args: self.fail("Unexpected page fetch"),
+                    now=lambda: self.opened)
+        self.assertEqual(len(seen_freeze_flags), 1)
+        self.assertEqual(screen_call.call_count, 1)
+        self.assertEqual(result["status"],
+                         "PRE_REVIEW_EVIDENCE_INSUFFICIENT_NOT_PUBLISHABLE")
+        self.assertEqual(result["affirmative_review"], "NOT INVOKED")
+        self.assertEqual(result["critical_review"], "NOT INVOKED")
+        self.assertEqual(result["publication"], "NOT AUTHORIZED")
+        self.assertNotIn("missing_required_directional_balance",
+                         result["source_pre_review_directional_counts"]["failures"])
+        self.assertEqual((self.root/"data/history.json").read_bytes(),
+                         self.original)
+
     def test_no_github_or_metricool_token_accepted(self):
         with patch.dict(os.environ,{"GH_TOKEN":"synthetic-secret"},clear=True):
             with self.assertRaisesRegex(ValueError,"must not hold GitHub write"):
