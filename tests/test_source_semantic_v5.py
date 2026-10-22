@@ -19,7 +19,8 @@ from source_metadata import parse_metadata, headline_publication_dates
 from source_pre_review_admissibility import (
     screen_original_packet, actual_search_query_ledger)
 from source_research_batches import CATEGORIES, sha, batch_prompt
-from source_review_cycles import v4_required_interpretation_issues, _prompt
+from source_review_cycles import (v4_required_interpretation_issues, _prompt,
+                                  deterministic_review_issues)
 from test_source_pre_review_admissibility import fixture, SNAPSHOT
 from test_source_semantic_v4 import ARABIC, ENGLISH, DRAFT, HEADING
 
@@ -148,6 +149,51 @@ class SearchAndReviewV5Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "six source categories"):
             self.calls = self.calls[:-1]
             self.screen()
+
+    def test_v5_official_documented_action_only_not_asserted_effect(self):
+        """An official announcement may document its OWN action, not results."""
+        sample = self.sample
+        original = self.research["evidence"][0]
+        item = sample["evidence"][0]
+        quotation = (
+            "The agency announced sanctions designating seven named "
+            "employees under its authority.")
+        observation = "The agency announced sanctions designating seven employees."
+        item["observation"] = observation
+        original["observation"] = observation
+        original["effect_type"] = "observed_policy_action"
+        original["observational_method"] = "none"
+        original["support_quote"] = quotation
+        original["direction_basis"] = (
+            "The official declaration documents an announced designation "
+            "but does not demonstrate actual economic pressure or subsequent "
+            "political consequences, which remain hypotheses.")
+        row = sample["source_quality_audit"]["sources"][0]
+        row["classification"] = "direct_observation"
+        row["origin"] = "official_or_advocacy_claim"
+        witness = sample["claim_evidence_register"]["claims"][0]
+        witness["passage"] = quotation
+        witness["proposed_quote"] = quotation
+        witness["observation_sha256"] = hashlib.sha256(
+            observation.encode()).hexdigest()
+        sample["claim_evidence_register"]["evidence_sha256"] = sha(
+            sample["evidence"])
+
+        screened = self.screen()["screened_packet"]
+        self.assertEqual(screened["pre_review_admission_version"], 3)
+        self.assertIn(item["id"], [x["id"] for x in screened["evidence"]])
+        issues = deterministic_review_issues(
+            screened, self.snapshot["cutoff_at"])
+        self.assertNotIn("official_claim_misclassified",
+                         [x["type"] for x in issues])
+        # A narrative asserting effects or conditions is NOT the issuing
+        # authority's documented action and must remain blocked in v5.
+        screened["pre_review_claim_decisions"][0][
+            "model_effect_type"] = "reported_event"
+        issues = deterministic_review_issues(
+            screened, self.snapshot["cutoff_at"])
+        self.assertIn("official_claim_misclassified",
+                      [x["type"] for x in issues])
 
     def test_v5_no_longer_requires_observed_event_in_all_three_directions(self):
         for index, row in enumerate(self.sample["evidence"]):
