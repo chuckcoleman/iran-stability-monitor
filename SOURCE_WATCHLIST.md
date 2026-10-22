@@ -1,5 +1,16 @@
 # Sunday research source watchlist — effective 2026-10-25
 
+## Prospective evidence quantity is not a quota
+
+A search must examine six categories, but there is **no fixed minimum**
+of accepted source observations, different publishers, new events, or
+raises/lowers/ambiguous observed outcomes. Sources need genuine original
+support, not inclusion to fill a table. When no admissible records exist,
+return an empty evidence list and explain the gaps. Search effort,
+factual provenance, the closed cutoff and both substantive reviews
+remain mandatory. Reviewer disagreement or unsupported inferences block
+clean approval; sparse evidence is not evidence of no risk.
+
 ## As-of time versus review-processing time
 
 A completed six-category sweep covers only information eligible at the

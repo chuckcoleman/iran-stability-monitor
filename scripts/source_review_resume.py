@@ -365,4 +365,9 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
     if isinstance(response, dict) and "source_query_balance_review" in response:
         summary["source_query_balance_review"] = response[
             "source_query_balance_review"]
+    # V7: retain each reviewer's original assessment of evidence adequacy
+    # verbatim for deterministic validation; no accepted count can approve it.
+    if isinstance(response, dict) and "source_adequacy_review" in response:
+        summary["source_adequacy_review"] = response[
+            "source_adequacy_review"]
     return summary

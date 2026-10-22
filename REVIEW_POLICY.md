@@ -1,5 +1,22 @@
 # Prospective alternating affirmative and critical ChatGPT reviews — effective 2026-10-25
 
+## V7 evidence quantity policy for new assessments
+
+No numeric minimum is imposed on accepted observations, newly found
+observations, independent publishers, or observed instability directions.
+A research sweep may legitimately find **zero** acceptable observations.
+It must still inspect all six required search categories and disclose
+accessibility, timing, original-source, corroboration and coverage limits.
+
+Both affirmative and critical source reviewers must evaluate the *exact*
+admitted claim IDs, quantify what was available for review, and explain
+what can and cannot be inferred. They must reject unsupported substantive
+conclusions regardless of how many sources appear. A few qualifying
+sources can proceed; no raw count creates automatic approval.
+All other prospective forecast validations and publication safeguards remain
+unchanged. Previously closed V1–V6 source reviews retain their original
+decisions and versioned criteria.
+
 ## Source-specific dual-perspective quality gate
 
 Before constructing any NEW prospective forecast, audit **every original
