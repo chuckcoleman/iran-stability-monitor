@@ -115,9 +115,9 @@ _EN_MONTHS = (
 ).split()
 _MONTH_TOKEN = "(?:" + "|".join(_EN_MONTHS) + ")"
 _VISIBLE_ARTICLE_DATE = re.compile(
-    r"^(?:(?:Published|Released|Date)(?: on)?\\s*:?\\s*)?"
-    r"(" + _MONTH_TOKEN + r"\\s+\\d{1,2},?\\s+\\d{4}"
-    r"|\\d{4}-\\d{2}-\\d{2})\\.?$",
+    r"^(?:(?:Published|Released|Date)(?: on)?\s*:?\s*)?"
+    r"(" + _MONTH_TOKEN + r"\s+\d{1,2},?\s+\d{4}"
+    r"|\d{4}-\d{2}-\d{2})\.?$",
     re.IGNORECASE)
 
 
@@ -130,7 +130,7 @@ def _visible_date(value):
         return None
     date = match.group(1)
     try:
-        if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", date):
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
             return dt.date.fromisoformat(date).isoformat()
         date = re.sub(r",", "", date).title()
         return dt.datetime.strptime(date, "%B %d %Y").date().isoformat()
