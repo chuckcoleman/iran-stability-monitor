@@ -277,9 +277,51 @@ def _unacknowledged_reviews(folder):
     return unresolved
 
 
+def validate_translation_reviews(decision, requirements, role):
+    """Both independent roles must explicitly inspect every translated quote.
+
+    A model's "accurate" assessment is a reviewer claim, not an independent
+    linguistic certificate; actual approval still requires all source reviews
+    and the original, immutable passage/provenance checks.
+    """
+    _check(isinstance(requirements, list) and all(
+           isinstance(x, dict) for x in requirements),
+           "Invalid original-language translation review requirements")
+    checks = (decision.get("translation_reviews", [])
+              if isinstance(decision, dict) else None)
+    _check(isinstance(checks, list) and len(checks) == len(requirements),
+           role + " must inspect every original-language translation")
+    by_id = {x.get("evidence_id"): x for x in requirements}
+    _check(len(by_id) == len(requirements),
+           "Duplicate original-language translation requirement")
+    seen = set()
+    for row in checks:
+        _check(isinstance(row, dict), "Malformed language review")
+        ident = row.get("evidence_id")
+        _check(ident in by_id and ident not in seen,
+               role + " missing or duplicate translated evidence")
+        seen.add(ident)
+        expected = by_id[ident]
+        _check(row.get("original_passage_sha256") ==
+                expected.get("original_passage_sha256")
+                and row.get("translation_sha256") ==
+                    expected.get("translation_sha256"),
+                role + " translation hash does not match the original source")
+        _check(type(row.get("accurate")) is bool
+               and isinstance(row.get("assessment"), str)
+               and len(row["assessment"].strip()) >= 40,
+               role + " must provide a specific translation assessment")
+        if row["accurate"] is False:
+            _check(decision.get("approved") is False,
+                   role + " may not approve an inaccurate translation")
+    _check(seen == set(by_id), role + " omitted original-language translation")
+    return True
+
+
 def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                            reviewer, now, allow_new_after_unknown=False,
-                           superseded_unknown_requests=(), round_number=1):
+                           superseded_unknown_requests=(), round_number=1,
+                           translation_requirements=None):
     """Check a review once or reuse its verified result without another POST.
 
     A lost acknowledgement is never replayed automatically. Explicit opt-in
@@ -335,6 +377,8 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                        "Unknown review request identity is missing; no paid retry")
         response, _ = reviewer(prompt, False)
     issues = _review_issues(response, role)
+    if translation_requirements is not None:
+        validate_translation_reviews(response, translation_requirements, role)
     if live:
         validate_source_review(response, quality, role)
         _check(response == _matching_completed_response(folder, prompt, model),
