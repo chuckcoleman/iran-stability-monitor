@@ -62,6 +62,17 @@ class PublisherDateCaptureTests(unittest.TestCase):
         self.assertEqual(result["publication_dates"], [])
         self.assertNotIn("publication_date_evidence", result)
 
+    def test_explicitly_labeled_article_date_paragraph_is_accepted(self):
+        html = (f"<html><head><title>{HEADING}</title></head>"
+                f"<body><h1>{HEADING}</h1>"
+                "<p class='field field--post_date'>October 15, 2026</p>"
+                "<p>Other events happened on October 20, 2026.</p></body>")
+        metadata = parse_metadata(html)
+        self.assertEqual(metadata["publication_dates"], ["2026-10-15"])
+        self.assertEqual(metadata["publication_date_evidence"][0][
+                         "original_text"], "October 15, 2026")
+        self.assertFalse(metadata["first_publication_verified"])
+
     def test_visible_date_with_precise_time_is_not_claimed_first_published(self):
         html = (f"<html><head><title>{HEADING}</title>"
                 "<meta property='article:published_time' "
