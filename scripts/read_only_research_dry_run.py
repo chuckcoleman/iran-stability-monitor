@@ -73,6 +73,65 @@ def _audit_folder(root, output):
     return folder
 
 
+def admission_deficiency_report(preflight, snapshot):
+    """Explain a failed V6 closed-source screen without approving any claim.
+
+    This is a deterministic projection of the original saved source gate. It
+    neither reclassifies an observation nor schedules/retries paid research.
+    """
+    if (not isinstance(preflight, dict) or not isinstance(snapshot, dict)
+            or snapshot.get("version") != 6):
+        raise ValueError("Deficiency report requires a V6 original source audit")
+    if preflight.get("status") != "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS":
+        raise ValueError("Deficiency report cannot certify approved research")
+    entries = preflight.get("per_claim")
+    counts = preflight.get("directional_candidate_counts")
+    if (not isinstance(entries, list) or not isinstance(counts, dict)
+            or not isinstance(counts.get("failures"), list)):
+        raise ValueError("Missing saved claim-level or aggregate gate reasons")
+    reported = []
+    reason_counts = {}
+    ids = set()
+    for row in entries:
+        if (not isinstance(row, dict) or
+                not isinstance(row.get("id"), str) or not row["id"] or
+                not isinstance(row.get("reasons"), list) or
+                not all(isinstance(reason, str) and reason for reason in row["reasons"]) or
+                row["id"] in ids):
+            raise ValueError("Malformed original claim rejection evidence")
+        ids.add(row["id"])
+        reasons = sorted(set(row["reasons"]))
+        for reason in reasons:
+            reason_counts[reason] = reason_counts.get(reason, 0) + 1
+        reported.append({
+            "evidence_id": row["id"],
+            "original_decision": row.get("decision"),
+            "original_rejection_reasons": reasons,
+        })
+    if len(ids) != (len(preflight.get("admitted_original_ids", [])) +
+                    len(preflight.get("held_original_ids", []))):
+        raise ValueError("Saved claim gate identifier counts are inconsistent")
+    return {
+        "version": 1,
+        "status": "SOURCE_ADMISSION_GAPS_ONLY_NOT_PUBLISHABLE",
+        "source_snapshot_sha256": snapshot["snapshot_sha256"],
+        "source_pre_review_sha256": sha(preflight),
+        "total_original_candidates": len(entries),
+        "admitted_original_count": len(preflight["admitted_original_ids"]),
+        "held_original_count": len(preflight["held_original_ids"]),
+        "rejection_reasons_counted_by_claim": dict(sorted(reason_counts.items())),
+        "per_claim": reported,
+        "unmet_original_eligibility_requirements": list(counts["failures"]),
+        "next_action": "NEW_DATED_SOURCE_RESEARCH_SNAPSHOT_ONLY",
+        "limitations": "Each rejection code describes an original closed-source "
+                       "screen; no new data, date, quotation or direction was "
+                       "inferred. A publisher page or its date is not independently "
+                       "verified truth or proof of the original release instant. "
+                       "The count minima and dual-source reviews remain mandatory.",
+        "publication": "NOT AUTHORIZED",
+    }
+
+
 def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                        metadata_reader=capture_metadata, now=clock):
     """Research + two genuine source-only editorial reviews without publication.
@@ -227,6 +286,14 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                       "Saved pre-review failure differs; never overwrite")
             else:
                 save_new(blocked_path, blocked)
+            if snapshot["version"] == 6:
+                gap_report = admission_deficiency_report(preflight, snapshot)
+                gap_path = folder / "source-admission-deficiency.json"
+                if gap_path.exists():
+                    check(read_json(gap_path) == gap_report,
+                          "Saved source admission deficiency changed on resume")
+                else:
+                    save_new(gap_path, gap_report)
             check((root/"data/history.json").read_bytes() == before,
                   "Source screening changed immutable published history")
             return blocked
