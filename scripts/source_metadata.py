@@ -103,10 +103,126 @@ class ArticleMetadata(HTMLParser):
             self._article_dates(obj.get("@graph"))
 
 
+
+# Dates visible immediately after the article headline are useful publisher
+# assertions even when the page omits datePublished/og:published_time. They
+# are NOT independently verified first-publication instants. In particular,
+# dates elsewhere in body copy, navigation or related-article lists do not
+# qualify as original article dates.
+_EN_MONTHS = (
+    "January February March April May June July August September October "
+    "November December"
+).split()
+_MONTH_TOKEN = "(?:" + "|".join(_EN_MONTHS) + ")"
+_VISIBLE_ARTICLE_DATE = re.compile(
+    r"^(?:(?:Published|Released|Date)(?: on)?\\s*:?\\s*)?"
+    r"(" + _MONTH_TOKEN + r"\\s+\\d{1,2},?\\s+\\d{4}"
+    r"|\\d{4}-\\d{2}-\\d{2})\\.?$",
+    re.IGNORECASE)
+
+
+def _visible_date(value):
+    if not isinstance(value, str):
+        return None
+    clean = " ".join(value.split())
+    match = _VISIBLE_ARTICLE_DATE.fullmatch(clean)
+    if not match:
+        return None
+    date = match.group(1)
+    try:
+        if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", date):
+            return dt.date.fromisoformat(date).isoformat()
+        date = re.sub(r",", "", date).title()
+        return dt.datetime.strptime(date, "%B %d %Y").date().isoformat()
+    except ValueError:
+        return None
+
+
+class HeadlineDateScanner(HTMLParser):
+    """Find only complete date tokens adjacent to the actual page headline.
+
+    The qualifying heading must agree with the HTML <title> (not an
+    arbitrary menu heading). Inspect at most six following visible text
+    fragments. This intentionally avoids mining a date from the body.
+    """
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.document_title = []
+        self.in_title = False
+        self.in_headline = False
+        self.headline_tag = None
+        self.headline_text = []
+        self.after_headline = False
+        self.remaining = 0
+        self.found = []
+        self.skip = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style", "noscript"):
+            self.skip += 1
+        if tag == "title":
+            self.in_title = True
+        if (tag in ("h1", "h2") and not self.after_headline
+                and not self.found and self.skip == 0):
+            self.in_headline = True
+            self.headline_tag = tag
+            self.headline_text = []
+
+    def handle_data(self, value):
+        if self.skip:
+            return
+        if self.in_title:
+            self.document_title.append(value)
+        if self.in_headline:
+            self.headline_text.append(value)
+        elif self.after_headline and self.remaining > 0:
+            fragment = " ".join(value.split())
+            if fragment:
+                self.remaining -= 1
+                when = _visible_date(fragment)
+                if when:
+                    self.found.append({
+                        "date": when,
+                        "origin": "article_headline_adjacent_visible_date",
+                        "original_text": fragment[:100],
+                        "first_publication_verified": False})
+                    self.after_headline = False
+                elif self.remaining == 0:
+                    self.after_headline = False
+
+    def handle_endtag(self, tag):
+        if tag == "title":
+            self.in_title = False
+        if self.in_headline and tag == self.headline_tag:
+            heading = " ".join(" ".join(self.headline_text).split())
+            title = " ".join(" ".join(self.document_title).split())
+            self.in_headline = False
+            self.headline_tag = None
+            # Avoid a site-wide heading or generic navigation being treated
+            # as an article title. The HTML title must contain this heading.
+            if len(heading) >= 25 and heading.casefold()[:25] in title.casefold():
+                self.after_headline = True
+                self.remaining = 6
+        if tag in ("script", "style", "noscript") and self.skip:
+            self.skip -= 1
+
+
+def headline_publication_dates(text):
+    require_text = isinstance(text, str) and len(text) <= MAX_BYTES * 3
+    if not require_text:
+        return []
+    parser = HeadlineDateScanner()
+    parser.feed(text)
+    return parser.found
+
+
 def parse_metadata(text):
     parser = ArticleMetadata()
     parser.feed(text)
     instants, dates = set(), set()
+    header_dates = headline_publication_dates(text)
+    for witness in header_dates:
+        dates.add(witness["date"])
     for value in parser.times:
         try:
             if re.fullmatch(r"\d{4}-\d{2}-\d{2}", value.strip()):
@@ -118,14 +234,21 @@ def parse_metadata(text):
                 dates.add(stamp.date().isoformat())
         except (ValueError, TypeError):
             continue
-    return {
+    result = {
         "page_title": " ".join(" ".join(parser.title).split())[:500],
         "source_publication_time": next(iter(instants)) if len(instants) == 1 else None,
         "publication_candidates": sorted(instants),
         "publication_dates": sorted(dates),
-        "metadata_status": ("verified article metadata" if len(instants) == 1
-                            else "unknown precise time; absent, naive or conflicting metadata"),
+        "metadata_status": (
+            "verified article metadata" if len(instants) == 1 else
+            "publisher-reported visible headline date; precise time unknown"
+            if header_dates else
+            "unknown precise time; absent, naive or conflicting metadata"),
     }
+    if header_dates:
+        result["publication_date_evidence"] = header_dates
+        result["first_publication_verified"] = False
+    return result
 
 
 def capture_metadata(url, now=None):
