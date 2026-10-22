@@ -130,6 +130,13 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
         if annotation["kind"] in ("analysis","unverified") and any(
             row.get("direction") in ("raises","lowers") for row in evidence_rows):
             flags.append("directional_claim_needs_explicit_review")
+        publisher_evidence = status.get("publisher_date_evidence", [])
+        _check(isinstance(publisher_evidence, list) and
+               all(isinstance(x, dict) and isinstance(x.get("date"), str)
+                   and isinstance(x.get("method"), str)
+                   and isinstance(x.get("publisher_visible_excerpt"), str)
+                   for x in publisher_evidence),
+               "Malformed visible article publisher date evidence")
         audit.append({
             "url":url, "coverage_categories":sorted(item["coverage_categories"]),
             "new_evidence_indices":sorted(item["evidence_indices"]),
@@ -143,6 +150,8 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
                 "publisher_supplied_metadata_not_independently_confirmed"
                 if public_time is not None else "unknown"),
             "publication_dates_from_page":status.get("publication_dates",[]),
+            **({"publisher_date_evidence": publisher_evidence}
+               if publisher_evidence else {}),
             "metadata_status":status.get("metadata_status","not independently retrieved"),
             "flags":flags,
             "factual_verification":"not_automatically_established",
