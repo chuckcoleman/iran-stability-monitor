@@ -105,8 +105,9 @@ def _corresponding_original(original, frozen):
 def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") == 3,
-            "Pre-review admission requires new v3 research snapshot")
+            and snapshot.get("version") in (3, 4),
+            "Pre-review admission requires an original v3/v4 research snapshot")
+    new_screen = snapshot["version"] == 4
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
             "Admissibility cannot move the frozen search cutoff or history")
@@ -127,6 +128,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     require(len(claims) == len(register["claims"]),
             "Duplicate source-passage witness ID")
     decisions, admitted, held = [], [], []
+    translation_ids, rationale_ids, official_action_ids = [], [], []
     for entry in frozen:
         identifier = entry["id"]
         witness = claims[identifier]
@@ -142,9 +144,19 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         if (source.get("access_status") != "source_metadata_captured" or
                 source.get("source_retrieval_status") != "retrieved"):
             reasons.append("ORIGINAL_SOURCE_METADATA_UNAVAILABLE")
-        if (source.get("classification") not in
-                ("direct_observation", "attributed_claim") or
-                source.get("origin") in
+        source_class = source.get("classification")
+        source_origin = source.get("origin")
+        qualified_imagery = bool(
+            new_screen and source_class == "analysis"
+            and source_origin == "original_reporting"
+            and isinstance(original, dict)
+            and original.get("effect_type") in ("reported_event", "measured_data")
+            and original.get("original_reporting_method") == "satellite_imagery"
+            and isinstance(original.get("methodology_description"), str)
+            and len(original["methodology_description"].strip()) >= 30)
+        if ((source_class not in ("direct_observation", "attributed_claim")
+             and not qualified_imagery)
+                or source_origin in
                 ("analytical_secondary", "syndicated_reprint", "unknown")):
             reasons.append("ANALYSIS_SYNDICATION_OR_UNVERIFIED_CLASS")
         if witness.get("status") != "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED":
@@ -163,6 +175,26 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
                 "PUBLISHER_REPORTED_PRE_CUTOFF_TIME_NOT_FIRST_PUBLICATION_PROOF",
                 "PUBLISHER_PRIOR_DATE_NOT_FIRST_PUBLICATION_PROOF"):
             reasons.append(pub_status)
+        if new_screen:
+            if source.get("publication_date_conflict") is True:
+                reasons.append("CONFLICTING_ORIGINAL_PUBLISHER_DATE_WITNESSES")
+            if source.get("publication_date_status") == (
+                    "VISIBLE_ARTICLE_HEADING_DATE_PUBLISHER_REPORTED_ONLY"):
+                witnesses = source.get("publication_date_witnesses", [])
+                source_hash = source.get("source_html_sha256")
+                if (not isinstance(witnesses, list) or
+                        len({w.get("date") for w in witnesses
+                             if isinstance(w, dict)}) != 1 or
+                        any(not isinstance(w, dict)
+                            or w.get("publisher_reported_only") is not True
+                            or w.get("first_publication_independently_verified") is not False
+                            for w in witnesses) or
+                        not isinstance(source_hash, str) or
+                        not re.fullmatch(r"[0-9a-f]{64}", source_hash) or
+                        not isinstance(source.get("publication_dates_from_page"), list)
+                        or {w["date"] for w in witnesses} !=
+                           set(source["publication_dates_from_page"])):
+                    reasons.append("PUBLISHER_HEADING_DATE_PROVENANCE_UNVERIFIED")
         # A source cannot report a completed incident that had not yet
         # happened on the publication date appearing on that very page.
         # Publisher clocks are unverified but may still disprove impossible
@@ -195,9 +227,59 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         rationale_overlap = (
             sorted(_words(basis) & _words(quote)) if isinstance(basis, str)
             else [])
+        review_flags = []
+        translation_annotation = None
+        if new_screen:
+            # A translation is a model-authored aid, never independent
+            # certification that the Arabic/Persian quote has the claimed
+            # meaning. Both independent reviewers must examine it later.
+            cross_language = bool(re.search(r"[\\u0600-\\u06ff\\u0750-\\u077f"
+                                            r"\\u08a0-\\u08ff]", quote))
+            if cross_language:
+                language = original.get("passage_language") if original else None
+                translation = (original.get("passage_translation")
+                               if original else None)
+                if (not isinstance(language, str)
+                    or not re.fullmatch(r"[a-z]{2,3}(?:-[a-z0-9]{2,8})*",
+                                        language)
+                    or language == "en" or
+                    not isinstance(translation, str) or
+                    not 15 <= len(translation.strip()) <= 1000):
+                    reasons.append("ORIGINAL_LANGUAGE_TRANSLATION_NOT_AUDITABLE")
+                else:
+                    translated_overlap = sorted(
+                        _words(entry.get("observation", "")) &
+                        _words(translation))
+                    if len(translated_overlap) < 2:
+                        reasons.append("TRANSLATION_DOES_NOT_MATCH_OBSERVATION_TERMS")
+                    else:
+                        overlap = translated_overlap
+                        translation_annotation = {
+                            "original_quote": quote,
+                            "original_quote_sha256": hashlib.sha256(
+                                quote.encode("utf-8")).hexdigest(),
+                            "language": language,
+                            "research_model_translation_unverified": translation,
+                            "translation_provenance": "UNVERIFIED_MODEL_PROPOSAL",
+                            "bilingual_source_review_required": True,
+                            "factual_translation_certified": False,
+                            "directional_effect_certified": False,
+                        }
+                        review_flags.append("BILINGUAL_SEMANTIC_REVIEW_REQUIRED")
+            if len(rationale_overlap) < 2:
+                review_flags.append(
+                    "DIRECTIONAL_RATIONALE_REQUIRES_SEMANTIC_REVIEW")
+            if qualified_imagery:
+                review_flags.append(
+                    "ANALYTICAL_SOURCE_ORIGINAL_IMAGERY_METHOD_REVIEW_REQUIRED")
+            if (source_origin == "official_or_advocacy_claim"
+                    and source_class == "direct_observation"
+                    and effect_type == "observed_policy_action"):
+                review_flags.append(
+                    "OFFICIAL_ACTION_NOT_INDEPENDENT_ECONOMIC_EFFECT")
         if len(overlap) < 2:
             reasons.append("ORIGINAL_PASSAGE_NOT_RELEVANT_TO_CLAIM_TEXT")
-        if len(rationale_overlap) < 2:
+        if not new_screen and len(rationale_overlap) < 2:
             reasons.append("DIRECTION_REASON_NOT_GROUNDED_IN_PASSAGE_TEXT")
         reasons = sorted(set(reasons))
         decision = {
@@ -218,11 +300,20 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
             "reasons": reasons,
             "decision": ADMISSION if not reasons else REJECT,
         }
+        if new_screen:
+            decision["review_flags"] = review_flags
+            decision["translation_annotation"] = translation_annotation
         decisions.append(decision)
         if reasons:
             held.append(copy.deepcopy(entry))
         else:
             admitted.append(copy.deepcopy(entry))
+            if translation_annotation:
+                translation_ids.append(identifier)
+            if "DIRECTIONAL_RATIONALE_REQUIRES_SEMANTIC_REVIEW" in review_flags:
+                rationale_ids.append(identifier)
+            if "OFFICIAL_ACTION_NOT_INDEPENDENT_ECONOMIC_EFFECT" in review_flags:
+                official_action_ids.append(identifier)
     # No source or originally reported error disappears from the audit.
     amended = copy.deepcopy(packet)
     amended["evidence"] = admitted
@@ -230,7 +321,12 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     amended["pre_review_original_evidence"] = copy.deepcopy(frozen)
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
-    amended["pre_review_admission_version"] = GATE_VERSION
+    amended["pre_review_admission_version"] = (2 if new_screen else GATE_VERSION)
+    if new_screen:
+        amended["pre_review_translation_review_required"] = translation_ids
+        amended["pre_review_rationale_review_required"] = rationale_ids
+        amended["pre_review_official_action_review_required"] = official_action_ids
+        amended["pre_review_unverified_translation_count"] = len(translation_ids)
     amended["pre_review_limitations"] = (
         "Text overlap and page dates are necessary screening features only. "
         "No first-publication time, semantic direction, source independence "
@@ -249,6 +345,18 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
             e.get("evidence_status") == "new"]
         row["role"] = ("new_evidence" if row["new_evidence_indices"]
                        else "coverage_context_only")
+        if new_screen and row["role"] == "new_evidence" and (
+                row.get("origin") == "official_or_advocacy_claim"
+                and row.get("classification") == "direct_observation"
+                and any(url_key(x.get("source")) == row["url"]
+                        and x["id"] in official_action_ids
+                        for x in admitted)):
+            row["pre_review_original_classification"] = "direct_observation"
+            row["classification"] = "attributed_claim"
+            row["pre_review_official_action_provenance"] = (
+                "Only the official announcement of a designation is "
+                "provisionally eligible, never independently verified "
+                "economic impact.")
     quality["evidence_source_count"] = sum(
         row["role"] == "new_evidence" for row in quality["sources"])
     quality["context_only_source_count"] = sum(
@@ -267,7 +375,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
                 "directional observation passed the pre-review screen.")
     count = eligibility(amended)
     outcome = {
-        "version": GATE_VERSION,
+        "version": 2 if new_screen else GATE_VERSION,
         "status": ("PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY" if
                    not count["failures"] else
                    "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS"),
