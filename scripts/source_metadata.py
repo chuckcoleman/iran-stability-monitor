@@ -109,11 +109,11 @@ _MONTHS = (
     "July", "August", "September", "October", "November", "December")
 _MONTH_PATTERN = "(?:" + "|".join(_MONTHS) + ")"
 _PUBLISHER_DATE = re.compile(
-    r"\\b(" + _MONTH_PATTERN + r")\\s+(\\d{1,2}),?\\s+(\\d{4})\\b",
+    r"\b(" + _MONTH_PATTERN + r")\s+(\d{1,2}),?\s+(\d{4})\b",
     re.IGNORECASE)
 _DATE_MARKER = re.compile(
-    r"(?:^|[\\s_\\-])(date|published|publication|release-date|datepublished)"
-    r"(?:[\\s_\\-]|$)", re.IGNORECASE)
+    r"(?:^|[\s_\-])(date|published|publication|release-date|datepublished)"
+    r"(?:[\s_\-]|$)", re.IGNORECASE)
 
 
 class VisiblePublisherDates(HTMLParser):
@@ -162,7 +162,7 @@ class VisiblePublisherDates(HTMLParser):
     def _capture(self, value, method, tag):
         clean = " ".join(value.split())[:180]
         day = None
-        if re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", clean):
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", clean):
             try:
                 day = dt.date.fromisoformat(clean)
             except ValueError:
