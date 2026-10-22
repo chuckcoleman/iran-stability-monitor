@@ -505,6 +505,10 @@ def deterministic_review_issues(packet, original_cutoff):
                     packet.get("editorial_narrowings", [])}
     source_map = {entry["url"]: entry
                   for entry in packet["source_quality_audit"]["sources"]}
+    pre_screen = {
+        entry["id"]: entry for entry in packet.get("pre_review_claim_decisions", [])
+        if isinstance(entry, dict) and isinstance(entry.get("id"), str)
+    }
     for item in packet["evidence"]:
         source = source_map.get(url_key(item.get("source")))
         if not source or source.get("access_status") != "source_metadata_captured":
@@ -518,9 +522,21 @@ def deterministic_review_issues(packet, original_cutoff):
         if (claim_map is not None and source
                 and source.get("origin") == "official_or_advocacy_claim"
                 and source.get("classification") == "direct_observation"):
-            issues.append({"type": "official_claim_misclassified",
-                           "location": item.get("id", "unknown"),
-                           "reason": "Official assertion is not itself a direct observation"})
+            policy_action_exception = (
+                packet.get("pre_review_admission_version") == 2 and
+                pre_screen.get(item.get("id"), {}).get("model_effect_type") ==
+                    "observed_policy_action")
+            if not policy_action_exception:
+                issues.append({
+                    "type": "official_claim_misclassified",
+                    "location": item.get("id", "unknown"),
+                    "reason": "An official statement about impacts, motives "
+                        "or observed conditions is not itself independent "
+                        "evidence. Only the issuing authority's documented "
+                        "policy action can be provisionally considered."})
+            # When policy_action_exception applies, both reviewers still
+            # assess the occurrence and the *separate* proposed direction.
+            # This exception never verifies any official effectiveness claim.
         if claim_map is not None:
             witness = claim_map.get(item.get("id"))
             if (not isinstance(witness, dict) or
