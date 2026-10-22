@@ -438,11 +438,20 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
                     + "]; API-exposed search query: " + q)
             method = "flatten_individually_labelled_queries_with_exact_api_query_match"
         else:
+            # A model may describe the same three search purposes in its own
+            # words. The group *labels* are not tool provenance or evidence of
+            # balanced effort. Treat them only as immutable model disclosures,
+            # not as authoritative categories. Preserve the old transformation
+            # exactly when replaying its three historical literal labels.
+            query_rows = []
             for group in grouped:
                 purpose = group["purpose"]
                 queries = group["actual_queries"]
                 if (not isinstance(purpose, str)
-                        or purpose not in _QUERY_PURPOSE_LABELS
+                        or not 5 <= len(purpose) <= 160
+                        or purpose != purpose.strip()
+                        or any(not char.isprintable() for char in purpose)
+                        or any(char in "[]" for char in purpose)
                         or purpose in purposes
                         or not isinstance(queries, list)
                         or not 1 <= len(queries) <= 32):
@@ -455,12 +464,23 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
                     if q not in observed:
                         raise ValueError("Grouped research claims an unobserved API query")
                     used.add(q)
-                    flattened.append(
-                        "Model-labelled purpose [" + purpose
-                        + "]; API-exposed search query: " + q)
-            if purposes != _QUERY_PURPOSE_LABELS or len(flattened) > 96:
+                    query_rows.append((purpose, q))
+            if len(purposes) != 3 or len(query_rows) > 96:
                 raise ValueError("Missing or excessive directional query groups")
-            method = "flatten_model_purpose_groups_with_exact_api_query_match"
+            if purposes == _QUERY_PURPOSE_LABELS:
+                # Old completed source checkpoints must retain the same hash.
+                flattened = [
+                    "Model-labelled purpose [" + purpose
+                    + "]; API-exposed search query: " + q
+                    for purpose, q in query_rows]
+                method = "flatten_model_purpose_groups_with_exact_api_query_match"
+            else:
+                # Unknown model-authored purpose labels are audit-only, never
+                # copied into the effective coverage or reviewer packet.
+                # Reviewers assess real search queries from the API ledger.
+                flattened = ["API-exposed search query: " + q
+                             for _, q in query_rows]
+                method = "flatten_untrusted_purpose_groups_with_exact_api_query_match"
         row["queries"] = flattened
         changes.append({
             "path": ["coverage_audit", index, "queries"],
