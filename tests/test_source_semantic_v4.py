@@ -5,6 +5,7 @@ The exact original v3 review and research snapshots remain immutable.
 """
 import copy
 import hashlib
+import tempfile
 import sys
 from pathlib import Path
 import unittest
@@ -13,7 +14,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from source_metadata import parse_metadata, heading_date_witnesses
-from source_pre_review_admissibility import screen_original_packet, ADMISSION, REJECT
+from source_pre_review_admissibility import screen_original_packet, screen_or_restore, ADMISSION, REJECT
+from source_review_cycles import run_alternating_review_cycles
 from source_research_batches import sha
 from test_source_pre_review_admissibility import fixture, SNAPSHOT
 
@@ -197,3 +199,69 @@ class BilingualV4ScreenTests(unittest.TestCase):
         self.assertIn("DIRECTION_REASON_NOT_GROUNDED_IN_PASSAGE_TEXT",
                       result["per_claim"][0]["reasons"])
         self.assertNotIn("review_flags", result["per_claim"][0])
+
+
+class MandatorySemanticReviewerTests(unittest.TestCase):
+    def setUp(self):
+        self.packet, self.research = screened()
+        # Ensure all nine source candidates pass ordinary factual checks but
+        # the first one's political-direction inference requires reviewers.
+        self.research["evidence"][0]["direction_basis"] = (
+            "A political consequence may be inferred but does not directly "
+            "follow from the short published factual event description.")
+        self.folder_owner = tempfile.TemporaryDirectory(prefix="iran-v4-review-")
+        self.addCleanup(self.folder_owner.cleanup)
+        self.folder = Path(self.folder_owner.name)
+        self.screen = screen_or_restore(
+            self.folder, self.packet, self.research, baseline_sha="f"*64,
+            snapshot=V4)
+        self.assertEqual(self.screen["status"],
+                         "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY")
+
+    def run_reviews(self, *, with_explanation):
+        seen = []
+        def reviewer(prompt, search):
+            self.assertFalse(search)
+            role = ("affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical")
+            seen.append(role)
+            self.assertIn("V4 FACTUAL/SEMANTIC REVIEW", prompt)
+            reviews = [{
+                "id": "E-20261021-01",
+                "observation_supported": True,
+                "direction_supported": True,
+                "assessment": (
+                    "The exact source passage supports the factual event; "
+                    "its directional implication remains a separate inference "
+                    "evaluated here explicitly by this independent reviewer.")
+            }] if with_explanation else []
+            return {"approved": True, "issues": [],
+                    "source_reviews": [],
+                    "directional_reviews": reviews}, set()
+        outcome = run_alternating_review_cycles(
+            folder=self.folder,
+            sample=self.screen["screened_packet"],
+            input_sha=self.screen["screened_review_input_sha256"],
+            reviewer=reviewer,
+            now=lambda: __import__("datetime").datetime(
+                2026, 10, 21, 15, tzinfo=__import__("datetime").timezone.utc),
+            common="No scored forecasts, only source review.",
+            original_cutoff=V4["cutoff_at"], max_rounds=1,
+            enforce_guards=True, enable_corrections=False)
+        self.assertEqual(seen, ["affirmative", "critical"])
+        return outcome
+
+    def test_two_explicit_directional_reviews_are_required(self):
+        result = self.run_reviews(with_explanation=True)
+        self.assertEqual(result["status"],
+                         "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE")
+        self.assertEqual(result["review_rounds"][0]["both_clean"], True)
+
+    def test_model_global_approval_cannot_waive_semantic_review(self):
+        result = self.run_reviews(with_explanation=False)
+        self.assertEqual(result["status"],
+                         "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE")
+        self.assertEqual(result["review_rounds"][0]["both_clean"], False)
+        with (self.folder/"source-review-round-01.json").open() as f:
+            reviewed = __import__("json").load(f)
+        self.assertTrue(any(x["type"] == "missing_independent_semantic_review"
+                            for x in reviewed["deterministic_issues"]))
