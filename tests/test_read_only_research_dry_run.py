@@ -234,7 +234,8 @@ class ReadOnlySourceDryRunTests(unittest.TestCase):
             seen_freeze_flags.append(kwargs)
             self.assertEqual(kwargs, {"provisional_source_only_v5": True})
             return []
-        def fake_input(*, freeze, result, citations, archive, date, now, **unused):
+        def fake_input(folder, *, freeze, result, citations, archive, date, now, **unused):
+            self.assertEqual(Path(folder), self.audit)
             self.assertEqual(
                 freeze(result, citations, archive, date, now()), [])
             return original_review, sha(original_review), self.opened
