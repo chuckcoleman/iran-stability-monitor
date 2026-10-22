@@ -53,6 +53,32 @@ def _prompt(role, packet, digest, common):
             "direction, and reject unsupported model reasoning. "
             "Held-out entries and originals remain in the closed audit "
             "but must never be counted as directional observations. ")
+    if packet.get("pre_review_admission_version") == 2:
+        common += (
+            "\nV4 FACTUAL/SEMANTIC REVIEW: Original-page text provides "
+            "a provisional factual observation only; it NEVER establishes "
+            "the geopolitical direction. Review all review_flags in "
+            "pre_review_claim_decisions independently. A rationale with "
+            "zero quoted-word overlap is NOT automatically false; judge "
+            "whether the reported event and direction actually follow. "
+            "An official sanctions action is an official announcement, "
+            "not observed economic impact. Satellite-image analysis with "
+            "original_reporting_method=satellite_imagery may describe an "
+            "observed repair, NOT operational readiness. For each ID in "
+            "pre_review_translation_review_required return a matching "
+            "translation_reviews row with id, accurate (boolean), "
+            "observation_supported (boolean), and assessment (at least "
+            "40 characters citing the exact original quote and proposed "
+            "English translation). For each ID in "
+            "pre_review_rationale_review_required return a matching "
+            "directional_reviews row with id, observation_supported "
+            "(boolean), direction_supported (boolean), and assessment "
+            "(at least 40 characters, distinguishing factual observation "
+            "from political inference). If uncertain, set false and "
+            "approved=false. These are additional REQUIRED fields in "
+            "the JSON object along with approved, issues, source_reviews. "
+            "Independent review is mandatory; text overlap or a machine "
+            "translation NEVER verifies either claim or direction.")
     if packet.get("claim_evidence_register"):
         common += (
             "\nCLAIM-LEVEL VERIFICATION: For each retained evidence ID, examine "
@@ -590,7 +616,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 "incompatible with directional eligibility. No new reviewer "
                 "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
-    screened = sample.get("pre_review_admission_version") == 1
+    screened = sample.get("pre_review_admission_version") in (1, 2)
     original_evidence_for_witnesses = (
         sample.get("pre_review_original_evidence") if screened else
         sample.get("evidence"))
@@ -657,6 +683,47 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
             result[role] = response
         invariant_issues = (deterministic_review_issues(packet, original_cutoff)
                             if enforce_guards else [])
+        if packet.get("pre_review_admission_version") == 2:
+            # Never allow affirmative/critical approval to waive missing
+            # independent semantic scrutiny of a model translation or a
+            # direction that cannot be established by quote word overlap.
+            active_ids = {x["id"] for x in packet["evidence"]}
+            for role in ("affirmative", "critical"):
+                review = result[role]
+                for field, required, flags in (
+                    ("translation_reviews",
+                     packet.get("pre_review_translation_review_required", []),
+                     ("accurate", "observation_supported")),
+                    ("directional_reviews",
+                     packet.get("pre_review_rationale_review_required", []),
+                     ("observation_supported", "direction_supported")),
+                ):
+                    required_ids = set(required) & active_ids
+                    supplied = review.get(field)
+                    valid = (isinstance(supplied, list)
+                             and len(supplied) == len(required_ids)
+                             and all(
+                                isinstance(item, dict) and
+                                item.get("id") in required_ids
+                                and all(type(item.get(key)) is bool
+                                        for key in flags)
+                                and isinstance(item.get("assessment"), str)
+                                and len(item["assessment"].strip()) >= 40
+                                for item in supplied)
+                             and {item["id"] for item in supplied} == required_ids)
+                    if not valid:
+                        invariant_issues.append({
+                            "type": "missing_independent_semantic_review",
+                            "location": role + "/" + field,
+                            "reason": ("Mandatory original-language and "
+                                       "directional review is absent or malformed.")})
+                    elif any(not all(item[key] for key in flags)
+                             for item in supplied):
+                        invariant_issues.append({
+                            "type": "negative_independent_semantic_review",
+                            "location": role + "/" + field,
+                            "reason": ("Independent reviewer did not affirm "
+                                       "source translation or supported direction.")})
         clean = (all(r["approved"] and not r["issues"] for r in result.values())
                  and not invariant_issues)
         record = {"round": number, "input_sha256": digest,
