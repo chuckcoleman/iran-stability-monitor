@@ -355,7 +355,14 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                "Saved source-review checkpoint differs from validated result")
     else:
         save_new(path, result)
-    return {"approved": result["approved"], "issues": issues,
-            "source_reviews": result["source_reviews"],
-            "completed_at": result["completed_at"], "draft_sha256": input_sha,
-            "superseded_unknown_requests": result["superseded_unknown_requests"]}
+    summary = {"approved": result["approved"], "issues": issues,
+               "source_reviews": result["source_reviews"],
+               "completed_at": result["completed_at"], "draft_sha256": input_sha,
+               "superseded_unknown_requests": result["superseded_unknown_requests"]}
+    # The V5 query-balance audit is reviewer-authored response content.
+    # Pass through unchanged for deterministic validation without changing
+    # the historical saved review checkpoint or any previous prompt.
+    if isinstance(response, dict) and "source_query_balance_review" in response:
+        summary["source_query_balance_review"] = response[
+            "source_query_balance_review"]
+    return summary
