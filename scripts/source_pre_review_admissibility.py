@@ -159,7 +159,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                            search_calls=None):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") in (3, 4, 5, 6),
+            and snapshot.get("version") in (3, 4, 5, 6, 7),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
@@ -391,7 +391,8 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
     amended["pre_review_admission_version"] = (
-        3 if version >= 5 else 2 if version >= 4 else GATE_VERSION)
+        4 if version >= 7 else 3 if version >= 5
+        else 2 if version >= 4 else GATE_VERSION)
     amended["pre_review_limitations"] = (
         "Text overlap and page dates are necessary screening features only. "
         "No first-publication time, semantic direction, source independence "
@@ -424,6 +425,15 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
             "ambiguous possibilities were sought and whether any event "
             "or stability-effect claim was selected merely for balance. "
             "Quote hashes bind reviewer checks to the exact original body.")
+    if version >= 7:
+        amended["pre_review_limitations"] += (
+            " V7 has NO minimum count for admitted observations, publishers, "
+            "genuinely new observations or observed directions. Zero eligible "
+            "observations must be disclosed, not substituted or interpreted "
+            "as proof of stability or instability. Both independent source "
+            "reviewers must judge the adequacy of what survived source "
+            "admission and may reject unsupported inferences. Screening "
+            "approval never authorizes publication.")
     # Preserve every original URL; update only the reviewed packet's
     # classification of which sources support currently admitted evidence.
     quality = amended["source_quality_audit"]
@@ -456,7 +466,8 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                 "directional observation passed the pre-review screen.")
     count = eligibility(amended)
     outcome = {
-        "version": (3 if version >= 5 else 2 if version >= 4 else GATE_VERSION),
+        "version": (4 if version >= 7 else 3 if version >= 5
+                    else 2 if version >= 4 else GATE_VERSION),
         "status": ("PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY" if
                    not count["failures"] else
                    "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS"),
