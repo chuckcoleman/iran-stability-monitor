@@ -21,7 +21,8 @@ from source_metadata import parse_metadata, headline_publication_dates
 from source_pre_review_admissibility import (
     screen_original_packet, actual_search_query_ledger)
 from source_research_batches import CATEGORIES, sha, batch_prompt
-from source_review_cycles import v4_required_interpretation_issues, _prompt
+from source_review_cycles import (
+    v4_required_interpretation_issues, _prompt, deterministic_review_issues)
 from test_source_pre_review_admissibility import fixture, SNAPSHOT
 from test_source_semantic_v4 import ARABIC, ENGLISH, DRAFT, HEADING
 
@@ -222,6 +223,72 @@ class SearchAndReviewV5Tests(unittest.TestCase):
             freeze_evidence(row, {"https://example.org/unrelated"},
                             {"evidence":[]}, cutoff.date().isoformat(), cutoff,
                             provisional_source_only_v5=True)
+
+    def test_v5_official_policy_action_remains_provisional_not_verified_impact(self):
+        """The issuing authority may document its own action, not its results."""
+        sample = self.sample
+        original = self.research["evidence"][0]
+        item = sample["evidence"][0]
+        passage = (
+            "The agency announced sanctions designating seven named "
+            "employees under its authority.")
+        observation = (
+            "The agency announced sanctions designating seven employees.")
+        item["observation"] = observation
+        original["observation"] = observation
+        original["effect_type"] = "observed_policy_action"
+        original["observational_method"] = "none"
+        original["support_quote"] = passage
+        original["direction_basis"] = (
+            "The official declaration establishes the announced designation "
+            "only. It does not independently demonstrate economic pressure "
+            "or political consequences, which remain hypotheses.")
+        source = sample["source_quality_audit"]["sources"][0]
+        source["classification"] = "direct_observation"
+        source["origin"] = "official_or_advocacy_claim"
+        witness = sample["claim_evidence_register"]["claims"][0]
+        witness["passage"] = passage
+        witness["proposed_quote"] = passage
+        witness["observation_sha256"] = hashlib.sha256(
+            observation.encode()).hexdigest()
+        sample["claim_evidence_register"]["evidence_sha256"] = sha(
+            sample["evidence"])
+
+        screened = self.screen()["screened_packet"]
+        self.assertEqual(screened["pre_review_admission_version"], 3)
+        self.assertIn(item["id"], [
+            x["id"] for x in screened["evidence"]])
+        self.assertEqual(
+            screened["pre_review_claim_decisions"][0]["model_effect_type"],
+            "observed_policy_action")
+        invariant_issues = deterministic_review_issues(
+            screened, self.snapshot["cutoff_at"])
+        self.assertNotIn(
+            "official_claim_misclassified",
+            [x["type"] for x in invariant_issues])
+        # Merely being admitted is NOT substantive review or permission
+        # to publish: both reviewer roles still have independent duties.
+        source_row = [{
+            "url": source["url"],
+            "direction_checks": [],
+            "translation_checks": [],
+        }]
+        for role in ("affirmative", "critical"):
+            issues = v4_required_interpretation_issues(
+                screened, role, source_row, None)
+            self.assertIn(
+                "v4_claim_or_direction_not_substantively_reviewed",
+                [x["type"] for x in issues])
+
+        # Claimed consequences/conditions are not the issuer's recorded
+        # policy act, so they retain the prior fail-closed classification.
+        screened["pre_review_claim_decisions"][0][
+            "model_effect_type"] = "reported_event"
+        invariant_issues = deterministic_review_issues(
+            screened, self.snapshot["cutoff_at"])
+        self.assertIn(
+            "official_claim_misclassified",
+            [x["type"] for x in invariant_issues])
 
     def test_v5_no_longer_requires_observed_event_in_all_three_directions(self):
         for index, row in enumerate(self.sample["evidence"]):
