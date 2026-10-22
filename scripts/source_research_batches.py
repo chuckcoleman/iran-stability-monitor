@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3):
+    if fresh_version not in (2, 3, 4):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -246,7 +246,7 @@ def batch_prompt(category, snapshot):
         "inside evidence_status. New evidence MUST NOT include an old ID.)")
     if snapshot["version"] == 2:
         return strict  # Reproduce the EXACT earlier paid v2 request.
-    return strict + (
+    v3 = strict + (
         "\nMANDATORY V3 PRE-REVIEW SOURCE ADMISSION. For each new evidence "
         "candidate include effect_type EXACTLY one of observed_policy_action, "
         "reported_event, measured_data, attributed_claim, analysis_or_forecast, "
@@ -268,6 +268,33 @@ def batch_prompt(category, snapshot):
         "pre-review gate checks retrieval, dates and quote-word grounding "
         "before any affirmative/critical reviewer is called, but neither "
         "that gate nor the model verifies source semantics automatically.")
+    if snapshot["version"] == 3:
+        return v3  # Preserve the EXACT paid v3 source prompt on resume.
+    return v3 + (
+        "\nMANDATORY V4 EVIDENTIARY DISCIPLINE: Distinguish the observed "
+        "event from the hypothesized directional impact. Search actively "
+        "for contrary and stabilizing evidence, but NEVER manufacture or "
+        "rebalance outcomes to reach a raises/lowers/ambiguous quota. "
+        "Where the exact source quotation is non-English, include "
+        "support_translation_en as a faithful, literal preliminary English "
+        "translation of the SAME verbatim quote, with original spelling "
+        "and omissions unchanged; explicitly say that translation must be "
+        "checked independently by both source reviewers. Do not invent "
+        "an English passage or treat a translated snippet as an original "
+        "quotation. Supply original_method for each new candidate: "
+        "firsthand_imagery_comparison, official_action_document, "
+        "original_event_reporting, quantitative_source_data or "
+        "opinion_analysis. An original satellite-image comparison with "
+        "specific before/after dates may be provisionally reported as "
+        "repair activity; it cannot establish renewed military readiness. "
+        "An official designation documents an agency's action, NOT "
+        "the truth of all allegations or measurable economic harm. "
+        "Indicate observed incident date and publisher-displayed "
+        "publication date, but never fabricate a precise release instant. "
+        "A contradiction or date ambiguity MUST be disclosed, and "
+        "missing translations or nonverbatim quotes may lead to exclusion. "
+        "Source-type and effects are provisional, and independent "
+        "affirmative and critical review remain mandatory.")
 
 
 def _normalize_limitation_lists(original):
@@ -402,6 +429,10 @@ def _validate_batch(category, obj, citations, calls, snapshot, *,
             if isinstance(item.get("direction_basis"), str) and (
                     len(item["direction_basis"]) > 2000):
                 raise ValueError("Unsafe oversized directional claim rationale")
+            if snapshot["version"] >= 4 and isinstance(
+                    item.get("support_translation_en"), str
+            ) and len(item["support_translation_en"]) > 3000:
+                raise ValueError("Unsafe oversized source quotation translation")
         try:
             event_day = dt.date.fromisoformat(item["event_date"])
         except (ValueError, TypeError, KeyError):
@@ -569,7 +600,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(3 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(4 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
