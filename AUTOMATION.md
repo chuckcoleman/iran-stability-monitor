@@ -1,5 +1,33 @@
 # Iran assessment — reviews before GitHub publication
 
+## Forward-only V6 source-admission research (October 22, 2026)
+
+New, explicitly launched **research-dry-run** diagnostics use a V6 source
+snapshot. Earlier V1–V5 snapshots, exact paid prompts, request fingerprints,
+transport journals and review evidence remain immutable and resumable.
+The V6 protocol does **not** permit extending or rewriting an existing
+cutoff. Never resume an evidence-insufficient closed snapshot to count
+additional sources; launch a **new dated run** with an empty resume ID.
+
+V6 first seeks **actual dated original observations**, exact retrievable
+article-body passages, separate original publishers, and accessible source
+pages. If a source is paywalled, PDF-only, without first-party original
+release metadata, or the claim is analysis masquerading as measurement,
+research must record the limitation rather than fabricate an admissible item.
+An official action proves the act occurred only as an issuing-authority
+record; it does not prove the official allegation, national impact,
+source independence, or forecast direction. A publisher-reported calendar
+date is not independently verified first publication. Same-day date-only
+material remains insufficient to establish pre-cutoff availability.
+
+The six-observation / three-publisher / four-new-original minima, observed
+tool-query ledger, independent affirmative and critical source reviews, and
+all publication guards **remain unchanged**. If a V6 pre-review screen is
+underfilled, it fails closed before paid reviews, and writes the immutable
+`source-admission-deficiency.json` alongside the original full claim audit.
+This small report counts rejection reasons from that audit but never invents
+a date, source, quote, admissible observation or a second research request.
+
 ## Explicit research-as-of versus processing cutoff
 
 Six-category source sweeps are scoped to their IMMUTABLE `research-snapshot.json.cutoff_at`.
