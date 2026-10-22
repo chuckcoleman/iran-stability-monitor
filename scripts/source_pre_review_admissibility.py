@@ -46,6 +46,23 @@ def _words(text):
     return set(re.findall(r"[^\W\d_]{4,}", text.casefold(), flags=re.UNICODE)) - STOP
 
 
+def _quote_language_mismatch(original_quote, observation):
+    """Identify a non-Latin original cited with a Latin-script observation.
+
+    This only triggers a translation review, never supplies a translation.
+    Do not identify language by source domain, nationality or guesswork.
+    """
+    if not isinstance(original_quote, str) or not isinstance(observation, str):
+        return False
+    has_non_latin = any(
+        ("\\u0600" <= c <= "\\u06ff" or
+         "\\u0400" <= c <= "\\u052f" or
+         "\\u4e00" <= c <= "\\u9fff")
+        for c in original_quote)
+    has_latin_observation = bool(re.search(r"[A-Za-z]{4,}", observation))
+    return has_non_latin and has_latin_observation
+
+
 def _event_date_status(entry, cutoff):
     try:
         observed = dt.date.fromisoformat(entry["event_date"])
@@ -105,11 +122,12 @@ def _corresponding_original(original, frozen):
 def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") == 3,
+            and snapshot.get("version") in (3, 4),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
             "Admissibility cannot move the frozen search cutoff or history")
+    version = snapshot["version"]
     cutoff = dt.datetime.fromisoformat(snapshot["cutoff_at"])
     require(cutoff.utcoffset() is not None, "Missing timezone-aware search cutoff")
     source_rows = packet["source_quality_audit"]["sources"]
@@ -142,8 +160,22 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         if (source.get("access_status") != "source_metadata_captured" or
                 source.get("source_retrieval_status") != "retrieved"):
             reasons.append("ORIGINAL_SOURCE_METADATA_UNAVAILABLE")
-        if (source.get("classification") not in
-                ("direct_observation", "attributed_claim") or
+        # Original satellite-image reporting can be labelled "analysis" by
+        # the researcher even though it contains primary observational
+        # comparisons. V4 permits it only *provisionally*, when the original
+        # publisher and model explicitly identify the measurement method.
+        # This does not authenticate the imagery or the stability direction.
+        original_imagery = (
+            version >= 4 and
+            source.get("classification") == "analysis" and
+            source.get("origin") == "original_reporting" and
+            isinstance(original, dict) and
+            original.get("effect_type") == "measured_data" and
+            original.get("observational_method") ==
+                "original_satellite_imagery")
+        if ((source.get("classification") not in
+                 ("direct_observation", "attributed_claim")
+                and not original_imagery) or
                 source.get("origin") in
                 ("analytical_secondary", "syndicated_reprint", "unknown")):
             reasons.append("ANALYSIS_SYNDICATION_OR_UNVERIFIED_CLASS")
@@ -195,10 +227,54 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
         rationale_overlap = (
             sorted(_words(basis) & _words(quote)) if isinstance(basis, str)
             else [])
-        if len(overlap) < 2:
-            reasons.append("ORIGINAL_PASSAGE_NOT_RELEVANT_TO_CLAIM_TEXT")
-        if len(rationale_overlap) < 2:
-            reasons.append("DIRECTION_REASON_NOT_GROUNDED_IN_PASSAGE_TEXT")
+        semantic_flags = []
+        translation = None
+        source_language = None
+        translation_overlap = []
+        if version >= 4:
+            # The original-language quote remains unchanged and byte-hashed
+            # in the source witness. An unverified model-draft translation is
+            # accepted for lexical TRIAGE only, and both later reviewers must
+            # check its fidelity and whether the observation is actually in
+            # that passage. It cannot establish event truth or effect sign.
+            if _quote_language_mismatch(quote, entry.get("observation", "")):
+                source_language = (
+                    original.get("original_quote_language")
+                    if isinstance(original, dict) else None)
+                candidate = (
+                    original.get("support_quote_translation")
+                    if isinstance(original, dict) else None)
+                status = (
+                    original.get("translation_status")
+                    if isinstance(original, dict) else None)
+                if (isinstance(candidate, str) and
+                        15 <= len(candidate.strip()) <= 1200 and
+                        isinstance(source_language, str) and
+                        re.fullmatch(r"[a-z]{2,3}(?:-[a-z]{2,4})?",
+                                     source_language) and
+                        status == "MODEL_DRAFT_UNVERIFIED"):
+                    translation = candidate.strip()
+                    translation_overlap = sorted(
+                        _words(entry.get("observation", "")) &
+                        _words(translation))
+                if len(translation_overlap) < 2:
+                    reasons.append("MISSING_GROUNDED_CROSS_LANGUAGE_TRANSLATION")
+                else:
+                    semantic_flags.append(
+                        "MODEL_TRANSLATION_UNVERIFIED_CHECK_BOTH_REVIEWS")
+            elif len(overlap) < 2:
+                reasons.append("ORIGINAL_PASSAGE_NOT_RELEVANT_TO_CLAIM_TEXT")
+            if len(rationale_overlap) < 2:
+                semantic_flags.append(
+                    "DIRECTIONAL_EFFECT_UNVERIFIED_CHECK_BOTH_REVIEWS")
+            if original_imagery:
+                semantic_flags.append(
+                    "ORIGINAL_IMAGERY_METHOD_UNVERIFIED_CHECK_BOTH_REVIEWS")
+        else:
+            if len(overlap) < 2:
+                reasons.append("ORIGINAL_PASSAGE_NOT_RELEVANT_TO_CLAIM_TEXT")
+            if len(rationale_overlap) < 2:
+                reasons.append("DIRECTION_REASON_NOT_GROUNDED_IN_PASSAGE_TEXT")
         reasons = sorted(set(reasons))
         decision = {
             "id": identifier,
@@ -218,6 +294,22 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
             "reasons": reasons,
             "decision": ADMISSION if not reasons else REJECT,
         }
+        if version >= 4:
+            decision.update({
+                "semantic_review_flags": semantic_flags,
+                "translation_source_language": source_language,
+                "original_passage": quote if translation is not None else None,
+                "model_draft_translation": translation,
+                "translation_observation_overlap": translation_overlap,
+                "translation_fidelity_verified": False,
+                "original_observational_method": (
+                    original.get("observational_method")
+                    if isinstance(original, dict) else None),
+                "source_classification": source.get("classification"),
+                "original_imagery_provisionally_admitted": bool(original_imagery),
+                "publisher_date_evidence": source.get(
+                    "publication_date_evidence", []),
+            })
         decisions.append(decision)
         if reasons:
             held.append(copy.deepcopy(entry))
@@ -230,11 +322,30 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     amended["pre_review_original_evidence"] = copy.deepcopy(frozen)
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
-    amended["pre_review_admission_version"] = GATE_VERSION
+    amended["pre_review_admission_version"] = (2 if version >= 4 else GATE_VERSION)
     amended["pre_review_limitations"] = (
         "Text overlap and page dates are necessary screening features only. "
         "No first-publication time, semantic direction, source independence "
         "or observed geopolitical consequence was thereby verified.")
+    if version >= 4:
+        amended["background_source_analyses"] = [
+            {"id": item["id"], "original_url": url_key(item.get("source")),
+             "event_date": item.get("event_date"),
+             "original_observation": item.get("observation"),
+             "classification": "BACKGROUND_ANALYSIS_NOT_DIRECTIONAL_EVIDENCE",
+             "source_access_not_guaranteed": True}
+            for item in held
+            if any(x.get("id") == item["id"] and
+                   x.get("model_effect_type") in (
+                       "analysis_or_forecast", "background_context")
+                   for x in decisions)]
+        amended["pre_review_limitations"] += (
+            " V4 draft translations and original imagery interpretations "
+            "are unresolved interpretive claims. Each must be examined "
+            "by affirmative AND critical reviewers against the original "
+            "language and physical source; a model draft is not certified "
+            "translation or corroboration. Background analysis never "
+            "counts toward directional observation minima.")
     # Preserve every original URL; update only the reviewed packet's
     # classification of which sources support currently admitted evidence.
     quality = amended["source_quality_audit"]
@@ -267,7 +378,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
                 "directional observation passed the pre-review screen.")
     count = eligibility(amended)
     outcome = {
-        "version": GATE_VERSION,
+        "version": (2 if version >= 4 else GATE_VERSION),
         "status": ("PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY" if
                    not count["failures"] else
                    "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS"),
