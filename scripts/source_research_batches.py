@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3):
+    if fresh_version not in (2, 3, 4):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -246,7 +246,7 @@ def batch_prompt(category, snapshot):
         "inside evidence_status. New evidence MUST NOT include an old ID.)")
     if snapshot["version"] == 2:
         return strict  # Reproduce the EXACT earlier paid v2 request.
-    return strict + (
+    v3 = strict + (
         "\nMANDATORY V3 PRE-REVIEW SOURCE ADMISSION. For each new evidence "
         "candidate include effect_type EXACTLY one of observed_policy_action, "
         "reported_event, measured_data, attributed_claim, analysis_or_forecast, "
@@ -268,6 +268,28 @@ def batch_prompt(category, snapshot):
         "pre-review gate checks retrieval, dates and quote-word grounding "
         "before any affirmative/critical reviewer is called, but neither "
         "that gate nor the model verifies source semantics automatically.")
+    if snapshot["version"] == 3:
+        return v3  # Exact original v3 paid-source fingerprint, unchanged.
+    return v3 + (
+        "\nV4 ARTICLE-DATE AND BILINGUAL EVIDENCE: Quote 4–25 exact words "
+        "from the original page even when it is Arabic, Persian or another "
+        "non-English language. For EVERY non-English support_quote, provide "
+        "passage_language (ar, fa, etc.) and passage_translation: a bounded "
+        "literal English translation of only that original quotation. "
+        "This translation is model-proposed and NOT independently verified; "
+        "do not add details, dates, repair outcomes or stability effects "
+        "not present in the exact quote. For English text use passage_language=en "
+        "and passage_translation=null. The affirmative and critical source "
+        "reviewers must separately assess the translation when needed. "
+        "For analyses that INCLUDE original reported observations from "
+        "satellite images, declare original_reporting_method=satellite_imagery "
+        "and explain the imagery observation in methodology_description; "
+        "otherwise use original_reporting_method=none. An analytical claim "
+        "or forecast by itself remains background. For official sanctions "
+        "designations report the *announcement/action*, not proven economic "
+        "effects, and keep effects explicitly ambiguous when unsupported. "
+        "Search for counterevidence; do not invent evidence merely to fill "
+        "raise/lower/ambiguous quotas. No unsupported inferences are allowed.")
 
 
 def _normalize_limitation_lists(original):
@@ -569,7 +591,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(3 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(4 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
