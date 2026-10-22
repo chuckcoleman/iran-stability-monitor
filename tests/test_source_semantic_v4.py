@@ -180,6 +180,29 @@ class V4CrossLanguageScreenTests(unittest.TestCase):
         self.assertIn("DIRECTIONAL_EFFECT_UNVERIFIED_CHECK_BOTH_REVIEWS",
                       decision["semantic_review_flags"])
 
+    def test_official_primary_policy_action_is_not_an_effectiveness_claim(self):
+        from source_review_cycles import deterministic_review_issues
+        self.sample["source_quality_audit"]["sources"][0]["classification"] = (
+            "direct_observation")
+        self.sample["source_quality_audit"]["sources"][0]["origin"] = (
+            "official_or_advocacy_claim")
+        self.research["evidence"][0]["effect_type"] = (
+            "observed_policy_action")
+        self.research["evidence"][0]["observational_method"] = "none"
+        screened = self.screening()["screened_packet"]
+        issues = deterministic_review_issues(
+            screened, self.snapshot["cutoff_at"])
+        self.assertNotIn("official_claim_misclassified", [
+            item["type"] for item in issues])
+        # A narrative about conditions from the same issuer is not the
+        # documented issuance of the issuer's own policy action.
+        screened["pre_review_claim_decisions"][0][
+            "model_effect_type"] = "reported_event"
+        issues = deterministic_review_issues(
+            screened, self.snapshot["cutoff_at"])
+        self.assertIn("official_claim_misclassified", [
+            item["type"] for item in issues])
+
     def test_v4_prompt_requires_fidelity_and_claim_sign_checks(self):
         screened = self.screening()["screened_packet"]
         prompt = _prompt("affirmative", screened, sha(screened),
