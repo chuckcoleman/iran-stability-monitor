@@ -856,7 +856,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
             known_unknown.update(response.pop("superseded_unknown_requests"))
             added = v4_required_interpretation_issues(
                 packet, role, response.get("source_reviews", []),
-                response.get("response"))
+                response)
             if added:
                 # Never overwrite or falsify the saved model's claimed
                 # approval. The independently computed reason is attached
