@@ -41,6 +41,32 @@ def require(ok, message):
 
 def _prompt(role, packet, digest, common):
     """Exact first-round prompt retained for previous paid response recovery."""
+    if packet.get("pre_review_admission_version") == 2:
+        common += (
+            "\nV4 DUAL SEMANTIC AND MULTILINGUAL REVIEW: A retrieved "
+            "verbatim passage is not verification of an event, model "
+            "translation or sign of geopolitical effects. Every "
+            "provisionally admitted item with a semantic_review_flag "
+            "requires BOTH reviewers to inspect the exact original "
+            "passage (and satellite-image reporting when invoked) and "
+            "consider contrary details; inspect the model-draft "
+            "translation in the original language, without inventing "
+            "certainty about language competence. For EACH flagged "
+            "evidence ID, return in that source's source_reviews entry: "
+            "translation_checks array with one {evidence_id, fidelity: "
+            "supported_from_original_language|unsupported|cannot_verify, "
+            "assessment: >=40 characters} for any multilingual claim; "
+            "direction_checks array with one {evidence_id, factual_event: "
+            "supported_as_qualified|unverified, direction_sign: "
+            "warranted_as_qualified|unverified, assessment: >=40 characters} "
+            "for any flagged direction or original-image claim. "
+            "Reject if uncertain or unable to inspect original text; "
+            "do not treat repaired infrastructure as established "
+            "operational readiness, institutional loyalty, or a "
+            "certain stability effect. Metadata dates are publisher "
+            "claims, not independently verified first publication. "
+            "Background_source_analyses are retained context, NOT "
+            "observed current changes or counted directional evidence. ")
     if packet.get("pre_review_admission_version") == 1:
         common += (
             "\nV3 PRE-REVIEW ADMISSIBILITY: Only observations provisionally "
@@ -90,6 +116,68 @@ def _prompt(role, packet, digest, common):
          "Adversarially challenge all substantive claims and source gaps. ") +
         common + "\nIdentical input SHA-256: " + digest +
         "\nInput: " + canonical(packet))
+
+
+def v4_required_interpretation_issues(packet, role, source_reviews):
+    """Fail closed unless the *given reviewer* evaluates every flagged claim.
+
+    A translated quotation and its claimed sign may not be approved simply
+    because the original quote was found. Two separate reviewers must state
+    which original-language evidence they inspected and whether each model
+    draft translation/effect is supportable. A model opinion is not a human
+    linguist's independent certification.
+    """
+    if packet.get("pre_review_admission_version") != 2:
+        return []
+    active = {item["id"] for item in packet.get("evidence", [])}
+    sources = {
+        url_key(row.get("url")): row
+        for row in source_reviews if isinstance(row, dict)
+    }
+    issues = []
+    for decision in packet.get("pre_review_claim_decisions", []):
+        if decision.get("id") not in active:
+            continue
+        ident, url = decision["id"], decision["original_url"]
+        row = sources.get(url, {})
+        flags = decision.get("semantic_review_flags", [])
+        if "MODEL_TRANSLATION_UNVERIFIED_CHECK_BOTH_REVIEWS" in flags:
+            checks = row.get("translation_checks", [])
+            matched = ([c for c in checks if isinstance(c, dict) and
+                        c.get("evidence_id") == ident]
+                       if isinstance(checks, list) else [])
+            if (len(matched) != 1 or
+                    matched[0].get("fidelity") != "supported_from_original_language" or
+                    not isinstance(matched[0].get("assessment"), str) or
+                    len(matched[0]["assessment"].strip()) < 40):
+                issues.append({
+                    "type": "v4_translation_not_independently_reviewed",
+                    "location": ident,
+                    "reason": role + " reviewer must independently inspect "
+                        "original-language passage, translated words and "
+                        "context and explicitly document translation fidelity; "
+                        "model draft is not verified"})
+        if ("DIRECTIONAL_EFFECT_UNVERIFIED_CHECK_BOTH_REVIEWS" in flags or
+                "ORIGINAL_IMAGERY_METHOD_UNVERIFIED_CHECK_BOTH_REVIEWS" in flags):
+            checks = row.get("direction_checks", [])
+            matched = ([c for c in checks if isinstance(c, dict) and
+                        c.get("evidence_id") == ident]
+                       if isinstance(checks, list) else [])
+            if (len(matched) != 1 or
+                    matched[0].get("factual_event") !=
+                      "supported_as_qualified" or
+                    matched[0].get("direction_sign") !=
+                      "warranted_as_qualified" or
+                    not isinstance(matched[0].get("assessment"), str) or
+                    len(matched[0]["assessment"].strip()) < 40):
+                issues.append({
+                    "type": "v4_claim_or_direction_not_substantively_reviewed",
+                    "location": ident,
+                    "reason": role + " reviewer has not separately "
+                        "established a qualified factual event and "
+                        "qualified directional rationale from original "
+                        "source evidence, with opposing and limiting facts"})
+    return issues
 
 
 def _reviewed_issues(roles):
@@ -590,7 +678,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 "incompatible with directional eligibility. No new reviewer "
                 "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
-    screened = sample.get("pre_review_admission_version") == 1
+    screened = sample.get("pre_review_admission_version") in (1, 2)
     original_evidence_for_witnesses = (
         sample.get("pre_review_original_evidence") if screened else
         sample.get("evidence"))
@@ -654,6 +742,15 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 allow_new_after_unknown=allow_new_after_unknown,
                 superseded_unknown_requests=known_unknown)
             known_unknown.update(response.pop("superseded_unknown_requests"))
+            added = v4_required_interpretation_issues(
+                packet, role, response.get("source_reviews", []))
+            if added:
+                # Never overwrite or falsify the saved model's claimed
+                # approval. The independently computed reason is attached
+                # to the full round result for audit and conservative
+                # rejection; approval cannot override it.
+                response["issues"] = response["issues"] + added
+                response["approved"] = False
             result[role] = response
         invariant_issues = (deterministic_review_issues(packet, original_cutoff)
                             if enforce_guards else [])
