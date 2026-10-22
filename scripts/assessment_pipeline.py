@@ -362,27 +362,31 @@ def validate_source_coverage_audit(rows, citations):
 
 
 def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None, *,
-                    provisional_source_only_v5=False):
+                    provisional_source_only_v5=False,
+                    no_accepted_evidence_quota=False):
     """Freeze candidate identities without treating a research quota as evidence.
 
-    The default remains the original governed production/legacy contract.
-    Only a NEW nonpublishing v5 diagnostic may defer aggregate count,
-    publisher, directional-outcome and new-event minima to its separately
-    hashed pre-review eligibility gate. Individual claims, publication
-    timing and cited-source provenance are never exempted.
+    The default preserves the historical strict contract for direct calls.
+    Future live assessment research may explicitly choose a no-quota evidence
+    ledger; research-dry-run uses a separate provisional gate. No numeric
+    minimum alters individual source, publication-date or citation checks.
+    The original history and already issued forecast records stay unchanged.
     """
-    check(type(provisional_source_only_v5) is bool,
-          "Invalid provisional evidence gate setting")
+    check(type(provisional_source_only_v5) is bool and
+          type(no_accepted_evidence_quota) is bool and
+          not (provisional_source_only_v5 and no_accepted_evidence_quota),
+          "Invalid evidence gate settings")
     metadata=metadata or {}
     new=obj.get("evidence")
-    if provisional_source_only_v5:
+    if provisional_source_only_v5 or no_accepted_evidence_quota:
         check(isinstance(new,list) and len(new)<=30,
-              "Malformed or excessive provisional source observations")
+              "Malformed or excessive source observations")
     else:
         check(isinstance(new,list) and 6<=len(new)<=30,
               "Require 6-30 evidence items")
     cited={urlkey(u) for u in citations}
-    check(bool(cited-{None}) or (provisional_source_only_v5 and not new),
+    check(bool(cited-{None}) or
+          ((provisional_source_only_v5 or no_accepted_evidence_quota) and not new),
           "Research source citations missing")
     seen=set(); out=[]; publishers=set(); directions=set()
     archived={e["id"]:e for e in previous.get("evidence",[])}
@@ -467,7 +471,7 @@ def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None, *,
     # for missing observations, publishers or directions. Requiring those
     # outcomes here would abort before the six-category query/source audit,
     # and incentivize invented evidence to fill all three sign classes.
-    if not provisional_source_only_v5:
+    if not (provisional_source_only_v5 or no_accepted_evidence_quota):
         check(len(publishers)>=3,"Require three source publishers")
         check({"raises","lowers","ambiguous"}.issubset(directions),
               "Require raising, lowering, ambiguous evidence")
@@ -751,7 +755,11 @@ report date and headline is NOT an independent new source. Carry forward its
 original source/event identifier rather than giving it a second new ID.
 Source mirrors, archived details and old publication dates must not be
 presented as new events. Reassess old reporting without double counting it.
-Return ONLY a JSON object with evidence array of 8-22 RELEVANT items and
+Return ONLY a JSON object with evidence array containing ZERO to 22
+Genuinely supported items; no accepted-evidence minimum, no minimum of new
+observations or independent publishers, and no observed-direction quota.
+Do not fabricate a report to meet a target. A missing or thin evidence set
+must be explicitly disclosed, never treated as proof of stability.
 coverage_audit array with EXACTLY these six category identifiers:
 primary_data, international_media, regional_multilingual_media,
 specialist_investigative, think_tanks, economic_humanitarian_academic.
@@ -813,6 +821,9 @@ semicolons, or imply a threshold was already crossed without evidence.
 Keep wording concise and preserve the frozen event-resolution conditions.
 This single-event-per-sentence instruction applies ONLY to next_threshold,
 NOT to summary, what_changed, stabilizer, limitations or other descriptions.
+There is NO evidence-count, publisher-count or new-observation quota.
+A sparse or empty accepted evidence set must remain visibly uncertain;
+do not increase certainty or invent event support from absence of observations.
 Never turn "no broad evidence of a shortage" into affirmative evidence that
 hospitals or supply chains are resilient. Label missing data as unknown.
 forecasts array exactly four, each with event_id,p,range [lower,upper]
@@ -1069,7 +1080,11 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
               if researcher is llm or "coverage_audit" in result else None)
     if researcher is llm:
         verify_claimed_source_links(coverage,search_calls)
-    evidence=freeze_evidence(result,sources,evidence_history,today,cutoff,metadata)
+    evidence=freeze_evidence(
+        result,sources,evidence_history,today,cutoff,metadata,
+        # Only NEW live source gathering uses V7 zero-quota admission.
+        # Synthetic fixtures and historical default behavior stay unchanged.
+        no_accepted_evidence_quota=(researcher is llm))
     if audit_dir is not None:
         audit_dir.mkdir(parents=True,exist_ok=True)
         (audit_dir/"frozen-evidence.json").write_text(json.dumps({
