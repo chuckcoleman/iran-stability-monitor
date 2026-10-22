@@ -41,7 +41,7 @@ def require(ok, message):
 
 def _prompt(role, packet, digest, common):
     """Exact first-round prompt retained for previous paid response recovery."""
-    if packet.get("pre_review_admission_version") == 3:
+    if packet.get("pre_review_admission_version") in (3, 4):
         common += (
             "\nV5 SOURCE-BALANCE AND ORIGINAL-WITNESS CHECK: "
             "Inspect pre_review_actual_search_queries, copied from "
@@ -71,7 +71,7 @@ def _prompt(role, packet, digest, common):
             "disposition reconciled_or_qualified|unresolved and a "
             "specific >=40-character assessment; unresolved MUST "
             "be rejected. Do not claim verified first publication. ")
-    if packet.get("pre_review_admission_version") in (2, 3):
+    if packet.get("pre_review_admission_version") in (2, 3, 4):
         common += (
             "\nV4 DUAL SEMANTIC AND MULTILINGUAL REVIEW: A retrieved "
             "verbatim passage is not verification of an event, model "
@@ -127,8 +127,12 @@ def _prompt(role, packet, digest, common):
             "not observed improvements, worsening, independent publishers "
             "or eligible new directional observations. Only the unchanged "
             "substantive items in evidence can be evaluated for a directional "
-            "claim. Any incomplete minimum is a deterministic fail, and "
-            "neither review can waive it. ")
+            "claim. " +
+            ("There is no fixed numerical accepted-evidence quota; both "
+             "reviewers must independently assess support and limits. "
+             if packet.get("pre_review_admission_version") == 4 else
+             "Any incomplete minimum is a deterministic fail, and "
+             "neither review can waive it. "))
     if packet.get("editorial_narrowings"):
         common += (
             "\nEDITORIAL QUOTE-ONLY CORRECTION: The original claims and "
@@ -140,6 +144,24 @@ def _prompt(role, packet, digest, common):
             "research cutoff. A rejected narrowed quotation must be "
             "excluded, not rewritten repeatedly. Missing directional "
             "balance is a deterministic blocker, never a passing review. ")
+    if packet.get("pre_review_admission_version") == 4:
+        common += (
+            "\\nV7 NO EVIDENCE QUOTA: There are no fixed minimum counts "
+            "for accepted observations, new evidence, publishers or observed "
+            "direction categories. Never invent sources or claim support "
+            "to reach a count. Both reviewers MUST independently submit "
+            "source_adequacy_review as {admitted_evidence_ids: exact IDs "
+            "currently retained in evidence, observation_count: integer, "
+            "assessment: substantive >=80 character judgment of actual "
+            "coverage, omissions and contrary sources, limitations: "
+            ">=80-character account of what CANNOT responsibly be inferred, "
+            "conclusion: supported_limited_inference|insufficient_for_inference}. "
+            "A reviewer choosing insufficient_for_inference MUST set "
+            "approved=false and explain the issue. A nonzero count does not "
+            "constitute evidence quality or authorize publication. "
+            "If zero source observations remain, identify that limitation "
+            "explicitly and reject any unsupported geopolitical inference. "
+            "The old count thresholds and publisher minimums are inapplicable.")
     return (
         "ROLE: " + role.upper() + " SOURCE QUALITY REVIEW. " +
         ("Seek verifiable supporting and disconfirming context. "
@@ -160,7 +182,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
     linguist's independent certification.
     """
     review_version = packet.get("pre_review_admission_version")
-    if review_version not in (2, 3):
+    if review_version not in (2, 3, 4):
         return []
     active = {item["id"] for item in packet.get("evidence", [])}
     sources = {
@@ -168,7 +190,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
         for row in source_reviews if isinstance(row, dict)
     }
     issues = []
-    if review_version == 3:
+    if review_version in (3, 4):
         # A reviewer may not assert that searches in both directions
         # occurred unless citing the exact saved executed queries.
         ledger = packet.get("pre_review_actual_search_queries")
@@ -207,6 +229,34 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                           "queries seeking both worsening and improving "
                           "observations and disclose ambiguous results "
                           "without inventing supporting events"})
+    if review_version == 4:
+        ids = [item["id"] for item in packet.get("evidence", [])]
+        audit = (review_response.get("source_adequacy_review")
+                 if isinstance(review_response, dict) else None)
+        valid = (isinstance(audit, dict)
+                 and audit.get("admitted_evidence_ids") == ids
+                 and type(audit.get("observation_count")) is int
+                 and audit["observation_count"] == len(ids)
+                 and isinstance(audit.get("assessment"), str)
+                 and len(audit["assessment"].strip()) >= 80
+                 and isinstance(audit.get("limitations"), str)
+                 and len(audit["limitations"].strip()) >= 80
+                 and audit.get("conclusion") in (
+                     "supported_limited_inference", "insufficient_for_inference"))
+        if not valid:
+            issues.append({
+                "type": "v7_source_adequacy_not_independently_reviewed",
+                "location": "closed_source_evidence",
+                "reason": role + " reviewer must reconcile the exact accepted "
+                          "IDs and assess what the evidence can and cannot "
+                          "support, without counting quotas"})
+        elif (audit["conclusion"] == "insufficient_for_inference" and
+              review_response.get("approved") is not False):
+            issues.append({
+                "type": "v7_unsupported_approval_despite_evidence_limit",
+                "location": "closed_source_evidence",
+                "reason": role + " reviewer cannot approve a packet they "
+                          "themselves judged insufficient for inference"})
     for decision in packet.get("pre_review_claim_decisions", []):
         if decision.get("id") not in active:
             continue
@@ -219,7 +269,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                         c.get("evidence_id") == ident]
                        if isinstance(checks, list) else [])
             bound = (
-                review_version != 3 or
+                review_version not in (3, 4) or
                 (len(matched) == 1 and
                  matched[0].get("original_passage") ==
                      decision.get("original_passage") and
@@ -245,7 +295,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                         c.get("evidence_id") == ident]
                        if isinstance(checks, list) else [])
             bound = (
-                review_version != 3 or
+                review_version not in (3, 4) or
                 (len(matched) == 1 and
                  matched[0].get("original_passage") ==
                      decision.get("original_passage") and
@@ -266,7 +316,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                         "established a qualified factual event and "
                         "qualified directional rationale from original "
                         "source evidence, with opposing and limiting facts"})
-        if (review_version == 3 and
+        if (review_version in (3, 4) and
                 "CONFLICTING_PUBLISHER_DATES_REVIEW_REQUIRED" in flags):
             checks = row.get("date_checks", [])
             matched = ([c for c in checks if isinstance(c, dict) and
@@ -628,7 +678,7 @@ def deterministic_review_issues(packet, original_cutoff):
                 and source.get("origin") == "official_or_advocacy_claim"
                 and source.get("classification") == "direct_observation"):
             policy_action_exception = (
-                packet.get("pre_review_admission_version") in (2, 3) and
+                packet.get("pre_review_admission_version") in (2, 3, 4) and
                 pre_screen.get(item.get("id"), {}).get("model_effect_type") ==
                     "observed_policy_action")
             if not policy_action_exception:
@@ -799,7 +849,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 "incompatible with directional eligibility. No new reviewer "
                 "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
-    screened = sample.get("pre_review_admission_version") in (1, 2, 3)
+    screened = sample.get("pre_review_admission_version") in (1, 2, 3, 4)
     original_evidence_for_witnesses = (
         sample.get("pre_review_original_evidence") if screened else
         sample.get("evidence"))
@@ -851,7 +901,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                     and packet.get("pre_review_claim_decisions") ==
                         sample["pre_review_claim_decisions"],
                     "Revised packet altered original admission and source provenance")
-            if sample.get("pre_review_admission_version") == 3:
+            if sample.get("pre_review_admission_version") in (3, 4):
                 require(packet.get("pre_review_actual_search_queries") ==
                             sample.get("pre_review_actual_search_queries")
                         and packet.get("pre_review_original_input_sha256") ==
