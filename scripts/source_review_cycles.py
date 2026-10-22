@@ -699,6 +699,10 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                      ("observation_supported", "direction_supported")),
                 ):
                     required_ids = set(required) & active_ids
+                    if not required_ids:
+                        # No bilingual / nonlexical obligation exists in
+                        # this corrected packet; omit unrelated review fields.
+                        continue
                     supplied = review.get(field)
                     valid = (isinstance(supplied, list)
                              and len(supplied) == len(required_ids)
