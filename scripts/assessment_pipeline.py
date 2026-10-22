@@ -333,12 +333,29 @@ def validate_source_coverage_audit(rows, citations):
     return normalized
 
 
-def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
+def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None, *,
+                    provisional_source_only_v5=False):
+    """Freeze candidate identities without treating a research quota as evidence.
+
+    The default remains the original governed production/legacy contract.
+    Only a NEW nonpublishing v5 diagnostic may defer aggregate count,
+    publisher, directional-outcome and new-event minima to its separately
+    hashed pre-review eligibility gate. Individual claims, publication
+    timing and cited-source provenance are never exempted.
+    """
+    check(type(provisional_source_only_v5) is bool,
+          "Invalid provisional evidence gate setting")
     metadata=metadata or {}
     new=obj.get("evidence")
-    check(isinstance(new,list) and 6<=len(new)<=30,"Require 6-30 evidence items")
+    if provisional_source_only_v5:
+        check(isinstance(new,list) and len(new)<=30,
+              "Malformed or excessive provisional source observations")
+    else:
+        check(isinstance(new,list) and 6<=len(new)<=30,
+              "Require 6-30 evidence items")
     cited={urlkey(u) for u in citations}
-    check(bool(cited-{None}),"Research source citations missing")
+    check(bool(cited-{None}) or (provisional_source_only_v5 and not new),
+          "Research source citations missing")
     seen=set(); out=[]; publishers=set(); directions=set()
     archived={e["id"]:e for e in previous.get("evidence",[])}
     identities={(urlkey(e["source"]),e.get("event_date"),e.get("category")):e for e in archived.values()}
@@ -418,9 +435,16 @@ def freeze_evidence(obj,citations,previous,date,cutoff,metadata=None):
         if isinstance(publisher,str) and publisher.strip():
             publishers.add(publisher)
         directions.add(entry["direction"])
-    check(len(publishers)>=3,"Require three source publishers")
-    check({"raises","lowers","ambiguous"}.issubset(directions),"Require raising, lowering, ambiguous evidence")
-    check(sum(e["evidence_status"]=="new" for e in out)>=4,"Require four new source observations")
+    # V5's independent pre-review gate emits a complete failure certificate
+    # for missing observations, publishers or directions. Requiring those
+    # outcomes here would abort before the six-category query/source audit,
+    # and incentivize invented evidence to fill all three sign classes.
+    if not provisional_source_only_v5:
+        check(len(publishers)>=3,"Require three source publishers")
+        check({"raises","lowers","ambiguous"}.issubset(directions),
+              "Require raising, lowering, ambiguous evidence")
+        check(sum(e["evidence_status"]=="new" for e in out)>=4,
+              "Require four new source observations")
     return out
 
 def haircut(values):

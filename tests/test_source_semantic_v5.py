@@ -5,6 +5,7 @@ These are synthetic original-page and tool-search fixtures. A passing example
 is never a claim that an actual event, translation or effect is verified.
 """
 import copy
+import datetime as dt
 import hashlib
 import unittest
 from pathlib import Path
@@ -14,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "tests"))
 
+from assessment_pipeline import freeze_evidence
 from source_directional_eligibility import eligibility
 from source_metadata import parse_metadata, headline_publication_dates
 from source_pre_review_admissibility import (
@@ -148,6 +150,78 @@ class SearchAndReviewV5Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "six source categories"):
             self.calls = self.calls[:-1]
             self.screen()
+
+    def test_v5_freeze_defers_directional_outcome_quota_to_review_gate(self):
+        cutoff = dt.datetime.fromisoformat(self.snapshot["cutoff_at"])
+        entries = []
+        for n in range(6):
+            entries.append({
+                "event_date": cutoff.date().isoformat(),
+                "category": "original_observation",
+                "observation": "Synthetic original observation number %d" % n,
+                "source": "https://example.org/original/%d" % n,
+                "source_title": "Independent synthetic original source %d" % n,
+                "publisher": "Independent Publisher %d" % (n % 3),
+                "reliability": "Medium", "affects": [],
+                "evidence_status": "new",
+                "impact_magnitude": "minor",
+                "direction": "raises",
+            })
+        result = {"evidence": entries}
+        original = copy.deepcopy(result)
+        cites = {e["source"] for e in entries}
+        archive = {"evidence": []}
+        with self.assertRaisesRegex(ValueError,
+                                    "Require raising, lowering, ambiguous"):
+            freeze_evidence(result, cites, archive, cutoff.date().isoformat(),
+                            cutoff)
+        pending = freeze_evidence(
+            result, cites, archive, cutoff.date().isoformat(), cutoff,
+            provisional_source_only_v5=True)
+        self.assertEqual(result, original)
+        self.assertEqual(len(pending), 6)
+        self.assertEqual({e["direction"] for e in pending}, {"raises"})
+        eligibility_record = eligibility({
+            "pre_review_admission_version": 3, "evidence": pending})
+        self.assertEqual(eligibility_record["failures"], [])
+        self.assertEqual(eligibility_record["missing_directions"],
+                         ["ambiguous", "lowers"])
+        self.assertTrue(eligibility_record[
+            "missing_directions_are_coverage_disclosures_not_failures"])
+
+    def test_v5_zero_and_underfilled_evidence_reach_explicit_gate(self):
+        cutoff = dt.datetime.fromisoformat(self.snapshot["cutoff_at"])
+        with self.assertRaisesRegex(ValueError, "Require 6-30 evidence"):
+            freeze_evidence({"evidence": []}, set(), {"evidence": []},
+                            cutoff.date().isoformat(), cutoff)
+        empty = freeze_evidence({"evidence": []}, set(), {"evidence": []},
+            cutoff.date().isoformat(), cutoff,
+            provisional_source_only_v5=True)
+        self.assertEqual(empty, [])
+        record = eligibility({"pre_review_admission_version": 3,
+                              "evidence": empty})
+        self.assertIn("fewer_than_six_source_observations", record["failures"])
+        self.assertIn("fewer_than_three_distinct_publishers", record["failures"])
+        self.assertIn("fewer_than_four_new_observations", record["failures"])
+        self.assertNotIn("missing_required_directional_balance", record["failures"])
+        # The provisional mode NEVER waives individual source provenance.
+        row = {"evidence": [{
+            "event_date": cutoff.date().isoformat(),
+            "category": "synthetic",
+            "observation": "A cited-event observation without an actual citation.",
+            "source": "https://example.org/uncited-original",
+            "source_title": "Synthetic article",
+            "publisher": "Synthetic publisher", "reliability": "Medium",
+            "evidence_status": "new", "impact_magnitude": "minor",
+            "direction": "raises"}]}
+        with self.assertRaisesRegex(ValueError, "Research source citations missing"):
+            freeze_evidence(row, set(), {"evidence":[]},
+                            cutoff.date().isoformat(), cutoff,
+                            provisional_source_only_v5=True)
+        with self.assertRaisesRegex(ValueError, "Source not verified"):
+            freeze_evidence(row, {"https://example.org/unrelated"},
+                            {"evidence":[]}, cutoff.date().isoformat(), cutoff,
+                            provisional_source_only_v5=True)
 
     def test_v5_no_longer_requires_observed_event_in_all_three_directions(self):
         for index, row in enumerate(self.sample["evidence"]):
