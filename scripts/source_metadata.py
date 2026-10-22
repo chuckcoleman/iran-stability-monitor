@@ -158,6 +158,12 @@ class HeadlineDateScanner(HTMLParser):
         self.skip = 0
 
     def handle_starttag(self, tag, attrs):
+        # An ordinary article-body paragraph containing a date does NOT
+        # establish the publication date, even if it is the first paragraph
+        # after the headline. Only a standalone heading-adjacent date label
+        # or time/date element is eligible for the bounded scanner.
+        if self.after_headline and tag in ("p", "section", "figure", "table"):
+            self.after_headline = False
         if tag in ("script", "style", "noscript"):
             self.skip += 1
         if tag == "title":
