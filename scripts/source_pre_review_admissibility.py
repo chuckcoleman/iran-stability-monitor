@@ -233,8 +233,8 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
             # A translation is a model-authored aid, never independent
             # certification that the Arabic/Persian quote has the claimed
             # meaning. Both independent reviewers must examine it later.
-            cross_language = bool(re.search(r"[\\u0600-\\u06ff\\u0750-\\u077f"
-                                            r"\\u08a0-\\u08ff]", quote))
+            cross_language = bool(re.search(r"[\u0600-\u06ff\u0750-\u077f"
+                                            r"\u08a0-\u08ff]", quote))
             if cross_language:
                 language = original.get("passage_language") if original else None
                 translation = (original.get("passage_translation")
