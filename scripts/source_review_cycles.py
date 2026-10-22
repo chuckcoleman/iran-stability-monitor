@@ -41,7 +41,36 @@ def require(ok, message):
 
 def _prompt(role, packet, digest, common):
     """Exact first-round prompt retained for previous paid response recovery."""
-    if packet.get("pre_review_admission_version") == 2:
+    if packet.get("pre_review_admission_version") == 3:
+        common += (
+            "\nV5 SOURCE-BALANCE AND ORIGINAL-WITNESS CHECK: "
+            "Inspect pre_review_actual_search_queries, copied from "
+            "actual executed web-search call traces in EACH category. "
+            "Independent evidence may have only raises, lowers or "
+            "ambiguous events; NEVER invent or relabel an observation "
+            "to manufacture a direction. Return top-level "
+            "source_query_balance_review with raises_queries, "
+            "lowers_queries and ambiguous_queries arrays: exact "
+            "actual query strings from the frozen query ledger "
+            "you personally assessed for the respective search goals, "
+            "and a >=80-character assessment of what those searches "
+            "could not establish and any one-sided coverage gaps. "
+            "If the real search attempts lack one goal, report the gap "
+            "and reject the packet rather than citing a made-up query. "
+            "For every retained ID in source_reviews direction_checks "
+            "(and in translation_checks for multilingual claims), "
+            "include original_passage EXACTLY as recorded in "
+            "pre_review_claim_decisions, plus source_body_sha256 exactly "
+            "as captured by the original-page fetch. "
+            "A matching hash is a source-binding check ONLY, not proof "
+            "of translation fidelity, event accuracy, independence "
+            "or the inferred geopolitical direction. "
+            "If the publisher has conflicting reported publication "
+            "dates, return one date_checks entry for that ID with "
+            "disposition reconciled_or_qualified|unresolved and a "
+            "specific >=40-character assessment; unresolved MUST "
+            "be rejected. Do not claim verified first publication. ")
+    if packet.get("pre_review_admission_version") in (2, 3):
         common += (
             "\nV4 DUAL SEMANTIC AND MULTILINGUAL REVIEW: A retrieved "
             "verbatim passage is not verification of an event, model "
@@ -119,7 +148,8 @@ def _prompt(role, packet, digest, common):
         "\nInput: " + canonical(packet))
 
 
-def v4_required_interpretation_issues(packet, role, source_reviews):
+def v4_required_interpretation_issues(packet, role, source_reviews,
+                                      review_response=None):
     """Fail closed unless the *given reviewer* evaluates every flagged claim.
 
     A translated quotation and its claimed sign may not be approved simply
@@ -128,7 +158,8 @@ def v4_required_interpretation_issues(packet, role, source_reviews):
     draft translation/effect is supportable. A model opinion is not a human
     linguist's independent certification.
     """
-    if packet.get("pre_review_admission_version") != 2:
+    review_version = packet.get("pre_review_admission_version")
+    if review_version not in (2, 3):
         return []
     active = {item["id"] for item in packet.get("evidence", [])}
     sources = {
@@ -136,6 +167,37 @@ def v4_required_interpretation_issues(packet, role, source_reviews):
         for row in source_reviews if isinstance(row, dict)
     }
     issues = []
+    if review_version == 3:
+        # A reviewer may not assert that searches in both directions
+        # occurred unless citing the exact saved executed queries.
+        ledger = packet.get("pre_review_actual_search_queries")
+        require(isinstance(ledger, list) and len(ledger) == 6,
+                "V5 reviewed packet lacks complete actual query ledger")
+        known_queries = set()
+        for stage in ledger:
+            require(isinstance(stage, dict) and
+                    isinstance(stage.get("queries"), list),
+                    "V5 actual query stage is malformed")
+            known_queries.update(stage["queries"])
+        audit = (review_response.get("source_query_balance_review")
+                 if isinstance(review_response, dict) else None)
+        valid = isinstance(audit, dict)
+        for direction in ("raises", "lowers", "ambiguous"):
+            reported = audit.get(direction + "_queries") if valid else None
+            if (not isinstance(reported, list) or not reported or
+                    not all(isinstance(q, str) and q in known_queries
+                            for q in reported)):
+                valid = False
+        if (not valid or
+                not isinstance(audit.get("assessment"), str) or
+                len(audit["assessment"].strip()) < 80):
+            issues.append({
+                "type": "v5_two_sided_search_not_independently_reviewed",
+                "location": "six_source_categories",
+                "reason": role + " reviewer must cite genuine recorded "
+                          "queries seeking both worsening and improving "
+                          "observations and disclose ambiguous results "
+                          "without inventing supporting events"})
     for decision in packet.get("pre_review_claim_decisions", []):
         if decision.get("id") not in active:
             continue
@@ -147,7 +209,15 @@ def v4_required_interpretation_issues(packet, role, source_reviews):
             matched = ([c for c in checks if isinstance(c, dict) and
                         c.get("evidence_id") == ident]
                        if isinstance(checks, list) else [])
+            bound = (
+                review_version != 3 or
+                (len(matched) == 1 and
+                 matched[0].get("original_passage") ==
+                     decision.get("original_passage") and
+                 matched[0].get("source_body_sha256") ==
+                     decision.get("source_body_sha256")))
             if (len(matched) != 1 or
+                    not bound or
                     matched[0].get("fidelity") != "supported_from_original_language" or
                     not isinstance(matched[0].get("assessment"), str) or
                     len(matched[0]["assessment"].strip()) < 40):
@@ -165,7 +235,15 @@ def v4_required_interpretation_issues(packet, role, source_reviews):
             matched = ([c for c in checks if isinstance(c, dict) and
                         c.get("evidence_id") == ident]
                        if isinstance(checks, list) else [])
+            bound = (
+                review_version != 3 or
+                (len(matched) == 1 and
+                 matched[0].get("original_passage") ==
+                     decision.get("original_passage") and
+                 matched[0].get("source_body_sha256") ==
+                     decision.get("source_body_sha256")))
             if (len(matched) != 1 or
+                    not bound or
                     matched[0].get("factual_event") !=
                       "supported_as_qualified" or
                     matched[0].get("direction_sign") !=
@@ -179,6 +257,22 @@ def v4_required_interpretation_issues(packet, role, source_reviews):
                         "established a qualified factual event and "
                         "qualified directional rationale from original "
                         "source evidence, with opposing and limiting facts"})
+        if (review_version == 3 and
+                "CONFLICTING_PUBLISHER_DATES_REVIEW_REQUIRED" in flags):
+            checks = row.get("date_checks", [])
+            matched = ([c for c in checks if isinstance(c, dict) and
+                        c.get("evidence_id") == ident]
+                       if isinstance(checks, list) else [])
+            if (len(matched) != 1 or
+                    matched[0].get("disposition") !=
+                      "reconciled_or_qualified" or
+                    not isinstance(matched[0].get("assessment"), str) or
+                    len(matched[0]["assessment"].strip()) < 40):
+                issues.append({
+                    "type": "v5_publisher_date_conflict_unresolved",
+                    "location": ident,
+                    "reason": role + " reviewer has not reconciled conflicting "
+                              "publisher release dates against original text"})
     return issues
 
 
@@ -696,7 +790,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 "incompatible with directional eligibility. No new reviewer "
                 "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
-    screened = sample.get("pre_review_admission_version") in (1, 2)
+    screened = sample.get("pre_review_admission_version") in (1, 2, 3)
     original_evidence_for_witnesses = (
         sample.get("pre_review_original_evidence") if screened else
         sample.get("evidence"))
@@ -761,7 +855,8 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 superseded_unknown_requests=known_unknown)
             known_unknown.update(response.pop("superseded_unknown_requests"))
             added = v4_required_interpretation_issues(
-                packet, role, response.get("source_reviews", []))
+                packet, role, response.get("source_reviews", []),
+                response.get("response"))
             if added:
                 # Never overwrite or falsify the saved model's claimed
                 # approval. The independently computed reason is attached
