@@ -651,6 +651,7 @@ def _transport_state(folder, request_sha):
     safe_status = {"acknowledged", "poll_acknowledged", "safe_get_retry_pending",
                    "background_timeout_no_replay", "poll_transport_failed_no_post_retry",
                    "poll_http_error_no_post_retry",
+                   "poll_authentication_failed_no_post_retry",
                    "api_completed_output_not_yet_validated",
                    "resuming_existing_response"}
     if (len(ids) != 1 or not _valid_id(next(iter(ids)))
