@@ -50,9 +50,10 @@ def _prompt(role, packet, digest, common):
             "ambiguous events; NEVER invent or relabel an observation "
             "to manufacture a direction. Return top-level "
             "source_query_balance_review with raises_queries, "
-            "lowers_queries and ambiguous_queries arrays: exact "
-            "actual query strings from the frozen query ledger "
-            "you personally assessed for the respective search goals, "
+            "lowers_queries (both nonempty and disjoint), and "
+            "ambiguous_queries (may be empty if no separate ambiguous "
+            "query ran): exact actual query strings from the frozen "
+            "query ledger you assessed for the respective search goals, "
             "and a >=80-character assessment of what those searches "
             "could not establish and any one-sided coverage gaps. "
             "If the real search attempts lack one goal, report the gap "
@@ -182,12 +183,20 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
         audit = (review_response.get("source_query_balance_review")
                  if isinstance(review_response, dict) else None)
         valid = isinstance(audit, dict)
-        for direction in ("raises", "lowers", "ambiguous"):
+        for direction in ("raises", "lowers"):
             reported = audit.get(direction + "_queries") if valid else None
             if (not isinstance(reported, list) or not reported or
                     not all(isinstance(q, str) and q in known_queries
                             for q in reported)):
                 valid = False
+        if valid:
+            ambiguous = audit.get("ambiguous_queries", [])
+            if not isinstance(ambiguous, list) or not all(
+                    isinstance(q, str) and q in known_queries
+                    for q in ambiguous):
+                valid = False
+            elif set(audit["raises_queries"]) & set(audit["lowers_queries"]):
+                valid = False  # One generic search cannot certify both aims.
         if (not valid or
                 not isinstance(audit.get("assessment"), str) or
                 len(audit["assessment"].strip()) < 80):
