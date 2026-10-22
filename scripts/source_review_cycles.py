@@ -46,12 +46,12 @@ def _prompt(role, packet, digest, common):
             "\nV4 DUAL SEMANTIC AND MULTILINGUAL REVIEW: A retrieved "
             "verbatim passage is not verification of an event, model "
             "translation or sign of geopolitical effects. Every "
-            "provisionally admitted item with a semantic_review_flag "
+            "provisionally admitted v4 directional item "
             "requires BOTH reviewers to inspect the exact original "
             "passage (and satellite-image reporting when invoked) and "
             "consider contrary details; inspect the model-draft "
             "translation in the original language, without inventing "
-            "certainty about language competence. For EACH flagged "
+            "certainty about language competence. For EVERY admitted "
             "evidence ID, return in that source's source_reviews entry: "
             "translation_checks array with one {evidence_id, fidelity: "
             "supported_from_original_language|unsupported|cannot_verify, "
@@ -59,7 +59,8 @@ def _prompt(role, packet, digest, common):
             "direction_checks array with one {evidence_id, factual_event: "
             "supported_as_qualified|unverified, direction_sign: "
             "warranted_as_qualified|unverified, assessment: >=40 characters} "
-            "for any flagged direction or original-image claim. "
+            "for EACH v4 directional claim, including observed policy " 
+            "actions and image-based reporting. "
             "Reject if uncertain or unable to inspect original text; "
             "do not treat repaired infrastructure as established "
             "operational readiness, institutional loyalty, or a "
@@ -157,7 +158,8 @@ def v4_required_interpretation_issues(packet, role, source_reviews):
                         "original-language passage, translated words and "
                         "context and explicitly document translation fidelity; "
                         "model draft is not verified"})
-        if ("DIRECTIONAL_EFFECT_UNVERIFIED_CHECK_BOTH_REVIEWS" in flags or
+        if ("DIRECTIONAL_EFFECT_REQUIRES_DUAL_REVIEW" in flags or
+                "DIRECTIONAL_EFFECT_UNVERIFIED_CHECK_BOTH_REVIEWS" in flags or
                 "ORIGINAL_IMAGERY_METHOD_UNVERIFIED_CHECK_BOTH_REVIEWS" in flags):
             checks = row.get("direction_checks", [])
             matched = ([c for c in checks if isinstance(c, dict) and
