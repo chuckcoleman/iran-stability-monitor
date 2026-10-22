@@ -628,7 +628,7 @@ def deterministic_review_issues(packet, original_cutoff):
                 and source.get("origin") == "official_or_advocacy_claim"
                 and source.get("classification") == "direct_observation"):
             policy_action_exception = (
-                packet.get("pre_review_admission_version") == 2 and
+                packet.get("pre_review_admission_version") in (2, 3) and
                 pre_screen.get(item.get("id"), {}).get("model_effect_type") ==
                     "observed_policy_action")
             if not policy_action_exception:
