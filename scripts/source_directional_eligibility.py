@@ -62,12 +62,36 @@ def eligibility(packet):
         failures.append("fewer_than_six_source_observations")
     if len(real_publishers) < MIN_PUBLISHERS:
         failures.append("fewer_than_three_distinct_publishers")
-    if missing:
+    new_search_policy = packet.get("source_balance_policy_version") == 2
+    if new_search_policy:
+        require(packet.get("pre_review_admission_version") == 2,
+                "Evidence outcome-balancing policy cannot apply retroactively")
+        coverage = packet.get("coverage")
+        categories = [x.get("category") for x in coverage] if isinstance(
+            coverage, list) and all(isinstance(x, dict) for x in coverage) else []
+        required_categories = {
+            "primary_data", "international_media", "regional_multilingual_media",
+            "specialist_investigative", "think_tanks",
+            "economic_humanitarian_academic"}
+        if (len(categories) != len(required_categories) or
+                set(categories) != required_categories or
+                any(not isinstance(row.get("queries"), list) or not row["queries"]
+                    for row in coverage)):
+            failures.append("incomplete_six_category_counterevidence_search")
+        # Missing outcome directions are disclosed, not conjured. Search
+        # coverage and the two critical reviews, not an artificial result
+        # quota, are the methodological protection from selection bias.
+    elif missing:
         failures.append("missing_required_directional_balance")
     if count_new < MIN_NEW_OBSERVATIONS:
         failures.append("fewer_than_four_new_observations")
     return {
-        "version": 1,
+        "version": 2 if new_search_policy else 1,
+        **({"directional_balance_policy":
+                 "REQUIRE_SIX_CATEGORY_CONTRARY_SEARCH_NOT_EACH_DIRECTION",
+             "directional_outcome_quota": "NONE",
+             "searched_categories": sorted(categories)}
+           if new_search_policy else {}),
         "directional_evidence_ids": [x["id"] for x in active],
         "background_quote_ids": [x["id"] for x in legacy_background + background],
         "directional_observations": len(active),
