@@ -1,5 +1,6 @@
 """Forward-only accepted-evidence no-quota policy; old snapshots unchanged."""
 import copy
+import datetime as dt
 import hashlib
 from pathlib import Path
 import sys
@@ -9,6 +10,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "tests"))
 
+from assessment_pipeline import freeze_evidence
 from source_directional_eligibility import eligibility
 from source_research_batches import batch_prompt, CATEGORIES, sha
 from source_review_cycles import _prompt, v4_required_interpretation_issues
@@ -67,6 +69,44 @@ class AcceptedEvidenceNoQuotaTests(unittest.TestCase):
             else:
                 self.assertIn("missing_required_directional_balance",
                               result["failures"])
+
+    def test_future_live_evidence_freeze_has_no_count_or_publisher_minimum(self):
+        cutoff = dt.datetime(2026, 10, 22, 19, 20, tzinfo=dt.timezone.utc)
+        day = cutoff.date().isoformat()
+        empty = {"evidence": []}
+        self.assertEqual(
+            freeze_evidence(empty, set(), {"evidence": []}, day, cutoff,
+                            no_accepted_evidence_quota=True), [])
+        with self.assertRaisesRegex(ValueError, "Require 6-30 evidence items"):
+            freeze_evidence(empty, set(), {"evidence": []}, day, cutoff)
+
+        url = "https://example.org/original-one"
+        single = {"evidence": [{
+            "event_date": day, "category": "reported_event",
+            "observation": "An original source reports a limited occurrence.",
+            "source": url, "source_title": "Synthetic date-stamped report",
+            "publisher": "Single independent publisher",
+            "reliability": "Medium", "direction": "ambiguous",
+            "impact_magnitude": "minor", "evidence_status": "new",
+            "affects": [],
+        }]}
+        single_orig = copy.deepcopy(single)
+        admitted = freeze_evidence(
+            single, {url}, {"evidence": []}, day, cutoff,
+            no_accepted_evidence_quota=True)
+        self.assertEqual(single, single_orig)
+        self.assertEqual(len(admitted), 1)
+        self.assertEqual(admitted[0]["publisher"], "Single independent publisher")
+        self.assertEqual(admitted[0]["direction"], "ambiguous")
+        self.assertEqual(admitted[0]["evidence_status"], "new")
+        self.assertEqual(admitted[0]["source"], url)
+        with self.assertRaisesRegex(ValueError, "Source not verified"):
+            freeze_evidence(single, set(), {"evidence": []}, day, cutoff,
+                            no_accepted_evidence_quota=True)
+        with self.assertRaisesRegex(ValueError, "Invalid evidence gate settings"):
+            freeze_evidence(empty, set(), {"evidence": []}, day, cutoff,
+                            no_accepted_evidence_quota=True,
+                            provisional_source_only_v5=True)
 
     def test_v7_screen_preserves_original_claim_checks_without_quota(self):
         sample, original, snap = packet_fixture()
