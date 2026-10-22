@@ -130,6 +130,16 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
         if annotation["kind"] in ("analysis","unverified") and any(
             row.get("direction") in ("raises","lowers") for row in evidence_rows):
             flags.append("directional_claim_needs_explicit_review")
+        # Only new v4 metadata includes publisher-heading provenance. Legacy
+        # saved source-quality checkpoints must reproduce exactly unchanged.
+        heading_provenance = {}
+        if "publication_date_witnesses" in status:
+            heading_provenance = {
+                "publication_date_witnesses": status["publication_date_witnesses"],
+                "publication_date_conflict": status.get("publication_date_conflict", False),
+                "publication_date_status": status.get("publication_date_status"),
+                "source_html_sha256": status.get("content_sha256"),
+            }
         audit.append({
             "url":url, "coverage_categories":sorted(item["coverage_categories"]),
             "new_evidence_indices":sorted(item["evidence_indices"]),
@@ -146,6 +156,7 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
             "metadata_status":status.get("metadata_status","not independently retrieved"),
             "flags":flags,
             "factual_verification":"not_automatically_established",
+            **heading_provenance,
         })
     return {
         "status":"SOURCE_BY_SOURCE_REVIEW_REQUIRED",
