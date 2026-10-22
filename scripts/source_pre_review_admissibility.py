@@ -159,14 +159,14 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                            search_calls=None):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") in (3, 4, 5),
+            and snapshot.get("version") in (3, 4, 5, 6),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
             "Admissibility cannot move the frozen search cutoff or history")
     version = snapshot["version"]
     query_ledger = (actual_search_query_ledger(search_calls)
-                    if version == 5 else None)
+                    if version >= 5 else None)
     cutoff = dt.datetime.fromisoformat(snapshot["cutoff_at"])
     require(cutoff.utcoffset() is not None, "Missing timezone-aware search cutoff")
     source_rows = packet["source_quality_audit"]["sources"]
