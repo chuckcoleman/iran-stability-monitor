@@ -317,10 +317,13 @@ never an extension backdated to October 21. Only eligible versions then
 proceed through alternating affirmative and critical source reviews.
 No diagnostic changes published forecasts, pages, or social posts.
 
-## Fresh-source pre-review admissibility (new v3 snapshots)
+## Historical v3 fresh-source pre-review admissibility (preserved on resume)
 
-The next **fresh** live `research-dry-run` on `main` (with blank
-`resume_run_id`) creates a version-3 research snapshot. The six saved
+The original **version-3** live `research-dry-run` created its
+own new research snapshot. That version remains immutable on any
+`resume_run_id` replay. **After the v4 source-date and bilingual
+improvements, fresh runs with blank `resume_run_id` instead create
+version-4 snapshots.** The six saved
 web searches now ask for **one narrow original-source observation per
 item**, its exact 4–25-word source passage, a declared
 `effect_type`, and a `direction_basis` sentence explaining why that
@@ -472,3 +475,102 @@ should fresh alternating affirmative and critical reviews be requested,
 which may incur normal costs. Every failure still blocks publication
 and leaves `data/history.json` and all previously scored forecasts
 unchanged.
+
+## Source-examination improvements for new v4 research
+
+The source examination after diagnostic **39692255833** found several
+potentially useful original reports that the original v3 zero-cost
+pre-review screen held out. This update **does not reclassify or
+overwrite that failed October 21 source snapshot**. Old v1, v2 and v3
+research prompt strings, original API response IDs, source passages
+and saved pre-review certificates remain historical. Fresh `main`
+research-dry-run snapshots use **version 4**; recovery of an older
+version retains its original cutoff and original screening algorithm.
+
+### Original publication dates, not retrospectively verified clocks
+
+The metadata parser now checks tightly constrained publisher date
+labels immediately after a heading that matches the article's HTML
+title. For example, the [U.S. Treasury press release dated
+October 15, 2026](https://home.treasury.gov/news/press-releases/sb0660)
+displays a visible date that some pages do not also encode in
+`article:published_time` or `datePublished`. The stage now
+records its **exact visible date string** and the matching HTML
+article-heading method as `publication_date_evidence` in the original
+metadata checkpoint and, where present, the source-quality audit. No
+calendar dates found only in menus, ordinary body paragraphs, captions,
+or unrelated article lists are promoted to article dates.
+
+The extracted date is still **publisher-reported, not certified first
+publication**. It is never turned into a fabricated time-of-day.
+Same-day dates without a verifiable pre-cutoff instant remain
+insufficient. Conflicting/future original-source dates fail the
+existing source-timing controls. Late retrieval never moves an old
+snapshot's research-as-of time.
+
+### Facts, directions and model-draft translations are separate
+
+For **v4 only**, the evidence screen records two different
+questions: (1) whether an original source's *literal narrow factual
+assertion* is sufficiently connected to the matched passage to be
+submitted for review, and (2) whether that fact *actually warrants*
+the model's proposed effect on regime stability. A vocabulary mismatch
+between an otherwise exact source passage and a geopolitical
+**direction rationale** is now an explicit review-only flag rather
+than automatic word-overlap rejection or automatic approval. Both
+affirmative and critical review checks must document the qualified
+underlying event **and separately** the proposed directional effect
+before a dual-review record can be clean. An issuer's documented
+sanctions designation is a policy action, **not independent evidence**
+of Treasury's claimed macroeconomic or regime effects.
+
+An English statement based on an Arabic, Persian or other detected
+non-Latin original passage must retain the unchanged **verbatim
+original** and the original source-body hash. A v4 search can provide
+a bounded `support_quote_translation`,
+`original_quote_language`, and
+`translation_status=MODEL_DRAFT_UNVERIFIED`. The translated text is
+accepted only for preliminary *word-overlap triage*. It is not
+a verified translation and cannot authenticate the original text or
+causal interpretation. The review input explicitly records the
+original passage, language, draft translation, and every unverified
+assumption. **Both** affirmative and critical reviewers must
+individually record original-language fidelity checks in their
+`source_reviews[].translation_checks` and qualified evidence/sign
+checks in `source_reviews[].direction_checks`. Failure, omission or
+inability to inspect the original is a recorded review rejection,
+never a silent admission or endorsement.
+
+Where an original newsroom article reports its **own** satellite
+image comparisons, it can be treated as a *candidate observed
+image-derived change* even if source-quality annotations call it
+`analysis`, but only with
+`origin=original_reporting`,
+`effect_type=measured_data`, and
+`observational_method=original_satellite_imagery`. This is not a
+verification of the actual satellite imagery, repair completeness,
+operational readiness, coercive loyalty, or probability impact.
+For example, [Al Jazeera's October 20 satellite-imagery
+investigation](https://www.aljazeera.net/news/2026/10/20/%D9%85%D9%86-%D8%B4%D9%8A%D8%B1%D8%A7%D8%B2-%D8%A5%D9%84%D9%89-%D9%83%D8%A7%D8%B4%D8%A7%D9%86-%D9%88%D8%A8%D9%88%D8%B4%D9%87%D8%B1-%D9%83%D9%8A%D9%81-%D8%AA%D8%B9%D9%8A%D8%AF)
+should not be read as proof that military facilities are fully
+restored, or as certain stability improvement. The original
+satellite-interpretation and opposing damage evidence must be
+challenged in both source reviews.
+
+Old analytical commentary remains visible as
+`background_source_analyses` in new v4 packets and in the original
+source inventory, but never counts as a new directional event. In
+particular, the [RSIS regime-change analysis from
+January](https://rsis.edu.sg/rsis-publication/rsis/evaluating-the-prospects-of-regime-change-in-iran/)
+and the [Stimson political-system
+analysis](https://www.stimson.org/2026/irans-political-system-after-the-war/)
+are useful context, not freshly observed October changes.
+
+This update does **not** change the existing minimum of six
+observations, four new observations, three publishers or the
+longstanding three-direction evidence-balance requirement. That
+normative rule may merit separate consideration, because research
+must not invent a `lowers` or `ambiguous` event just to pass a
+minimum. The new prompts expressly forbid manufactured balancing
+claims. All snapshots remain **research-only**; there is no automatic
+forecast publication or authority to modify `data/history.json`.

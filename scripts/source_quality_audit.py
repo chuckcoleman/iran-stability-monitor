@@ -130,7 +130,22 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
         if annotation["kind"] in ("analysis","unverified") and any(
             row.get("direction") in ("raises","lowers") for row in evidence_rows):
             flags.append("directional_claim_needs_explicit_review")
+        details = {}
+        if "publication_date_evidence" in status:
+            witnesses = status["publication_date_evidence"]
+            _check(isinstance(witnesses, list)
+                   and all(isinstance(w, dict)
+                           and w.get("origin") ==
+                              "article_headline_adjacent_visible_date"
+                           and isinstance(w.get("date"), str)
+                           and w.get("first_publication_verified") is False
+                           for w in witnesses),
+                   "Malformed claimed visible article-date provenance")
+            details = {
+                "publication_date_evidence": witnesses,
+                "publisher_date_not_first_publication_proof": True}
         audit.append({
+            **details,
             "url":url, "coverage_categories":sorted(item["coverage_categories"]),
             "new_evidence_indices":sorted(item["evidence_indices"]),
             "role":"new_evidence" if item["evidence_indices"] else "coverage_context_only",
@@ -141,7 +156,9 @@ def source_quality_audit(research, metadata, *, strict=True, cutoff=None):
             "source_publication_time":public_time,
             "first_publication_clock_status":(
                 "publisher_supplied_metadata_not_independently_confirmed"
-                if public_time is not None else "unknown"),
+                if public_time is not None else
+                "publisher_reported_date_only_not_independently_confirmed"
+                if details else "unknown"),
             "publication_dates_from_page":status.get("publication_dates",[]),
             "metadata_status":status.get("metadata_status","not independently retrieved"),
             "flags":flags,

@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3):
+    if fresh_version not in (2, 3, 4):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -246,7 +246,7 @@ def batch_prompt(category, snapshot):
         "inside evidence_status. New evidence MUST NOT include an old ID.)")
     if snapshot["version"] == 2:
         return strict  # Reproduce the EXACT earlier paid v2 request.
-    return strict + (
+    v3 = strict + (
         "\nMANDATORY V3 PRE-REVIEW SOURCE ADMISSION. For each new evidence "
         "candidate include effect_type EXACTLY one of observed_policy_action, "
         "reported_event, measured_data, attributed_claim, analysis_or_forecast, "
@@ -268,6 +268,36 @@ def batch_prompt(category, snapshot):
         "pre-review gate checks retrieval, dates and quote-word grounding "
         "before any affirmative/critical reviewer is called, but neither "
         "that gate nor the model verifies source semantics automatically.")
+    if snapshot["version"] == 3:
+        return v3  # EXACT v3 historical paid request: never mutate fingerprint.
+    return v3 + (
+        "\nMANDATORY V4 MULTILINGUAL SOURCE-ADMISSION UPDATE. "
+        "Do not manufacture stabilizing, destabilizing or ambiguous events "
+        "to fill quotas. For each new observation keep the reported event "
+        "strictly separate from the optional model-proposed stability "
+        "direction: the direction is an UNVERIFIED HYPOTHESIS and must be "
+        "challenged by both reviewers. Each support_quote must remain an "
+        "exact untranslated original-source article-body passage (four to "
+        "twenty-five whitespace-delimited words). For non-English source "
+        "quotes paired with an English observation, ALSO include "
+        "support_quote_translation as a specific literal English translation "
+        "of ONLY that original passage, original_quote_language as a BCP-47 "
+        "language tag such as ar or fa, and translation_status EXACTLY "
+        "MODEL_DRAFT_UNVERIFIED. Never replace the original passage with a "
+        "translation; if uncertain, supply null and keep the claim as "
+        "background_context. Translations are only unverified model drafts "
+        "and are never proof of accuracy or of the claimed stability sign. "
+        "For reports containing original published observations such as "
+        "satellite imagery, explicitly specify observational_method as "
+        "original_satellite_imagery when the exact original quote actually "
+        "discusses a specific compared image finding; use none otherwise. "
+        "Classify original image-based investigation accurately as original "
+        "reporting, even if it includes separate analysis; generic analysis "
+        "and think-tank interpretation remain background. Prefer a single "
+        "narrow factual statement literally supported by the quoted passage "
+        "over a bundle of claims about multiple sites. If direction cannot "
+        "be supported, prefer ambiguous; do not imply effectiveness, "
+        "military readiness or source-independence from physical repair alone.")
 
 
 def _normalize_limitation_lists(original):
@@ -569,7 +599,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(3 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(4 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
