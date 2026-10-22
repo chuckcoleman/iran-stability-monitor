@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3, 4, 5):
+    if fresh_version not in (2, 3, 4, 5, 6):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -300,7 +300,7 @@ def batch_prompt(category, snapshot):
         "military readiness or source-independence from physical repair alone.")
     if snapshot["version"] == 4:
         return v4  # Preserve the exact already-issued v4 paid prompt.
-    return v4 + (
+    v5 = v4 + (
         "\nV5 DIRECTIONAL SEARCH COVERAGE WITHOUT FORCED FINDINGS: "
         "Actively run distinct genuine queries for events or observations "
         "that might RAISE instability and events or observations that "
@@ -318,6 +318,47 @@ def batch_prompt(category, snapshot):
         "the full original quote, only literal draft translation and "
         "publisher-reported date, and document event facts separately "
         "from inferred geopolitical sign. Do not score a forecast.")
+    if snapshot["version"] == 5:
+        return v5  # Preserve the exact V5 prompt and its paid request fingerprint.
+    if snapshot["version"] != 6:
+        raise ValueError("Unsupported source-research prompt version")
+    return v5 + (
+        "\\nV6 FORWARD-ONLY ADMISSION-READY ORIGINAL SOURCE RESEARCH. "
+        "Seek several INDEPENDENT original, accessible publishers per source "
+        "category, not just one illustrative item. Choose zero to four "
+        "narrow, genuinely supported observations where they exist, never "
+        "manufacturing observations or balancing the directions. Prioritize "
+        "recent original reported events, direct policy actions and direct "
+        "measurements, rather than background commentary or wire copies. "
+        "Before selecting an evidence candidate, inspect its original page "
+        "for a named issuing publisher, a verifiable on-page publisher release "
+        "date, and an exact 4-25-word article-body quote directly supporting "
+        "one small factual statement. Prefer articles with machine-readable "
+        "datePublished or timezone-aware publication metadata; an explicit "
+        "headline-adjacent publisher dateline is a lower-confidence witness, "
+        "not proof of original first publication. When the source is dated "
+        "on the SAME DAY as the frozen research cutoff, require an explicit "
+        "timezone-aware publication instant no later than the cutoff; a "
+        "calendar date alone is not enough. Prefer fully readable HTML "
+        "originals over inaccessible, paywalled, PDF-only or unstable pages. "
+        "A cited search result or a title date is NOT a verified article "
+        "body quote or a verified original release date. Report inability "
+        "to access an original rather than selecting it as directional "
+        "evidence. When an article mixes original measurements with causal "
+        "analysis, classify only the specific first-party measured value "
+        "as observation if clearly supported; analytical interpretation is "
+        "background. An official policy announcement establishes the act "
+        "but does not prove its alleged effectiveness. For every direction "
+        "label explicitly preserve uncertainty about national stability "
+        "effects, including genuinely ambiguous evidence. Perform true "
+        "worsening, improving and disconfirming searches without implying "
+        "that the observed events must represent all directions. "
+        "Do NOT invent names, sources, dates, measurements, quotes or "
+        "independent corroboration to satisfy the downstream six-source, "
+        "three-publisher or four-new minimum. Give precise limitations "
+        "when the independent original evidence is sparse. Return "
+        "coverage_audit.queries as a FLAT list of genuine search strings, "
+        "not purpose-labelled objects. Never issue a forecast or publish.")
 
 
 def _normalize_limitation_lists(original):
@@ -377,7 +418,7 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
         raise ValueError("Research stage has no original JSON object")
     effective = copy.deepcopy(original)
     changes = []
-    if version != 5:
+    if version not in (5, 6):
         return effective, changes
     rows = effective.get("coverage_audit")
     if not isinstance(rows, list):
@@ -765,7 +806,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(5 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(6 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
