@@ -146,6 +146,8 @@ def actual_search_query_ledger(calls):
                     3 <= len(value.strip()) <= 500,
                     "Unusable query in actual source-search trace")
             queries[category].add(value.strip())
+            require(len(queries[category]) <= 96,
+                    "V5 source research exposes too many distinct executed queries")
     require(all(queries.values()),
             "Each of six source categories needs an actual query record")
     return [{"category": category, "queries": sorted(queries[category]),
