@@ -119,15 +119,54 @@ def _corresponding_original(original, frozen):
     return matches[0] if len(matches) == 1 else None
 
 
-def screen_original_packet(packet, research, *, baseline_sha, snapshot):
+def actual_search_query_ledger(calls):
+    """Bind the compact full research query ledger to actual captured API calls.
+
+    Exact queries are facts about searches attempted, not proof that those
+    searches were balanced or returned independently verified observations.
+    Both reviewers must independently evaluate balance; no successful
+    'raises' or 'lowers' event may be fabricated to meet a quota.
+    """
+    from source_research_batches import CATEGORIES
+    require(isinstance(calls, list) and bool(calls),
+            "Missing real web-search calls for v5 source review")
+    queries = {category: set() for category in CATEGORIES}
+    for call in calls:
+        require(isinstance(call, dict) and
+                call.get("search_calls_real") is True,
+                "Malformed actual source-research search trace")
+        category = call.get("research_category")
+        if category not in queries:
+            continue  # A separate citation-correction call is not research.
+        values = call.get("queries_exposed_by_api")
+        require(isinstance(values, list),
+                "Source search trace lacks actual executed query text")
+        for value in values:
+            require(isinstance(value, str) and
+                    3 <= len(value.strip()) <= 500,
+                    "Unusable query in actual source-search trace")
+            queries[category].add(value.strip())
+            require(len(queries[category]) <= 96,
+                    "V5 source research exposes too many distinct executed queries")
+    require(all(queries.values()),
+            "Each of six source categories needs an actual query record")
+    return [{"category": category, "queries": sorted(queries[category]),
+             "query_count": len(queries[category])}
+            for category in CATEGORIES]
+
+
+def screen_original_packet(packet, research, *, baseline_sha, snapshot,
+                           search_calls=None):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") in (3, 4),
+            and snapshot.get("version") in (3, 4, 5),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
             "Admissibility cannot move the frozen search cutoff or history")
     version = snapshot["version"]
+    query_ledger = (actual_search_query_ledger(search_calls)
+                    if version == 5 else None)
     cutoff = dt.datetime.fromisoformat(snapshot["cutoff_at"])
     require(cutoff.utcoffset() is not None, "Missing timezone-aware search cutoff")
     source_rows = packet["source_quality_audit"]["sources"]
@@ -315,6 +354,30 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
                 "publisher_date_evidence": source.get(
                     "publication_date_evidence", []),
             })
+        if version >= 5:
+            # Publisher timestamps and visible headline dates are publisher
+            # assertions, not an independently proven release instant.
+            # If source metadata differ by more than one day, record the
+            # ambiguity and require both reviewers to address it.
+            try:
+                pub_days = sorted({
+                    dt.date.fromisoformat(x)
+                    for x in source.get("publication_dates_from_page", [])
+                    if isinstance(x, str)
+                })
+            except (ValueError, TypeError):
+                pub_days = []  # Invalid metadata was already held out above.
+            date_disagreement = (
+                len(pub_days) > 1 and
+                (pub_days[-1] - pub_days[0]).days > 1)
+            if date_disagreement:
+                decision["semantic_review_flags"].append(
+                    "CONFLICTING_PUBLISHER_DATES_REVIEW_REQUIRED")
+            decision["publisher_date_conflict"] = date_disagreement
+            decision["original_passage"] = quote
+            decision["review_passage_sha256"] = hashlib.sha256(
+                quote.encode("utf-8")).hexdigest()
+            decision["source_body_sha256"] = witness.get("source_body_sha256")
         decisions.append(decision)
         if reasons:
             held.append(copy.deepcopy(entry))
@@ -327,7 +390,8 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     amended["pre_review_original_evidence"] = copy.deepcopy(frozen)
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
-    amended["pre_review_admission_version"] = (2 if version >= 4 else GATE_VERSION)
+    amended["pre_review_admission_version"] = (
+        3 if version >= 5 else 2 if version >= 4 else GATE_VERSION)
     amended["pre_review_limitations"] = (
         "Text overlap and page dates are necessary screening features only. "
         "No first-publication time, semantic direction, source independence "
@@ -351,6 +415,15 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
             "language and physical source; a model draft is not certified "
             "translation or corroboration. Background analysis never "
             "counts toward directional observation minima.")
+    if version >= 5:
+        amended["pre_review_actual_search_queries"] = query_ledger
+        amended["pre_review_limitations"] += (
+            " V5 discloses executed queries in every source category and "
+            "does not demand observed events in all three directions. "
+            "Both reviewers must judge whether positive, negative and "
+            "ambiguous possibilities were sought and whether any event "
+            "or stability-effect claim was selected merely for balance. "
+            "Quote hashes bind reviewer checks to the exact original body.")
     # Preserve every original URL; update only the reviewed packet's
     # classification of which sources support currently admitted evidence.
     quality = amended["source_quality_audit"]
@@ -383,7 +456,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
                 "directional observation passed the pre-review screen.")
     count = eligibility(amended)
     outcome = {
-        "version": (2 if version >= 4 else GATE_VERSION),
+        "version": (3 if version >= 5 else 2 if version >= 4 else GATE_VERSION),
         "status": ("PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY" if
                    not count["failures"] else
                    "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS"),
@@ -409,11 +482,13 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot):
     return outcome
 
 
-def screen_or_restore(folder, packet, research, *, baseline_sha, snapshot):
+def screen_or_restore(folder, packet, research, *, baseline_sha, snapshot,
+                      search_calls=None):
     """Persist exact screened packet, refuse changed replay or paid POST."""
     folder = Path(folder)
     result = screen_original_packet(
-        packet, research, baseline_sha=baseline_sha, snapshot=snapshot)
+        packet, research, baseline_sha=baseline_sha, snapshot=snapshot,
+        search_calls=search_calls)
     path = folder / "source-pre-review-admissibility.json"
     if path.exists():
         require(read_json(path) == result,

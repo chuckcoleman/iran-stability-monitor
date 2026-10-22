@@ -192,7 +192,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     if researcher is LIVE_RESEARCHER and snapshot and snapshot["version"] >= 3:
         preflight = screen_or_restore(
             folder, sample, result, baseline_sha=baseline_sha,
-            snapshot=snapshot)
+            snapshot=snapshot, search_calls=actual_calls)
         if preflight["status"] == "PRE_REVIEW_ADMISSIBILITY_BLOCKED_NO_PAID_REVIEWS":
             blocked = {
                 "status": "PRE_REVIEW_EVIDENCE_INSUFFICIENT_NOT_PUBLISHABLE",

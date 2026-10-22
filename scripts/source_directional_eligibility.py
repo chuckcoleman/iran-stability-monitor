@@ -57,16 +57,24 @@ def eligibility(packet):
     directions = {x.get("direction") for x in active}
     missing = sorted(DIRECTIONS - directions)
     count_new = sum(x.get("evidence_status") == "new" for x in active)
+    # V5 corrects the previous methodological error: actual search effort
+    # must seek both confirming and disconfirming evidence, but the observed
+    # world need not supply a "raises", "lowers" AND "ambiguous" event.
+    # Require the same count, source diversity, and four genuinely new
+    # observations. Missing directions are explicitly disclosed to both
+    # reviewers; they are not an artificial evidence-production quota.
+    search_balance_not_outcome_quota = (
+        packet.get("pre_review_admission_version") == 3)
     failures = []
     if len(active) < MIN_OBSERVATIONS:
         failures.append("fewer_than_six_source_observations")
     if len(real_publishers) < MIN_PUBLISHERS:
         failures.append("fewer_than_three_distinct_publishers")
-    if missing:
+    if missing and not search_balance_not_outcome_quota:
         failures.append("missing_required_directional_balance")
     if count_new < MIN_NEW_OBSERVATIONS:
         failures.append("fewer_than_four_new_observations")
-    return {
+    result = {
         "version": 1,
         "directional_evidence_ids": [x["id"] for x in active],
         "background_quote_ids": [x["id"] for x in legacy_background + background],
@@ -81,3 +89,14 @@ def eligibility(packet):
                      "CONTINUE_ALTERNATING_SOURCE_REVIEWS"),
         "publication": "NOT AUTHORIZED",
     }
+    if search_balance_not_outcome_quota:
+        result.update({
+            "version": 2,
+            "direction_observation_policy":
+                "TWO_SIDED_SEARCH_REQUIRED_NO_OBSERVED_DIRECTION_QUOTA",
+            "missing_directions_are_coverage_disclosures_not_failures": True,
+            "required_source_review":
+                "Review observed search queries for support and disconfirmation; "
+                "no direction can be fabricated to achieve representational balance.",
+        })
+    return result

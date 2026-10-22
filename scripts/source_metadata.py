@@ -156,6 +156,7 @@ class HeadlineDateScanner(HTMLParser):
         self.remaining = 0
         self.found = []
         self.skip = 0
+        self.dateline_tag_stack = []
 
     def handle_starttag(self, tag, attrs):
         # An ordinary article-body paragraph containing a date does NOT
@@ -169,9 +170,18 @@ class HeadlineDateScanner(HTMLParser):
             explicitly_dated = bool(re.search(
                 r"(?:^|[\s_-])(?:date|published|pubdate|release|timestamp)",
                 date_label, re.IGNORECASE))
-            if tag in ("section", "figure", "table") or (
-                    tag == "p" and not explicitly_dated):
+            # The scanner must not discover an unrelated date buried in
+            # article prose, footer, navigation or a list of related stories.
+            # A bare, unlabeled div/span date is not a publication witness.
+            if ((tag in ("section", "figure", "table", "nav", "footer",
+                         "aside", "ul", "ol", "article") and
+                 not explicitly_dated) or
+                (tag == "p" and not explicitly_dated)):
                 self.after_headline = False
+                self.dateline_tag_stack = []
+            elif tag not in ("script", "style", "noscript"):
+                self.dateline_tag_stack.append(
+                    (tag, explicitly_dated or tag == "time"))
         if tag in ("script", "style", "noscript"):
             self.skip += 1
         if tag == "title":
@@ -193,7 +203,12 @@ class HeadlineDateScanner(HTMLParser):
             fragment = " ".join(value.split())
             if fragment:
                 self.remaining -= 1
-                when = _visible_date(fragment)
+                explicitly_labeled = (
+                    any(is_dated for _, is_dated in self.dateline_tag_stack)
+                    or bool(re.match(
+                        r"^(?:Published|Released|Date)(?:\s+on)?\s*:",
+                        fragment, re.IGNORECASE)))
+                when = (_visible_date(fragment) if explicitly_labeled else None)
                 if when:
                     self.found.append({
                         "date": when,
@@ -207,6 +222,11 @@ class HeadlineDateScanner(HTMLParser):
     def handle_endtag(self, tag):
         if tag == "title":
             self.in_title = False
+        if self.after_headline and self.dateline_tag_stack:
+            matches = [i for i, pair in enumerate(self.dateline_tag_stack)
+                       if pair[0] == tag]
+            if matches:
+                self.dateline_tag_stack = self.dateline_tag_stack[:matches[-1]]
         if self.in_headline and tag == self.headline_tag:
             heading = " ".join(" ".join(self.headline_text).split())
             title = " ".join(" ".join(self.document_title).split())
@@ -217,6 +237,7 @@ class HeadlineDateScanner(HTMLParser):
             if len(heading) >= 25 and heading.casefold()[:25] in title.casefold():
                 self.after_headline = True
                 self.remaining = 6
+                self.dateline_tag_stack = []
         if tag in ("script", "style", "noscript") and self.skip:
             self.skip -= 1
 

@@ -574,3 +574,70 @@ must not invent a `lowers` or `ambiguous` event just to pass a
 minimum. The new prompts expressly forbid manufactured balancing
 claims. All snapshots remain **research-only**; there is no automatic
 forecast publication or authority to modify `data/history.json`.
+
+## V5: original datelines, reviewed source passages, and directional search rather than forced results
+
+**Fresh** live `research-dry-run` snapshots use version 5 after this
+change. Historical v1–v4 snapshots, source requests, model prompts,
+original passage registers, saved reviewer responses and all previous
+diagnostic results retain their original version and fingerprints.
+Resuming an existing v4 snapshot does **not** retroactively apply v5.
+
+### Publisher dates
+
+The bounded HTML date scanner accepts a publisher-reported visible date
+only in a clearly identified article dateline element adjacent to the
+correct page headline, or a marked `time` element. Generic dates buried
+in ordinary divs, body paragraphs, site navigation, footers and related
+articles no longer count as source-publication dates. The original
+visible text and extraction method are auditable. Neither a dateline
+nor a machine-readable page timestamp independently proves the
+**first** release time; missing or contradictory release information
+remains explicit. Conflicting publisher dates more than one calendar
+day apart are flagged for *both* reviewers and cannot be silently
+accepted as one unambiguous original timestamp.
+
+### Search balance is not an observational quota
+
+The six original source-research categories remain mandatory.
+The researcher must deliberately search for both destabilizing and
+stabilizing possibilities, plus contrary or ambiguous evidence,
+including when searches return nothing eligible. To avoid selecting
+unsupported events merely to fill a quota, **v5 does not require an
+observed item in each of `raises`, `lowers` and `ambiguous`**.
+The original three-direction *observational* requirement remains
+unchanged for historic v1–v4 packets. V5 still requires at least six
+substantive observations from at least three distinct publishers, with
+at least four new observations; every claim must pass the original
+source, date and passage screens, and both independent reviews.
+Missing observed directions are recorded in the audit, not invented.
+
+The v5 screened review packet contains a bounded ledger of the **exact
+queries observed in the OpenAI web-search tool trace** for all six
+categories. Each affirmative and critical reviewer must name
+different, actually executed queries examined for `raises` and
+`lowers` search intent (and optionally genuine ambiguous searches)
+and explain limitations. Reusing one query to certify both intents,
+claiming searches not present in the trace, or failing to examine
+both directions is a review failure; it does not trigger another
+automatic paid research POST.
+
+### Exact original-witness binding and bilingual scrutiny
+
+The source inspector retains the original short passage, URL, original
+HTML body SHA-256 and an unverified model-draft translation, if any.
+A v5 review approving a claim must cite exactly the originally
+captured passage **and** source-body digest in its
+`direction_checks`, and in `translation_checks` when translation
+is needed. Each reviewer independently separates textual support for
+a dated factual event from the proposed effect on stability. The
+model-supplied translation, the exact copied quote, and the reviewer's
+own response are *not* independently authenticated source semantics,
+first-publication facts, or human translation certification. Any
+disagreement, unavailable language competence or unsupported effect
+is a rejection, never a silent promotion to evidence.
+
+This workflow is diagnostic and **never publishes forecasts**. The
+site and archived scored histories are unchanged. New v5 research
+may incur API charges; old completed stages are never replayed simply
+because a later protocol version exists.

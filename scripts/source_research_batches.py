@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3, 4):
+    if fresh_version not in (2, 3, 4, 5):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -270,7 +270,7 @@ def batch_prompt(category, snapshot):
         "that gate nor the model verifies source semantics automatically.")
     if snapshot["version"] == 3:
         return v3  # EXACT v3 historical paid request: never mutate fingerprint.
-    return v3 + (
+    v4 = v3 + (
         "\nMANDATORY V4 MULTILINGUAL SOURCE-ADMISSION UPDATE. "
         "Do not manufacture stabilizing, destabilizing or ambiguous events "
         "to fill quotas. For each new observation keep the reported event "
@@ -298,6 +298,26 @@ def batch_prompt(category, snapshot):
         "over a bundle of claims about multiple sites. If direction cannot "
         "be supported, prefer ambiguous; do not imply effectiveness, "
         "military readiness or source-independence from physical repair alone.")
+    if snapshot["version"] == 4:
+        return v4  # Preserve the exact already-issued v4 paid prompt.
+    return v4 + (
+        "\nV5 DIRECTIONAL SEARCH COVERAGE WITHOUT FORCED FINDINGS: "
+        "Actively run distinct genuine queries for events or observations "
+        "that might RAISE instability and events or observations that "
+        "might LOWER instability, plus ambiguous or contrary evidence. "
+        "Describe both sets of search attempts in the category's ordinary "
+        "queries and limitations fields. Report a searched-but-empty "
+        "direction honestly, including incomplete original-site access. "
+        "Do NOT invent, select or change an observed event solely to "
+        "fill a directional quota; real evidence can legitimately have "
+        "only one direction. A missing raises or lowers finding is a "
+        "documented coverage limitation, NOT proof of bias or grounds "
+        "to re-label another observation. The reviewer must examine "
+        "actual web-search tool queries, not accept a claimed balanced "
+        "search from model prose. For multilingual sources preserve "
+        "the full original quote, only literal draft translation and "
+        "publisher-reported date, and document event facts separately "
+        "from inferred geopolitical sign. Do not score a forecast.")
 
 
 def _normalize_limitation_lists(original):
@@ -599,7 +619,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(4 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(5 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
