@@ -190,7 +190,7 @@ class StageNormalizationTests(unittest.TestCase):
             return self._response(prompt, search)
         result, cited, trace, snapshot = self._run(finish, resume=True, clock=LATER)
         self.assertEqual(self.calls, list(CATEGORIES)[3:])
-        self.assertEqual(snapshot["version"], 5)  # fresh live only; saved v3/v4 unchanged
+        self.assertEqual(snapshot["version"], 6)  # new live V6; original v1-v5 request fingerprints stay unchanged
         self.assertEqual(len(result["coverage_audit"]), 6)
         self.assertEqual(len(cited), 6)
         self.assertEqual(len(trace), 6)
@@ -287,7 +287,7 @@ class StageNormalizationTests(unittest.TestCase):
             return obj, urls
 
         result, _, _, snapshot = self._run(original_paid_response)
-        self.assertEqual(snapshot["version"], 5)
+        self.assertEqual(snapshot["version"], 6)
         original_path = self.folder / "response-1.json"
         original_bytes = original_path.read_bytes()
         stage = read_json(self.folder / "research-batch-primary_data.json")
