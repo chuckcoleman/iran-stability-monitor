@@ -317,10 +317,13 @@ never an extension backdated to October 21. Only eligible versions then
 proceed through alternating affirmative and critical source reviews.
 No diagnostic changes published forecasts, pages, or social posts.
 
-## Fresh-source pre-review admissibility (new v3 snapshots)
+## Historical v3 fresh-source pre-review admissibility (preserved on resume)
 
-The next **fresh** live `research-dry-run` on `main` (with blank
-`resume_run_id`) creates a version-3 research snapshot. The six saved
+The original **version-3** live `research-dry-run` created its
+own new research snapshot. That version remains immutable on any
+`resume_run_id` replay. **After the v4 source-date and bilingual
+improvements, fresh runs with blank `resume_run_id` instead create
+version-4 snapshots.** The six saved
 web searches now ask for **one narrow original-source observation per
 item**, its exact 4–25-word source passage, a declared
 `effect_type`, and a `direction_basis` sentence explaining why that
