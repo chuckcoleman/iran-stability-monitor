@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6, 7)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3, 4, 5, 6):
+    if fresh_version not in (2, 3, 4, 5, 6, 7):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -320,9 +320,9 @@ def batch_prompt(category, snapshot):
         "from inferred geopolitical sign. Do not score a forecast.")
     if snapshot["version"] == 5:
         return v5  # Preserve the exact V5 prompt and its paid request fingerprint.
-    if snapshot["version"] != 6:
+    if snapshot["version"] not in (6, 7):
         raise ValueError("Unsupported source-research prompt version")
-    return v5 + (
+    v6 = v5 + (
         "\nV6 FORWARD-ONLY ADMISSION-READY ORIGINAL SOURCE RESEARCH. "
         "Seek several INDEPENDENT original, accessible publishers per source "
         "category, not just one illustrative item. Choose zero to four "
@@ -359,6 +359,32 @@ def batch_prompt(category, snapshot):
         "when the independent original evidence is sparse. Return "
         "coverage_audit.queries as a FLAT list of genuine search strings, "
         "not purpose-labelled objects. Never issue a forecast or publish.")
+    if snapshot["version"] == 6:
+        return v6  # Preserve exact previously paid V6 prompt and SHA-256.
+    # V7 removes only the historical numerical eligibility instruction.
+    # V1-V6 paid prompts and immutable snapshots remain byte-for-byte intact.
+    old_quota = ("to satisfy the downstream six-source, "
+                 "three-publisher or four-new minimum.")
+    new_policy = ("or misrepresent missing or unsupported evidence. "
+                  "There are NO fixed minimum counts of accepted evidence "
+                  "items, new observations, publishers or directional signs.")
+    if old_quota not in v6:
+        raise ValueError("V6 prompt quota anchor changed")
+    return v6.replace(old_quota, new_policy) + (
+        "\nV7 FORWARD-ONLY NO ACCEPTED-EVIDENCE QUOTA. "
+        "Return all and only genuinely supported findings, including zero "
+        "when search yields none. Do not include a source merely to reach a "
+        "minimum, and do not treat one publisher as independently corroborated "
+        "by multiple articles. An admitted original-source claim is "
+        "provisional until independent affirmative AND critical source "
+        "reviews explicitly assess every source, genuine contradictory "
+        "searches, and whether the sparse evidence can support any "
+        "substantive inference. Neither review may convert a lack of evidence "
+        "into affirmative evidence of absence. Record source and timing "
+        "limitations transparently. There is NO accepted-evidence count, "
+        "publisher-diversity count, new-observation count or observed-direction "
+        "quota. Do not change the original cutoff, evidence citations, "
+        "attribution, source trace or publication prohibition.")
 
 
 def _normalize_limitation_lists(original):
@@ -418,7 +444,7 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
         raise ValueError("Research stage has no original JSON object")
     effective = copy.deepcopy(original)
     changes = []
-    if version not in (5, 6):
+    if version not in (5, 6, 7):
         return effective, changes
     rows = effective.get("coverage_audit")
     if not isinstance(rows, list):
@@ -806,7 +832,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(6 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(7 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
