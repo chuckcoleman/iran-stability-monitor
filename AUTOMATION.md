@@ -1,5 +1,36 @@
 # Iran assessment — reviews before GitHub publication
 
+## Forward-only V7: no accepted-evidence quotas
+
+All new live research diagnostics use V7, and new live prospective assessments
+explicitly select quota-free evidence admission. **No minimum number of
+accepted observations, new observations, distinct publishers, or observed
+directions** is imposed. Zero eligible observations are permitted in the
+research ledger and must be disclosed without manufacturing findings or
+interpreting a lack of observations as proof of stability or instability.
+
+The six *search categories* are still required: that is a coverage obligation,
+not a minimum number of findings. Each submitted claim must independently
+pass exact source URL matching, original-page passage/date/source-status
+controls, directional uncertainty and archival history checks. Every
+source, including rejected/background URLs, remains available for audit.
+
+V7 does not make the research screen an approval. Both affirmative and
+critical reviewers must separately disclose **exact admitted IDs** and
+explain which inferences the evidence supports and which remain unsupported.
+Sparse evidence may lead reviewers to reject an inference without applying
+any numerical threshold. A rejected review, unverifiable source, unresolved
+citation, missing coverage, failed validation, or timeout always blocks
+publication. Forecast issuance additionally requires its own complete
+report-wide validations and both review perspectives.
+
+Old V1–V6 source snapshots and their paid prompt fingerprints are immutable;
+a closed, failed V6 run cannot be retroactively reclassified under V7.
+V6's minimum-count conditions in the following section are **historical
+documentation only**, not requirements for new V7 research. Launch a
+new dated run with no resume ID to apply V7. The previous research and
+forecast histories are not rewritten.
+
 ## Forward-only V6 source-admission research (October 22, 2026)
 
 New, explicitly launched **research-dry-run** diagnostics use a V6 source
