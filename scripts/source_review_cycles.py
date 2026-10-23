@@ -165,6 +165,45 @@ def _prompt(role, packet, digest, common):
             "If zero source observations remain, identify that limitation "
             "explicitly and reject any unsupported geopolitical inference. "
             "The old count thresholds and publisher minimums are inapplicable.")
+    if packet.get("pre_review_admission_version") == 5:
+        common += (
+            "\nV8 TWO DISTINCT SOURCE-REVIEW VERDICTS: "
+            "A SOURCE AUDIT may be complete with correctly disclosed "
+            "missing/inaccessible sources, uncertain publisher release dates, "
+            "historical context and zero accepted observations, while "
+            "the evidence remains INSUFFICIENT for a geopolitical forecast. "
+            "Return audit_integrity_review with EXACT fields: "
+            "audit_status: complete_with_disclosed_limitations|incomplete; "
+            "source_count: integer count of all source_quality_audit.sources; "
+            "coverage_categories: sorted six original search categories; "
+            "research_as_of: original research_as_of string; "
+            "metadata_access_scope: metadata_only_not_full_article; "
+            "first_publication_verified: false; "
+            "historical_context_is_current_evidence: false; "
+            "post_snapshot_search: NOT_SEARCHED; "
+            "assessment: >=80-character assessment of the completeness and "
+            "accuracy of the original-source SEARCH AUDIT; "
+            "limitations: >=80-character account of unavailable article bodies, "
+            "provenance uncertainty, material gaps and the distinction between "
+            "publisher claims and verified original releases. "
+            "Set complete_with_disclosed_limitations ONLY if each reviewed "
+            "original URL has its correct status, every six-category search "
+            "record is correctly described, excluded original claims remain "
+            "excluded, no source retrieval is misreported as a verified "
+            "full-body inspection, metadata dates are not asserted to be "
+            "verified first publication, and historical contextual records "
+            "are not represented as current events. Otherwise set incomplete "
+            "and return specific audit-integrity issues. "
+            "Separately supply source_adequacy_review with the exact retained "
+            "evidence IDs and whether they permit a defensible geopolitical "
+            "inference. If the AUDIT is complete yet geopolitical evidence is "
+            "insufficient, set approved=false and return exactly ONE issue "
+            "with type=insufficient_for_inference, "
+            "location=source_adequacy_review and a specific reason >=40 chars. "
+            "Do not call such an audit a successful forecast; NEVER publish. "
+            "Any additional source-access, date, provenance, coverage or "
+            "factual audit-integrity objection requires audit_status=incomplete "
+            "and still fails the audit, even if no sources were accepted. ")
     return (
         "ROLE: " + role.upper() + " SOURCE QUALITY REVIEW. " +
         ("Seek verifiable supporting and disconfirming context. "
@@ -728,7 +767,7 @@ def deterministic_review_issues(packet, original_cutoff):
                     and guard.get("status") == (
                         "BLOCKED_NOT_PUBLISHABLE" if counts["failures"]
                         else "NO_QUANTITY_QUOTA_DUAL_REVIEW_REQUIRED"
-                        if packet.get("pre_review_admission_version") == 4
+                        if packet.get("pre_review_admission_version") in (4, 5)
                         else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
                     "Saved evidence-diversity safeguard contradicts revised evidence")
             failures = counts["failures"]
