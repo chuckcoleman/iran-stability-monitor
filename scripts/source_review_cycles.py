@@ -924,7 +924,11 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 reviewer=reviewer, now=now,
                 round_number=number,
                 allow_new_after_unknown=allow_new_after_unknown,
-                superseded_unknown_requests=known_unknown)
+                superseded_unknown_requests=known_unknown,
+                # Forward-only V7 recovery of an already completed, explicitly
+                # rejected paid response; historical protocols still hard-fail.
+                record_rejected_alias_conflicts=(
+                    packet.get("pre_review_admission_version") == 4))
             known_unknown.update(response.pop("superseded_unknown_requests"))
             added = v4_required_interpretation_issues(
                 packet, role, response.get("source_reviews", []),
