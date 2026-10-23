@@ -1,5 +1,46 @@
 # Iran assessment — reviews before GitHub publication
 
+## Prospective V10 reviewed reliability before forecast elicitation
+
+V10 source-only research adds a **reproducible factual credibility
+rubric for every new observed claim**, without minimum accepted count
+or mandatory number of corroborators. Original research model grades
+are provisional; only independent original article-body claims with
+documented sources, directness, quality/method and separately reviewed
+contradictions can receive higher confidence. Duplicate reporting
+chains or multiple URLs count as one observation, not corroboration.
+
+The pre-review records preserve every original model claim and proposed
+grade alongside exact article-page passage witnesses, dates,
+publication uncertainty, source-quality annotations and V9 access
+channels. Both affirmative and critical perspectives must return
+their own claim-level factual-grade matrices. Deterministic checks
+validate original ID/publisher/URL identity, duplicate reporting,
+witness availability and consistent grade factors; inconsistent or
+missing entries fail closed. The dual certificate is the conservative
+minimum supported grade, with no independence credit unless both
+perspectives identify the same genuinely separate original-source
+corroborator. Geopolitical direction uncertainty is recorded as
+a distinct qualitative field, not a derived stability sign.
+
+The prospective publication pipeline (V10 and later only) performs
+this full closed-source screening and reliability audit **before**
+the one-time four-event probability elicitation, persisting an
+immutable `claim-reliability-preforecast-certificate.json`.
+Any failed, timed-out, ambiguous or merely inconclusive source
+audit blocks probability elicitation and all publication. A clean
+audit substitutes the derived grades in the NEW evidence ledger;
+past `carried_forward` ratings and all issued history remain
+unchanged. Final forecast and 15-section full-document validation,
+independent affirmative and critical perspectives, and GitHub
+publication gates are additional requirements, not substitutes.
+A source review cannot justify a new probability mechanically.
+
+Live V10 paid research and editorial review are not performed as
+part of this code change. Only explicitly initiated future runs
+may exercise the new pipeline; V1-V9 paid request hashes and
+historical source reviews remain unchanged.
+
 ## V9 source-access provenance: distinct stages, not automatic contradictions
 
 New live `research-dry-run` sessions use the **V9** immutable source
