@@ -272,6 +272,90 @@ class ClaimReliabilityV10Tests(unittest.TestCase):
         self.assertEqual(outcome["directional_candidate_counts"]["failures"], [])
         self.assertEqual(outcome["publication"], "NOT AUTHORIZED")
 
+    def test_live_preforecast_substitutes_only_dual_verified_grades(self):
+        packet = sample_claims(1)
+        proposal = copy.deepcopy(packet["evidence"][0])
+        historical = {
+            "id": "E-20261004-01", "publisher": "Old publisher",
+            "source": "https://historic.example.org/story",
+            "evidence_status": "carried_forward", "reliability": "High",
+            "direction": "ambiguous",
+        }
+        frozen = [copy.deepcopy(historical), copy.deepcopy(proposal)]
+        saved_before = copy.deepcopy(frozen)
+        snapshot = {
+            "version": 10, "snapshot_sha256": "f" * 64,
+            "cutoff_at": "2026-10-23T12:55:00-04:00",
+        }
+        original_review = reviewer_rows(packet)
+        graded = reconcile_dual_reliability(
+            packet, original_review, original_review)
+        result = {
+            "status": "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE",
+            "rounds": 1,
+            "final_review_input_sha256": sha(packet),
+            "claim_reliability": graded,
+            "final_reviewers": {
+                "affirmative": original_review,
+                "critical": original_review,
+            },
+        }
+        screened = {
+            "screened_packet": packet,
+            "status": "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY",
+            "screened_review_input_sha256": sha(packet),
+            "source_review_requests": "PERMITTED_AFTER_SCREEN",
+        }
+        def run(**kwargs):
+            self.assertIs(kwargs["reviewer"], pipeline.LIVE_RESEARCHER)
+            self.assertFalse(kwargs["common"].startswith("SCORE A FORECAST"))
+            return copy.deepcopy(result)
+        with tempfile.TemporaryDirectory() as folder:
+            opts = dict(
+                research={}, frozen=frozen, citations=set(),
+                search_calls=[], coverage=[], quality={},
+                historical_evidence=[historical],
+                history_sha="a" * 64, snapshot=snapshot,
+                date="2026-10-23", now=lambda: NOW,
+                reviewer=pipeline.LIVE_RESEARCHER,
+                audit_dir=Path(folder),
+            )
+            with patch("source_review_resume.load_or_create_review_input",
+                       return_value=(packet, sha(packet), NOW)), \
+                 patch("source_pre_review_admissibility.screen_or_restore",
+                       return_value=screened), \
+                 patch("source_review_cycles.run_alternating_review_cycles",
+                       side_effect=run):
+                amended = pipeline._certify_v10_factual_reliability_before_forecast(
+                    **opts)
+                again = pipeline._certify_v10_factual_reliability_before_forecast(
+                    **opts)
+                self.assertEqual(amended, again)
+            self.assertEqual(amended[0], historical)
+            self.assertEqual(amended[1]["reliability"], "Medium-high")
+            self.assertEqual(amended[1]["geopolitical_direction_confidence"],
+                             "unverified")
+            self.assertEqual(frozen, saved_before)
+            certificate = json.loads((Path(folder) /
+                "claim-reliability-preforecast-certificate.json").read_text())
+            self.assertEqual(certificate["claim_reliability"], graded)
+            self.assertEqual(certificate["publication"], "NOT AUTHORIZED")
+            self.assertTrue(
+                certificate["historical_carry_forward_unchanged"])
+            # A falsified higher grade must not be allowed through simply
+            # because a JSON certificate claims reviewer approval.
+            result["claim_reliability"][0]["factual_reliability"] = "High"
+            with patch("source_review_resume.load_or_create_review_input",
+                       return_value=(packet, sha(packet), NOW)), \
+                 patch("source_pre_review_admissibility.screen_or_restore",
+                       return_value=screened), \
+                 patch("source_review_cycles.run_alternating_review_cycles",
+                       side_effect=run):
+                with self.assertRaisesRegex(
+                        ValueError, "do not reproduce from"):
+                    pipeline._certify_v10_factual_reliability_before_forecast(
+                        **opts)
+
     def test_live_preforecast_rejected_audit_never_elicits_probability(self):
         packet = sample_claims(1)
         frozen = copy.deepcopy(packet["evidence"])
