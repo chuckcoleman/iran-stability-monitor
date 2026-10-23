@@ -28,6 +28,21 @@ corroboration must be recorded, not fabricated or replaced with a guessed
 timestamp. An empty category is a documented limit, **not** evidence of
 stability. None of these categories imposes an accepted-evidence quota.
 
+Before freezing the source snapshot, **research promising evidence more
+deeply**. After the six-category scan, identify relevant adverse, stabilizing
+and contradictory leads; trace underlying data, dates, populations, methods
+and common reporting chains; look for genuine primary corroboration and
+challenging observations. Document the actual follow-up queries, original
+source URLs, the result for each promising lead, and unresolved capture or
+publication-time limitations in the working source audit. A held or
+contradicted lead remains contextual, not a newly admitted observation.
+Any discovered URLs proposed for citation must join the six-category
+coverage and source-quality inventories. Both source-review perspectives
+must inspect this follow-up before any forecast. The research cutoff is
+immutable: later inspection cannot retroactively add sources to it.
+This research stage introduces no accepted-evidence quota or shortcut
+around raw HTML proof, conservative V10 grades or the preforecast seal.
+
 Freeze the original evidence as-of instant, exact original URL links,
 claim passages and reporting-chain identities. Prepare the V10 conservative
 factual reliability assessment for **every newly admitted claim**: both

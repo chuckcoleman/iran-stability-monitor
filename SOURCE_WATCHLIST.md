@@ -244,6 +244,62 @@ Houthis/regional military risk, inflation/humanitarian conditions), look
 for both confirming and contradicting reports across several different
 source categories when reporting exists.
 
+### Targeted follow-up research for promising evidence
+
+After the six-category discovery sweep and **before the evidence cutoff or any
+forecast**, triage every selected original or context URL as **promising for
+investigation**, **context only**, or **excluded**, recording why, its
+relevance to a frozen event or diagnostic, and a high/normal/low research
+priority. Priority is a research-effort decision, NOT reliability, risk
+direction, an accepted-evidence quota, or permission to elicit forecasts.
+Promising evidence includes adverse, stabilizing, ambiguous and
+contradictory observations.
+
+For each promising lead, perform actual targeted research rather than merely
+repeating its headline:
+
+- Follow numerical claims back to the ORIGINAL primary register, dataset,
+  source investigator or first-hand report. Seek the original HTML, canonical
+  URL, source-body bytes, exact passage, release uncertainty and actual
+  retrieval time. If unavailable, **hold** the claim; never manufacture
+  hashes, source passages, or independent publication times.
+- Write down the exact geography, observation interval, population,
+  denominator, unit, inclusion criteria and method. A cumulative regional
+  confirmed-incident list, a monthly reported/confirmed attack tally and a
+  week's vessel traffic are distinct measures, not interchangeable counts.
+- Trace syndication and common attribution to a single underlying reporting
+  chain. A Reuters article quoting an institute's incident total and another
+  article repeating it do NOT constitute independent confirmation.
+- Search explicitly for disconfirming and stabilizing observations, conflicting
+  incident reports, backfilled cases, alternative explanations and genuine
+  independent original material. Record the actual search queries, supported
+  and contrary sources, access-stage discrepancies, and specific limitations.
+- Include every newly cited primary or contrary URL in the ordinary
+  six-category coverage and per-source quality inventories. Preserve each
+  result in a **working follow-up audit** before the cutoff with a final
+  disposition: provisional candidate for the normal V10 dual-review screen,
+  held unverified, contradicted, or context only.
+
+Both affirmative and critical SOURCE-review perspectives must inspect the
+promising and held research outcomes before any scored forecast. They should
+record which claims gained reliable original support and which remained
+unverified or immaterial. A held lead is not an admitted new observation;
+no fixed number of promising or accepted claims is required, and an empty
+result is not evidence of stability. The existing source-packet and
+preforecast-certificate hash seals and all publication guards remain in
+force; this follow-up is additional investigative work, not a replacement
+for independently checked original captures or either review.
+
+**Maritime example (not preapproved evidence):** For the IMO's cumulative
+regional incident register, Lloyd's List's weekly non-Iranian-linked cargo
+transits, and Reuters' Washington Institute-attributed attack tally, pursue
+UKMTO's individual notices, IMO ship and incident identifiers, the
+Washington Institute's maritime-attack map and original provider definitions.
+Reconcile periods, event types, late incident reports, shared reporting
+chains and contrary evidence that shipping continues despite attacks.
+Do not turn any of these three observations into a V10-admitted claim
+without the ordinary original-source and source-review checks.
+
 **Audit the sweep BEFORE the evidence cutoff and forecast elicitation:**
 Record actual scan time/window, topical searches, outlet classes inspected,
 links retrieved, access restrictions, item classifications and underlying

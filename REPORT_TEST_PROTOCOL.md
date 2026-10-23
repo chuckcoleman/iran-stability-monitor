@@ -79,6 +79,20 @@ silently promoted to PASS. Known material FAIL blocks releasing the item.
    Sunday assessments additionally require a version-3 machine
    section-review matrix and matching SHA-256 report/receipt digest.
 
+## Promising-source targeted research check
+
+For each source flagged promising during the six-category scan, test that
+the researcher actually pursued the upstream primary record or dataset,
+exact period/geography/denominator/method, independent reporting chains,
+opposing or stabilizing evidence, and original source-body availability
+before the cutoff. Mark gaps and unconfirmed origins explicitly; ensure
+newly found cited URLs enter the ordinary coverage and source-quality
+register. Check that both affirmative and critical SOURCE perspectives
+review the promising, held and contradictory findings before probabilities.
+No research result, including an empty one, bypasses the V10 gates or
+justifies a mechanical risk increase. Record unperformed research as
+NOT TESTED, not PASS.
+
 ## All-source evidence-quality tests
 
 A source appearing in a search result does not prove the related claim.
