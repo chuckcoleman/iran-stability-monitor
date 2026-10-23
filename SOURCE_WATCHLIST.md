@@ -1,5 +1,55 @@
 # Sunday research source watchlist — effective 2026-10-25
 
+## V10 claim-level reliability is not a publisher reputation score
+
+New V10 source research retains the six adaptive source categories and all
+material confirming and contradictory reporting as source-audit context.
+The search is a bounded survey, never a claim that every possible outlet
+has been examined. No minimum of accepted observations, publishers, or
+corroborating articles is imposed. Repeated wire copies and forwarded
+government statements are not independent confirmation.
+
+**Factual reliability for each newly admitted observation** now uses a
+versioned, reproducible ordinal rubric. The model's suggested High /
+Medium-high / Medium / Low rating is PROVISIONAL. It is replaced *before
+prospective forecast elicitation* with the lower of two substantive,
+separately recorded reviewer judgments (with an additional downgrade
+when their alleged corroborators have no common independent original
+source). Inputs are: documented original-source method and editorial
+quality rather than name recognition, directness of the particular
+claim, separately captured original article-body passage, genuine
+claim-matched original reporting from independently authored sources
+with distinct publishers, and materially contradictory evidence.
+Each reviewer records its detailed reasoning and exact referenced
+evidence identifiers. Original-source URL citations or the number of
+stories do NOT themselves establish corroboration.
+
+A documented first-party original measurement with a valid exact
+passage may be Medium-high without a second publisher; absence of
+corroboration is disclosed, not a numerical fail. High requires
+documented original primary method **and** jointly identified,
+separately witnessed, genuinely independent corroboration. An
+attributed original claim without such corroboration is at most
+Medium; unknown sources/methods, missing original passage, or unresolved
+material contradictions force Low. Known but addressed contradictions
+limit the grade to Medium. Editorial judgments cannot be elevated
+through string checks or publisher brands alone.
+
+**Factual certainty and expected effect on Iranian stability remain
+separate axes.** A High-quality real event may have unverified or
+ambiguous national stability consequences. Source-quality grades do
+not automatically set warning directions, forecast probabilities,
+impact magnitudes or political conclusions. Both full-document reviews
+and all separately frozen forecast event rules still apply.
+
+For prospective V10, failure of source inspection, reviewer-quality
+assessment, dual-grade reconciliation or audit completeness blocks
+the forecast before probabilities are drawn. Historical recorded
+grades, evidence IDs, dates and previously published forecasts
+remain unchanged. The full private source and review certificate
+records exactly why any new rating differs from the research model's
+proposed rating.
+
 ## V9 cross-stage access audit: model narration versus HTTP evidence
 
 Preserve three independent records for each original research URL: the
