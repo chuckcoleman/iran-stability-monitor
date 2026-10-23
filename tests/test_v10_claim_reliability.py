@@ -356,6 +356,51 @@ class ClaimReliabilityV10Tests(unittest.TestCase):
                     pipeline._certify_v10_factual_reliability_before_forecast(
                         **opts)
 
+    def test_corrected_narrowed_claim_cannot_restore_original_publication_text(self):
+        packet = sample_claims(1)
+        original = copy.deepcopy(packet["evidence"][0])
+        changed = copy.deepcopy(packet)
+        changed["evidence"][0]["observation"] = (
+            "A different, narrowed original quotation-only statement "
+            "replaces the previously reviewed causal observation.")
+        model = reviewer_rows(changed)
+        reviewed = reconcile_dual_reliability(changed, model, model)
+        snapshot = {
+            "version": 10, "snapshot_sha256": "f" * 64,
+            "cutoff_at": "2026-10-23T12:55:00-04:00",
+        }
+        screen = {
+            "screened_packet": packet,
+            "status": "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY",
+            "screened_review_input_sha256": sha(packet),
+            "source_review_requests": "PERMITTED_AFTER_SCREEN",
+        }
+        outcome = {
+            "status": "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE",
+            "rounds": 2,
+            "final_review_input_sha256": sha(changed),
+            "claim_reliability": reviewed,
+            "final_reviewers": {"affirmative": model, "critical": model},
+        }
+        with tempfile.TemporaryDirectory() as folder:
+            with patch("source_review_resume.load_or_create_review_input",
+                       return_value=(packet, sha(packet), NOW)), \\
+                 patch("source_pre_review_admissibility.screen_or_restore",
+                       return_value=screen), \\
+                 patch("source_review_cycles.run_alternating_review_cycles",
+                       return_value=outcome), \\
+                 patch("source_research_batches.read_json",
+                       return_value={"sample": changed}):
+                with self.assertRaisesRegex(
+                        ValueError, "narrowed or changed"):
+                    pipeline._certify_v10_factual_reliability_before_forecast(
+                        research={}, frozen=[original], citations=set(),
+                        search_calls=[], coverage=[], quality={},
+                        historical_evidence=[], history_sha="a" * 64,
+                        snapshot=snapshot, date="2026-10-23",
+                        now=lambda: NOW, reviewer=pipeline.LIVE_RESEARCHER,
+                        audit_dir=Path(folder))
+
     def test_live_preforecast_rejected_audit_never_elicits_probability(self):
         packet = sample_claims(1)
         frozen = copy.deepcopy(packet["evidence"])
