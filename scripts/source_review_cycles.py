@@ -1158,11 +1158,13 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                   "publication": "NOT AUTHORIZED"}
         if packet.get("pre_review_admission_version") == 5:
             record["source_audit_status"] = (
-                "COMPLETE_WITH_DISCLOSED_LIMITATIONS" if inconclusive_audit
-                else "NOT_CERTIFIED_COMPLETE")
+                "COMPLETE_WITH_DISCLOSED_LIMITATIONS"
+                if inconclusive_audit or clean else "NOT_CERTIFIED_COMPLETE")
             record["inference_status"] = (
                 "INSUFFICIENT_FOR_GEOPOLITICAL_FORECAST"
-                if inconclusive_audit else "NOT_CERTIFIED")
+                if inconclusive_audit else
+                "LIMITED_SOURCE_INFERENCE_REVIEWED_NO_FORECAST_TESTED"
+                if clean else "NOT_CERTIFIED")
         path = folder / f"source-review-round-{number:02d}.json"
         if path.exists():
             require(read_json(path) == record,
@@ -1248,12 +1250,15 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
         # byte-for-byte unchanged. These two axes are new to V8 only.
         inconclusive = (
             status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE")
+        limited_reviewed = (
+            status == "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE")
         outcome["source_audit_status"] = (
-            "COMPLETE_WITH_DISCLOSED_LIMITATIONS" if inconclusive
-            else "NOT_CERTIFIED_COMPLETE")
+            "COMPLETE_WITH_DISCLOSED_LIMITATIONS"
+            if inconclusive or limited_reviewed else "NOT_CERTIFIED_COMPLETE")
         outcome["forecast_inference_status"] = (
             "INSUFFICIENT_FOR_GEOPOLITICAL_FORECAST" if inconclusive
-            else "NOT_CERTIFIED")
+            else "LIMITED_SOURCE_INFERENCE_REVIEWED_NO_FORECAST_TESTED"
+            if limited_reviewed else "NOT_CERTIFIED")
         outcome["prospective_forecasts"] = "NOT TESTED"
     if terminal_gate is not None:
         outcome["terminal_evidence_gate"] = terminal_gate
