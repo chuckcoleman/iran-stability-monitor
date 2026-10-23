@@ -478,6 +478,10 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                 if any(decision.get("original_url") == row["url"]
                        and decision.get("original_passage")
                        and decision.get("source_body_sha256")
+                       and not any(reason in (
+                           "NO_EXACT_RETRIEVED_ORIGINAL_BODY_PASSAGE",
+                           "INVALID_ORIGINAL_PASSAGE_PROVENANCE")
+                           for reason in decision.get("reasons", []))
                        for decision in decisions)
                 else "NO_EXACT_CLAIM_PASSAGE_IN_ORIGINAL_REGISTER")
             row["v8_current_event_status"] = (
