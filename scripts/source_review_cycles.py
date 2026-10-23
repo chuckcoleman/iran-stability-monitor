@@ -481,6 +481,21 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                 "reason": role + " reviewer cannot certify audit completeness "
                           "while reporting an unresolved source-access "
                           "discrepancy in a frozen original URL."})
+    if review_version == 7:
+        # Model-suggested reliability cannot serve as a verified grade.
+        # Parse every retained claim's source/method, independent reporting
+        # chain, exact passage witness and contradictory evidence before
+        # treating either source-review perspective as sufficient.
+        try:
+            assess_review_claims(packet, role, review_response or {})
+        except (ValueError, TypeError, KeyError) as exc:
+            issues.append({
+                "type": "v10_claim_reliability_not_independently_validated",
+                "location": "claim_reliability_reviews",
+                "reason": role + " source reviewer did not supply a "
+                          "reproducible claim-specific factual grade with "
+                          "grounded provenance: " + str(exc)[:250],
+            })
     for decision in packet.get("pre_review_claim_decisions", []):
         if decision.get("id") not in active:
             continue
@@ -1365,6 +1380,24 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                  and not invariant_issues)
         inconclusive_audit = v8_complete_but_inconclusive(
             packet, result, invariant_issues, enforce_guards=enforce_guards)
+        claim_reliability = None
+        if packet.get("pre_review_admission_version") == 7 and all(
+                not any(issue.get("type") ==
+                        "v10_claim_reliability_not_independently_validated"
+                        for issue in result[role]["issues"])
+                for role in ("affirmative", "critical")):
+            try:
+                claim_reliability = reconcile_dual_reliability(
+                    packet, result["affirmative"], result["critical"])
+            except (ValueError, TypeError, KeyError) as exc:
+                invariant_issues.append({
+                    "type": "v10_claim_reliability_dual_review_disagreement",
+                    "location": "claim_reliability_reviews",
+                    "reason": "Dual source reviewer reliability comparison "
+                              "could not reproduce: " + str(exc)[:250],
+                })
+                clean = False
+                inconclusive_audit = False
         record = {"round": number, "input_sha256": digest,
                   "deterministic_issues": invariant_issues,
                   "affirmative": result["affirmative"],
@@ -1374,6 +1407,12 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                       "SOURCE_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
                       if inconclusive_audit else "REJECTED_NOT_PUBLISHABLE"),
                   "publication": "NOT AUTHORIZED"}
+        if packet.get("pre_review_admission_version") == 7:
+            record["claim_reliability"] = (
+                claim_reliability if claim_reliability is not None else
+                "NOT_VALIDATED")
+            record["reliability_review_policy"] = (
+                "CONSERVATIVE_TWO_REVIEWER_FACTUAL_NOT_DIRECTIONAL")
         if packet.get("pre_review_admission_version") in (5, 6, 7):
             record["source_audit_status"] = (
                 "COMPLETE_WITH_DISCLOSED_LIMITATIONS"
@@ -1463,6 +1502,13 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                "limitations": "All rejected review versions are preserved. "
                    "Only conservative exclusions and qualifications, not new "
                    "research verification, were permitted."}
+    if sample.get("pre_review_admission_version") == 7:
+        # Only V10 includes the new claim-quality certificate; earlier
+        # completed audits and forecast evidence cannot be recalibrated.
+        outcome["claim_reliability"] = rounds[-1].get(
+            "claim_reliability", "NOT_VALIDATED")
+        outcome["reliability_scope"] = (
+            "FACTUAL_CREDIBILITY_ONLY_DIRECTION_REVIEWED_SEPARATELY")
     if sample.get("pre_review_admission_version") in (5, 6, 7):
         # Existing V1-V7 outcome hashes and old paid checkpoints remain
         # byte-for-byte unchanged. These two axes are new to V8 only.
