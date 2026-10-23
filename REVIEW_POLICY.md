@@ -1,5 +1,34 @@
 # Prospective alternating affirmative and critical ChatGPT reviews — effective 2026-10-25
 
+## ChatGPT-first complete handoff and auditable six-class research
+
+The default next-assessment pathway is described in
+[CHATGPT_HANDOFF.md](CHATGPT_HANDOFF.md). ChatGPT-prepared research and
+review results are provided as an immutable, hash-bound source dossier
+plus a version-3 ChatGPT alternating full-report receipt and Markdown
+15-section review report. A real ChatGPT session must actually perform
+the research and both perspectives. CI verifies the proposed data and
+frozen Protocol-v1 forecast history without invoking an OpenAI model.
+
+The six required research categories, original URL inventory, source
+inspection/release uncertainty, independent-versus-syndicated reporting,
+counterevidence, V10 claim-level factual grades and separate geopolitical
+direction confidence remain mandatory. Source/body hashes and browser
+search descriptions supplied by ChatGPT are **assertions**, not
+provider-authenticated network traces; do not claim machine validation
+proves source truth or that the two reviews are independent models.
+The reviewer report must state genuine limitations and deny publication
+when those cannot be resolved.
+
+Any v3 receipt explicitly marked
+`research_mode: chatgpt_first_no_api` must bind the complete canonical
+source-dossier SHA-256. GitHub's prepublication receipt gate verifies that
+the dossier and exact reviewed report are present, the grades reproduce
+from both submitted source review perspectives, and carried-forward
+historical observations remain unchanged. Unmarked earlier receipts
+retain their original validation instead of being retroactively
+recertified as ChatGPT-first.
+
 ## V10 mandatory dual-reviewed factual reliability before forecasting
 
 All new V10 publication candidates require claim-specific reliability
