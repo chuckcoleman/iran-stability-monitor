@@ -287,6 +287,71 @@ def verify_all_chatgpt_source_dossiers(root, history):
     return count
 
 
+def verify_review_artifact_immutability(baseline_ref, root, before, after):
+    """Allow only files for ONE newly appended Sunday; freeze all prior reviews.
+
+    A code-only PR must not pass by deleting an old source dossier *and*
+    its matching review receipt. Every file tracked by the base commit in
+    the four protected directories is compared byte-for-byte with the
+    current checkout using local git objects. No GitHub or OpenAI calls.
+    """
+    import os
+    root = Path(root)
+    if not (root / ".git").exists():
+        # Some isolated unit tests patch the baseline history without a Git
+        # repository. CI and actual publication MUST have local Git objects.
+        require(os.getenv("GITHUB_ACTIONS") != "true",
+                "CI review integrity checks require a complete Git checkout")
+        return "Synthetic fixture without Git history"
+    directories = ("data/review-receipts", "data/review-drafts",
+                   "data/review-reports", "data/source-dossiers")
+    prior = subprocess.check_output(
+        ["git", "ls-tree", "-r", "--name-only", baseline_ref,
+         "--", *directories], cwd=root).decode("utf-8").splitlines()
+    require(len(prior) == len(set(prior)),
+            "Duplicate historical review artifact paths")
+    tracked = set(prior)
+    for name in prior:
+        file = root / name
+        require(file.is_file(),
+                "Previously committed review artifact was removed: " + name)
+        original = subprocess.check_output(
+            ["git", "show", baseline_ref + ":" + name], cwd=root)
+        require(file.read_bytes() == original,
+                "Historical review artifact was modified: " + name)
+    future = set()
+    for folder in directories:
+        directory = root / folder
+        if not directory.exists():
+            continue
+        require(directory.is_dir(), "Invalid review artifact folder")
+        for file in directory.iterdir():
+            require(file.is_file() and file.suffix in (".json", ".md"),
+                    "Unrecognized artifact in protected review directory")
+            name = file.relative_to(root).as_posix()
+            if name not in tracked:
+                future.add(name)
+    # A new record can introduce exactly its own dated review artifacts;
+    # code-only or resolution-only changes may NOT alter these directories.
+    appended = (isinstance(before.get("updates"), list)
+                and isinstance(after.get("updates"), list)
+                and len(after["updates"]) == len(before["updates"]) + 1
+                and after["updates"][:-1] == before["updates"])
+    allowed = set()
+    if appended:
+        date = after["updates"][-1]["date"]
+        allowed = {
+            "data/review-receipts/" + date + ".json",
+            "data/review-drafts/" + date + ".json",
+            "data/review-reports/" + date + ".md",
+            "data/source-dossiers/" + date + ".json",
+        }
+    require(future <= allowed,
+            "Historical review artifacts changed without a new dated "
+            "assessment: " + repr(sorted(future - allowed)))
+    return "Historical review artifacts match Git baseline"
+
+
 def verify_repository_change(baseline_ref, root=ROOT, now=None):
     """Read only the local checkout and git object database. No remote calls."""
     root = Path(root)
@@ -294,6 +359,7 @@ def verify_repository_change(baseline_ref, root=ROOT, now=None):
         ["git", "show", baseline_ref + ":data/history.json"], cwd=root)
     before = json.loads(original)
     after = json.loads((root / "data/history.json").read_bytes())
+    verify_review_artifact_immutability(baseline_ref, root, before, after)
     # Validate all extant ChatGPT provenance even on a code-only change.
     # A changed dossier with unchanged data/history.json is not an exemption.
     verify_all_chatgpt_source_dossiers(root, after)
