@@ -149,6 +149,98 @@ class QualityAuditTests(unittest.TestCase):
                 validate_source_review({"approved":True,"source_reviews":invalid},
                                        quality,"critical")
 
+    def test_tracking_only_aliases_are_transparent_redundancies_not_new_sources(self):
+        quality = source_quality_audit(research(), metadata())
+        rows = [{
+            "url": source["url"],
+            "assessment": ("The original article was individually assessed; "
+                           "its publisher-supplied details do not establish truth."),
+            "disposition": "supported_as_qualified",
+        } for source in quality["sources"]]
+        aliases = [
+            {"url": URL1 + "?utm_source=chatgpt.com",
+             "assessment": ("This is only the tracking-parameter rendition "
+                            "of the original source, not another observation."),
+             "disposition": "supported_as_qualified"},
+            {"url": URL2 + "?utm_medium=referral&utm_source=chatgpt.com",
+             "assessment": ("This tracked URL refers to the same actual "
+                            "original article, not to an independent source."),
+             "disposition": "supported_as_qualified"},
+        ]
+        reviewed = {"approved": True, "issues": [],
+                    "source_reviews": rows + aliases}
+        before = copy.deepcopy(reviewed)
+        ledger = validate_source_review(
+            reviewed, quality, "affirmative", return_aliases=True)
+        self.assertEqual(len(ledger), 2)
+        self.assertEqual([entry["canonical_url"] for entry in ledger],
+                         [URL1, URL2])
+        self.assertEqual(
+            {entry["origin"] for entry in ledger},
+            {"TRACKING_ONLY_REDUNDANT_NOT_INDEPENDENT_SOURCE"})
+        self.assertTrue(validate_source_review(reviewed, quality, "affirmative"))
+        self.assertEqual(reviewed, before)
+
+        for kind in ("missing_canonical", "wrong_disposition", "unknown_path",
+                     "nontracking_query", "url_fragment", "duplicate_alias",
+                     "duplicate_canonical", "fake_new_source", "too_many"):
+            bad = copy.deepcopy(reviewed)
+            if kind == "missing_canonical":
+                bad["source_reviews"] = bad["source_reviews"][1:]
+            elif kind == "wrong_disposition":
+                bad["source_reviews"][-1]["disposition"] = "background_only"
+            elif kind == "unknown_path":
+                bad["source_reviews"][-1]["url"] = (
+                    URL2.replace("202610200001", "different") + "?utm_source=x")
+            elif kind == "nontracking_query":
+                bad["source_reviews"][-1]["url"] = URL2 + "?article=another"
+            elif kind == "url_fragment":
+                bad["source_reviews"][-1]["url"] = (
+                    URL2 + "?utm_source=chatgpt.com#unverified")
+            elif kind == "duplicate_alias":
+                bad["source_reviews"].append(copy.deepcopy(aliases[0]))
+            elif kind == "duplicate_canonical":
+                bad["source_reviews"].append(copy.deepcopy(rows[0]))
+            elif kind == "fake_new_source":
+                bad["source_reviews"][-1]["url"] = (
+                    "https://invented.example.org/uncited")
+            elif kind == "too_many":
+                bad["source_reviews"].extend(copy.deepcopy(aliases[0])
+                    for _ in range(17))
+            with self.subTest(kind=kind):
+                with self.assertRaises(ValueError):
+                    validate_source_review(bad, quality, "critical")
+        # A tracking alias cannot make a rejected source look approved.
+        rejected = copy.deepcopy(reviewed)
+        rejected["source_reviews"][-1]["disposition"] = "unverified_reject"
+        with self.assertRaises(ValueError):
+            validate_source_review(rejected, quality, "affirmative")
+
+    def test_tracker_aliases_preserve_original_content_selecting_query(self):
+        quality = {"sources": [{"url":
+            "https://www.intellinews.com/iran-report/?source=iran"}]}
+        original = quality["sources"][0]["url"]
+        text = ("Review of the original publisher URL and the limits "
+                "of the source's publication-time provenance.")
+        reviews = [{
+            "url": original, "assessment": text,
+            "disposition": "background_only"
+        }, {
+            "url": original + "&utm_source=chatgpt.com",
+            "assessment": text,
+            "disposition": "background_only"
+        }]
+        verdict = {"approved": True, "source_reviews": reviews}
+        self.assertEqual(
+            len(validate_source_review(verdict, quality, "affirmative",
+                                       return_aliases=True)), 1)
+        wrong = copy.deepcopy(verdict)
+        wrong["source_reviews"][-1]["url"] = (
+            "https://www.intellinews.com/iran-report/"
+            "?source=other&utm_source=chatgpt.com")
+        with self.assertRaises(ValueError):
+            validate_source_review(wrong, quality, "critical")
+
     def test_critical_unverified_rejection_disallows_global_pass(self):
         quality=source_quality_audit(research(),metadata())
         reviews=[{"url":row["url"],

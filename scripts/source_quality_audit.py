@@ -7,6 +7,7 @@ to the affirmative and critical reviewers and document every consulted URL.
 import hashlib
 import json
 from pathlib import Path
+from urllib.parse import parse_qsl, urlsplit
 
 from source_metadata import url_key
 
@@ -184,30 +185,86 @@ def save_quality_audit(directory, audit):
     return path
 
 
-def validate_source_review(decision, quality, role):
-    """Require a substantive affirmative or critical check for EVERY source.
+def _review_tracking_alias(original, canonical):
+    """Accept *only* a tracking-decorated copy of the same public source URL.
 
-    A global approved flag cannot override omitted articles or source issues.
+    This is not another source, citation, corroboration or evidence item.
+    Preserve all of the publisher/path/content-selecting query parameters and
+    refuse fragments, path substitutions or other guessed equivalences.
     """
-    urls={row["url"] for row in quality["sources"]}
-    reviews=decision.get("source_reviews") if isinstance(decision,dict) else None
-    _check(isinstance(reviews,list) and len(reviews)==len(urls),
-           role+" reviewer did not inspect every quality-audit source")
-    seen=set()
+    if not isinstance(original, str) or original == canonical:
+        return False
+    if url_key(original) != canonical:
+        return False
+    try:
+        raw, base = urlsplit(original), urlsplit(canonical)
+        if (raw.scheme != base.scheme or raw.netloc.lower() != base.netloc.lower()
+                or raw.path != base.path or raw.fragment):
+            return False
+        supplied = parse_qsl(raw.query, keep_blank_values=True)
+        original_fields = parse_qsl(base.query, keep_blank_values=True)
+        retained = [(k, v) for k, v in supplied
+                    if not k.lower().startswith("utm_")
+                    and k not in ("fbclid", "gclid")]
+        return (retained == original_fields
+                and len(supplied) > len(retained))
+    except (TypeError, ValueError):
+        return False
+
+
+def validate_source_review(decision, quality, role, *, return_aliases=False):
+    """Require an explicit substantive review of EVERY canonical source.
+
+    A completed reviewer may mention a source again with tracking-only query
+    parameters. Recognize that row as a *redundant alias*, never a new source,
+    provided the exact canonical source also has a separate review with the
+    same disposition. Keep both raw rows in the original response. All
+    missing, contradictory, content-changing or duplicate canonical reviews
+    still fail. The alias ledger is returned only when explicitly requested.
+    """
+    urls = {row["url"] for row in quality["sources"]}
+    reviews = (decision.get("source_reviews")
+               if isinstance(decision, dict) else None)
+    _check(isinstance(reviews, list) and
+           len(urls) <= len(reviews) <= len(urls) + 16,
+           role + " reviewer did not inspect every quality-audit source")
+    canonical = {}
+    seen_aliases = set()
+    aliases = []
     for item in reviews:
-        _check(isinstance(item,dict),"Malformed "+role+" source review")
-        key=url_key(item.get("url"))
-        _check(key in urls and key not in seen,
-               role+" source review duplicates or omits an original URL")
-        seen.add(key)
-        _check(isinstance(item.get("assessment"),str)
-               and len(item["assessment"].strip())>=30,
-               role+" source review needs specific substantive findings")
+        _check(isinstance(item, dict), "Malformed " + role + " source review")
+        raw = item.get("url")
+        key = url_key(raw)
+        _check(key in urls,
+               role + " source review contains uncited or unknown original URL")
+        _check(isinstance(item.get("assessment"), str)
+               and len(item["assessment"].strip()) >= 30,
+               role + " source review needs specific substantive findings")
         _check(item.get("disposition") in ("supported_as_qualified",
-                                          "background_only","unverified_reject"),
-               role+" source review missing evidence-quality disposition")
-        if item["disposition"]=="unverified_reject":
+                                          "background_only", "unverified_reject"),
+               role + " source review missing evidence-quality disposition")
+        if item["disposition"] == "unverified_reject":
             _check(decision.get("approved") is False,
-                   role+" cannot approve a rejected or unverified source")
-    _check(seen==urls,role+" source reviews omit quality audit URLs")
-    return True
+                   role + " cannot approve a rejected or unverified source")
+        if raw == key:
+            _check(key not in canonical,
+                   role + " source review duplicates original canonical URL")
+            canonical[key] = item
+        else:
+            _check(_review_tracking_alias(raw, key),
+                   role + " source review URL has unverified nontracking changes")
+            _check(raw not in seen_aliases,
+                   role + " source review repeats a tracking alias")
+            seen_aliases.add(raw)
+            aliases.append({
+                "url": raw,
+                "canonical_url": key,
+                "disposition": item["disposition"],
+                "origin": "TRACKING_ONLY_REDUNDANT_NOT_INDEPENDENT_SOURCE",
+            })
+    _check(set(canonical) == urls,
+           role + " source reviews omit quality audit URLs")
+    for row in aliases:
+        _check(row["disposition"] == canonical[row["canonical_url"]]["disposition"],
+               role + " tracking alias contradicts canonical source disposition")
+    return aliases if return_aliases else True
