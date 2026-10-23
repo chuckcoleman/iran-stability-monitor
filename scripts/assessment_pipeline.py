@@ -1022,7 +1022,8 @@ def _certify_v10_factual_reliability_before_forecast(
     from source_passage_audit import build_claim_register
     from source_pre_review_admissibility import screen_or_restore
     from source_review_cycles import run_alternating_review_cycles
-    from source_claim_reliability import apply_reviewed_reliability
+    from source_claim_reliability import (apply_reviewed_reliability,
+                                          reconcile_dual_reliability)
     from read_only_research_dry_run import SOURCE_REVIEW_COMMON
 
     check(isinstance(snapshot, dict) and snapshot.get("version") == 10
@@ -1082,6 +1083,14 @@ def _certify_v10_factual_reliability_before_forecast(
           "Final review evidence differs from approved source quality")
     ratings = result.get("claim_reliability")
     check(isinstance(ratings, list), "Dual factual-grade certificate missing")
+    reviewers = result.get("final_reviewers")
+    check(isinstance(reviewers, dict)
+          and "affirmative" in reviewers and "critical" in reviewers,
+          "Dual source reviewer provenance missing from grade certificate")
+    check(ratings == reconcile_dual_reliability(
+        final_packet, reviewers["affirmative"], reviewers["critical"]),
+        "Derived reliability grades do not reproduce from the immutable "
+        "affirmative and critical source responses")
     retained = {e["id"] for e in final_packet["evidence"]}
     combined = [copy.deepcopy(e) for e in frozen
                 if e.get("evidence_status") == "carried_forward"
