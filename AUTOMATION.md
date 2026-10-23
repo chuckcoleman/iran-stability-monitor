@@ -1,5 +1,43 @@
 # Iran assessment — reviews before GitHub publication
 
+## V9 source-access provenance: distinct stages, not automatic contradictions
+
+New live `research-dry-run` sessions use the **V9** immutable source
+snapshot; every V1–V8 research prompt, paid API fingerprint, frozen cutoff
+and previously saved source-review result remains unchanged.
+
+For **every canonical original-source URL**, the screened V9 packet has
+`v9_access_channels` with three independent provenance streams:
+
+1. **Earlier research model's search-stage access statement and limitations.**
+   This is preserved text from the original paid model output and bound to
+   its SHA-256, **not** an independent HTTP access log.
+2. **Later Python metadata HTTP probe.** Its actual retrieval/access status,
+   original parser status, and publisher-supplied time are recorded without
+   claiming full article-body inspection or proven first publication. It may
+   legitimately succeed after a search-stage request was reportedly blocked,
+   or fail after a search-stage response was apparently readable.
+3. **Separately retrieved exact original-body passage witness**, where
+   available. Its narrow hash/source identity does not authenticate the
+   event, geopolitical effects, the publisher's claimed first release, or
+   any uncaptured article body.
+
+Do not call differences between independent access *stages* automatic
+contradictions or claim that one proves access success in the other stage.
+Do not silently reconcile or discard real same-stage errors. Both independent
+affirmative and critical reviewers must explicitly compare the channels,
+state how access inconsistencies were investigated, and retain exact original
+URLs for any genuine unresolved material access discrepancies. If either
+reports an unresolved discrepancy, or the provenance hashes/fields fail
+machine validation, the source audit **cannot** be marked complete.
+
+The six-category research sweep, no accepted-evidence count quota,
+original-source and cutoff guards, exact previous reviewer verdicts,
+no-repeat-paid-POST safety and **NOT PUBLISHABLE** policy are unchanged.
+Audit-only completion can remain **inconclusive for national forecasts**;
+it never authorizes new forecasts, website updates or X publication.
+
+
 ## Forward-only V8: separate source-audit completion from forecast inference
 
 New, explicitly launched research-dry-run diagnostics use the V8 frozen source

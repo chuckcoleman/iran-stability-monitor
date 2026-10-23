@@ -317,7 +317,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
     check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
           "Frozen source-review input digest mismatch")
     review_common = SOURCE_REVIEW_COMMON
-    if snapshot is not None and snapshot["version"] == 8:
+    if snapshot is not None and snapshot["version"] in (8, 9):
         # The old common JSON example contains the three required legacy
         # fields. New V8 reviewers must also return these three separately
         # audited objects rather than mistake the example for a fixed schema.
@@ -331,6 +331,20 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "A complete but inconclusive source audit still requires "
             "approved=false and the specific insufficient_for_inference "
             "issue; it never certifies a forecast or publishing.")
+    if snapshot is not None and snapshot["version"] == 9:
+        review_common += (
+            "\nV9 ACCESS-CHANNEL REVIEW SCHEMA: For every original source "
+            "consider the model's original web-search statement separately "
+            "from the later Python metadata HTTP request and the exact "
+            "claim-body witness register. Preserve each operation's "
+            "timestamp/retrieval limitations without treating a search "
+            "403 and a later metadata success as inherently contradictory. "
+            "In audit_integrity_review include access_channels_reconciled, "
+            "access_channel_assessment >=120 chars, and the exact canonical "
+            "URLs of any unresolved_access_conflicts. Fail the source audit "
+            "for any actual unexplained access contradiction. "
+            "An incomplete source audit is never a successful forecast "
+            "or permission to publish.")
     try:
         # In every source-review version, require AFFIRMATIVE then CRITICAL.
         # A rejection causes a strictly conservative revised packet, followed
@@ -393,7 +407,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "limitations":"No Sunday forecasts, actual issuance, dashboard browser render, "
                           "public deployment or social posting were tested. "
                           "A model-reported category audit does not prove every query ran."}
-    if snapshot and snapshot["version"] == 8:
+    if snapshot and snapshot["version"] in (8, 9):
         # Two deliberately independent results: whether the exact source
         # AUDIT was complete, and whether those records support an inference.
         # A completed inconclusive audit NEVER exercises or certifies any

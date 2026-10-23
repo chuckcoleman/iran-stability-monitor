@@ -1,5 +1,26 @@
 # Sunday research source watchlist — effective 2026-10-25
 
+## V9 cross-stage access audit: model narration versus HTTP evidence
+
+Preserve three independent records for each original research URL: the
+research model's original unverified description of search-stage page access,
+the later Python metadata-only request's recorded status and publisher
+metadata, and any separate exact passage retrieved for an individual claim.
+Original search-stage text may describe a readable excerpt when the later
+metadata GET fails; it may describe HTTP 403 when a later metadata request
+succeeds. This does not itself prove a contradiction or that either stage
+verified a full article.
+
+Require review of actual source identity, chronology, independently
+retrievable passage scope, and reported limitations. Do not transform model
+comments about earlier access into a system HTTP log, and do not treat
+publisher metadata as complete original article access or authenticated
+first publication. A reviewer unable to reconcile a material access
+discrepancy must state the canonical URL and mark the audit incomplete;
+no issue is silently waived to achieve a clean report. No fabricated
+observations, corroboration, accepted-evidence minimum or publication.
+
+
 ## V8: document historical context, page access and search timing precisely
 
 For new frozen V8 source snapshots distinguish the model's **search-stage

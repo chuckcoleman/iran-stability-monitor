@@ -159,7 +159,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                            search_calls=None):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") in (3, 4, 5, 6, 7, 8),
+            and snapshot.get("version") in (3, 4, 5, 6, 7, 8, 9),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
@@ -391,7 +391,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
     amended["pre_review_admission_version"] = (
-        5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
+        6 if version >= 9 else 5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
         else 2 if version >= 4 else GATE_VERSION)
     amended["pre_review_limitations"] = (
         "Text overlap and page dates are necessary screening features only. "
@@ -451,6 +451,52 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
             "past_events": "HISTORICAL_CONTEXT_NOT_CURRENT_OBSERVATIONS",
             "publication": "NOT AUTHORIZED",
         }
+    if version >= 9:
+        # Preserve the *model's* original web-search-stage source description
+        # separately from the *later* independent Python metadata HTTP
+        # probe. Neither is authentication of original full-body access.
+        annotations = research.get("source_quality")
+        require(isinstance(annotations, list),
+                "V9 requires original model-stage source-quality annotations")
+        search_stage = {}
+        for annotation in annotations:
+            require(isinstance(annotation, dict),
+                    "Malformed V9 original search-stage source annotation")
+            key = url_key(annotation.get("url"))
+            require(key and key not in search_stage
+                    and isinstance(annotation.get("assessment"), str)
+                    and len(annotation["assessment"].strip()) >= 30
+                    and isinstance(annotation.get("limitations"), str)
+                    and len(annotation["limitations"].strip()) >= 30,
+                    "V9 original model access annotation missing or duplicated")
+            search_stage[key] = annotation
+        require(set(search_stage) == set(sources),
+                "V9 source-quality annotations differ from frozen source URLs")
+        amended["v9_access_reconciliation_policy"] = {
+            "version": 1,
+            "model_search_channel":
+                "MODEL_REPORTED_SOURCE_ACCESS_NOT_INDEPENDENT_HTTP_LOG",
+            "metadata_probe_channel":
+                "SEPARATE_LATER_PYTHON_HTTP_HTML_METADATA_REQUEST",
+            "claim_passage_channel":
+                "SEPARATELY_RETRIEVED_EXACT_ORIGINAL_PASSAGE_REGISTER",
+            "cross_channel_disagreement":
+                "NOT_INHERENT_CONTRADICTION_OR_VERIFIED_RECONCILIATION",
+            "research_as_of": snapshot["cutoff_at"],
+            "post_asof_window": "NOT_SEARCHED",
+            "publication": "NOT AUTHORIZED",
+        }
+        amended["pre_review_limitations"] += (
+            " V9 retains separate original model-reported web-search access "
+            "claims and later Python HTML metadata probe results for every "
+            "source URL. A model claim of 403, full-body access or partial "
+            "body access neither proves nor contradicts the independent later "
+            "metadata-only GET. Two independently observed responses could "
+            "differ by time or client. Never silently dismiss genuine errors "
+            "or treat metadata retrieval as a verified body passage. Every "
+            "material same-stage or unresolved source-access conflict must "
+            "be individually assessed by both reviewers; neither can waive "
+            "it to declare a complete audit.")
     # Preserve every original URL; update only the reviewed packet's
     # classification of which sources support currently admitted evidence.
     quality = amended["source_quality_audit"]
@@ -465,6 +511,45 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
             e.get("evidence_status") == "new"]
         row["role"] = ("new_evidence" if row["new_evidence_indices"]
                        else "coverage_context_only")
+        if version >= 9:
+            original = search_stage[row["url"]]
+            require(original["assessment"].strip() == row.get("assessment")
+                    and original["limitations"].strip() == row.get("limitations"),
+                    "V9 frozen source quality differs from original model "
+                    "search-stage assessment or limitations")
+            # Never overwrite machine evidence or silently promote the
+            # model's narration to an independently witnessed HTTP status.
+            row["v9_access_channels"] = {
+                "model_search_stage": {
+                    "provenance": "MODEL_REPORTED_NOT_INDEPENDENTLY_VERIFIED",
+                    "original_access_statement": original["assessment"],
+                    "original_limitations": original["limitations"],
+                    "original_annotation_sha256": sha({
+                        "assessment": original["assessment"],
+                        "limitations": original["limitations"],
+                    }),
+                    "network_access_verification": "NOT_ESTABLISHED",
+                },
+                "later_python_metadata_probe": {
+                    "provenance": "INDEPENDENT_LATER_HTTP_METADATA_PROBE",
+                    "request_scope": "HTML_METADATA_ONLY_NOT_ARTICLE_BODY",
+                    "recorded_retrieval_status":
+                        row.get("source_retrieval_status"),
+                    "recorded_access_status": row.get("access_status"),
+                    "recorded_metadata_status": row.get("metadata_status"),
+                    "recorded_publisher_time":
+                        row.get("source_publication_time"),
+                    "first_publication_verified": False,
+                },
+                "claim_body_witness": {
+                    "provenance": "SEPARATE_CLAIM_PASSAGE_REGISTER",
+                    "status": (
+                        "NOT_YET_RECONCILED_WITH_ADMITTED_CLAIM_STATUS"),
+                },
+                "comparison": (
+                    "DISTINCT_OPERATIONS_NOT_AUTOMATIC_DISAGREEMENT"
+                    "_AND_NOT_AUTOMATIC_RECONCILIATION"),
+            }
         if version >= 8:
             # This row records metadata retrieval only. A separate claim
             # register proves whether a particular body passage was fetched.
@@ -488,6 +573,9 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                 "PROVISIONAL_CURRENT_OBSERVATION_REQUIRES_DUAL_REVIEW"
                 if row["role"] == "new_evidence" else
                 "CONTEXT_ONLY_NOT_CURRENT_ADMITTED_EVIDENCE")
+        if version >= 9:
+            row["v9_access_channels"]["claim_body_witness"]["status"] = (
+                row["v8_article_witness_status"])
     quality["evidence_source_count"] = sum(
         row["role"] == "new_evidence" for row in quality["sources"])
     quality["context_only_source_count"] = sum(
@@ -516,7 +604,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                 "directional observation passed the pre-review screen.")
     count = eligibility(amended)
     outcome = {
-        "version": (5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
+        "version": (6 if version >= 9 else 5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
                     else 2 if version >= 4 else GATE_VERSION),
         "status": ("PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY" if
                    not count["failures"] else

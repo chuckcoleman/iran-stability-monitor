@@ -1,5 +1,28 @@
 # Prospective alternating affirmative and critical ChatGPT reviews — effective 2026-10-25
 
+## V9 access-stage reconciliation required for audit completion
+
+A source review must not conflate (a) the model's earlier original
+web-search description of whether text was readable, partly readable,
+blocked or returned an internal error, (b) a later independently executed
+Python **HTML metadata-only** request, and (c) a specific captured original
+article-body passage. An earlier model-reported HTTP 403 and a later metadata
+HTTP 200 are not automatically contradictory; conversely neither outcome
+authenticates full text or makes the other request succeed.
+
+V9 binds the unchanged model statement and limitations plus its SHA-256 to
+each original URL, and preserves the independently recorded metadata probe
+and claim witness separately. Both affirmative and critical reviewers must
+document actual channel comparison, disclose all unresolved **canonical
+source URLs**, and withhold audit certification if any real inconsistency,
+source identity conflict, or misleading access representation remains.
+Two independent audit-completeness verdicts are still needed; an accurate,
+complete source audit with no adequate current observations may finish as
+**inconclusive / not publishable**. The forecast and full public report gates
+remain independent and mandatory. Earlier V8 closed rejections remain final
+under their frozen original review prompts.
+
+
 ## V8 independent audit-completeness versus inference-adequacy decisions
 
 The nonpublishing research diagnostic now asks two separate questions.
