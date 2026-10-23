@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6, 7, 8)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6, 7, 8, 9)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3, 4, 5, 6, 7, 8):
+    if fresh_version not in (2, 3, 4, 5, 6, 7, 8, 9):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -387,9 +387,9 @@ def batch_prompt(category, snapshot):
         "attribution, source trace or publication prohibition.")
     if snapshot["version"] == 7:
         return v7  # Do not change already-paid V7 request fingerprints.
-    if snapshot["version"] != 8:
+    if snapshot["version"] not in (8, 9):
         raise ValueError("Unsupported forward source research version")
-    return v7 + (
+    v8 = v7 + (
         "\nV8 TWO DISTINCT QUESTIONS: did the six-category source AUDIT "
         "accurately document all searches, candidate claims, unavailable "
         "original bodies, publication-date uncertainty and known gaps, "
@@ -414,6 +414,35 @@ def batch_prompt(category, snapshot):
         "Return only genuinely sourced evidence, even zero, and preserve "
         "the exact six category search-trace and citation requirements. "
         "No forecast or publication may be inferred from an audit outcome.")
+    if snapshot["version"] == 8:
+        return v8  # Exact historical V8 paid request and prompt fingerprint.
+    return v8 + (
+        "\nV9 ACCESS PROVENANCE IS CHANNEL-SPECIFIC. The web-search research "
+        "model's statement that a publisher article body was readable, partly "
+        "readable, blocked with HTTP 403, or failed with an internal error is "
+        "a model-reported search-stage access assertion, NOT a verified record "
+        "of later independent Python metadata HTTP retrieval. Conversely, "
+        "a later successful metadata HTTP GET shows HTML metadata access only, "
+        "NOT original full article body, an earlier successful search-stage "
+        "open, original first publication or semantic event support. "
+        "The two channels may return different outcomes on different clocks, "
+        "clients or request methods; do not falsely claim this is necessarily "
+        "a contradiction, but never assume reconciliation without evidence. "
+        "Preserve your exact observed search-stage access statement, any "
+        "HTTP errors and partial-body limitations per source; do NOT change "
+        "reported fetch results to agree with another stage. Do not claim "
+        "body retrieval from a citation snippet, homepage, web-search result "
+        "or later metadata status. Original claim-specific passages must have "
+        "their own captured provenance. Report any genuine internal "
+        "inconsistency *within* the same captured request separately. "
+        "The source-review packet will provide explicitly separated original "
+        "search-stage statements, later metadata probes and independent "
+        "claim-body witnesses. Expose chronology and access uncertainty as "
+        "uncertainty, not accepted or rejected geopolitical direction. "
+        "An audit can be complete yet inconclusive only if the underlying "
+        "source access and limitations are documented accurately. The "
+        "source audit itself must fail if a material access discrepancy "
+        "remains unresolved. No forecasts and never publish.")
 
 
 def _normalize_limitation_lists(original):
@@ -473,7 +502,7 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
         raise ValueError("Research stage has no original JSON object")
     effective = copy.deepcopy(original)
     changes = []
-    if version not in (5, 6, 7, 8):
+    if version not in (5, 6, 7, 8, 9):
         return effective, changes
     rows = effective.get("coverage_audit")
     if not isinstance(rows, list):
@@ -861,7 +890,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(8 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(9 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)
