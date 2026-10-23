@@ -1189,18 +1189,21 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                "original_review_input_sha256": input_sha,
                "original_research_cutoff": original_cutoff,
                "publication": "NOT AUTHORIZED",
-               "source_audit_status": (
-                   "COMPLETE_WITH_DISCLOSED_LIMITATIONS" if
-                   status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
-                   else "NOT_CERTIFIED_COMPLETE"),
-               "forecast_inference_status": (
-                   "INSUFFICIENT_FOR_GEOPOLITICAL_FORECAST" if
-                   status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
-                   else "NOT_CERTIFIED"),
-               "prospective_forecasts": "NOT TESTED",
                "limitations": "All rejected review versions are preserved. "
                    "Only conservative exclusions and qualifications, not new "
                    "research verification, were permitted."}
+    if sample.get("pre_review_admission_version") == 5:
+        # Existing V1-V7 outcome hashes and old paid checkpoints remain
+        # byte-for-byte unchanged. These two axes are new to V8 only.
+        inconclusive = (
+            status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE")
+        outcome["source_audit_status"] = (
+            "COMPLETE_WITH_DISCLOSED_LIMITATIONS" if inconclusive
+            else "NOT_CERTIFIED_COMPLETE")
+        outcome["forecast_inference_status"] = (
+            "INSUFFICIENT_FOR_GEOPOLITICAL_FORECAST" if inconclusive
+            else "NOT_CERTIFIED")
+        outcome["prospective_forecasts"] = "NOT TESTED"
     if terminal_gate is not None:
         outcome["terminal_evidence_gate"] = terminal_gate
         outcome["limitations"] += (
