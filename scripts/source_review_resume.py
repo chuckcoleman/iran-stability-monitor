@@ -279,7 +279,8 @@ def _unacknowledged_reviews(folder):
 
 def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                            reviewer, now, allow_new_after_unknown=False,
-                           superseded_unknown_requests=(), round_number=1):
+                           superseded_unknown_requests=(), round_number=1,
+                           record_rejected_alias_conflicts=False):
     """Check a review once or reuse its verified result without another POST.
 
     A lost acknowledgement is never replayed automatically. Explicit opt-in
@@ -287,6 +288,8 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
     a declaration of approval.
     """
     _check(role in ("affirmative", "critical"), "Unknown source review role")
+    _check(type(record_rejected_alias_conflicts) is bool,
+           "Invalid tracking conflict recovery policy")
     folder = Path(folder)
     _check(type(round_number) is int and 1 <= round_number <= 6,
            "Invalid bounded source-review round")
@@ -334,13 +337,31 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                 _check(len(new_superseded) == len(unknown),
                        "Unknown review request identity is missing; no paid retry")
         response, _ = reviewer(prompt, False)
-    issues = _review_issues(response, role)
+    issues = list(_review_issues(response, role))
     tracking_aliases = []
     if live:
         tracking_aliases = validate_source_review(
-            response, quality, role, return_aliases=True)
+            response, quality, role, return_aliases=True,
+            record_rejected_conflicts=record_rejected_alias_conflicts)
         _check(response == _matching_completed_response(folder, prompt, model),
                "Completed review lacks identical response and transport journals")
+        for alias in tracking_aliases:
+            if alias.get("conflict_status") == (
+                    "UNRESOLVED_REJECTED_REVIEW_SOURCE_DISPOSITION_CONFLICT"):
+                # The model's rejected verdict and all of its original issues
+                # stay unchanged. Add an independently derived issue so a
+                # contrary tracking alias can NEVER be mistaken for agreement.
+                issues.append({
+                    "type": "v7_tracking_alias_source_disposition_conflict",
+                    "location": alias["canonical_url"],
+                    "reason": ("The reviewer gave the canonical source the "
+                               "disposition " + alias["canonical_disposition"] +
+                               " but the tracking-only variant was " +
+                               alias["disposition"] + ". This source identity "
+                               "and original-body claim remain disputed; "
+                               "no independent corroboration or approval "
+                               "can be inferred from the alias."),
+                })
     result = {
         "status": "COMPLETED_NOT_PUBLISHABLE", "role": role,
         "approved": not bool(issues), "issues": issues,

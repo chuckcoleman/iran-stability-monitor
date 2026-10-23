@@ -216,6 +216,73 @@ class QualityAuditTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_source_review(rejected, quality, "affirmative")
 
+    def test_only_explicit_rejected_v7_conflict_can_be_preserved_not_approved(self):
+        quality = source_quality_audit(research(), metadata())
+        rows = [{
+            "url": source["url"],
+            "assessment": ("The canonical original article was individually "
+                           "assessed while retaining its limits and provenance."),
+            "disposition": "supported_as_qualified",
+        } for source in quality["sources"]]
+        variant = {
+            "url": URL2 + "?utm_source=chatgpt.com",
+            "assessment": ("The tracked article variant lacks separately "
+                           "demonstrated original body and source provenance."),
+            "disposition": "unverified_reject",
+        }
+        rejected = {"approved": False, "issues": [{
+            "type": "disputed_source_provenance",
+            "location": URL2,
+            "reason": "Article variant was not separately verified."}],
+                    "source_reviews": rows + [variant]}
+        before = copy.deepcopy(rejected)
+        with self.assertRaisesRegex(ValueError,
+                                    "tracking alias contradicts canonical"):
+            validate_source_review(rejected, quality, "critical",
+                                   return_aliases=True)
+        with self.assertRaisesRegex(ValueError,
+                                    "require an explicit returned audit"):
+            validate_source_review(rejected, quality, "critical",
+                                   record_rejected_conflicts=True)
+        aliases = validate_source_review(
+            rejected, quality, "critical", return_aliases=True,
+            record_rejected_conflicts=True)
+        self.assertEqual(len(aliases), 1)
+        self.assertEqual(aliases[0]["canonical_url"], URL2)
+        self.assertEqual(aliases[0]["canonical_disposition"],
+                         "supported_as_qualified")
+        self.assertEqual(aliases[0]["disposition"], "unverified_reject")
+        self.assertEqual(
+            aliases[0]["conflict_status"],
+            "UNRESOLVED_REJECTED_REVIEW_SOURCE_DISPOSITION_CONFLICT")
+        self.assertEqual(before, rejected)
+
+        approved = copy.deepcopy(rejected)
+        approved["approved"] = True
+        with self.assertRaises(ValueError):
+            validate_source_review(
+                approved, quality, "critical", return_aliases=True,
+                record_rejected_conflicts=True)
+        no_issues = copy.deepcopy(rejected)
+        no_issues["issues"] = []
+        with self.assertRaises(ValueError):
+            validate_source_review(
+                no_issues, quality, "critical", return_aliases=True,
+                record_rejected_conflicts=True)
+        missing = copy.deepcopy(rejected)
+        missing["source_reviews"].pop(1)
+        with self.assertRaises(ValueError):
+            validate_source_review(
+                missing, quality, "critical", return_aliases=True,
+                record_rejected_conflicts=True)
+        changed_path = copy.deepcopy(rejected)
+        changed_path["source_reviews"][-1]["url"] = (
+            URL2 + "/new-article?utm_source=chatgpt.com")
+        with self.assertRaises(ValueError):
+            validate_source_review(
+                changed_path, quality, "critical", return_aliases=True,
+                record_rejected_conflicts=True)
+
     def test_tracker_aliases_preserve_original_content_selecting_query(self):
         quality = {"sources": [{"url":
             "https://www.intellinews.com/iran-report/?source=iran"}]}

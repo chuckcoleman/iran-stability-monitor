@@ -263,6 +263,87 @@ class AuditRecoveryTests(unittest.TestCase):
         self.assertEqual((self.dir / "api-request-complete.json").read_bytes(),
                          old_journal)
 
+    def test_archived_rejected_critical_alias_conflict_has_no_second_paid_post(self):
+        # The exact failure pattern from 39881226921 is not an admissible
+        # source-quality agreement. Preserve it as a REJECTION checkpoint.
+        quality = source_quality_audit(study(), metadata(), cutoff=NOW)
+        prompt = "Synthetic V7 critical source review for archived response"
+        original_response = {
+            "approved": False,
+            "issues": [{
+                "type": "citation_variant_and_body_binding_gap",
+                "location": "E-20261022-04",
+                "reason": ("The tracking variant does not establish its "
+                           "own original passage/body-hash identity."),
+            }],
+            "source_reviews": [{
+                "url": URL,
+                "assessment": ("Canonical article passage was inspected "
+                               "but national event effects remain unproven."),
+                "disposition": "supported_as_qualified",
+            }, {
+                "url": URL + "?utm_source=chatgpt.com",
+                "assessment": ("Source alias lacks independently matched "
+                               "original article body hash and must be rejected."),
+                "disposition": "unverified_reject",
+            }],
+        }
+        (self.dir / "response-9.json").write_text(json.dumps({
+            "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+            "search": False, "model": "gpt-6.1-sol",
+            "response_id": "resp_criticalarchived123",
+            "result": original_response,
+        }))
+        (self.dir / "api-request-original-critical.json").write_text(json.dumps({
+            "phase": "non-search assessment/review",
+            "post_attempts": 1,
+            "status": "api_completed_output_not_yet_validated",
+            "response_id": "resp_criticalarchived123",
+            "request_sha256": sha(pipeline.responses_payload(prompt, False)),
+        }))
+        response_bytes = (self.dir / "response-9.json").read_bytes()
+        journal_bytes = (self.dir / "api-request-original-critical.json").read_bytes()
+        def forbidden_post(*args, **kwargs):
+            self.fail("Do not resubmit a paid critical review")
+        options = dict(
+            role="critical", prompt=prompt, input_sha="original-v7-input-sha",
+            quality=quality, reviewer=forbidden_post, now=lambda: NOW)
+        with patch.object(recovery, "LIVE_RESEARCHER", forbidden_post):
+            with self.assertRaisesRegex(
+                    ValueError, "tracking alias contradicts canonical"):
+                recovery.review_with_checkpoint(self.dir, **options)
+            self.assertFalse(
+                (self.dir / "source-review-critical.json").exists())
+            first = recovery.review_with_checkpoint(
+                self.dir, **options,
+                record_rejected_alias_conflicts=True)
+            self.assertFalse(first["approved"])
+            self.assertEqual(len(first["issues"]), 2)
+            self.assertEqual(first["issues"][0],
+                             original_response["issues"][0])
+            self.assertEqual(
+                first["issues"][1]["type"],
+                "v7_tracking_alias_source_disposition_conflict")
+            self.assertEqual(len(first["tracking_only_url_aliases"]), 1)
+            self.assertEqual(
+                first["tracking_only_url_aliases"][0]["conflict_status"],
+                "UNRESOLVED_REJECTED_REVIEW_SOURCE_DISPOSITION_CONFLICT")
+            second = recovery.review_with_checkpoint(
+                self.dir, **options,
+                record_rejected_alias_conflicts=True)
+        self.assertEqual(first, second)
+        checkpoint = json.loads(
+            (self.dir / "source-review-critical.json").read_text())
+        self.assertEqual(checkpoint["response"], original_response)
+        self.assertEqual(checkpoint["status"], "COMPLETED_NOT_PUBLISHABLE")
+        self.assertFalse(checkpoint["approved"])
+        self.assertEqual(checkpoint["publication"], "NOT AUTHORIZED")
+        self.assertEqual(
+            (self.dir / "response-9.json").read_bytes(), response_bytes)
+        self.assertEqual(
+            (self.dir / "api-request-original-critical.json").read_bytes(),
+            journal_bytes)
+
     def test_unknown_foreground_post_never_auto_retried(self):
         quality = source_quality_audit(study(), metadata(), cutoff=NOW)
         (self.dir / "api-request-unknown.json").write_text(json.dumps({
