@@ -272,12 +272,13 @@ def validate_source_dossier(dossier, before, candidate):
         require(isinstance(balance, dict)
                 and isinstance(balance.get("raises_queries"), list)
                 and isinstance(balance.get("lowers_queries"), list)
+                and isinstance(balance.get("ambiguous_queries"), list)
                 and bool(balance["raises_queries"])
                 and bool(balance["lowers_queries"])
-                and all(q in known_queries
+                and all(isinstance(q, str) and q in known_queries
                         for q in (balance["raises_queries"]+
                                   balance["lowers_queries"]+
-                                  balance.get("ambiguous_queries", [])))
+                                  balance["ambiguous_queries"]))
                 and not (set(balance["raises_queries"]) &
                          set(balance["lowers_queries"]))
                 and isinstance(balance.get("assessment"), str)
