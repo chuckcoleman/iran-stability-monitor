@@ -23,6 +23,7 @@ from source_claim_narrowing import (
 )
 from source_directional_eligibility import eligibility
 from source_quality_audit import validate_source_review
+from source_claim_reliability import assess_review_claims, reconcile_dual_reliability
 
 MAX_REVIEW_ROUNDS = 4
 ADDITIONAL_CAVEAT = (
@@ -41,7 +42,7 @@ def require(ok, message):
 
 def _prompt(role, packet, digest, common):
     """Exact first-round prompt retained for previous paid response recovery."""
-    if packet.get("pre_review_admission_version") in (3, 4, 5, 6):
+    if packet.get("pre_review_admission_version") in (3, 4, 5, 6, 7):
         common += (
             "\nV5 SOURCE-BALANCE AND ORIGINAL-WITNESS CHECK: "
             "Inspect pre_review_actual_search_queries, copied from "
@@ -71,7 +72,7 @@ def _prompt(role, packet, digest, common):
             "disposition reconciled_or_qualified|unresolved and a "
             "specific >=40-character assessment; unresolved MUST "
             "be rejected. Do not claim verified first publication. ")
-    if packet.get("pre_review_admission_version") in (2, 3, 4, 5, 6):
+    if packet.get("pre_review_admission_version") in (2, 3, 4, 5, 6, 7):
         common += (
             "\nV4 DUAL SEMANTIC AND MULTILINGUAL REVIEW: A retrieved "
             "verbatim passage is not verification of an event, model "
@@ -130,7 +131,7 @@ def _prompt(role, packet, digest, common):
             "claim. " +
             ("There is no fixed numerical accepted-evidence quota; both "
              "reviewers must independently assess support and limits. "
-             if packet.get("pre_review_admission_version") in (4, 5, 6) else
+             if packet.get("pre_review_admission_version") in (4, 5, 6, 7) else
              "Any incomplete minimum is a deterministic fail, and "
              "neither review can waive it. "))
     if packet.get("editorial_narrowings"):
@@ -144,10 +145,10 @@ def _prompt(role, packet, digest, common):
             "research cutoff. A rejected narrowed quotation must be "
             "excluded, not rewritten repeatedly. " +
             ("Observed directions have no required quota. "
-             if packet.get("pre_review_admission_version") in (4, 5, 6) else
+             if packet.get("pre_review_admission_version") in (4, 5, 6, 7) else
              "Missing directional balance is a deterministic blocker, "
              "never a passing review. "))
-    if packet.get("pre_review_admission_version") in (4, 5, 6):
+    if packet.get("pre_review_admission_version") in (4, 5, 6, 7):
         common += (
             "\nV7 NO EVIDENCE QUOTA: There are no fixed minimum counts "
             "for accepted observations, new evidence, publishers or observed "
@@ -165,7 +166,7 @@ def _prompt(role, packet, digest, common):
             "If zero source observations remain, identify that limitation "
             "explicitly and reject any unsupported geopolitical inference. "
             "The old count thresholds and publisher minimums are inapplicable.")
-    if packet.get("pre_review_admission_version") in (5, 6):
+    if packet.get("pre_review_admission_version") in (5, 6, 7):
         common += (
             "\nV8 TWO DISTINCT SOURCE-REVIEW VERDICTS: "
             "A SOURCE AUDIT may be complete with correctly disclosed "
@@ -204,7 +205,7 @@ def _prompt(role, packet, digest, common):
             "Any additional source-access, date, provenance, coverage or "
             "factual audit-integrity objection requires audit_status=incomplete "
             "and still fails the audit, even if no sources were accepted. ")
-    if packet.get("pre_review_admission_version") == 6:
+    if packet.get("pre_review_admission_version") in (6, 7):
         common += (
             "\nV9 EXPLICIT ACCESS-CHANNEL RECONCILIATION: For every URL, "
             "inspect v9_access_channels.model_search_stage as a preserved, "
@@ -241,6 +242,56 @@ def _prompt(role, packet, digest, common):
             "conflated, no material contradiction remains, and all other "
             "V8 audit checks pass. Zero accepted evidence remains valid; "
             "insufficient forecast support never approves publication.")
+    if packet.get("pre_review_admission_version") == 7:
+        common += (
+            "\nV10 REQUIRED CLAIM RELIABILITY: Return a top-level "
+            "claim_reliability_reviews array with EXACTLY one row for "
+            "every currently admitted evidence ID (or [] for zero). "
+            "Each row must contain evidence_id (exact retained ID), "
+            "original_url (canonical exact source), source_quality: "
+            "documented_original_method|attributed_edited_original|"
+            "weak_or_unknown_source, directness: "
+            "primary_measurement_or_document|firsthand_original_reporting|"
+            "attributed_claim|analysis_or_unknown, "
+            "independent_confirmation_ids (array of distinct OTHER currently "
+            "admitted original evidence IDs with independent original "
+            "publishers, matching claimed event, separately retrieved "
+            "exact original-page passage and documented separately authored "
+            "reporting, else []), claim_match_independently_reviewed: boolean "
+            "(true ONLY for directly assessed matching claims in the "
+            "corroborators, not mere repeated URLs), "
+            "contradiction_status: material_unresolved|"
+            "addressed_with_qualification|none_identified, "
+            "source_quality_assessment, corroboration_assessment and "
+            "contradiction_assessment (EACH >=60 characters with concrete "
+            "source, method and counterevidence reasoning), "
+            "exact_passage_witness: boolean matching the original claim "
+            "register, factual_reliability: Low|Medium|Medium-high|High, "
+            "direction_confidence: unverified|qualified|"
+            "supported_from_evidence. "
+            "Each proposed grade MUST follow the deterministic ordinal "
+            "decision tree: any unsupported original passage, unknown "
+            "source/method or unresolved material conflict => Low; "
+            "attributed but directly witnessed original claim => at most "
+            "Medium; qualified material contradictions => at most Medium; "
+            "first-hand documented original reporting without independent "
+            "confirmed corroboration => Medium, with truly independently "
+            "confirmed matching originals => Medium-high; independently "
+            "accessible original primary measurement/document with a "
+            "transparent method => Medium-high, or High only when genuinely "
+            "independently corroborated by at least one DISTINCT qualifying "
+            "original evidence ID. A wire mirror, publisher name, repeated "
+            "official statement or same-publisher second article is NOT "
+            "independent confirmation. These are source-specific ordinal "
+            "REVIEW JUDGMENTS, not mathematically proven truth. The final "
+            "claim grade is never HIGHER than either reviewer, and a "
+            "confirmation counts only when BOTH cite the same original "
+            "evidence ID. Distinguish FACTUAL reliability of an event from "
+            "its hypothesized EFFECT on Iranian stability: even a "
+            "High-reliability event may have UNVERIFIED directional effect. "
+            "Do not create evidence, reclassify an old event as new, "
+            "invent report methods, or demand a corroborator count. "
+            "The forecast and publication remain separately prohibited.")
     return (
         "ROLE: " + role.upper() + " SOURCE QUALITY REVIEW. " +
         ("Seek verifiable supporting and disconfirming context. "
@@ -261,7 +312,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
     linguist's independent certification.
     """
     review_version = packet.get("pre_review_admission_version")
-    if review_version not in (2, 3, 4, 5, 6):
+    if review_version not in (2, 3, 4, 5, 6, 7):
         return []
     active = {item["id"] for item in packet.get("evidence", [])}
     sources = {
@@ -269,7 +320,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
         for row in source_reviews if isinstance(row, dict)
     }
     issues = []
-    if review_version in (3, 4, 5, 6):
+    if review_version in (3, 4, 5, 6, 7):
         # A reviewer may not assert that searches in both directions
         # occurred unless citing the exact saved executed queries.
         ledger = packet.get("pre_review_actual_search_queries")
@@ -308,7 +359,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                           "queries seeking both worsening and improving "
                           "observations and disclose ambiguous results "
                           "without inventing supporting events"})
-    if review_version in (4, 5, 6):
+    if review_version in (4, 5, 6, 7):
         ids = [item["id"] for item in packet.get("evidence", [])]
         audit = (review_response.get("source_adequacy_review")
                  if isinstance(review_response, dict) else None)
@@ -336,7 +387,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                 "location": "closed_source_evidence",
                 "reason": role + " reviewer cannot approve a packet they "
                           "themselves judged insufficient for inference"})
-    if review_version in (5, 6):
+    if review_version in (5, 6, 7):
         # Exact source-by-source reviews are independently checked by
         # validate_source_review(). This separate reviewer-authored matrix
         # certifies only the audit's completeness and acknowledged limits,
@@ -388,7 +439,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                 "reason": role + " reviewer claimed a complete source audit "
                           "while reporting unresolved provenance, access, "
                           "source-quality or other non-inferential objections"})
-    if review_version == 6:
+    if review_version in (6, 7):
         # A complete source audit is never established by two stage-specific
         # fetches returning a different status. Preserve both observations;
         # require the reviewer to explicitly address what was (and wasn't)
@@ -442,7 +493,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                         c.get("evidence_id") == ident]
                        if isinstance(checks, list) else [])
             bound = (
-                review_version not in (3, 4, 5, 6) or
+                review_version not in (3, 4, 5, 6, 7) or
                 (len(matched) == 1 and
                  matched[0].get("original_passage") ==
                      decision.get("original_passage") and
@@ -468,7 +519,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                         c.get("evidence_id") == ident]
                        if isinstance(checks, list) else [])
             bound = (
-                review_version not in (3, 4, 5, 6) or
+                review_version not in (3, 4, 5, 6, 7) or
                 (len(matched) == 1 and
                  matched[0].get("original_passage") ==
                      decision.get("original_passage") and
@@ -489,7 +540,7 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                         "established a qualified factual event and "
                         "qualified directional rationale from original "
                         "source evidence, with opposing and limiting facts"})
-        if (review_version in (3, 4, 5, 6) and
+        if (review_version in (3, 4, 5, 6, 7) and
                 "CONFLICTING_PUBLISHER_DATES_REVIEW_REQUIRED" in flags):
             checks = row.get("date_checks", [])
             matched = ([c for c in checks if isinstance(c, dict) and
@@ -618,7 +669,7 @@ def conservative_revision(previous, issues, original_cutoff):
         revised["source_diversity_guard"] = {
             "status": ("BLOCKED_NOT_PUBLISHABLE" if guard_failures
                        else "NO_QUANTITY_QUOTA_DUAL_REVIEW_REQUIRED"
-                       if revised.get("pre_review_admission_version") in (4, 5, 6)
+                       if revised.get("pre_review_admission_version") in (4, 5, 6, 7)
                        else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
             "failures": guard_failures,
             "eligibility": eligibility_report,
@@ -675,7 +726,7 @@ def conservative_revision(previous, issues, original_cutoff):
         src["role"] = (
             "new_evidence" if src["new_evidence_indices"]
             else "coverage_context_only")
-        if revised.get("pre_review_admission_version") in (5, 6):
+        if revised.get("pre_review_admission_version") in (5, 6, 7):
             # This field describes the CURRENT corrected packet, not the
             # original admission decisions, which remain immutable.
             src["v8_current_event_status"] = (
@@ -702,7 +753,7 @@ def conservative_revision(previous, issues, original_cutoff):
                      or group in sources[url_key(item["source"])].get(
                          "coverage_categories", []))]
         category["retained_evidence_ids"] = sorted(admitted)
-        if revised.get("pre_review_admission_version") in (5, 6):
+        if revised.get("pre_review_admission_version") in (5, 6, 7):
             scope = category.get("v8_search_vs_admission")
             require(isinstance(scope, dict),
                     "Revised V8 category lacks original search/admission split")
@@ -840,7 +891,7 @@ def v9_access_channel_integrity_issues(packet):
     unchanged text and separately recorded later metadata probe are compared
     only as provenance, never promoted to independent original-body evidence.
     """
-    if packet.get("pre_review_admission_version") != 6:
+    if packet.get("pre_review_admission_version") not in (6, 7):
         return []
     policy = packet.get("v9_access_reconciliation_policy")
     if (not isinstance(policy, dict)
@@ -946,7 +997,7 @@ def deterministic_review_issues(packet, original_cutoff):
                 and source.get("origin") == "official_or_advocacy_claim"
                 and source.get("classification") == "direct_observation"):
             policy_action_exception = (
-                packet.get("pre_review_admission_version") in (2, 3, 4, 5, 6) and
+                packet.get("pre_review_admission_version") in (2, 3, 4, 5, 6, 7) and
                 pre_screen.get(item.get("id"), {}).get("model_effect_type") ==
                     "observed_policy_action")
             if not policy_action_exception:
@@ -991,7 +1042,7 @@ def deterministic_review_issues(packet, original_cutoff):
                     and guard.get("status") == (
                         "BLOCKED_NOT_PUBLISHABLE" if counts["failures"]
                         else "NO_QUANTITY_QUOTA_DUAL_REVIEW_REQUIRED"
-                        if packet.get("pre_review_admission_version") in (4, 5, 6)
+                        if packet.get("pre_review_admission_version") in (4, 5, 6, 7)
                         else "MINIMUM_COUNTS_PRESENT_UNVERIFIED"),
                     "Saved evidence-diversity safeguard contradicts revised evidence")
             failures = counts["failures"]
@@ -1098,7 +1149,7 @@ def v8_complete_but_inconclusive(packet, reviewers, deterministic_issues,
     permits an approval or publication.
     """
     if (not enforce_guards or
-            packet.get("pre_review_admission_version") not in (5, 6) or
+            packet.get("pre_review_admission_version") not in (5, 6, 7) or
             deterministic_issues or
             not packet.get("claim_evidence_register")):
         return False
@@ -1156,7 +1207,7 @@ def v8_complete_but_inconclusive(packet, reviewers, deterministic_issues,
                 if has_current_observation else
                 "NO_ORIGINAL_OBSERVATION_ADMITTED"):
             return False
-    if (packet.get("pre_review_admission_version") == 6 and
+    if (packet.get("pre_review_admission_version") in (6, 7) and
             v9_access_channel_integrity_issues(packet)):
         return False
     for role in ("affirmative", "critical"):
@@ -1178,7 +1229,7 @@ def v8_complete_but_inconclusive(packet, reviewers, deterministic_issues,
                 or audit.get("audit_status") !=
                     "complete_with_disclosed_limitations"):
             return False
-        if packet.get("pre_review_admission_version") == 6:
+        if packet.get("pre_review_admission_version") in (6, 7):
             if (audit.get("access_channels_reconciled") is not True
                     or audit.get("unresolved_access_conflicts") != []
                     or not isinstance(audit.get("access_channel_assessment"),
@@ -1223,7 +1274,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 "incompatible with directional eligibility. No new reviewer "
                 "request is permitted; start a new dated research snapshot.")
     original_register = sample.get("claim_evidence_register")
-    screened = sample.get("pre_review_admission_version") in (1, 2, 3, 4, 5, 6)
+    screened = sample.get("pre_review_admission_version") in (1, 2, 3, 4, 5, 6, 7)
     original_evidence_for_witnesses = (
         sample.get("pre_review_original_evidence") if screened else
         sample.get("evidence"))
@@ -1275,7 +1326,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                     and packet.get("pre_review_claim_decisions") ==
                         sample["pre_review_claim_decisions"],
                     "Revised packet altered original admission and source provenance")
-            if sample.get("pre_review_admission_version") in (3, 4, 5, 6):
+            if sample.get("pre_review_admission_version") in (3, 4, 5, 6, 7):
                 require(packet.get("pre_review_actual_search_queries") ==
                             sample.get("pre_review_actual_search_queries")
                         and packet.get("pre_review_original_input_sha256") ==
@@ -1295,7 +1346,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                 # Forward-only V7 recovery of an already completed, explicitly
                 # rejected paid response; historical protocols still hard-fail.
                 record_rejected_alias_conflicts=(
-                    packet.get("pre_review_admission_version") in (4, 5, 6)))
+                    packet.get("pre_review_admission_version") in (4, 5, 6, 7)))
             known_unknown.update(response.pop("superseded_unknown_requests"))
             added = v4_required_interpretation_issues(
                 packet, role, response.get("source_reviews", []),
@@ -1323,7 +1374,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                       "SOURCE_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
                       if inconclusive_audit else "REJECTED_NOT_PUBLISHABLE"),
                   "publication": "NOT AUTHORIZED"}
-        if packet.get("pre_review_admission_version") in (5, 6):
+        if packet.get("pre_review_admission_version") in (5, 6, 7):
             record["source_audit_status"] = (
                 "COMPLETE_WITH_DISCLOSED_LIMITATIONS"
                 if inconclusive_audit or clean else "NOT_CERTIFIED_COMPLETE")
@@ -1412,7 +1463,7 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                "limitations": "All rejected review versions are preserved. "
                    "Only conservative exclusions and qualifications, not new "
                    "research verification, were permitted."}
-    if sample.get("pre_review_admission_version") in (5, 6):
+    if sample.get("pre_review_admission_version") in (5, 6, 7):
         # Existing V1-V7 outcome hashes and old paid checkpoints remain
         # byte-for-byte unchanged. These two axes are new to V8 only.
         inconclusive = (
