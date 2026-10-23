@@ -1,5 +1,31 @@
 # Prospective alternating affirmative and critical ChatGPT reviews — effective 2026-10-25
 
+## V8 independent audit-completeness versus inference-adequacy decisions
+
+The nonpublishing research diagnostic now asks two separate questions.
+For **audit completeness**, each perspective independently identifies all
+six original research categories, every canonical source URL and review,
+what original article bodies were actually inspected versus only publisher
+metadata captured, release-date uncertainty, omitted/held evidence,
+historical context and the unsearched post-cutoff interval. It may declare
+`complete_with_disclosed_limitations` only when these records are accurate
+and it has no unresolved audit-integrity objection.
+
+For **inferential adequacy**, reviewers assess whether the admitted original
+observations support a substantive geopolitical conclusion. Neither the
+number of observations nor the number of publishers is a quota. If both
+independently certify the *source audit* complete but report a single
+well-supported `insufficient_for_inference` issue, the diagnostic may
+finish as **source audit complete; inference inconclusive; NOT PUBLISHABLE**.
+Both original model global `approved` flags remain **false**. This
+distinction never certifies a scored forecast or report-wide approval;
+Sunday report/forecast publication still requires its separately governed
+full validation and review. No prior V1–V7 source snapshot is retroactively
+reclassified. Any unresolved metadata, source identity, event chronology
+or coverage-integrity defect means the audit is incomplete, not
+`complete_with_disclosed_limitations`.
+
+
 ## V7 evidence quantity policy for new assessments
 
 No numeric minimum is imposed on accepted observations, newly found
