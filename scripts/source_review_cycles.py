@@ -965,20 +965,40 @@ def v8_complete_but_inconclusive(packet, reviewers, deterministic_issues,
                    or row.get("v8_article_witness_status") not in (
                        "CLAIM_SPECIFIC_EXACT_PASSAGE_REGISTERED_NOT_EVENT_VERIFIED",
                        "NO_EXACT_CLAIM_PASSAGE_IN_ORIGINAL_REGISTER")
-                   or row.get("v8_current_event_status") not in (
-                       "PROVISIONAL_CURRENT_OBSERVATION_REQUIRES_DUAL_REVIEW",
+                   or row.get("v8_current_event_status") != (
+                       "PROVISIONAL_CURRENT_OBSERVATION_REQUIRES_DUAL_REVIEW"
+                       if row.get("role") == "new_evidence" else
                        "CONTEXT_ONLY_NOT_CURRENT_ADMITTED_EVIDENCE")
-                   for row in rows)
-            or any(not isinstance(row.get("v8_search_vs_admission"), dict)
-                   or row["v8_search_vs_admission"].get("research_as_of") !=
-                      packet.get("research_as_of")
-                   or row["v8_search_vs_admission"].get("post_asof_window") !=
-                      "NOT_SEARCHED"
-                   or row["v8_search_vs_admission"].get(
-                      "historical_context_not_contemporaneous_measurement") is
-                      not True
-                   for row in categories)):
+                   or bool(row.get("new_evidence_indices")) != (
+                       row.get("role") == "new_evidence")
+                   for row in rows)):
         return False
+    source_categories = {
+        src["url"]: src.get("coverage_categories", [])
+        for src in rows
+    }
+    for row in categories:
+        scope = row.get("v8_search_vs_admission")
+        if (not isinstance(scope, dict)
+                or scope.get("original_search_outcome") !=
+                   row.get("pre_review_original_outcome")
+                or scope.get("research_as_of") != packet.get("research_as_of")
+                or scope.get("post_asof_window") != "NOT_SEARCHED"
+                or scope.get(
+                    "historical_context_not_contemporaneous_measurement") is
+                   not True):
+            return False
+        category_urls = {url_key(u) for u in row.get("original_urls", [])}
+        has_current_observation = any(
+            url_key(item.get("source")) in category_urls or
+            row.get("category") in source_categories.get(
+                url_key(item.get("source")), [])
+            for item in packet.get("evidence", []))
+        if scope.get("admission_result") != (
+                "PROVISIONAL_EVIDENCE_REQUIRES_DUAL_REVIEW"
+                if has_current_observation else
+                "NO_ORIGINAL_OBSERVATION_ADMITTED"):
+            return False
     for role in ("affirmative", "critical"):
         row = reviewers.get(role)
         if not isinstance(row, dict) or row.get("approved") is not False:
