@@ -239,6 +239,32 @@ class V8AuditedButInconclusiveTests(unittest.TestCase):
         self.assertEqual(replay, out)
         self.assertEqual(self.calls, [])
 
+    def test_clean_limited_source_review_never_means_forecast_tested(self):
+        roles = []
+        def clean_limited_review(prompt, search):
+            self.assertFalse(search)
+            role = "affirmative" if "ROLE: AFFIRMATIVE" in prompt else "critical"
+            roles.append(role)
+            response = role_response(self.packet)
+            response["approved"] = True
+            response["issues"] = []
+            response["source_adequacy_review"]["conclusion"] = (
+                "supported_limited_inference")
+            return response, set()
+        outcome = self.run_review(reviewer=clean_limited_review)
+        self.assertEqual(roles, ["affirmative", "critical"])
+        self.assertEqual(outcome["status"],
+                         "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE")
+        self.assertEqual(outcome["source_audit_status"],
+                         "COMPLETE_WITH_DISCLOSED_LIMITATIONS")
+        self.assertEqual(outcome["forecast_inference_status"],
+                         "LIMITED_SOURCE_INFERENCE_REVIEWED_NO_FORECAST_TESTED")
+        self.assertEqual(outcome["prospective_forecasts"], "NOT TESTED")
+        self.assertEqual(outcome["publication"], "NOT AUTHORIZED")
+        self.assertEqual(outcome["rounds"], 1)
+        self.assertFalse(
+            (self.folder / "source-review-round-02-input.json").exists())
+
     def test_audit_integrity_objection_prevents_complete_status(self):
         for why in ("missing_review", "false_access", "incomplete",
                     "wrong_source_count", "wrong_original_asof",
