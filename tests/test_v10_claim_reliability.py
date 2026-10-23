@@ -248,6 +248,15 @@ class ClaimReliabilityV10Tests(unittest.TestCase):
     def test_v10_original_source_pre_review_uses_provisional_grades(self):
         sample, research, snapshot = packet_fixture()
         snapshot = dict(snapshot, version=10)
+        for index, row in enumerate(sample["source_quality_audit"]["sources"]):
+            row.setdefault(
+                "assessment",
+                "Original independent-source research for synthetic test %d "
+                "is not independently verified by the URL alone." % index)
+            row.setdefault(
+                "limitations",
+                "No independently authenticated publisher release instant "
+                "or causal effect on national stability has been established.")
         research["source_quality"] = [{
             "url": row["url"], "assessment": row["assessment"],
             "limitations": row["limitations"],
