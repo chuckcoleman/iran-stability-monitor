@@ -4,6 +4,7 @@ All evidence is synthetic; no web, OpenAI API, gh CLI or paid POST is used.
 """
 import copy
 import datetime as dt
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -25,6 +26,8 @@ from test_v10_claim_reliability import sample_claims, reviewer_rows
 from test_alternating_chat_receipt import AlternatingReviewTests
 import submit_reviewed_assessment
 from review_receipt import verify_all_chatgpt_source_dossiers
+from source_passage_audit import visible_text
+from source_capture_witness import verify_offline_handoff_captures
 
 CUTOFF="2026-10-25T08:45:00-04:00"
 REVIEW="2026-10-25T08:52:00-04:00"
@@ -36,6 +39,24 @@ def bundle():
     packet=sample_claims(1)
     packet["research_as_of"]=CUTOFF
     packet["published_history_sha256"]=digest(before)
+    # Actual synthetic HTML bytes prove the digest and quote match. These
+    # captures are not publisher-authenticated, nor eligible for production.
+    original_html = ("<html><body><p>The original synthetic measurement "
+                     "reported a documented independent indicator.</p></body></html>").encode()
+    decision = packet["pre_review_claim_decisions"][0]
+    decision["source_body_sha256"] = hashlib.sha256(original_html).hexdigest()
+    capture = {
+        "original_url": decision["original_url"],
+        "final_url": decision["original_url"],
+        "retrieved_at": "2026-10-25T08:40:00-04:00",
+        "content_type": "text/html", "charset": "utf-8",
+        "source_body_sha256": decision["source_body_sha256"],
+        "visible_text_sha256": hashlib.sha256(
+            visible_text(original_html).encode()).hexdigest(),
+        "passage_offset": 0, "passage": decision["original_passage"],
+    }
+    decision["capture_verification"] = capture
+    decision["capture_verification_sha256"] = digest(capture)
     source=packet["source_quality_audit"]["sources"][0]
     source.update({
         "access_status":"source_metadata_captured",
@@ -71,6 +92,20 @@ def bundle():
             "limitations":"Relevant original access and publisher release are not independently proven.",
         })
     packet["source_quality_audit"]["source_count"]=len(coverage)
+    for src in packet["source_quality_audit"]["sources"]:
+        has_claim = src["url"] == decision["original_url"]
+        src["access_channels"] = {
+            "search": {"status":"accessible_reported",
+                       "checked_at":"2026-10-25T08:35:00-04:00",
+                       "limitations":"Search-stage reported access is not a verified HTTP read."},
+            "metadata": {"status":("captured" if has_claim else "failed"),
+                         "http_status":(200 if has_claim else 403),
+                         "limitations":"Publisher metadata does not independently prove first publication time."},
+            "body": {"status":("captured" if has_claim else "not_attempted"),
+                     "captured_claim_ids":([decision["id"]] if has_claim else []),
+                     "limitations":"Original article-body access was independently recorded or left unattempted."},
+            "same_stage_conflicts": [],
+        }
     affirm=reviewer_rows(packet)
     critical=reviewer_rows(packet)
     for response in (affirm,critical):
@@ -79,6 +114,8 @@ def bundle():
             "assessment":"Reviewed distinct reported source material and its material provenance limits.",
             "disposition":("supported_as_qualified" if s["role"]=="new_evidence"
                            else "background_only"),
+            "access_stage_assessment":"The original search, metadata and article-body access stages were considered separately.",
+            "same_stage_conflicts_resolved":True,
         } for s in packet["source_quality_audit"]["sources"]]
         response["audit_integrity_review"]={
             "audit_status":"complete_with_disclosed_limitations",
@@ -149,6 +186,15 @@ def bundle():
         "affirmative_source_review":affirm,
         "critical_source_review":critical,
         "claim_reliability":result,
+        "preforecast_certificate": {
+            "version":1,"status":"DUAL_SOURCE_REVIEW_CLEAN_LIMITED_INFERENCE",
+            "research_as_of":CUTOFF, "source_review_completed_at":REVIEW,
+            "baseline_sha256":digest(before),
+            "source_packet_sha256":digest(packet),
+            "affirmative_source_review_sha256":digest(affirm),
+            "critical_source_review_sha256":digest(critical),
+            "claim_reliability_sha256":digest(result),
+        },
     }
     return before,after,dossier
 
@@ -168,7 +214,8 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
         self.assertEqual(after["updates"][-1]["evidence"][0][
             "geopolitical_direction_confidence"],"unverified")
         receipt={"version":3,"research_mode":"chatgpt_first_no_api",
-                 "source_dossier_sha256":digest(dossier)}
+                 "source_dossier_sha256":digest(dossier),
+                 "preforecast_certificate_sha256":digest(dossier["preforecast_certificate"])}
         self.assertEqual(validate_optional_dossier(
             before,after,receipt,dossier),verdict)
 
@@ -246,6 +293,9 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
         dossier["baseline_sha256"]=digest(before)
         dossier["candidate_sha256"]=digest(after)
         dossier["source_review_packet"]["published_history_sha256"]=digest(before)
+        dossier["preforecast_certificate"]["baseline_sha256"]=digest(before)
+        dossier["preforecast_certificate"]["source_packet_sha256"]=digest(
+            dossier["source_review_packet"])
         validate_source_dossier(dossier,before,after)
         after["updates"][-1]["evidence"][-1]["reliability"]="Medium"
         dossier["candidate_sha256"]=digest(after)
@@ -257,7 +307,8 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
                     "wrong_research_asof","wrong_receipt","wrong_mode"):
             before,after,dossier=bundle()
             receipt={"version":3,"research_mode":"chatgpt_first_no_api",
-                     "source_dossier_sha256":digest(dossier)}
+                     "source_dossier_sha256":digest(dossier),
+                 "preforecast_certificate_sha256":digest(dossier["preforecast_certificate"])}
             if why=="wrong_base":
                 dossier["baseline_sha256"]="0"*64
             elif why=="future_review":
@@ -277,7 +328,8 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
         before,after,dossier=bundle()
         date=after["updates"][-1]["date"]
         receipt={"version":3,"research_mode":"chatgpt_first_no_api",
-                 "source_dossier_sha256":digest(dossier)}
+                 "source_dossier_sha256":digest(dossier),
+                 "preforecast_certificate_sha256":digest(dossier["preforecast_certificate"])}
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             (root/"data/source-dossiers").mkdir(parents=True)
@@ -303,6 +355,7 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
             review.write_text(json.dumps({
                 "version":3,"research_mode":"different_handoff",
                 "source_dossier_sha256":digest(dossier),
+                "preforecast_certificate_sha256":digest(dossier["preforecast_certificate"]),
             }))
             with self.assertRaisesRegex(ValueError,
                                         "detached"):
@@ -310,7 +363,7 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
             path.unlink()
             review.write_text(json.dumps(receipt))
             with self.assertRaisesRegex(ValueError,
-                                        "Missing bound"):
+                                        "mandatory V10 source dossier"):
                 verify_all_chatgpt_source_dossiers(root,after)
 
     def test_modern_v3_chat_handoff_validates_without_api_and_needs_draft(self):
@@ -335,11 +388,9 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
                 json.dumps(case.draft))
             (folder/"data/review-reports"/(date+".md")).write_bytes(case.report)
             t=case.opened+dt.timedelta(minutes=6)
-            result=submit_reviewed_assessment.validate_handoff(
-                folder,root=root,now=t)
-            self.assertEqual(result["date"],date)
-            self.assertIn("draft_file",result)
-            self.assertIn("report_file",result)
+            with self.assertRaisesRegex(RuntimeError,"Mandatory V10 source dossier"):
+                submit_reviewed_assessment.validate_handoff(
+                    folder,root=root,now=t,test_only=True)
             (folder/"data/review-drafts"/(date+".json")).unlink()
             with self.assertRaisesRegex(RuntimeError,"frozen draft"):
                 submit_reviewed_assessment.validate_handoff(

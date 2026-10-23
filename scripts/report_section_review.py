@@ -110,9 +110,10 @@ def validate_report_section_reviews(section_reviews, record, draft_hash,
         raise ValueError("Every report section needs both review perspectives")
     failed_by_role = {"affirmative": 0, "critical": 0}
     notes_by_role = {"affirmative": set(), "critical": set()}
+    item_notes_by_role = {"affirmative": set(), "critical": set()}
     for section in REPORT_SECTIONS:
         item = section_reviews[section]
-        if not isinstance(item, dict) or set(item) != {"items", "affirmative", "critical"}:
+        if not isinstance(item, dict) or set(item) != {"items", "item_reviews", "affirmative", "critical"}:
             raise ValueError("Malformed report section review: " + section)
         inventory = item["items"]
         if not isinstance(inventory, list) or not inventory or len(inventory) != len(set(inventory)):
@@ -121,6 +122,35 @@ def validate_report_section_reviews(section_reviews, record, draft_hash,
             raise ValueError("Invalid reviewed report item: " + section)
         if final_round and inventory != required[section]:
             raise ValueError("Unreviewed or mismatched report items: " + section)
+        item_reviews = item["item_reviews"]
+        if not isinstance(item_reviews, dict) or set(item_reviews) != set(inventory):
+            raise ValueError("Missing individual item review decisions: " + section)
+        for identifier in inventory:
+            detail = item_reviews[identifier]
+            if not isinstance(detail, dict) or set(detail) != {"affirmative", "critical"}:
+                raise ValueError("Each report item requires two separate reviews: " + identifier)
+            for role in ("affirmative", "critical"):
+                decision = detail[role]
+                if not isinstance(decision, dict):
+                    raise ValueError("Missing " + role + " item-level verdict: " + identifier)
+                approved = decision.get("approved")
+                issues = decision.get("issues")
+                note = decision.get("test_note")
+                witness = decision.get("evidence_or_check")
+                if (decision.get("draft_sha256") != draft_hash
+                    or type(approved) is not bool
+                    or not isinstance(issues, list)
+                    or any(not isinstance(q, str) or not q.strip() for q in issues)
+                    or not isinstance(note, str) or len(note.strip()) < 35
+                    or not isinstance(witness, str) or len(witness.strip()) < 30
+                    or identifier not in note or identifier not in witness):
+                    raise ValueError("Incomplete " + role + " item-level review: " + identifier)
+                if approved != (len(issues) == 0):
+                    raise ValueError("Inconsistent item-level verdict: " + identifier)
+                note_key = note.strip().casefold()
+                if note_key in item_notes_by_role[role]:
+                    raise ValueError("Repeated generic item-level note for " + role)
+                item_notes_by_role[role].add(note_key)
         for role in ("affirmative", "critical"):
             decision = item[role]
             if not isinstance(decision, dict):
@@ -136,6 +166,10 @@ def validate_report_section_reviews(section_reviews, record, draft_hash,
                 raise ValueError(role + " report section test incomplete: " + section)
             if approved != (len(issues) == 0):
                 raise ValueError(role + " report section verdict inconsistent: " + section)
+            all_items_approved = all(
+                item_reviews[identifier][role]["approved"] for identifier in inventory)
+            if approved != all_items_approved:
+                raise ValueError(role + " section/item-level approvals inconsistent: " + section)
             note_key = note.strip().casefold()
             if note_key in notes_by_role[role]:
                 raise ValueError(role + " report review repeated identical generic test notes")

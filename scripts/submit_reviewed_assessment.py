@@ -16,6 +16,7 @@ import sys
 from zoneinfo import ZoneInfo
 
 from candidate_checks import dashboard_record, one_append
+from publication_safety import require_production_material
 from review_receipt import checked_receipt
 from validate_history import validate_history
 from jsonschema import Draft202012Validator
@@ -31,10 +32,12 @@ def require(ok, message):
         raise RuntimeError(message)
 
 
-def validate_handoff(folder, root=ROOT, now=None):
+def validate_handoff(folder, root=ROOT, now=None, *, test_only=False):
     """Run all substantive checks locally BEFORE touching a GitHub API/remote."""
     root=Path(root).resolve()
     folder=Path(folder).expanduser().resolve()
+    require(not test_only or root != ROOT.resolve(),
+            "Test-only validation cannot run against the production checkout")
     require(folder!=root and root not in folder.parents,
             "Handoff must remain outside the GitHub checkout")
     before_file=folder/"history-before.json"
@@ -60,6 +63,10 @@ def validate_handoff(folder, root=ROOT, now=None):
     # Modern ChatGPT-first review has an exact frozen draft and complete
     # dual-perspective full-section report, not a legacy off-GitHub receipt.
     supplemental={}
+    if date >= "2026-10-25":
+        require(receipt.get("version") == 3
+                and receipt.get("research_mode") == "chatgpt_first_no_api",
+                "October 25+ handoff requires mandatory V10 source review")
     if receipt.get("version")==3:
         draft_file=folder/"data/review-drafts"/(date+".json")
         report_file=folder/"data/review-reports"/(date+".md")
@@ -72,15 +79,23 @@ def validate_handoff(folder, root=ROOT, now=None):
     else:
         checked_receipt(before,after,receipt,now=current)
     dossier_file=folder/"data/source-dossiers"/(date+".json")
-    if receipt.get("research_mode") is not None:
-        require(dossier_file.is_file(), "ChatGPT-first source dossier missing")
+    if receipt.get("version") == 3:
+        require(dossier_file.is_file(), "Mandatory V10 source dossier missing")
         from chatgpt_handoff import validate_optional_dossier
-        validate_optional_dossier(before,after,receipt,
-                                  json.loads(dossier_file.read_bytes()))
+        dossier = json.loads(dossier_file.read_bytes())
+        validate_optional_dossier(before, after, receipt, dossier)
+        from source_capture_witness import verify_offline_handoff_captures
+        verify_offline_handoff_captures(folder, dossier)
         supplemental["dossier_file"]=dossier_file
     else:
         require(not dossier_file.exists(),
                 "Unbound source dossier cannot accompany historical receipt")
+    if not test_only:
+        from publication_safety import require_production_material
+        require_production_material(after["updates"][-1],
+                                    json.loads(dossier_file.read_bytes())
+                                    if dossier_file.is_file() else None,
+                                    folder=folder)
     validate_history(after,before)
     schema=json.loads((root/"schema/history.schema.json").read_bytes())
     Draft202012Validator(schema).validate(after)
@@ -138,7 +153,7 @@ def verify_remote_ready():
 def submit(folder, *, merge=False, root=ROOT):
     """Validate off-GitHub work first, then open the protected candidate PR."""
     # All external review / data guards precede any use of gh or a remote.
-    checked=validate_handoff(folder,root)
+    checked=validate_handoff(folder,root,test_only=False)
     require(Path(root).resolve()==ROOT.resolve(),
             "Only the designated repository checkout may submit")
     base=verify_remote_ready()

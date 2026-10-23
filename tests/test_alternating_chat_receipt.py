@@ -51,6 +51,18 @@ class AlternatingReviewTests(unittest.TestCase):
         self.section_reviews = {
             section: {
                 "items": list(items),
+                "item_reviews": {
+                    identifier: {
+                        role: {
+                            "draft_sha256": self.hash, "approved": True,
+                            "issues": [],
+                            "test_note": ("Synthetic " + role + " perspective evaluates "
+                                          + identifier + " for specific defects and evidence"),
+                            "evidence_or_check": ("Synthetic " + role + " check for "
+                                                  + identifier + " against the frozen record"),
+                        } for role in ("affirmative", "critical")
+                    } for identifier in items
+                },
                 "affirmative": {
                     "draft_sha256": self.hash, "approved": True, "issues": [],
                     "test_note": "Synthetic affirmative test checks the supporting details for " + section},
@@ -74,6 +86,9 @@ class AlternatingReviewTests(unittest.TestCase):
             "origin": "chatgpt_alternating",
             "review_mode": "affirmative_then_critical_chat",
             "reviewer_provenance": "one_chatgpt_session_two_perspectives",
+            "research_mode": "chatgpt_first_no_api",
+            "source_dossier_sha256": "a" * 64,
+            "preforecast_certificate_sha256": "b" * 64,
             "status": "CLEAN",
             "date": self.opened.date().isoformat(),
             "baseline_sha256": digest(self.before),
@@ -214,7 +229,7 @@ class AlternatingReviewTests(unittest.TestCase):
         detail = self.receipt["approval"]["rounds"][0]["section_reviews"][
             "four_scored_forecasts"]["affirmative"]
         detail["approved"], detail["issues"] = False, ["calibration error"]
-        with self.assertRaisesRegex(ValueError, "global/section"):
+        with self.assertRaisesRegex(ValueError, "section/item-level"):
             self.check()
 
     def test_v2_single_review_not_authorized_for_future(self):
@@ -235,8 +250,14 @@ class AlternatingReviewTests(unittest.TestCase):
         for detail in prior["section_reviews"].values():
             detail["affirmative"]["draft_sha256"] = "1" * 64
             detail["critical"]["draft_sha256"] = "1" * 64
+            for item_roles in detail["item_reviews"].values():
+                for review in item_roles.values():
+                    review["draft_sha256"] = "1" * 64
         failed = prior["section_reviews"]["new_events_and_news"]["affirmative"]
         failed["approved"], failed["issues"] = False, ["Synthetic unsupported claim"]
+        item_roles = prior["section_reviews"]["new_events_and_news"]["item_reviews"]
+        first = next(iter(item_roles.values()))["affirmative"]
+        first["approved"], first["issues"] = False, ["Synthetic unsupported claim"]
         prior["post_review_validation"] = None
         prior["forecast_sha256"] = self.lock_hash
         prior["critical"]["completed_at"] = (
@@ -263,6 +284,8 @@ class AlternatingReviewTests(unittest.TestCase):
         prior["affirmative"]["issues"] = ["Contradiction requiring correction"]
         failed = prior["section_reviews"]["new_events_and_news"]["affirmative"]
         failed["approved"], failed["issues"] = False, ["Synthetic contradiction"]
+        first = next(iter(prior["section_reviews"]["new_events_and_news"]["item_reviews"].values()))["affirmative"]
+        first["approved"], first["issues"] = False, ["Synthetic contradiction"]
         prior["post_review_validation"] = None
         prior["validation"]["completed_at"] = self.opened.isoformat()
         prior["affirmative"]["completed_at"] = (

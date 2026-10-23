@@ -62,6 +62,9 @@ approved-handoff/
     review-drafts/YYYY-MM-DD.json
     review-reports/YYYY-MM-DD.md
     source-dossiers/YYYY-MM-DD.json
+  source-captures/
+    E-YYYYMMDD-NN.html  # local-only, NEVER staged/published
+  DO_NOT_PUBLISH.txt   # optional test-only marker, forbidden in production
 ```
 
 - `history-before.json`: unchanged preceding `data/history.json`.
@@ -76,11 +79,22 @@ approved-handoff/
 - `review-receipts`: prospective receipt version 3 with provenance
   `chatgpt_alternating`, mode `affirmative_then_critical_chat`,
   `reviewer_provenance: one_chatgpt_session_two_perspectives`, exact
-  hashes, times, round inventories, both clean reviews, and two extra fields:
-  `research_mode: chatgpt_first_no_api` and
-  `source_dossier_sha256: <sha256 of canonical dossier JSON>`.
+  hashes, times, round inventories, both clean reviews, and three MANDATORY
+  fields for new October 25+ records: `research_mode: chatgpt_first_no_api`,
+  `source_dossier_sha256: <sha256 of canonical dossier JSON>`, and
+  `preforecast_certificate_sha256: <sha256 of source-only certificate>`.
+  Omitting the mode never opts out of V10 source review.
 - `source-dossiers`: complete source, original passage and claim-level
   reliability metadata, as detailed below.
+- `source-captures`: bounded original HTML bytes for each admitted claim,
+  named by evidence ID, retained outside the repository; the guarded local
+  validator recomputes their original-body SHA-256, visible-text digest and
+  exact quotation character offset. Never commit entire copyrighted articles
+  to the public repository or deploy them. Missing local captures fail closed.
+  GitHub CI can check archived digest/metadata consistency only, NOT independently
+  authenticate publisher content after private raw bytes are withheld.
+- `DO_NOT_PUBLISH.txt` or any equivalent test-only marker blocks real
+  submissions, as do obvious synthetic claim texts and reserved test hosts.
 
 The `review_receipt.py` validator authenticates record **consistency**
 with the supplied report and receipt, not that the report was actually
@@ -108,6 +122,7 @@ The JSON object has these top-level fields:
 | `affirmative_source_review` | recorded clean independent source-review perspective |
 | `critical_source_review` | recorded clean critical source-review perspective |
 | `claim_reliability` | deterministic dual-review result from `reconcile_dual_reliability` |
+| `preforecast_certificate` | hash-bound source-only snapshot (original research packet, both source perspectives and reconciled factual grade certificate), closed BEFORE any forecast |
 
 Each `coverage` row has `category`, actually attempted
 `queries` (nonempty descriptive strings), `outcome` from the standard
@@ -117,6 +132,12 @@ The `source_review_packet.source_quality_audit.sources` list must contain
 **each unique URL**, including background items, with source/origin class,
 `access_status`, `first_publication_clock_status`, independent
 corroborating source URLs (or `[]`), and specific assessment/limitations.
+Each row now also includes `access_channels` for the distinct search,
+metadata HTTP and original article-body stages, with explicit original
+claim IDs, stage limitations and `same_stage_conflicts: []`. Differences
+ACROSS stages are not automatically contradictions; inconsistent HTTP
+outcomes WITHIN a metadata stage or unresolved same-stage discrepancies
+fail closed. Both reviewers must explicitly discuss these stages.
 
 `source_review_packet.evidence` has **every newly proposed accepted
 claim as originally frozen**, with an unchanged original claim ID and
@@ -124,10 +145,17 @@ the model/editor's original, explicitly provisional `reliability`.
 The packet's `pre_review_claim_decisions` binds every ID to its
 original source, a 4–25-word exact original article-body passage,
 64-digit SHA-256 of the independently recorded original HTML source body,
-and admission status. This digest is a **provided provenance assertion**,
-not independent confirmation of the remote publisher's bytes. Do not
-fabricate the passage or hash: if unavailable, keep the observation
-excluded, rather than submitting a false eligible witness.
+and admission status. Each admitted decision must contain a
+`capture_verification` object recording the exact canonical original and
+final URL, actual offset-aware retrieval instant before the cutoff, HTML
+content-type/UTF-8, full raw-body SHA-256, visible-text SHA-256, exact
+4–25-word visible passage and its character offset. Bind that object to
+`capture_verification_sha256`. Local preflight verifies all against the
+byte-exact `source-captures/<ID>.html` file; plausible-looking hashes
+without the original bytes FAIL local preflight. Full publisher pages are
+never staged or published. GitHub can confirm the recorded provenance is
+internally consistent, not that captured bytes are authentic remote originals.
+Do not fabricate passages or hashes; exclude unsupported observations.
 
 Each source-review perspective must contain `approved:true`,
 `issues:[]`, one substantively reviewed `source_reviews` entry for
@@ -149,7 +177,14 @@ search descriptions. This is self-reported research, **not** an
 independently audited Responses API search trace. The dossier's final
 `claim_reliability` rows and the published newly added evidence grades,
 `reliability_basis`, and `geopolitical_direction_confidence` must
-**exactly match** the conservative algorithm. Carried-forward evidence
+**exactly match** the conservative algorithm. The frozen
+`preforecast_certificate` contains version 1, clean limited-inference
+status, cutoff, completed review time, historical baseline SHA and SHA-256
+of the original research packet, affirmative/critical reviews and reconciled
+grades; its exact digest must match the v3 receipt. Forecast/candidate hashes
+are bound only afterward without rewriting the frozen source packet.
+This is a consistency commitment, not a trusted third-party timestamp.
+Carried-forward evidence
 must match original history exactly apart from status. The original
 quality audit, claims, factual grades, source identifiers, and cutoff
 are never rewritten to manufacture agreement.
@@ -163,8 +198,9 @@ python scripts/chatgpt_handoff.py --handoff /absolute/path/approved-handoff
 ```
 
 This command is **offline** and read-only. It verifies all seven supplied
-files, including full report receipt, V10 source/claim rubric, original
-historical integrity, reference chronology, four scored forecasts,
+files and bounded local source captures, including full report receipt,
+V10 source/claim rubric and original HTML witnesses, sealed preforecast
+certificate, historical integrity, reference chronology, four forecasts,
 deterministic history, JSON Schema and dashboard safety. It makes **zero**
 OpenAI API requests and **zero GitHub writes**.
 
@@ -184,9 +220,13 @@ automatic `--merge` in the default path. If ChatGPT uses a connected
 GitHub app instead of the local CLI, submit those same five files as a PR;
 the CI receipt validator will reject missing or changed artifacts.
 
-The GitHub CI `validate.yml` automatically verifies a source dossier
-**only** when the prospective v3 receipt explicitly opts into
-`research_mode: chatgpt_first_no_api`. Existing V1–V9 and historical
+The GitHub CI `validate.yml` **always** requires an exact V10 source
+ dossier and preforecast certificate for every new version-3 receipt dated
+ October 25 onward. There is no opt-out by omitting `research_mode`.
+ Full-report `section_reviews` now also require `item_reviews` with
+ two per-item affirmative/critical decisions, specific item-named
+ `test_note` and `evidence_or_check`, own draft SHA and issues. A generic
+ section-only review is insufficient. Existing V1–V9 and historical
 review receipts retain their original immutable validation regime;
 adding this new mode never upgrades a past source claim or forecast.
 
@@ -201,3 +241,16 @@ inside CI. Deterministic GitHub schema checks do not verify external
 source truth, real independent reporting chains, human approval or the
 actual occurrence of claimed ChatGPT web searches. Any such uncertainty
 must be noted and cause a failed publication decision when material.
+
+## Nonpublishing tests and exact limitations
+
+The normal full test suite is `python -m unittest discover -s tests -v`.
+The expensive nested synthetic future-Sunday test runs in a DEDICATED CI
+`future-append` job, which is also required before Pages deployment; locally
+run it with `IRAN_RUN_FUTURE_APPEND=1 python -m unittest discover -s tests
+-p 'test_future_append_readiness.py' -v`. Timeouts are failures, not passes.
+Only an isolated test checkout may use `validate_handoff(test_only=True)`.
+Real `submit()` always uses production mode; it does not expose a bypass.
+Neither this nor a green GitHub validator independently proves external
+article truth, first-release chronology, a credible original HTML retrieval,
+or that two distinct independent model invocations occurred.

@@ -73,7 +73,7 @@ class ExternalHandoffTests(unittest.TestCase):
             with patch.object(submission,"gh") as gh,\
                  patch.object(submission,"gh_json") as api:
                 result=submission.validate_handoff(
-                    handoff,root=root,now=self.opened+dt.timedelta(seconds=3))
+                    handoff,root=root,now=self.opened+dt.timedelta(seconds=3),test_only=True)
                 gh.assert_not_called()
                 api.assert_not_called()
             self.assertEqual(result["date"],self.receipt["date"])
@@ -86,7 +86,7 @@ class ExternalHandoffTests(unittest.TestCase):
                  patch.object(submission,"gh_json") as api:
                 with self.assertRaisesRegex(RuntimeError,"critical review audit"):
                     submission.validate_handoff(
-                        handoff,root=root,now=self.opened+dt.timedelta(seconds=3))
+                        handoff,root=root,now=self.opened+dt.timedelta(seconds=3),test_only=True)
                 gh.assert_not_called()
                 api.assert_not_called()
 
@@ -96,14 +96,14 @@ class ExternalHandoffTests(unittest.TestCase):
             (root/"data/history.json").write_text(json.dumps({"updates":[]}))
             with self.assertRaisesRegex(RuntimeError,"does not match"):
                 submission.validate_handoff(
-                    handoff,root=root,now=self.opened+dt.timedelta(seconds=3))
+                    handoff,root=root,now=self.opened+dt.timedelta(seconds=3),test_only=True)
             (root/"data/history.json").write_text(json.dumps(self.history))
             bad=copy.deepcopy(self.candidate)
             bad["updates"][-1]["summary"]="Edited after review"
             (handoff/"data/history.json").write_text(json.dumps(bad))
             with self.assertRaisesRegex(ValueError,"digest mismatch"):
                 submission.validate_handoff(
-                    handoff,root=root,now=self.opened+dt.timedelta(seconds=3))
+                    handoff,root=root,now=self.opened+dt.timedelta(seconds=3),test_only=True)
 
     def test_reviewed_sunday_cannot_be_submitted_on_another_date(self):
         with tempfile.TemporaryDirectory() as tmp:

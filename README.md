@@ -168,6 +168,21 @@ Use `scripts/read_only_research_dry_run.py` for the diagnostic;
 see [AUTOMATION.md](AUTOMATION.md) for its exact limitations.
 The separately retired GitHub-hosted assessment writer remains disabled.
 
+## Prospective V10 hardening (effective October 25, 2026)
+
+Every new version-3 assessment requires a V10 source dossier and
+separately bound sealed source-only certificate; deleting the mode or
+source dossier cannot authorize publication. Source claims need genuine
+byte-level original HTML checks with exact passage, offsets and hashes in
+the OFF-repository handoff. Only provenance attestations—not copyrighted
+source HTML—enter the repository, so CI cannot independently prove
+publisher authenticity. Search, metadata HTTP and article-body access are
+distinct; inconsistent SAME-stage accounts are rejected. Full reviews
+require affirmative/critical decisions for every report item, not just
+one note per section. Synthetic markers and reserved test domains cannot
+pass production submission. A separate CI `future-append` job runs the
+nested full-suite future-Sunday simulation; deployment requires both jobs.
+
 ## ChatGPT-first handoff — default, no OpenAI Responses charges
 
 For **new** Sunday research and reports, use

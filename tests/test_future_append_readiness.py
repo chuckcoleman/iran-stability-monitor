@@ -24,6 +24,8 @@ from validate_history import validate_history
 
 class FutureAppendReadinessTests(unittest.TestCase):
     def test_full_suite_after_one_synthetic_sunday_append(self):
+        if os.getenv("IRAN_RUN_FUTURE_APPEND") != "1":
+            self.skipTest("Dedicated future-append CI job runs this expensive nested test")
         if os.getenv("IRAN_NESTED_FUTURE_APPEND")=="1":
             self.skipTest("Nested run already uses one new synthetic Sunday")
         before,assessment,evidence,opened=fixture()
@@ -46,7 +48,7 @@ class FutureAppendReadinessTests(unittest.TestCase):
             (root/"data/history.json").write_text(
                 json.dumps(candidate,ensure_ascii=False,indent=2)+"\n",
                 encoding="utf-8")
-            env=dict(os.environ,IRAN_NESTED_FUTURE_APPEND="1")
+            env=dict(os.environ,IRAN_NESTED_FUTURE_APPEND="1", IRAN_RUN_FUTURE_APPEND="0")
             result=subprocess.run(
                 [sys.executable,"-m","unittest","discover","-s","tests","-q"],
                 cwd=root,env=env,text=True,capture_output=True,

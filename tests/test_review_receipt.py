@@ -147,7 +147,7 @@ class ReceiptTests(unittest.TestCase):
                         "locked_forecasts":locked,
                         "affirmative":{"approved":True,"issues":[],"draft_sha256":sha},
                         "critical":{"approved":True,"issues":[],"draft_sha256":sha}}}
-                with self.assertRaisesRegex(ValueError,"Unknown or unauthorized review policy"):
+                with self.assertRaisesRegex(ValueError,"Unknown or unauthorized review policy|Historical V3 assessment lacks mandatory V10"):
                     receipt.checked_receipt(
                         history,candidate,old_receipt,
                         now=opened+dt.timedelta(seconds=12))
@@ -163,7 +163,7 @@ class ReceiptTests(unittest.TestCase):
                         receipt.subprocess,"check_output",
                         return_value=json.dumps(history).encode()):
                         with self.assertRaisesRegex(
-                            ValueError,"Unknown or unauthorized review policy"):
+                            ValueError,"Unknown or unauthorized review policy|Historical V3 assessment lacks mandatory V10"):
                             receipt.verify_repository_change(
                                 "base",root,now=opened+dt.timedelta(seconds=12))
 
