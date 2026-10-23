@@ -34,6 +34,17 @@ perspectives examine promising and held results; held evidence cannot
 become a new admitted claim. This adds research, not an accepted-evidence
 quota or a new forecast/publication authorization.
 
+The V10 validator now **requires** one source-packet
+`promising_evidence_followup` triage for every unique selected URL,
+including context-only or excluded sources. Promising leads need dated
+pre-cutoff searches for upstream data and contrary explanations, documented
+scope/method/denominator/reporting chain, registered URLs and a final
+disposition. Held or contradicted leads cannot supply admitted evidence.
+Both source reviewers must supply distinct hash-bound decisions on every
+triage and outcome. An omitted, unsupported or changed register fails the
+existing preforecast seal. This is still no proof that unobserved external
+searches occurred or that publisher pages are authenticated.
+
 Source-only or full-report rejection, missing original, incomplete category
 audit, unknown access, review mismatch or a changed baseline fails closed.
 No score, web deployment or social announcement is authorized by a mere

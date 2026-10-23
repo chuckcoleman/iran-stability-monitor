@@ -93,6 +93,19 @@ No research result, including an empty one, bypasses the V10 gates or
 justifies a mechanical risk increase. Record unperformed research as
 NOT TESTED, not PASS.
 
+## Machine-enforced promising-follow-up negative tests
+
+Test one explicit triage per canonical source, including excluded and
+context-only URLs, with a substantive reason and priority. Reject omitted
+registers, missing/duplicate/unlisted leads, post-cutoff investigations,
+missing upstream or counterevidence queries, unregistered citations,
+missing geography/period/denominator/method, unsupported reporting chains,
+and falsely admitting held or contradicted leads. Require exact matching
+new-claim IDs and **two distinct** source-review decisions for every lead.
+Alter one follow-up after sealing the preforecast certificate and require
+rejection. These are structural/fail-closed tests, not actual proof of live
+research or original publisher authenticity.
+
 ## All-source evidence-quality tests
 
 A source appearing in a search result does not prove the related claim.
