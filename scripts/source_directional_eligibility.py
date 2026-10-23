@@ -63,8 +63,8 @@ def eligibility(packet):
     # publishers or observed directions. Source verification and the two
     # independent reviews are separate mandatory gates.
     protocol = packet.get("pre_review_admission_version")
-    no_count_quota = protocol == 4
-    search_balance_not_outcome_quota = protocol in (3, 4)
+    no_count_quota = protocol in (4, 5)
+    search_balance_not_outcome_quota = protocol in (3, 4, 5)
     failures = []
     if not no_count_quota:
         if len(active) < MIN_OBSERVATIONS:
@@ -115,5 +115,14 @@ def eligibility(packet):
                 "coverage, contrary evidence, and what conclusions are "
                 "actually warranted by the admitted observations. No numeric "
                 "minimum or invented replacement observations.",
+        })
+    if protocol == 5:
+        result.update({
+            "version": 4,
+            "audit_vs_inference_policy":
+                "SEPARATE_SOURCE_AUDIT_COMPLETENESS_FROM_FORECAST_ADEQUACY",
+            "no_count_quota": True,
+            "two_reviewers_required": True,
+            "source_audit_complete_not_forecast_approval": True,
         })
     return result
