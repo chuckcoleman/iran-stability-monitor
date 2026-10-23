@@ -231,6 +231,20 @@ class SourceAccessProvenanceV9Tests(unittest.TestCase):
     def test_v9_pre_review_binds_original_model_access_and_later_metadata(self):
         packet, original, snap = packet_fixture()
         snap = dict(snap, version=9)
+        # The legacy test fixture predates modeled per-source narrative
+        # provenance; provide synthetic source quality for this NEW V9-only
+        # scenario without altering the older test fixtures or source IDs.
+        for index, row in enumerate(
+                packet["source_quality_audit"]["sources"]):
+            row.setdefault(
+                "assessment",
+                "The synthetic model described partial original-page "
+                "availability with independent facts still unverified "
+                "for source %d." % index)
+            row.setdefault(
+                "limitations",
+                "No authenticated first publication, full article access "
+                "or independent event corroboration was established.")
         original["source_quality"] = [{
             "url": row["url"],
             "assessment": row["assessment"],
