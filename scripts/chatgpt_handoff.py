@@ -86,9 +86,11 @@ def validate_source_dossier(dossier, before, candidate):
     require(sum(f.get("scored") is True for f in issued["forecasts"]) == 4
             and cutoff <= opening,
             "ChatGPT research must close before the four scored forecasts")
-    require(_clock(dossier.get("source_review_completed_at"),
-                   "source review completion") <= opening,
-            "Source review cannot complete after forecast opening")
+    completed = _clock(dossier.get("source_review_completed_at"),
+                       "source review completion")
+    require(cutoff <= completed <= opening,
+            "Source review must follow the frozen evidence cutoff "
+            "and precede the four forecast openings")
     limitations = dossier.get("provenance_limitations")
     require(isinstance(limitations, str) and len(limitations.strip()) >= 80,
             "Explain limits of ChatGPT search and original-source verification")
@@ -124,8 +126,11 @@ def validate_source_dossier(dossier, before, candidate):
     require(encountered == set(CATEGORIES), "Missing a required research class")
     packet = dossier.get("source_review_packet")
     require(isinstance(packet, dict)
-            and packet.get("pre_review_admission_version") == 7,
-            "ChatGPT-first must use the prospective V10 reliability policy")
+            and packet.get("pre_review_admission_version") == 7
+            and packet.get("research_as_of") == cutoff_str
+            and packet.get("published_history_sha256") == sha(before),
+            "ChatGPT-first must use V10 reliability on the exact closed "
+            "original research cutoff and immutable prior history")
     quality = packet.get("source_quality_audit")
     rows = quality.get("sources") if isinstance(quality, dict) else None
     require(isinstance(rows, list) and len(rows) == len(urls),
@@ -142,6 +147,13 @@ def validate_source_dossier(dossier, before, candidate):
                 and item.get("origin") in (
                     "original_reporting", "syndicated_reprint",
                     "official_or_advocacy_claim", "analytical_secondary",
+                    "unknown")
+                and item.get("access_status") in (
+                    "source_metadata_captured", "source_unavailable",
+                    "source_not_retrieved")
+                and item.get("first_publication_clock_status") in (
+                    "publisher_supplied_metadata_not_independently_confirmed",
+                    "publisher_reported_date_only_not_independently_confirmed",
                     "unknown")
                 and isinstance(item.get("assessment"), str)
                 and len(item["assessment"].strip()) >= 30
@@ -180,8 +192,21 @@ def validate_source_dossier(dossier, before, candidate):
             "Missing independent source/passage decisions for new claims")
     actual_new = [e for e in issued.get("evidence", [])
                   if e.get("evidence_status") == "new"]
-    require({e["id"] for e in actual_new} == ids,
+    require({e["id"] for e in actual_new} == ids
+            and len(actual_new) == len(ids),
             "Published new claims must exactly match the source-reviewed IDs")
+    historical = {}
+    for update in before["updates"]:
+        for previous in update.get("evidence", []):
+            historical[previous["id"]] = previous
+    for carried in issued.get("evidence", []):
+        if carried.get("evidence_status") != "carried_forward":
+            continue
+        original = historical.get(carried.get("id"))
+        require(isinstance(original, dict)
+                and carried == {**original, "evidence_status": "carried_forward"},
+                "Carried-forward evidence must exactly retain original historical "
+                "source, grade, incident, interpretation and identifier")
     for e in originally:
         require(e.get("evidence_status") == "new"
                 and e.get("source") in urls
