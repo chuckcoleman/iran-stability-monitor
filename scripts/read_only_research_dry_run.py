@@ -345,6 +345,20 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "for any actual unexplained access contradiction. "
             "An incomplete source audit is never a successful forecast "
             "or permission to publish.")
+    if snapshot is not None and snapshot["version"] == 10:
+        review_common += (
+            "\nV10 FACTUAL RELIABILITY REPORT: Independently supply one "
+            "claim_reliability_reviews record PER currently admitted claim "
+            "with the exact original source identity, claim directness, "
+            "reviewed quality/method, genuinely independent original "
+            "corroborator evidence IDs, contradictions, original body "
+            "passage witness flag and grade computed from the ordinal "
+            "V10 rubric. Empty evidence means [] and no automatic "
+            "proof of stability. A respected publisher name or duplicated "
+            "news story never raises a claim's grade. Distinguish factual "
+            "certainty from confidence in direction of Iran instability. "
+            "Do not promote the model's proposed grade or revise archived "
+            "grades; no publication or forecast is permitted.")
     try:
         # In every source-review version, require AFFIRMATIVE then CRITICAL.
         # A rejection causes a strictly conservative revised packet, followed
@@ -407,7 +421,7 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "limitations":"No Sunday forecasts, actual issuance, dashboard browser render, "
                           "public deployment or social posting were tested. "
                           "A model-reported category audit does not prove every query ran."}
-    if snapshot and snapshot["version"] in (8, 9):
+    if snapshot and snapshot["version"] in (8, 9, 10):
         # Two deliberately independent results: whether the exact source
         # AUDIT was complete, and whether those records support an inference.
         # A completed inconclusive audit NEVER exercises or certifies any
@@ -421,6 +435,13 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             else "SOURCE_REVIEW_CLEAN_FORECAST_NOT_TESTED"
             if status == "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE"
             else "AUDIT_NOT_CERTIFIED_COMPLETE")
+    if snapshot and snapshot["version"] == 10:
+        report["claim_reliability_certificate"] = cycles.get(
+            "claim_reliability", "NOT_VALIDATED")
+        report["claim_reliability_scope"] = (
+            "FACTUAL_QUALITY_NOT_GEOPOLITICAL_STABILITY_DIRECTION")
+        report["model_proposed_grades_not_final"] = True
+        report["source_rating_publication"] = "NOT AUTHORIZED"
     dest=folder/"research-dry-run.json"
     if dest.exists():
         original_report = json.loads(dest.read_text(encoding="utf-8"))
