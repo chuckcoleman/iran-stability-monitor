@@ -1156,6 +1156,9 @@ def v8_complete_but_inconclusive(packet, reviewers, deterministic_issues,
                 if has_current_observation else
                 "NO_ORIGINAL_OBSERVATION_ADMITTED"):
             return False
+    if (packet.get("pre_review_admission_version") == 6 and
+            v9_access_channel_integrity_issues(packet)):
+        return False
     for role in ("affirmative", "critical"):
         row = reviewers.get(role)
         if not isinstance(row, dict) or row.get("approved") is not False:
@@ -1175,6 +1178,13 @@ def v8_complete_but_inconclusive(packet, reviewers, deterministic_issues,
                 or audit.get("audit_status") !=
                     "complete_with_disclosed_limitations"):
             return False
+        if packet.get("pre_review_admission_version") == 6:
+            if (audit.get("access_channels_reconciled") is not True
+                    or audit.get("unresolved_access_conflicts") != []
+                    or not isinstance(audit.get("access_channel_assessment"),
+                                      str)
+                    or len(audit["access_channel_assessment"].strip()) < 120):
+                return False
         if any(entry.get("conflict_status") for entry
                in row.get("tracking_only_url_aliases", [])):
             return False
