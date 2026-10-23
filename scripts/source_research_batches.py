@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6, 7)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6, 7, 8)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3, 4, 5, 6, 7):
+    if fresh_version not in (2, 3, 4, 5, 6, 7, 8):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -320,7 +320,7 @@ def batch_prompt(category, snapshot):
         "from inferred geopolitical sign. Do not score a forecast.")
     if snapshot["version"] == 5:
         return v5  # Preserve the exact V5 prompt and its paid request fingerprint.
-    if snapshot["version"] not in (6, 7):
+    if snapshot["version"] not in (6, 7, 8):
         raise ValueError("Unsupported source-research prompt version")
     v6 = v5 + (
         "\nV6 FORWARD-ONLY ADMISSION-READY ORIGINAL SOURCE RESEARCH. "
@@ -370,7 +370,7 @@ def batch_prompt(category, snapshot):
                   "items, new observations, publishers or directional signs.")
     if old_quota not in v6:
         raise ValueError("V6 prompt quota anchor changed")
-    return v6.replace(old_quota, new_policy) + (
+    v7 = v6.replace(old_quota, new_policy) + (
         "\nV7 FORWARD-ONLY NO ACCEPTED-EVIDENCE QUOTA. "
         "Return all and only genuinely supported findings, including zero "
         "when search yields none. Do not include a source merely to reach a "
@@ -385,6 +385,35 @@ def batch_prompt(category, snapshot):
         "publisher-diversity count, new-observation count or observed-direction "
         "quota. Do not change the original cutoff, evidence citations, "
         "attribution, source trace or publication prohibition.")
+    if snapshot["version"] == 7:
+        return v7  # Do not change already-paid V7 request fingerprints.
+    if snapshot["version"] != 8:
+        raise ValueError("Unsupported forward source research version")
+    return v7 + (
+        "\nV8 TWO DISTINCT QUESTIONS: did the six-category source AUDIT "
+        "accurately document all searches, candidate claims, unavailable "
+        "original bodies, publication-date uncertainty and known gaps, "
+        "and can the admissible findings support a NATIONAL FORECAST? "
+        "An accurately documented audit may be complete but INCONCLUSIVE "
+        "about national stability. Do not invent observations, independent "
+        "corroboration or a probability to turn that into a positive finding. "
+        "Distinguish search outcomes from verified original observations: "
+        "eligible_reporting_found is the original model's search-stage "
+        "candidate outcome, NOT proof a claim passed original-body screening. "
+        "Label sources where only HTML metadata were fetched as "
+        "METADATA_ONLY; never assert full article-body access based on it. "
+        "Publisher datePublished is a publisher-reported assertion and "
+        "NOT independently verified first publication, even when a time "
+        "is timezone-aware. An independently captured exact passage is "
+        "a source witness only, not verified article chronology or truth. "
+        "Treat historic demonstrations, old humanitarian deliveries or "
+        "earlier reports as HISTORICAL CONTEXT rather than current events "
+        "or a source of this run's directional changes. Report every genuine "
+        "conflict among publisher metadata, fetched article text and "
+        "model-generated descriptions without silently upgrading a claim. "
+        "Return only genuinely sourced evidence, even zero, and preserve "
+        "the exact six category search-trace and citation requirements. "
+        "No forecast or publication may be inferred from an audit outcome.")
 
 
 def _normalize_limitation_lists(original):
@@ -444,7 +473,7 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
         raise ValueError("Research stage has no original JSON object")
     effective = copy.deepcopy(original)
     changes = []
-    if version not in (5, 6, 7):
+    if version not in (5, 6, 7, 8):
         return effective, changes
     rows = effective.get("coverage_audit")
     if not isinstance(rows, list):
@@ -832,7 +861,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(7 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(8 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)

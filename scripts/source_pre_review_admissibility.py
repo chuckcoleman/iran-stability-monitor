@@ -159,7 +159,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                            search_calls=None):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") in (3, 4, 5, 6, 7),
+            and snapshot.get("version") in (3, 4, 5, 6, 7, 8),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
@@ -391,7 +391,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
     amended["pre_review_admission_version"] = (
-        4 if version >= 7 else 3 if version >= 5
+        5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
         else 2 if version >= 4 else GATE_VERSION)
     amended["pre_review_limitations"] = (
         "Text overlap and page dates are necessary screening features only. "
@@ -434,6 +434,23 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
             "reviewers must judge the adequacy of what survived source "
             "admission and may reject unsupported inferences. Screening "
             "approval never authorizes publication.")
+    if version >= 8:
+        amended["pre_review_limitations"] += (
+            " V8 separately audits the accuracy and completeness of the "
+            "six-category source SEARCH and the strength of any resulting "
+            "GEOPOLITICAL INFERENCE. An accurately documented search may "
+            "be complete but inconclusive. Search-stage findings, later "
+            "metadata capture and publisher timestamps never establish "
+            "current event truth, original first publication or full-article "
+            "inspection. Both independent roles must agree about audit "
+            "integrity before an audit-only inconclusive conclusion is allowed.")
+        amended["pre_review_research_scope_v8"] = {
+            "research_as_of": snapshot["cutoff_at"],
+            "post_research_window": "NOT_SEARCHED",
+            "metadata_inspection": "LATER_PROCESSING_NOT_NEW_SOURCE_RESEARCH",
+            "past_events": "HISTORICAL_CONTEXT_NOT_CURRENT_OBSERVATIONS",
+            "publication": "NOT AUTHORIZED",
+        }
     # Preserve every original URL; update only the reviewed packet's
     # classification of which sources support currently admitted evidence.
     quality = amended["source_quality_audit"]
@@ -448,6 +465,29 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
             e.get("evidence_status") == "new"]
         row["role"] = ("new_evidence" if row["new_evidence_indices"]
                        else "coverage_context_only")
+        if version >= 8:
+            # This row records metadata retrieval only. A separate claim
+            # register proves whether a particular body passage was fetched.
+            # Do not rewrite historical raw metadata or assert full-page
+            # inspection, original release authenticity or event truth.
+            row["v8_source_inspection_scope"] = (
+                "HTML_METADATA_ONLY_NOT_VERIFIED_FULL_ARTICLE")
+            row["v8_first_publication_verified"] = False
+            row["v8_article_witness_status"] = (
+                "CLAIM_SPECIFIC_EXACT_PASSAGE_REGISTERED_NOT_EVENT_VERIFIED"
+                if any(decision.get("original_url") == row["url"]
+                       and decision.get("original_passage")
+                       and decision.get("source_body_sha256")
+                       and not any(reason in (
+                           "NO_EXACT_RETRIEVED_ORIGINAL_BODY_PASSAGE",
+                           "INVALID_ORIGINAL_PASSAGE_PROVENANCE")
+                           for reason in decision.get("reasons", []))
+                       for decision in decisions)
+                else "NO_EXACT_CLAIM_PASSAGE_IN_ORIGINAL_REGISTER")
+            row["v8_current_event_status"] = (
+                "PROVISIONAL_CURRENT_OBSERVATION_REQUIRES_DUAL_REVIEW"
+                if row["role"] == "new_evidence" else
+                "CONTEXT_ONLY_NOT_CURRENT_ADMITTED_EVIDENCE")
     quality["evidence_source_count"] = sum(
         row["role"] == "new_evidence" for row in quality["sources"])
     quality["context_only_source_count"] = sum(
@@ -459,6 +499,16 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
         retained = sorted(e["id"] for e in admitted
                           if url_key(e.get("source")) in urls)
         row["pre_review_admitted_evidence_ids"] = retained
+        if version >= 8:
+            row["v8_search_vs_admission"] = {
+                "original_search_outcome": row["pre_review_original_outcome"],
+                "admission_result": (
+                    "PROVISIONAL_EVIDENCE_REQUIRES_DUAL_REVIEW"
+                    if retained else "NO_ORIGINAL_OBSERVATION_ADMITTED"),
+                "research_as_of": snapshot["cutoff_at"],
+                "historical_context_not_contemporaneous_measurement": True,
+                "post_asof_window": "NOT_SEARCHED",
+            }
         if not retained and row.get("outcome") == "eligible_reporting_found":
             row["outcome"] = "inaccessible_or_incomplete"
             row["limitations"] += (
@@ -466,7 +516,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                 "directional observation passed the pre-review screen.")
     count = eligibility(amended)
     outcome = {
-        "version": (4 if version >= 7 else 3 if version >= 5
+        "version": (5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
                     else 2 if version >= 4 else GATE_VERSION),
         "status": ("PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY" if
                    not count["failures"] else

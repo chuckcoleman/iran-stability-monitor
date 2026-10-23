@@ -316,13 +316,28 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                            separators=(",", ":"), allow_nan=False)
     check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
           "Frozen source-review input digest mismatch")
+    review_common = SOURCE_REVIEW_COMMON
+    if snapshot is not None and snapshot["version"] == 8:
+        # The old common JSON example contains the three required legacy
+        # fields. New V8 reviewers must also return these three separately
+        # audited objects rather than mistake the example for a fixed schema.
+        review_common += (
+            "\nV8 REVIEW RESPONSE SHAPE: In addition to approved, issues "
+            "and one substantive source_reviews entry per canonical URL, "
+            "include the mandatory source_query_balance_review, "
+            "source_adequacy_review and audit_integrity_review objects "
+            "described by the role-specific requirements below. "
+            "Their source-audit and inferential verdicts are DISTINCT. "
+            "A complete but inconclusive source audit still requires "
+            "approved=false and the specific insufficient_for_inference "
+            "issue; it never certifies a forecast or publishing.")
     try:
         # In every source-review version, require AFFIRMATIVE then CRITICAL.
         # A rejection causes a strictly conservative revised packet, followed
         # by BOTH reviews again. Every version retains independent checkpoints.
         cycles = run_alternating_review_cycles(
             folder=folder, sample=sample, input_sha=frozen_sha,
-            reviewer=reviewer, now=now, common=SOURCE_REVIEW_COMMON,
+            reviewer=reviewer, now=now, common=review_common,
             original_cutoff=(snapshot["cutoff_at"] if snapshot else None),
             allow_new_after_unknown=(
                 os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"),
@@ -378,6 +393,20 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "limitations":"No Sunday forecasts, actual issuance, dashboard browser render, "
                           "public deployment or social posting were tested. "
                           "A model-reported category audit does not prove every query ran."}
+    if snapshot and snapshot["version"] == 8:
+        # Two deliberately independent results: whether the exact source
+        # AUDIT was complete, and whether those records support an inference.
+        # A completed inconclusive audit NEVER exercises or certifies any
+        # scored forecasts, GitHub publication, or social actions.
+        report["source_audit_status"] = cycles["source_audit_status"]
+        report["geopolitical_inference_status"] = cycles["forecast_inference_status"]
+        report["publication"] = "NOT AUTHORIZED"
+        report["audit_only_conclusion"] = (
+            "COMPLETE_INCONCLUSIVE_NO_FORECAST_AUTHORIZED"
+            if status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
+            else "SOURCE_REVIEW_CLEAN_FORECAST_NOT_TESTED"
+            if status == "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE"
+            else "AUDIT_NOT_CERTIFIED_COMPLETE")
     dest=folder/"research-dry-run.json"
     if dest.exists():
         original_report = json.loads(dest.read_text(encoding="utf-8"))
@@ -423,7 +452,13 @@ def main(argv=None):
     # evidence gates, missing directions, insufficient source counts,
     # incomplete corrections and other invariant failures MUST produce a
     # nonzero Actions exit status even if both reviewers said approved.
-    if summary["status"] != "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE":
+    if summary["status"] == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE":
+        print("COMPLETE SOURCE AUDIT WITH DISCLOSED LIMITATIONS; "
+              "INSUFFICIENT GEOPOLITICAL INFERENCE. NO FORECASTS TESTED, "
+              "NO PUBLICATION AUTHORIZED.", flush=True)
+    if summary["status"] not in (
+            "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE",
+            "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"):
         raise SystemExit(1)
 
 

@@ -1,5 +1,45 @@
 # Iran assessment — reviews before GitHub publication
 
+## Forward-only V8: separate source-audit completion from forecast inference
+
+New, explicitly launched research-dry-run diagnostics use the V8 frozen source
+snapshot and independently reported **two-axis** source review. Prior V1–V7
+research snapshots, paid research and reviewer prompts, original API response
+IDs, archive hashes and historic failed decisions are never retrospectively
+rewritten or recertified.
+
+The **source audit** answers whether all six original-source search categories,
+all listed URLs, exact attribution/citation records, access and publication
+uncertainties, historical context, held evidence, and the original evidence
+cutoff were accurately documented. Publisher article metadata, including a
+timezone-aware datePublished field, is *publisher supplied*: not independently
+verified first publication. Fetching an HTML metadata page never by itself
+establishes original full-article inspection. An exact original-page passage
+register is a separate, narrower witness, not verification of event truth.
+Later metadata checks do NOT expand the original research as-of interval.
+
+The distinct **geopolitical inference** decision asks whether admissible
+source observations support any prospective national-stability conclusion.
+There is no accepted-evidence count or publisher quota. A complete source
+audit may legitimately report **zero** supported observations, with an
+inconclusive geopolitical inference.
+
+Only when both affirmative and critical reviewers independently confirm an
+accurate, complete audit, reconcile the exact source count and six categories,
+and each records *only* the specific insufficient-inference objection does
+the read-only diagnostic stop as
+`RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE`. This is a completed
+**audit-only** outcome, not approved evidence for forecasts, not a clean
+geopolitical forecast, not a Sunday assessment receipt, and never a website
+or X authorization. Any unresolved source-access, first-publication,
+citation, chronology, attribution, coverage, or review conflict continues
+to **fail the audit**; a favorable top-level label cannot waive it.
+Failed audit checks, missing reviewer fields, timeouts, unreviewed sources
+and contradictory dispositions remain fail-closed. The two reviewers are
+still required on the **identical hashed packet** and no new paid correction
+round is scheduled after a valid audit-only inconclusive terminal decision.
+
+
 ## Forward-only V7: no accepted-evidence quotas
 
 All new live research diagnostics use V7, and new live prospective assessments

@@ -399,4 +399,9 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
     if isinstance(response, dict) and "source_adequacy_review" in response:
         summary["source_adequacy_review"] = response[
             "source_adequacy_review"]
+    if isinstance(response, dict) and "audit_integrity_review" in response:
+        # Preserve the exact reviewer-authored audit-only completeness verdict
+        # separately from its inferential evidence verdict. The original
+        # response/checkpoint is never rewritten or promoted to approval.
+        summary["audit_integrity_review"] = response["audit_integrity_review"]
     return summary

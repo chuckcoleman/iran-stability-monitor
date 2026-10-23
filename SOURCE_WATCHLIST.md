@@ -1,5 +1,31 @@
 # Sunday research source watchlist — effective 2026-10-25
 
+## V8: document historical context, page access and search timing precisely
+
+For new frozen V8 source snapshots distinguish the model's **search-stage
+candidate outcome** from the **after-screen accepted evidence**. A category
+may locate material even if no admissible current observation survives.
+Record both states, not an assumed event or an assumed absence.
+
+A successfully fetched HTML page's publisher metadata is not evidence that
+the full original article body was independently inspected. Distinguish
+metadata-only access from an exact individually verified text-passage
+witness. A publisher-reported original timestamp is not independently
+verified first release, even if it contains a timezone offset. Old
+protests, earlier sanctions, past humanitarian deliveries and historical
+analyses stay historical background, not current fresh observations.
+Later inspection does not shift the original research cutoff, and the
+post-snapshot interval remains unsearched.
+
+A complete, accurately described six-category **source audit** need not
+justify a geopolitical inference. It may end as complete and inconclusive
+only after affirmative AND critical reviewers independently agree the
+audit is accurate and complete, and identify only the separate failure
+to support a forecast. Unresolved conflicts in original-source access,
+citation matching, reported chronology or coverage still block audit
+completion and do not become harmless limitations.
+
+
 ## Prospective evidence quantity is not a quota
 
 A search must examine six categories, but there is **no fixed minimum**
