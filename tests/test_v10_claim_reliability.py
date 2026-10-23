@@ -384,11 +384,11 @@ class ClaimReliabilityV10Tests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as folder:
             with patch("source_review_resume.load_or_create_review_input",
-                       return_value=(packet, sha(packet), NOW)), \\
+                       return_value=(packet, sha(packet), NOW)), \
                  patch("source_pre_review_admissibility.screen_or_restore",
-                       return_value=screen), \\
+                       return_value=screen), \
                  patch("source_review_cycles.run_alternating_review_cycles",
-                       return_value=outcome), \\
+                       return_value=outcome), \
                  patch("source_research_batches.read_json",
                        return_value={"sample": changed}):
                 with self.assertRaisesRegex(
