@@ -272,7 +272,17 @@ def verify_repository_change(baseline_ref, root=ROOT, now=None):
         checked_receipt(before, after, receipt, now=now,
                         reviewed_draft=json.loads(draft_file.read_bytes()),
                         report_bytes=report_file.read_bytes())
-        return "ChatGPT alternating or legacy critical receipt and exact artifacts verified"
+        if receipt.get("research_mode") is not None:
+            from chatgpt_handoff import validate_optional_dossier
+            dossier_file = root / "data" / "source-dossiers" / (date + ".json")
+            require(dossier_file.is_file(),
+                    "ChatGPT-first research receipt lacks source dossier")
+            validate_optional_dossier(
+                before, after, receipt,
+                json.loads(dossier_file.read_bytes()))
+        return "ChatGPT alternating receipt, complete source dossier and review artifacts verified"
+    require(receipt.get("research_mode") is None,
+            "New ChatGPT-first provenance cannot use a historical receipt")
     checked_receipt(before, after, receipt, now=now)
     return "Legacy external two-role clean-review receipt verified"
 
