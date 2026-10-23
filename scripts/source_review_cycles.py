@@ -406,9 +406,9 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                  and isinstance(audit.get("access_channel_assessment"), str)
                  and len(audit["access_channel_assessment"].strip()) >= 120
                  and isinstance(conflicts, list)
-                 and len(conflicts) == len(set(conflicts))
                  and all(isinstance(u, str) and u in known_urls
                          for u in conflicts)
+                 and len(conflicts) == len(set(conflicts))
                  and ((audit["access_channels_reconciled"] is True
                        and not conflicts)
                       or (audit["access_channels_reconciled"] is False
