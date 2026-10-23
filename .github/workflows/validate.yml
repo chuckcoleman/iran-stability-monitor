@@ -49,6 +49,8 @@ jobs:
             data/review-receipts/*.json
             data/review-drafts/*.json
             data/review-reports/*.md
+            data/source-dossiers/*.json
+            CHATGPT_HANDOFF.md
             REVIEW_POLICY.md
             REPORT_TEST_PROTOCOL.md
             SOURCE_WATCHLIST.md
