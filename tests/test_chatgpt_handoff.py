@@ -196,7 +196,9 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
     def test_reviewer_verdict_or_reliability_tampering_fails(self):
         for why in ("critical_missing","critical_reject","fake_grade",
                     "fake_corroboration","mismatched_certificate",
-                    "passage_missing","lost_historical_cutoff"):
+                    "passage_missing","lost_historical_cutoff",
+                    "audit_not_complete","inference_not_supported",
+                    "missing_balance_review"):
             before,after,dossier=bundle()
             if why=="critical_missing":
                 dossier.pop("critical_source_review")
@@ -215,6 +217,15 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
             elif why=="passage_missing":
                 dossier["source_review_packet"][
                     "pre_review_claim_decisions"][0]["original_passage"]=None
+            elif why=="audit_not_complete":
+                dossier["critical_source_review"]["audit_integrity_review"][
+                    "audit_status"]="incomplete"
+            elif why=="inference_not_supported":
+                dossier["affirmative_source_review"]["source_adequacy_review"][
+                    "conclusion"]="insufficient_for_inference"
+            elif why=="missing_balance_review":
+                dossier["critical_source_review"].pop(
+                    "source_query_balance_review")
             else:
                 dossier["research_as_of"]="2026-10-26T10:00:00-04:00"
             with self.subTest(why=why),self.assertRaises(ValueError):
