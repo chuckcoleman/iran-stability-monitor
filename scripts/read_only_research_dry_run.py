@@ -316,13 +316,28 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
                            separators=(",", ":"), allow_nan=False)
     check(hashlib.sha256(canonical.encode()).hexdigest() == frozen_sha,
           "Frozen source-review input digest mismatch")
+    review_common = SOURCE_REVIEW_COMMON
+    if snapshot is not None and snapshot["version"] == 8:
+        # The old common JSON example contains the three required legacy
+        # fields. New V8 reviewers must also return these three separately
+        # audited objects rather than mistake the example for a fixed schema.
+        review_common += (
+            "\nV8 REVIEW RESPONSE SHAPE: In addition to approved, issues "
+            "and one substantive source_reviews entry per canonical URL, "
+            "include the mandatory source_query_balance_review, "
+            "source_adequacy_review and audit_integrity_review objects "
+            "described by the role-specific requirements below. "
+            "Their source-audit and inferential verdicts are DISTINCT. "
+            "A complete but inconclusive source audit still requires "
+            "approved=false and the specific insufficient_for_inference "
+            "issue; it never certifies a forecast or publishing.")
     try:
         # In every source-review version, require AFFIRMATIVE then CRITICAL.
         # A rejection causes a strictly conservative revised packet, followed
         # by BOTH reviews again. Every version retains independent checkpoints.
         cycles = run_alternating_review_cycles(
             folder=folder, sample=sample, input_sha=frozen_sha,
-            reviewer=reviewer, now=now, common=SOURCE_REVIEW_COMMON,
+            reviewer=reviewer, now=now, common=review_common,
             original_cutoff=(snapshot["cutoff_at"] if snapshot else None),
             allow_new_after_unknown=(
                 os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"),
