@@ -133,7 +133,20 @@ Each source-review perspective must contain `approved:true`,
 `issues:[]`, one substantively reviewed `source_reviews` entry for
 **every** canonical source URL, and one `claim_reliability_reviews`
 entry per retained evidence ID (see
-`scripts/source_claim_reliability.py`). The dossier's final
+`scripts/source_claim_reliability.py`). Additionally, EACH perspective
+must provide `audit_integrity_review` confirming
+`complete_with_disclosed_limitations` for the exact six classes, as-of,
+source count, metadata-only scope, unknown independently authenticated
+first release and unsearched later interval; its assessment and limitations
+must each exceed 80 characters. EACH must provide
+`source_adequacy_review` with exactly the original newly admitted claim
+IDs and a defensible `supported_limited_inference` conclusion, again
+with substantive assessments/limitations. A complete-but-INCONCLUSIVE
+audit does **not** suffice for scoring forecasts. Each must also report
+`source_query_balance_review` with disjoint real ChatGPT-authored
+worsening and stabilizing queries drawn from the six supplied category
+search descriptions. This is self-reported research, **not** an
+independently audited Responses API search trace. The dossier's final
 `claim_reliability` rows and the published newly added evidence grades,
 `reliability_basis`, and `geopolitical_direction_confidence` must
 **exactly match** the conservative algorithm. Carried-forward evidence
