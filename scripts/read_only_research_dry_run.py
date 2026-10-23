@@ -448,10 +448,12 @@ def main(argv=None):
               + (", ".join(missing) if missing else "incomplete eligibility")
               + ". A NEW DATED SOURCE-RESEARCH SNAPSHOT IS REQUIRED.",
               flush=True)
-    # A reviewer approval is necessary but never sufficient. Terminal
-    # evidence gates, missing directions, insufficient source counts,
-    # incomplete corrections and other invariant failures MUST produce a
-    # nonzero Actions exit status even if both reviewers said approved.
+    # A clean source review is not a forecast approval. The V8 audit-only
+    # inconclusive terminal state requires BOTH independent source-audit
+    # completeness reviews while both reject geopolitical inference.
+    # Any unresolved audit-integrity objection, missing review, timeout,
+    # invalid source, failed correction or other deterministic guard MUST
+    # still produce a nonzero Actions exit status.
     if summary["status"] == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE":
         print("COMPLETE SOURCE AUDIT WITH DISCLOSED LIMITATIONS; "
               "INSUFFICIENT GEOPOLITICAL INFERENCE. NO FORECASTS TESTED, "
