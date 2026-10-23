@@ -513,6 +513,10 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                        else "coverage_context_only")
         if version >= 9:
             original = search_stage[row["url"]]
+            require(original["assessment"].strip() == row.get("assessment")
+                    and original["limitations"].strip() == row.get("limitations"),
+                    "V9 frozen source quality differs from original model "
+                    "search-stage assessment or limitations")
             # Never overwrite machine evidence or silently promote the
             # model's narration to an independently witnessed HTTP status.
             row["v9_access_channels"] = {
