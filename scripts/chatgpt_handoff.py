@@ -20,6 +20,7 @@ import re
 from source_claim_reliability import (
     GRADES, apply_reviewed_reliability, reconcile_dual_reliability)
 from source_metadata import url_key
+from source_capture_witness import validate_capture_metadata, validate_access_channels
 from source_quality_audit import validate_source_review
 from source_research_batches import CATEGORIES
 from review_receipt import digest
@@ -166,6 +167,7 @@ def validate_source_dossier(dossier, before, candidate):
                 and all(u != item["url"] and url_key(u) == u
                         and u in urls for u in correlates),
                 "Unverified or repeated claimed corroborating URL")
+        validate_access_channels(item, cutoff_str)
         by_url[item["url"]] = item
     require(set(by_url) == urls,
             "Source audit must include every selected original/context URL")
@@ -207,6 +209,15 @@ def validate_source_dossier(dossier, before, candidate):
                 and carried == {**original, "evidence_status": "carried_forward"},
                 "Carried-forward evidence must exactly retain original historical "
                 "source, grade, incident, interpretation and identifier")
+    for source_url, source in by_url.items():
+        expected_ids = sorted(e["id"] for e in originally
+                              if e.get("source") == source_url)
+        actual_ids = sorted(source["access_channels"]["body"]["captured_claim_ids"])
+        require(expected_ids == actual_ids,
+                "Original body access register does not match reviewed new IDs")
+        require((source["access_channels"]["body"]["status"] == "captured")
+                if expected_ids else not actual_ids,
+                "Admitted evidence requires original article-body capture")
     for e in originally:
         require(e.get("evidence_status") == "new"
                 and e.get("source") in urls
@@ -215,8 +226,8 @@ def validate_source_dossier(dossier, before, candidate):
         witness = decisions_by_id[e["id"]]
         passage = witness.get("original_passage")
         body_hash = witness.get("source_body_sha256")
-        # Hashes are shape-checked; an independent page capture must still
-        # establish that the original body actually produced these bytes.
+        # CI checks capture metadata and signatures. The offline handoff must
+        # separately verify original HTML bytes against the SHA and quotation.
         require(witness.get("passage_status") ==
                     "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED"
                 and isinstance(passage, str)
@@ -226,6 +237,7 @@ def validate_source_dossier(dossier, before, candidate):
                 and witness.get("decision") ==
                     "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
                 "Published new evidence lacks admitted original passage witness")
+        validate_capture_metadata(witness, cutoff_str)
     affirmative = dossier.get("affirmative_source_review")
     critical = dossier.get("critical_source_review")
     require(isinstance(affirmative, dict)
@@ -236,6 +248,11 @@ def validate_source_dossier(dossier, before, candidate):
         require(response.get("approved") is True and response.get("issues") == [],
                 role + " source review has unresolved issues")
         validate_source_review(response, quality, role)
+        for source_review in response.get("source_reviews", []):
+            require(isinstance(source_review.get("access_stage_assessment"), str)
+                    and len(source_review["access_stage_assessment"].strip()) >= 40
+                    and source_review.get("same_stage_conflicts_resolved") is True,
+                    role + " did not examine source-access stages separately")
         audit = response.get("audit_integrity_review")
         require(isinstance(audit, dict)
                 and audit.get("audit_status") ==
@@ -292,6 +309,23 @@ def validate_source_dossier(dossier, before, candidate):
             "from conservative dual-reviewed V10 source certificate")
     require(dossier.get("claim_reliability") == cert,
             "Factual reliability certificate differs from reviewed factors")
+    # Preforecast certificate binds immutable SOURCE-ONLY inputs without
+    # creating a circular hash dependency on later probabilities/issuance.
+    sealed = dossier.get("preforecast_certificate")
+    expected = {
+        "version": 1,
+        "status": "DUAL_SOURCE_REVIEW_CLEAN_LIMITED_INFERENCE",
+        "research_as_of": cutoff_str,
+        "source_review_completed_at": dossier["source_review_completed_at"],
+        "baseline_sha256": sha(before),
+        "source_packet_sha256": sha(packet),
+        "affirmative_source_review_sha256": sha(affirmative),
+        "critical_source_review_sha256": sha(critical),
+        "claim_reliability_sha256": sha(cert),
+    }
+    require(sealed == expected,
+            "Preforecast source packet, two reviews or reliability changed "
+            "after the source-only certificate was frozen")
     # Research results are ChatGPT-authored; no OpenAI Responses API provenance
     # or directly authenticated fact is claimed by structural validation.
     return {"status": "CHATGPT_FIRST_DOSSIER_STRUCTURALLY_VALID_NOT_FACT_PROOF",
@@ -300,6 +334,7 @@ def validate_source_dossier(dossier, before, candidate):
             "baseline_sha256": sha(before),
             "candidate_sha256": sha(candidate),
             "dossier_sha256": sha(dossier),
+            "preforecast_certificate_sha256": sha(sealed),
             "api_requests": 0,
             "review_provenance":
                 "ONE_CHATGPT_SESSION_TWO_PERSPECTIVES_NOT_INDEPENDENT_MODELS",
@@ -309,15 +344,21 @@ def validate_source_dossier(dossier, before, candidate):
 def validate_optional_dossier(before, candidate, receipt, dossier):
     """Require a bound source dossier for explicit ChatGPT-first receipts."""
     mode = receipt.get("research_mode")
-    if mode is None:
-        require(dossier is None,
-                "Unbound ChatGPT-first evidence dossier in published receipt")
+    prospective = (receipt.get("version") == 3 or
+                   candidate.get("updates", [{}])[-1].get("date", "") >=
+                       "2026-10-25")
+    if not prospective:
+        require(mode is None and dossier is None,
+                "Historical receipts cannot opt into prospective V10 source mode")
         return None
     require(mode == MODE and receipt.get("version") == 3,
-            "ChatGPT-first submissions require prospective v3 two-role receipt")
+            "Every prospective V3 assessment requires mandatory V10 source review")
     require(isinstance(dossier, dict)
-            and receipt.get("source_dossier_sha256") == sha(dossier),
-            "ChatGPT-first receipt must bind complete exact source dossier")
+            and receipt.get("source_dossier_sha256") == sha(dossier)
+            and receipt.get("preforecast_certificate_sha256") ==
+                sha(dossier.get("preforecast_certificate")),
+            "ChatGPT-first receipt must bind exact source dossier AND "
+            "sealed preforecast certificate")
     return validate_source_dossier(dossier, before, candidate)
 
 

@@ -119,7 +119,8 @@ class FullHandoffRehearsal(unittest.TestCase):
                         lambda url: {}, reviewer=reviewer_fn),
                     review_finished_at=opened + dt.timedelta(seconds=8))
                 handoff.validate_handoff(
-                    result, root=checkout, now=opened + dt.timedelta(seconds=9))
+                    result, root=checkout, now=opened + dt.timedelta(seconds=9),
+                    test_only=True)
                 git_write.assert_not_called()
                 git_read.assert_not_called()
 
@@ -153,7 +154,8 @@ class FullHandoffRehearsal(unittest.TestCase):
             (dest / 'review-audit/review-05-critical.json').unlink()
             with self.assertRaisesRegex(RuntimeError, 'critical review audit'):
                 handoff.validate_handoff(
-                    dest, root=checkout, now=opened + dt.timedelta(seconds=9))
+                    dest, root=checkout, now=opened + dt.timedelta(seconds=9),
+                    test_only=True)
         self.assertEqual(history, original)
 
     def test_timeout_yields_no_clean_handoff(self):

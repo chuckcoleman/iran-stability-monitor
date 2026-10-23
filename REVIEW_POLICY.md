@@ -29,6 +29,31 @@ historical observations remain unchanged. Unmarked earlier receipts
 retain their original validation instead of being retroactively
 recertified as ChatGPT-first.
 
+## V10 mandatory source certificate and local original-byte proof
+
+Starting with October 25, 2026 every version-3 receipt MUST use
+`research_mode: chatgpt_first_no_api`, bind a complete exact source-dossier
+SHA-256, and bind `preforecast_certificate_sha256`. Omitting any cannot opt
+out of source review. Earlier issued receipts remain unchanged.
+
+Original-source claims need bounded original HTML captures held locally
+OUTSIDE the public repository, with original/final URL, pre-cutoff retrieval
+time, full-body digest, normalized visible-text digest, precise original
+quotation and byte-verified passage offset. Local guarded preflight recomputes
+these checks, rejecting fabricated hashes or absent bytes. CI checks the
+resulting hash-bound source provenance but lacks the private source bytes;
+this does NOT prove a remote publisher's identity, publication clock or
+independently authenticated retrieval. Preserve this epistemic distinction.
+
+Do not conflate search-stage, later HTTP metadata, and original body capture;
+reviewers examine each separately and only unresolved contradictions WITHIN
+a stage block. Seal the source packet and BOTH source reviews in the
+preforecast certificate before forecast opening, then bind the later issued
+candidate separately. Require two substantive decisions and distinct
+`evidence_or_check`/`test_note` for EVERY enumerated report item. Fail closed
+on synthetic markers/example hosts. The costly future-append whole-suite
+regression now runs in its own required CI job.
+
 ## V10 mandatory dual-reviewed factual reliability before forecasting
 
 All new V10 publication candidates require claim-specific reliability

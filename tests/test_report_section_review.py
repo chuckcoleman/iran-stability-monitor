@@ -12,6 +12,20 @@ from report_section_review import (REPORT_SECTIONS, SOURCE_CLASSES,
                                    report_inventory, validate_report_section_reviews)
 
 
+def item_matrix(items, sha):
+    return {
+        identifier: {
+            role: {
+                "draft_sha256": sha, "approved": True, "issues": [],
+                "test_note": ("The synthetic " + role + " review investigated "
+                              + identifier + " for substantive consistency."),
+                "evidence_or_check": ("The synthetic " + role + " audit compared "
+                                      + identifier + " to the named input field."),
+            } for role in ("affirmative", "critical")
+        } for identifier in items
+    }
+
+
 class ReportCoverageTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -66,6 +80,7 @@ class ReportCoverageTests(unittest.TestCase):
         reviews = {
           name: {
             "items": items,
+            "item_reviews": item_matrix(items, h),
             "affirmative": {
               "draft_sha256": h, "approved": True, "issues": [],
               "test_note": "Synthetic supportive review tests source and arithmetic in " + name},
@@ -84,7 +99,7 @@ class ReportCoverageTests(unittest.TestCase):
     def test_rejected_section_cannot_be_globally_approved(self):
         h="b"*64
         reviews = {
-          name: {"items": items,
+          name: {"items": items, "item_reviews": item_matrix(items, h),
                  "affirmative": {"draft_sha256":h,"approved":True,"issues":[],
                                  "test_note":"Positive synthetic review examined every named item in " + name},
                  "critical": {"draft_sha256":h,"approved":True,"issues":[],
@@ -94,6 +109,9 @@ class ReportCoverageTests(unittest.TestCase):
         bad=reviews["houthi_support_and_independent_capability"]["critical"]
         bad["approved"]=False
         bad["issues"]=["New evidence does not support Houthi material resupply"]
+        detail = reviews["houthi_support_and_independent_capability"]["item_reviews"]
+        first = next(iter(detail.values()))["critical"]
+        first["approved"], first["issues"] = False, ["Unsupported resupply inference"]
         with self.assertRaisesRegex(ValueError,"global/section"):
             validate_report_section_reviews(reviews,self.record,h,
                 role_approvals={"affirmative":True,"critical":True})

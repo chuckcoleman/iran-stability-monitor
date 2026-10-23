@@ -62,6 +62,20 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
                    and date >= "2026-10-25")
     require(legacy or (chat_critical and date < "2026-10-25") or alternating,
             "Unknown or unauthorized review policy/version")
+    if alternating:
+        # Every new V3 assessment requires the complete V10 source certificate.
+        # Omitting the mode or source-dossier file may NEVER opt out of review.
+        require(receipt.get("research_mode") == "chatgpt_first_no_api"
+                and isinstance(receipt.get("source_dossier_sha256"), str)
+                and len(receipt["source_dossier_sha256"]) == 64
+                and all(c in "0123456789abcdef"
+                        for c in receipt["source_dossier_sha256"])
+                and isinstance(receipt.get("preforecast_certificate_sha256"), str)
+                and len(receipt["preforecast_certificate_sha256"]) == 64
+                and all(c in "0123456789abcdef"
+                        for c in receipt["preforecast_certificate_sha256"]),
+                "Prospective V3 receipt requires bound V10 source dossier "
+                "and preforecast certificate")
     require(receipt.get("baseline_sha256") == digest(before)
             and receipt.get("candidate_sha256") == digest(after)
             and receipt.get("record_sha256") == digest(record),
@@ -279,6 +293,20 @@ def verify_all_chatgpt_source_dossiers(root, history):
         from chatgpt_handoff import validate_optional_dossier
         validate_optional_dossier(before, after, receipt, dossier)
         count += 1
+    # An old V3 assessment must not become a dossier-free clean approval
+    # if a future code-only PR removes BOTH its dossier and its mode field.
+    for record in rows:
+        if record["date"] < "2026-10-25":
+            continue
+        name = record["date"] + ".json"
+        receipt_file = receipts_dir / name
+        require(receipt_file.is_file(),
+                "Missing V3 review receipt for historical assessment")
+        receipt = json.loads(receipt_file.read_bytes())
+        require(receipt.get("version") == 3
+                and receipt.get("research_mode") == "chatgpt_first_no_api"
+                and (evidence_dir / name).is_file(),
+                "Historical V3 assessment lacks mandatory V10 source dossier")
     for path in sorted(receipts_dir.glob("*.json")):
         receipt = json.loads(path.read_bytes())
         if receipt.get("research_mode") == "chatgpt_first_no_api":
@@ -381,15 +409,20 @@ def verify_repository_change(baseline_ref, root=ROOT, now=None):
         checked_receipt(before, after, receipt, now=now,
                         reviewed_draft=json.loads(draft_file.read_bytes()),
                         report_bytes=report_file.read_bytes())
-        if receipt.get("research_mode") is not None:
+        if receipt.get("version") == 3:
+            from publication_safety import require_production_material
             from chatgpt_handoff import validate_optional_dossier
             dossier_file = root / "data" / "source-dossiers" / (date + ".json")
             require(dossier_file.is_file(),
-                    "ChatGPT-first research receipt lacks source dossier")
-            validate_optional_dossier(
-                before, after, receipt,
-                json.loads(dossier_file.read_bytes()))
-        return "ChatGPT alternating receipt, complete source dossier and review artifacts verified"
+                    "Prospective V3 receipt lacks mandatory V10 source dossier")
+            dossier = json.loads(dossier_file.read_bytes())
+            require_production_material(after["updates"][-1], dossier, folder=root)
+            validate_optional_dossier(before, after, receipt, dossier)
+            return ("ChatGPT alternating receipt, V10 source dossier and "
+                    "review artifacts verified structurally")
+        require(receipt.get("research_mode") is None,
+                "Legacy ChatGPT critical receipt cannot attach V10 source mode")
+        return "Historical critical review receipt and report verified"
     require(receipt.get("research_mode") is None,
             "New ChatGPT-first provenance cannot use a historical receipt")
     checked_receipt(before, after, receipt, now=now)
