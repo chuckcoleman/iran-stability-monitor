@@ -54,6 +54,20 @@ candidate separately. Require two substantive decisions and distinct
 on synthetic markers/example hosts. The costly future-append whole-suite
 regression now runs in its own required CI job.
 
+## Prospective follow-up of promising leads
+
+Before closing Sunday evidence collection, go beyond the broad scan for
+the most relevant, original and verifiable promising observations. Seek
+their upstream primary data and original publisher pages, event scope and
+time window, known conflicting accounts, explanations for discrepancies,
+and supporting AND disconfirming evidence. Record actual research attempts
+and the unverified or contradicted outcomes; never assume a secondary quote
+independently verifies its source. The affirmative and critical SOURCE
+perspectives both inspect these working findings; no claim is promoted
+without the existing V10 source, chronology, reliability and full-report
+gates. No fixed promising-candidate or accepted-claim quota applies.
+Historical Protocol v1 records and previously issued receipts stay frozen.
+
 ## V10 mandatory dual-reviewed factual reliability before forecasting
 
 All new V10 publication candidates require claim-specific reliability

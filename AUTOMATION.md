@@ -23,6 +23,17 @@ GitHub validates structure, comparisons, append-only history, numbers,
 sections and exact hashes; this is **not** proof that any claimed article
 or ChatGPT search was independently authenticated.
 
+During the ChatGPT-first six-category scan, triage sources with
+potentially decision-changing original observations. Before freezing the
+source cutoff, do targeted follow-up research for each promising lead:
+seek original datasets/incident lists, period/population/denominator,
+opposing evidence, reporting-chain identity and real page captures.
+Record actual supporting and challenging queries, exact URLs, and a
+qualified disposition in the working research audit. Both source-review
+perspectives examine promising and held results; held evidence cannot
+become a new admitted claim. This adds research, not an accepted-evidence
+quota or a new forecast/publication authorization.
+
 Source-only or full-report rejection, missing original, incomplete category
 audit, unknown access, review mismatch or a changed baseline fails closed.
 No score, web deployment or social announcement is authorized by a mere
