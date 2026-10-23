@@ -117,6 +117,26 @@ def assess_review_claims(packet, role, reviewer_response):
         quality = row.get("source_quality")
         direct = row.get("directness")
         conflict = row.get("contradiction_status")
+        # The model's asserted quality cannot override the original
+        # category or reporting-chain provenance. Method documentation
+        # remains a reviewable claim, not something a source's name proves.
+        if (quality == "documented_original_method"):
+            require(source.get("classification") == "direct_observation"
+                    and source.get("origin") in (
+                        "original_reporting", "official_or_advocacy_claim"),
+                    role + " documented method is unsupported by source class")
+        if (quality == "attributed_edited_original"):
+            require(source.get("origin") == "original_reporting"
+                    and source.get("classification") in (
+                        "direct_observation", "attributed_claim"),
+                    role + " edited original claim lacks original reporting")
+        if direct == "primary_measurement_or_document":
+            require(source.get("classification") == "direct_observation",
+                    role + " primary observation must be source-classified "
+                           "as a direct observation")
+        if direct == "firsthand_original_reporting":
+            require(source.get("origin") == "original_reporting",
+                    role + " first-hand claim needs original reporting")
         direction = row.get("direction_confidence")
         require(quality in QUALITY and direct in DIRECTNESS and
                 conflict in CONTRADICTIONS and
@@ -211,11 +231,22 @@ def reconcile_dual_reliability(packet, affirmative, critical):
                 "Review perspectives used different evidence ID order")
         independent = sorted(set(a["independent_confirmation_ids"]) &
                              set(b["independent_confirmation_ids"]))
-        # Use the LESS confident factual grade, and never claim independent
-        # confirmation unless BOTH substantive reviewers cited the same
-        # distinct original-source ID.
+        # Use the LESS confident factual grade. If the reviewers cited
+        # DIFFERENT purported confirmers, the shared claim is uncorroborated:
+        # independently documented primary evidence can still be Medium-high
+        # without a mandatory confirmation quota, but it cannot be High.
         rating = GRADES[min(GRADES.index(a["factual_reliability"]),
                             GRADES.index(b["factual_reliability"]))]
+        if not independent:
+            rating = GRADES[min(GRADES.index(rating),
+                                min(GRADES.index(
+                                    reliability_from_factors(
+                                        row["quality"], row["directness"],
+                                        exact_original_passage=
+                                            row["exact_passage_witness"],
+                                        contradiction=row["contradiction_status"],
+                                        confirmed_independent=False))
+                                    for row in (a, b)))]
         direction = ("unverified" if "unverified" in (
             a["stability_direction_confidence"],
             b["stability_direction_confidence"])
