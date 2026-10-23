@@ -1091,10 +1091,25 @@ def _certify_v10_factual_reliability_before_forecast(
         final_packet, reviewers["affirmative"], reviewers["critical"]),
         "Derived reliability grades do not reproduce from the immutable "
         "affirmative and critical source responses")
-    retained = {e["id"] for e in final_packet["evidence"]}
-    combined = [copy.deepcopy(e) for e in frozen
-                if e.get("evidence_status") == "carried_forward"
-                or e["id"] in retained]
+    retained_rows = final_packet.get("evidence")
+    check(isinstance(retained_rows, list),
+          "Reviewed evidence list is missing")
+    retained = {e["id"]: e for e in retained_rows}
+    check(len(retained) == len(retained_rows),
+          "Duplicated new evidence after source-only reviews")
+    original_new = {e["id"]: e for e in frozen
+                    if e.get("evidence_status") == "new"}
+    check(set(retained) <= set(original_new)
+          and all(original_new[ident] == item
+                  for ident, item in retained.items()),
+          "A corrected source review narrowed or changed a frozen claim. "
+          "It cannot certify the original observation for a new forecast; "
+          "fresh source research or a distinct separately reviewed claim "
+          "is required instead.")
+    combined = [copy.deepcopy(e if e.get("evidence_status") ==
+                              "carried_forward" else retained[e["id"]])
+                for e in frozen if e.get("evidence_status") ==
+                "carried_forward" or e["id"] in retained]
     adjusted = apply_reviewed_reliability(combined, frozen, ratings)
     # Never overwrite a transport journal, original source packet, original
     # model-reported grade, earlier historical evidence or audit decisions.
