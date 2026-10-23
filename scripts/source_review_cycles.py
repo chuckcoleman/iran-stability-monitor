@@ -833,6 +833,83 @@ def validate_archived_conservative_revision(previous, revised, original_cutoff):
     return True
 
 
+def v9_access_channel_integrity_issues(packet):
+    """Fail closed if any V9 separately captured access channel was rewritten.
+
+    A search-stage model statement is not an HTTP trace. Its complete,
+    unchanged text and separately recorded later metadata probe are compared
+    only as provenance, never promoted to independent original-body evidence.
+    """
+    if packet.get("pre_review_admission_version") != 6:
+        return []
+    policy = packet.get("v9_access_reconciliation_policy")
+    if (not isinstance(policy, dict)
+            or policy.get("version") != 1
+            or policy.get("model_search_channel") !=
+                "MODEL_REPORTED_SOURCE_ACCESS_NOT_INDEPENDENT_HTTP_LOG"
+            or policy.get("metadata_probe_channel") !=
+                "SEPARATE_LATER_PYTHON_HTTP_HTML_METADATA_REQUEST"
+            or policy.get("claim_passage_channel") !=
+                "SEPARATELY_RETRIEVED_EXACT_ORIGINAL_PASSAGE_REGISTER"
+            or policy.get("cross_channel_disagreement") !=
+                "NOT_INHERENT_CONTRADICTION_OR_VERIFIED_RECONCILIATION"
+            or policy.get("research_as_of") != packet.get("research_as_of")
+            or policy.get("post_asof_window") != "NOT_SEARCHED"):
+        return [{
+            "type": "v9_access_channel_policy_malformed",
+            "location": "v9_access_reconciliation_policy",
+            "reason": "The frozen original-search, independent metadata and "
+                      "claim-body provenance policy is missing or inconsistent.",
+        }]
+    errors = []
+    rows = packet.get("source_quality_audit", {}).get("sources", [])
+    for row in rows:
+        url = row.get("url", "unknown")
+        channels = row.get("v9_access_channels")
+        m = channels.get("model_search_stage") if isinstance(channels, dict) else None
+        p = channels.get("later_python_metadata_probe") if isinstance(channels, dict) else None
+        w = channels.get("claim_body_witness") if isinstance(channels, dict) else None
+        if (not isinstance(channels, dict)
+                or channels.get("comparison") !=
+                    "DISTINCT_OPERATIONS_NOT_AUTOMATIC_DISAGREEMENT"
+                    "_AND_NOT_AUTOMATIC_RECONCILIATION"
+                or not isinstance(m, dict) or not isinstance(p, dict)
+                or not isinstance(w, dict)
+                or m.get("provenance") !=
+                    "MODEL_REPORTED_NOT_INDEPENDENTLY_VERIFIED"
+                or m.get("network_access_verification") != "NOT_ESTABLISHED"
+                or not isinstance(m.get("original_access_statement"), str)
+                or not isinstance(m.get("original_limitations"), str)
+                or m.get("original_annotation_sha256") != sha({
+                    "assessment": m.get("original_access_statement"),
+                    "limitations": m.get("original_limitations"),
+                })
+                or p.get("provenance") !=
+                    "INDEPENDENT_LATER_HTTP_METADATA_PROBE"
+                or p.get("request_scope") !=
+                    "HTML_METADATA_ONLY_NOT_ARTICLE_BODY"
+                or p.get("recorded_retrieval_status") !=
+                    row.get("source_retrieval_status")
+                or p.get("recorded_access_status") != row.get("access_status")
+                or p.get("recorded_publisher_time") !=
+                    row.get("source_publication_time")
+                or p.get("recorded_metadata_status") !=
+                    row.get("editorial_original_metadata_status",
+                            row.get("metadata_status"))
+                or p.get("first_publication_verified") is not False
+                or w.get("provenance") != "SEPARATE_CLAIM_PASSAGE_REGISTER"
+                or w.get("status") != row.get("v8_article_witness_status")):
+            errors.append({
+                "type": "v9_access_channel_provenance_inconsistent",
+                "location": url,
+                "reason": "The model's original search-stage access claim, "
+                          "later independent metadata-only HTTP probe, and "
+                          "separate claim passage status must remain distinct, "
+                          "fully recorded and unchanged after corrections.",
+            })
+    return errors
+
+
 def deterministic_review_issues(packet, original_cutoff):
     """Independent fail-closed controls cannot be overridden by model approval."""
     issues = []
@@ -944,6 +1021,7 @@ def deterministic_review_issues(packet, original_cutoff):
                           "independent directional observations, publisher "
                           "diversity or four new observations: "
                           + ", ".join(failures)})
+    issues.extend(v9_access_channel_integrity_issues(packet))
     if original_cutoff and packet.get("cutoff") != original_cutoff:
         explicit_asof = (
             packet.get("research_as_of") == original_cutoff and
