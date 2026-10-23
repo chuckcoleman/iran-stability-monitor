@@ -266,3 +266,60 @@ def reconcile_dual_reliability(packet, affirmative, critical):
             "publication": "NOT AUTHORIZED",
         })
     return output
+
+
+def apply_reviewed_reliability(current, original_frozen, certificate):
+    """Only update NEW claims in a prospective forecast with dual-reviewed grades.
+
+    Original source/event identity, stable evidence IDs, directions and
+    carried-forward historical grades are preserved without modification.
+    Excluded unreviewed new claims can never silently enter the forecast.
+    The dual certificate is saved separately before forecast elicitation.
+    """
+    import copy
+
+    require(isinstance(current, list) and
+            isinstance(original_frozen, list) and
+            isinstance(certificate, list),
+            "Malformed prospective reliability inputs")
+    original = {row["id"]: row for row in original_frozen}
+    require(len(original) == len(original_frozen),
+            "Duplicated original evidence identity")
+    cert = {}
+    for row in certificate:
+        require(isinstance(row, dict) and
+                isinstance(row.get("evidence_id"), str)
+                and row["evidence_id"] not in cert,
+                "Duplicated or malformed claim reliability certificate")
+        ident = row["evidence_id"]
+        require(ident in original
+                and original[ident].get("evidence_status") == "new"
+                and row.get("factual_reliability") in GRADES
+                and row.get("source_confidence_not_geopolitical_effect") is True
+                and row.get("review_status") ==
+                    "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+                "Prospective grade has no corresponding dual-reviewed NEW claim")
+        cert[ident] = row
+    accepted = {row["id"] for row in current
+                if row.get("evidence_status") == "new"}
+    require(accepted == set(cert), "Unreviewed new evidence or unmatched grade")
+    require(len({row["id"] for row in current}) == len(current),
+            "Duplicated final evidence identity")
+    final = []
+    for entry in current:
+        ident = entry["id"]
+        require(ident in original, "New evidence appeared after source freeze")
+        old = original[ident]
+        require(entry == old, "Source review altered a frozen observation "
+                              "instead of excluding or separately grading it")
+        amended = copy.deepcopy(entry)
+        if entry.get("evidence_status") == "new":
+            amended["reliability"] = cert[ident]["factual_reliability"]
+            # Do not replace direction=raises/lowers/ambiguous with a
+            # factual truth grade or treat reliability as an effect magnitude.
+            amended["reliability_basis"] = (
+                "two_perspective_claim_specific_conservative_fact_review")
+            amended["geopolitical_direction_confidence"] = cert[ident][
+                "stability_direction_confidence"]
+        final.append(amended)
+    return final
