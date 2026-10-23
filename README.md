@@ -168,6 +168,37 @@ Use `scripts/read_only_research_dry_run.py` for the diagnostic;
 see [AUTOMATION.md](AUTOMATION.md) for its exact limitations.
 The separately retired GitHub-hosted assessment writer remains disabled.
 
+## ChatGPT-first handoff — default, no OpenAI Responses charges
+
+For **new** Sunday research and reports, use
+[CHATGPT_HANDOFF.md](CHATGPT_HANDOFF.md). ChatGPT performs source research,
+the V10 factual reliability rubric, four locked forecasts and both full
+editorial perspectives; the result is a source dossier, candidate, immutable
+reviewed draft, complete review report and version-3 receipt.
+
+Run the **local/offline** source/review validator before submitting any PR:
+
+```bash
+python scripts/chatgpt_handoff.py --handoff /absolute/path/approved-handoff
+```
+
+It checks all six source categories, original/secondary reporting chains,
+V10 claim-level reliability and contradictory evidence, actual source
+identifiers/passages, historical carry, review timing, frozen forecasts
+and full receipt/section coverage with **zero API POSTs**. The optional
+`scripts/submit_reviewed_assessment.py --handoff ...` validates again and
+creates a protected PR containing the **five reviewed files**, with no
+OpenAI call. GitHub CI revalidates the exact candidate, receipt and
+source dossier before any Pages publication. A source-only clean audit is
+never by itself permission to issue a forecast.
+
+The existing `api-probe`, `research-dry-run` and live
+`assessment_pipeline.llm` are **paid API fallbacks**, not the ChatGPT-first
+path. An unattended GitHub runner cannot directly call a ChatGPT chat;
+ChatGPT must actually create and submit the package, and factual/source
+verification must never be invented. See the handoff specification for
+the distinction between mathematical JSON validation and evidence truth.
+
 ## Sunday assessment automation (ChatGPT scheduled task)
 
 **No separate computer or local OpenAI API key is required for the configured

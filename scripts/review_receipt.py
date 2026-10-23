@@ -245,6 +245,48 @@ def checked_receipt(before, after, receipt, now=None, reviewed_draft=None, repor
     return True
 
 
+def verify_all_chatgpt_source_dossiers(root, history):
+    """Read-only certification of ALL retained no-API provenance snapshots.
+
+    A code-only PR must not be able to alter a source dossier or its reviewer
+    reference without a new publication record. Rebuild the exact original
+    prefix that a prospective Sunday receipt bound. No API calls or external
+    fetching occur. This is integrity checking, not external fact proof.
+    """
+    root = Path(root)
+    evidence_dir = root / "data" / "source-dossiers"
+    receipts_dir = root / "data" / "review-receipts"
+    rows = history.get("updates")
+    require(isinstance(rows, list), "Historical assessment records missing")
+    by_date = {u["date"]: i for i, u in enumerate(rows)}
+    require(len(by_date) == len(rows),
+            "Duplicate historical assessment dates")
+    count = 0
+    for path in sorted(evidence_dir.glob("*.json")):
+        require(path.stem in by_date and path.name == path.stem + ".json",
+                "Unexpected unbound or malformed ChatGPT source dossier")
+        receipt_path = receipts_dir / path.name
+        require(receipt_path.is_file(),
+                "ChatGPT source dossier lacks a matching review receipt")
+        receipt = json.loads(receipt_path.read_bytes())
+        require(receipt.get("research_mode") == "chatgpt_first_no_api",
+                "Source dossier was detached from its original review receipt")
+        index = by_date[path.stem]
+        require(index > 0, "Source dossier cannot certify first historic record")
+        before = dict(history, updates=rows[:index])
+        after = dict(history, updates=rows[:index + 1])
+        dossier = json.loads(path.read_bytes())
+        from chatgpt_handoff import validate_optional_dossier
+        validate_optional_dossier(before, after, receipt, dossier)
+        count += 1
+    for path in sorted(receipts_dir.glob("*.json")):
+        receipt = json.loads(path.read_bytes())
+        if receipt.get("research_mode") == "chatgpt_first_no_api":
+            require((evidence_dir / path.name).is_file(),
+                    "Missing bound ChatGPT source dossier for prior receipt")
+    return count
+
+
 def verify_repository_change(baseline_ref, root=ROOT, now=None):
     """Read only the local checkout and git object database. No remote calls."""
     root = Path(root)
@@ -252,6 +294,9 @@ def verify_repository_change(baseline_ref, root=ROOT, now=None):
         ["git", "show", baseline_ref + ":data/history.json"], cwd=root)
     before = json.loads(original)
     after = json.loads((root / "data/history.json").read_bytes())
+    # Validate all extant ChatGPT provenance even on a code-only change.
+    # A changed dossier with unchanged data/history.json is not an exemption.
+    verify_all_chatgpt_source_dossiers(root, after)
     if before == after:
         return "No assessment change; external receipt not required"
     if len(after.get("updates", [])) == len(before.get("updates", [])):
@@ -272,7 +317,17 @@ def verify_repository_change(baseline_ref, root=ROOT, now=None):
         checked_receipt(before, after, receipt, now=now,
                         reviewed_draft=json.loads(draft_file.read_bytes()),
                         report_bytes=report_file.read_bytes())
-        return "ChatGPT alternating or legacy critical receipt and exact artifacts verified"
+        if receipt.get("research_mode") is not None:
+            from chatgpt_handoff import validate_optional_dossier
+            dossier_file = root / "data" / "source-dossiers" / (date + ".json")
+            require(dossier_file.is_file(),
+                    "ChatGPT-first research receipt lacks source dossier")
+            validate_optional_dossier(
+                before, after, receipt,
+                json.loads(dossier_file.read_bytes()))
+        return "ChatGPT alternating receipt, complete source dossier and review artifacts verified"
+    require(receipt.get("research_mode") is None,
+            "New ChatGPT-first provenance cannot use a historical receipt")
     checked_receipt(before, after, receipt, now=now)
     return "Legacy external two-role clean-review receipt verified"
 

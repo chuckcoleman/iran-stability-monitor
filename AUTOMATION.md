@@ -1,5 +1,35 @@
 # Iran assessment — reviews before GitHub publication
 
+## Default ChatGPT-first path: no API model calls during GitHub validation
+
+The preferred workflow is now explicitly
+[CHATGPT_HANDOFF.md](CHATGPT_HANDOFF.md): ChatGPT prepares the six-category
+research, independently examined source evidence and V10 ordinal reliability,
+four Protocol-v1 forecasts, a 15-section report, alternating affirmative and
+critical reviews, and the complete locally auditable handoff *outside*
+GitHub. The model API is not used by `scripts/chatgpt_handoff.py`,
+`scripts/submit_reviewed_assessment.py` or the existing GitHub
+`validate.yml` PR validation jobs.
+
+The handoff binds `history-before.json`, one new `data/history.json`
+update, a reviewed draft, a Markdown review report, a complete prospective
+version-3 receipt and a V10 source dossier with exact canonical JSON hashes.
+All six original-source categories must be documented. Each included
+original/context URL gets an explicit classification and source-review pair.
+Every retained new claim must have its original article-body witness and
+the reconciled V10 dual-reviewed reliability entry. Historic carried grades
+stay unchanged. No reviewer passage or search may be invented to fill gaps.
+GitHub validates structure, comparisons, append-only history, numbers,
+sections and exact hashes; this is **not** proof that any claimed article
+or ChatGPT search was independently authenticated.
+
+Source-only or full-report rejection, missing original, incomplete category
+audit, unknown access, review mismatch or a changed baseline fails closed.
+No score, web deployment or social announcement is authorized by a mere
+source-dossier validator. The API-based GitHub diagnostic remains
+available **only when manually selected**; the owner should not run paid
+probes or six paid research calls to test this offline handoff.
+
 ## Prospective V10 reviewed reliability before forecast elicitation
 
 V10 source-only research adds a **reproducible factual credibility
