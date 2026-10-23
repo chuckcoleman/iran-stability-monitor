@@ -25,6 +25,7 @@ from source_claim_reliability import reconcile_dual_reliability, apply_reviewed_
 from source_passage_audit import visible_text
 from chatgpt_handoff import validate_source_dossier
 from submit_reviewed_assessment import validate_handoff
+from followup_fixtures import attach_followup
 
 
 def synthetic_complete_bundle():
@@ -144,6 +145,7 @@ def synthetic_complete_bundle():
             "ambiguous_queries":[],
             "assessment":"The fixture has disjoint worsening and stabilizing synthetic queries but none are evidence of an actual web search.",
         }
+    attach_followup(packet, cutoff, affirm, critical)
     cert=reconcile_dual_reliability(packet,affirm,critical)
     amended=apply_reviewed_reliability(originally,originally,cert)
     for obj in (case.draft, case.after):

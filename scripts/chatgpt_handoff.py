@@ -23,6 +23,8 @@ from source_metadata import url_key
 from source_capture_witness import validate_capture_metadata, validate_access_channels
 from source_quality_audit import validate_source_review
 from source_research_batches import CATEGORIES
+from promising_evidence_followup import (
+    validate_followup_register, validate_followup_reviews)
 from review_receipt import digest
 
 MODE = "chatgpt_first_no_api"
@@ -174,6 +176,8 @@ def validate_source_dossier(dossier, before, candidate):
     originally = packet.get("evidence")
     require(isinstance(originally, list),
             "ChatGPT source packet missing original model/author claims")
+    followup_by_url = validate_followup_register(
+        packet.get("promising_evidence_followup"), urls, originally, cutoff_str)
     decisions = packet.get("pre_review_claim_decisions")
     require(isinstance(decisions, list),
             "Missing original text-passages and claim-level decisions")
@@ -248,6 +252,7 @@ def validate_source_dossier(dossier, before, candidate):
         require(response.get("approved") is True and response.get("issues") == [],
                 role + " source review has unresolved issues")
         validate_source_review(response, quality, role)
+        validate_followup_reviews(response, followup_by_url, role)
         for source_review in response.get("source_reviews", []):
             require(isinstance(source_review.get("access_stage_assessment"), str)
                     and len(source_review["access_stage_assessment"].strip()) >= 40
@@ -302,6 +307,14 @@ def validate_source_dossier(dossier, before, candidate):
                 and len(balance["assessment"].strip()) >= 80,
                 role + " did not independently inspect the disclosed "
                 "countervailing ChatGPT search categories")
+    # Distinct perspectives must not recycle one undifferentiated assessment.
+    affirmative_notes = {row["source_url"]: row["assessment"].strip()
+                         for row in affirmative["promising_followup_reviews"]}
+    critical_notes = {row["source_url"]: row["assessment"].strip()
+                      for row in critical["promising_followup_reviews"]}
+    require(all(affirmative_notes[url] != critical_notes[url]
+                for url in followup_by_url),
+            "Affirmative and critical promising-lead findings are identical")
     cert = reconcile_dual_reliability(packet, affirmative, critical)
     adjusted = apply_reviewed_reliability(originally, originally, cert)
     require(adjusted == actual_new,
@@ -331,6 +344,10 @@ def validate_source_dossier(dossier, before, candidate):
     return {"status": "CHATGPT_FIRST_DOSSIER_STRUCTURALLY_VALID_NOT_FACT_PROOF",
             "source_count": len(urls), "category_count": len(categories),
             "new_evidence_count": len(ids),
+            "triaged_source_count": len(followup_by_url),
+            "promising_lead_count": sum(
+                lead["triage"] == "promising"
+                for lead in followup_by_url.values()),
             "baseline_sha256": sha(before),
             "candidate_sha256": sha(candidate),
             "dossier_sha256": sha(dossier),

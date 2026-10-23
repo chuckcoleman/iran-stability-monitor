@@ -68,6 +68,22 @@ without the existing V10 source, chronology, reliability and full-report
 gates. No fixed promising-candidate or accepted-claim quota applies.
 Historical Protocol v1 records and previously issued receipts stay frozen.
 
+## Machine-enforced promising-source follow-up
+
+All prospective V10 source packets must carry one `promising_evidence_followup`
+triage per selected original/context URL, not just successful news claims.
+Promising leads require actual pre-cutoff upstream and counterevidence
+research, precise source scope and counting method, a documented reporting
+chain, limitations and final status. A held, contradicted or contextual
+lead cannot be admitted as new evidence. Both affirmative and critical
+source perspectives must individually review **every** triage and promising
+outcome, with distinct substantive findings bound to the lead SHA-256.
+The register and the two reviews are included in the existing sealed
+preforecast certificate. Omission, post-cutoff work, missing research,
+inadequate independent source handling or changed hashes fails closed.
+No minimum number of promising or admitted claims is required. Existing
+issued records and frozen forecasting Protocol v1.0 are unaffected.
+
 ## V10 mandatory dual-reviewed factual reliability before forecasting
 
 All new V10 publication candidates require claim-specific reliability

@@ -154,6 +154,47 @@ ACROSS stages are not automatically contradictions; inconsistent HTTP
 outcomes WITHIN a metadata stage or unresolved same-stage discrepancies
 fail closed. Both reviewers must explicitly discuss these stages.
 
+### Machine-enforced promising-evidence follow-up
+
+The source packet MUST contain `promising_evidence_followup` for all
+prospective October 25, 2026 and later V10 assessments. It is sealed by
+the existing preforecast certificate's `source_packet_sha256`. The object
+has `version: 1`, `research_as_of` equal to the frozen cutoff, and a
+`leads` list covering **every distinct URL** in the existing six-category
+coverage and source-quality inventories, including context and exclusions.
+
+Each lead has `source_url`, `triage` (`promising`, `context_only`, or
+`excluded`), `priority` (high/normal/low), `relevance`,
+`admitted_evidence_ids`, and `followup`. Nonpromising leads have no
+admitted IDs and `followup: null`. Every promising lead has an actual
+offset-aware `performed_at` no later than the cutoff and a final
+`disposition` of `ready_for_v10_source_review`, `held_unverified`,
+`contradicted`, or `context_only`. It must document separate
+`upstream_queries` and `counter_queries`, `checked_urls` (including
+the source URL), `upstream_source_urls`, `contrary_source_urls`, and
+`scope` with geography, time window, population/denominator and
+method/inclusions. It must also give substantive `reporting_chain`,
+`supporting_findings`, `counterevidence_findings`, and `limitations`.
+Every cited follow-up URL must already occur in the six-category and
+source-quality inventories. Empty contrary-source lists are allowed when
+actual research finds none; do not manufacture corroboration or infer
+that adverse evidence is absent.
+
+Only a `ready_for_v10_source_review` lead with upstream source support
+can carry new admitted claim IDs. A held, contradicted, excluded, or
+context-only source cannot. Both `affirmative_source_review` and
+`critical_source_review` MUST have `promising_followup_reviews` with
+a distinct, substantive decision for **every lead**, including nonpromising
+triages. Each row binds exact `source_url`, `triage`, `disposition`,
+`lead_sha256`, `approved: true`, `issues: []`, assessment, and limitations.
+The two assessments must differ. Missing or misdated research, unreviewed
+triage, changed evidence, or inadequate upstream and contrary research fails
+before forecasts. No minimum number of promising or accepted claims applies.
+
+The validator checks consistency of **claimed** research, not whether
+a live search ran or publisher bytes were independently authenticated;
+the separate original-page capture and V10 review rules still apply.
+
 `source_review_packet.evidence` has **every newly proposed accepted
 claim as originally frozen**, with an unchanged original claim ID and
 the model/editor's original, explicitly provisional `reliability`.

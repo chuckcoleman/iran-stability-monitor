@@ -300,6 +300,18 @@ chains and contrary evidence that shipping continues despite attacks.
 Do not turn any of these three observations into a V10-admitted claim
 without the ordinary original-source and source-review checks.
 
+**Enforced follow-up register:** V10 now checks one triage for every
+selected URL in `source_review_packet.promising_evidence_followup`.
+All promising leads must have a dated pre-cutoff investigation, recorded
+upstream and counterevidence queries, scope/denominator/method, reporting
+chain, supporting and opposing findings, registered URLs and an explicit
+disposition. Held or contradicted leads may not enter the new evidence
+ledger. Both source-review perspectives must approve a hash-bound, distinct
+finding for **every** triage, including context-only entries. The register
+and reviews are sealed by the source-only preforecast certificate. This is
+a structural check of reported research, not independent evidence of
+real source access. No minimum accepted-count quota is introduced.
+
 **Audit the sweep BEFORE the evidence cutoff and forecast elicitation:**
 Record actual scan time/window, topical searches, outlet classes inspected,
 links retrieved, access restrictions, item classifications and underlying

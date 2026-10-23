@@ -28,6 +28,7 @@ import submit_reviewed_assessment
 from review_receipt import verify_all_chatgpt_source_dossiers
 from source_passage_audit import visible_text
 from source_capture_witness import verify_offline_handoff_captures
+from followup_fixtures import attach_followup
 
 CUTOFF="2026-10-25T08:45:00-04:00"
 REVIEW="2026-10-25T08:52:00-04:00"
@@ -157,6 +158,7 @@ def bundle():
                 "and improving explanations, while treating unidentified "
                 "or inaccessible reports as limitations."),
         }
+    attach_followup(packet, CUTOFF, affirm, critical)
     result=reconcile_dual_reliability(packet,affirm,critical)
     issued_new=apply_reviewed_reliability(
         packet["evidence"],packet["evidence"],result)
