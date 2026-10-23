@@ -154,17 +154,38 @@ def submit(folder, *, merge=False, root=ROOT):
     new_receipt.parent.mkdir(parents=True,exist_ok=True)
     shutil.copyfile(checked["candidate_file"],ROOT/"data/history.json")
     shutil.copyfile(checked["receipt_file"],new_receipt)
+    paths=["data/history.json","data/review-receipts/"+date+".json"]
+    for key,directory,suffix in (
+        ("draft_file","review-drafts",".json"),
+        ("report_file","review-reports",".md"),
+        ("dossier_file","source-dossiers",".json")):
+        if key in checked:
+            dest=ROOT/"data"/directory/(date+suffix)
+            require(not dest.exists(),
+                    "Approved handoff would overwrite an existing review artifact")
+            dest.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copyfile(checked[key],dest)
+            paths.append("data/"+directory+"/"+date+suffix)
     require(run("git","diff","--name-only").stdout.splitlines()==["data/history.json"],
             "Unexpected tracked changes in approved candidate")
-    # Validate the bytes actually being committed a second time.
+    # Verify all imported artifacts a second time before any GitHub write.
     actual=json.loads((ROOT/"data/history.json").read_bytes())
-    checked_receipt(checked["before"],actual,json.loads(new_receipt.read_bytes()))
+    receipt=json.loads(new_receipt.read_bytes())
+    if "draft_file" in checked:
+        draft=json.loads((ROOT/"data/review-drafts"/(date+".json")).read_bytes())
+        report=(ROOT/"data/review-reports"/(date+".md")).read_bytes()
+        checked_receipt(checked["before"],actual,receipt,
+                        reviewed_draft=draft,report_bytes=report)
+    else:
+        checked_receipt(checked["before"],actual,receipt)
+    if "dossier_file" in checked:
+        from chatgpt_handoff import validate_optional_dossier
+        dossier=json.loads((ROOT/"data/source-dossiers"/(date+".json")).read_bytes())
+        validate_optional_dossier(checked["before"],actual,receipt,dossier)
     validate_history(actual,checked["before"])
-    run("git","add","--","data/history.json",
-        "data/review-receipts/"+date+".json")
-    require(run("git","diff","--cached","--name-only").stdout.splitlines()==[
-        "data/history.json","data/review-receipts/"+date+".json"],
-        "Staged files differ from the two approved publication artifacts")
+    run("git","add","--",*sorted(paths))
+    require(run("git","diff","--cached","--name-only").stdout.splitlines()==sorted(paths),
+            "Staged files differ from exact validated ChatGPT/legacy handoff")
     run("git","commit","-m","Append externally reviewed Iran assessment "+date)
     sha=run("git","rev-parse","HEAD").stdout.strip()
     # This is the first GitHub write in the complete off-GitHub review workflow.
