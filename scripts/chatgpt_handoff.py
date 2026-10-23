@@ -231,10 +231,59 @@ def validate_source_dossier(dossier, before, candidate):
     require(isinstance(affirmative, dict)
             and isinstance(critical, dict),
             "Two substantive original-source reviews are mandatory")
+    known_queries = {q for cat in categories for q in cat["queries"]}
     for role, response in (("affirmative", affirmative), ("critical", critical)):
         require(response.get("approved") is True and response.get("issues") == [],
                 role + " source review has unresolved issues")
         validate_source_review(response, quality, role)
+        audit = response.get("audit_integrity_review")
+        require(isinstance(audit, dict)
+                and audit.get("audit_status") ==
+                    "complete_with_disclosed_limitations"
+                and audit.get("source_count") == len(urls)
+                and audit.get("coverage_categories") == sorted(CATEGORIES)
+                and audit.get("research_as_of") == cutoff_str
+                and audit.get("metadata_access_scope") ==
+                    "metadata_only_not_full_article"
+                and audit.get("first_publication_verified") is False
+                and audit.get("historical_context_is_current_evidence") is False
+                and audit.get("post_snapshot_search") == "NOT_SEARCHED"
+                and isinstance(audit.get("assessment"), str)
+                and len(audit["assessment"].strip()) >= 80
+                and isinstance(audit.get("limitations"), str)
+                and len(audit["limitations"].strip()) >= 80,
+                role + " did not independently approve a complete and "
+                "accurately qualified source-coverage audit")
+        adequacy = response.get("source_adequacy_review")
+        require(isinstance(adequacy, dict)
+                and adequacy.get("admitted_evidence_ids") ==
+                    [e["id"] for e in originally]
+                and type(adequacy.get("observation_count")) is int
+                and adequacy["observation_count"] == len(originally)
+                and adequacy.get("conclusion") == "supported_limited_inference"
+                and isinstance(adequacy.get("assessment"), str)
+                and len(adequacy["assessment"].strip()) >= 80
+                and isinstance(adequacy.get("limitations"), str)
+                and len(adequacy["limitations"].strip()) >= 80,
+                role + " source review did not establish adequately supported "
+                "limited inference; a complete yet INCONCLUSIVE audit "
+                "cannot authorize a scored forecast")
+        balance = response.get("source_query_balance_review")
+        require(isinstance(balance, dict)
+                and isinstance(balance.get("raises_queries"), list)
+                and isinstance(balance.get("lowers_queries"), list)
+                and bool(balance["raises_queries"])
+                and bool(balance["lowers_queries"])
+                and all(q in known_queries
+                        for q in (balance["raises_queries"]+
+                                  balance["lowers_queries"]+
+                                  balance.get("ambiguous_queries", [])))
+                and not (set(balance["raises_queries"]) &
+                         set(balance["lowers_queries"]))
+                and isinstance(balance.get("assessment"), str)
+                and len(balance["assessment"].strip()) >= 80,
+                role + " did not independently inspect the disclosed "
+                "countervailing ChatGPT search categories")
     cert = reconcile_dual_reliability(packet, affirmative, critical)
     adjusted = apply_reviewed_reliability(originally, originally, cert)
     require(adjusted == actual_new,
