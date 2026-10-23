@@ -388,6 +388,48 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                 "reason": role + " reviewer claimed a complete source audit "
                           "while reporting unresolved provenance, access, "
                           "source-quality or other non-inferential objections"})
+    if review_version == 6:
+        # A complete source audit is never established by two stage-specific
+        # fetches returning a different status. Preserve both observations;
+        # require the reviewer to explicitly address what was (and wasn't)
+        # independently verified for every canonical URL.
+        matrix = packet.get("source_quality_audit", {}).get("sources", [])
+        known_urls = {
+            row.get("url") for row in matrix if isinstance(row, dict)
+        }
+        audit = (review_response.get("audit_integrity_review")
+                 if isinstance(review_response, dict) else None)
+        conflicts = (audit.get("unresolved_access_conflicts")
+                     if isinstance(audit, dict) else None)
+        valid = (isinstance(audit, dict)
+                 and type(audit.get("access_channels_reconciled")) is bool
+                 and isinstance(audit.get("access_channel_assessment"), str)
+                 and len(audit["access_channel_assessment"].strip()) >= 120
+                 and isinstance(conflicts, list)
+                 and len(conflicts) == len(set(conflicts))
+                 and all(isinstance(u, str) and u in known_urls
+                         for u in conflicts)
+                 and ((audit["access_channels_reconciled"] is True
+                       and not conflicts)
+                      or (audit["access_channels_reconciled"] is False
+                          and bool(conflicts))))
+        if not valid:
+            issues.append({
+                "type": "v9_access_channels_not_explicitly_reconciled",
+                "location": "source_quality_audit.sources",
+                "reason": role + " reviewer must identify original model "
+                          "search-stage access claims, later independent "
+                          "metadata HTTP status, exact passage witnesses, "
+                          "and provide an explicit channel reconciliation "
+                          "with every unresolved conflict URL."})
+        elif (audit.get("audit_status") ==
+              "complete_with_disclosed_limitations" and conflicts):
+            issues.append({
+                "type": "v9_unresolved_source_access_conflict_in_audit",
+                "location": "source_quality_audit.sources",
+                "reason": role + " reviewer cannot certify audit completeness "
+                          "while reporting an unresolved source-access "
+                          "discrepancy in a frozen original URL."})
     for decision in packet.get("pre_review_claim_decisions", []):
         if decision.get("id") not in active:
             continue
