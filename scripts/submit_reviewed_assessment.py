@@ -57,7 +57,30 @@ def validate_handoff(folder, root=ROOT, now=None):
             and current.astimezone(EASTERN).date().isoformat()==date
             and current.astimezone(EASTERN).weekday()==6,
             "Sunday candidate is stale, future-dated, or not yet issuable")
-    checked_receipt(before,after,receipt,now=current)
+    # Modern ChatGPT-first review has an exact frozen draft and complete
+    # dual-perspective full-section report, not a legacy off-GitHub receipt.
+    supplemental={}
+    if receipt.get("version")==3:
+        draft_file=folder/"data/review-drafts"/(date+".json")
+        report_file=folder/"data/review-reports"/(date+".md")
+        require(draft_file.is_file() and report_file.is_file(),
+                "ChatGPT-first handoff requires frozen draft and full report")
+        checked_receipt(before,after,receipt,now=current,
+                        reviewed_draft=json.loads(draft_file.read_bytes()),
+                        report_bytes=report_file.read_bytes())
+        supplemental.update(draft_file=draft_file,report_file=report_file)
+    else:
+        checked_receipt(before,after,receipt,now=current)
+    dossier_file=folder/"data/source-dossiers"/(date+".json")
+    if receipt.get("research_mode") is not None:
+        require(dossier_file.is_file(), "ChatGPT-first source dossier missing")
+        from chatgpt_handoff import validate_optional_dossier
+        validate_optional_dossier(before,after,receipt,
+                                  json.loads(dossier_file.read_bytes()))
+        supplemental["dossier_file"]=dossier_file
+    else:
+        require(not dossier_file.exists(),
+                "Unbound source dossier cannot accompany historical receipt")
     validate_history(after,before)
     schema=json.loads((root/"schema/history.schema.json").read_bytes())
     Draft202012Validator(schema).validate(after)
@@ -65,7 +88,8 @@ def validate_handoff(folder, root=ROOT, now=None):
     approval=receipt["approval"]
     round_no=approval["round"]
     draft=approval["draft_sha256"]
-    for role in ("affirmative","critical"):
+    for role in (() if receipt.get("version")==3 else
+                 ("affirmative","critical")):
         p=folder/"review-audit"/f"review-{round_no:02d}-{role}.json"
         require(p.is_file(),"Missing off-GitHub "+role+" review audit")
         audit=json.loads(p.read_bytes())
@@ -75,7 +99,8 @@ def validate_handoff(folder, root=ROOT, now=None):
                 and audit.get("issues")==[],
                 "Off-GitHub "+role+" audit disagrees with clean receipt")
     return {"date":date,"before":before,"after":after,
-            "candidate_file":candidate_file,"receipt_file":receipt_file}
+            "candidate_file":candidate_file,"receipt_file":receipt_file,
+            **supplemental}
 
 
 def verify_remote_ready():
