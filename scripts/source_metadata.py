@@ -275,14 +275,16 @@ def parse_metadata(text):
         "publication_candidates": sorted(instants),
         "publication_dates": sorted(dates),
         "metadata_status": (
-            "verified article metadata" if len(instants) == 1 else
+            "publisher-reported article timestamp; original first publication not independently verified" if len(instants) == 1 else
             "publisher-reported visible headline date; precise time unknown"
             if header_dates else
             "unknown precise time; absent, naive or conflicting metadata"),
     }
+    # A retrieved publisher timestamp is a publisher claim, not evidence
+    # that this was the first time the article became publicly available.
+    result["first_publication_verified"] = False
     if header_dates:
         result["publication_date_evidence"] = header_dates
-        result["first_publication_verified"] = False
     return result
 
 
