@@ -1,5 +1,40 @@
 # Prospective alternating affirmative and critical ChatGPT reviews — effective 2026-10-25
 
+## V10 mandatory dual-reviewed factual reliability before forecasting
+
+All new V10 publication candidates require claim-specific reliability
+review **before the single prospective forecast draw**. First check
+actual six-category web-search provenance, original citation/URL
+identity, real original-body passage witnesses, publisher date,
+source directness, source identity and independently authored reporting
+chains; screen out excluded and historic-only new-claim candidates.
+
+Both source-review perspectives must independently provide one
+`claim_reliability_reviews` row for **each retained new evidence ID**,
+including directness, source quality/methodology assessment, claim-matched
+independent corroborator IDs (if truly distinct, separately witnessed
+original reporting), treatment of contrary evidence, exact passage
+witness status, ordinal factual reliability and an INDEPENDENT
+assessment of geopolitical direction confidence. The code reproduces
+each claimed grade using an explicit ordinal decision tree. Only
+independent corroboration identified by **both** perspectives may
+raise the final grade. The lower supported grade always wins;
+material disagreements never raise factual certainty.
+
+Zero admitted claims is allowed as a documented audit outcome; it is
+not evidence of stability and cannot itself authorize a new forecast.
+A rejected or complete-but-inconclusive source-only review cannot
+authorize a scored assessment. Only a clean source review on the
+identical hashed evidence is followed by the once-only forecast
+elicitation and the existing alternating **full-report** reviews.
+Source-only review does not certify a forecast; full-report review
+does not substitute for accurate source-grade provenance.
+
+This workflow is strictly prospective. V1-V9 source snapshot and
+historical publication grades retain their original immutable fields.
+The source review's confidence in observation truth is separate from
+the observed event's causal effect, sign and forecast impact.
+
 ## V9 access-stage reconciliation required for audit completion
 
 A source review must not conflate (a) the model's earlier original
