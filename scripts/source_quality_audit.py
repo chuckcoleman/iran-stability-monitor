@@ -223,6 +223,8 @@ def validate_source_review(decision, quality, role, *, return_aliases=False,
     approval. Legacy/default callers remain strictly rejecting. Preserve
     the original paid response and original model verdict unchanged.
     """
+    _check(not record_rejected_conflicts or return_aliases,
+           "Rejected source conflicts require an explicit returned audit")
     urls = {row["url"] for row in quality["sources"]}
     reviews = (decision.get("source_reviews")
                if isinstance(decision, dict) else None)
