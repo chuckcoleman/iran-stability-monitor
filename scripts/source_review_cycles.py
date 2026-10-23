@@ -596,6 +596,13 @@ def conservative_revision(previous, issues, original_cutoff):
         src["role"] = (
             "new_evidence" if src["new_evidence_indices"]
             else "coverage_context_only")
+        if revised.get("pre_review_admission_version") == 5:
+            # This field describes the CURRENT corrected packet, not the
+            # original admission decisions, which remain immutable.
+            src["v8_current_event_status"] = (
+                "PROVISIONAL_CURRENT_OBSERVATION_REQUIRES_DUAL_REVIEW"
+                if src["role"] == "new_evidence" else
+                "CONTEXT_ONLY_NOT_CURRENT_ADMITTED_EVIDENCE")
     quality["evidence_source_count"] = sum(
         r["role"] == "new_evidence" for r in quality["sources"])
     quality["context_only_source_count"] = sum(
@@ -616,6 +623,15 @@ def conservative_revision(previous, issues, original_cutoff):
                      or group in sources[url_key(item["source"])].get(
                          "coverage_categories", []))]
         category["retained_evidence_ids"] = sorted(admitted)
+        if revised.get("pre_review_admission_version") == 5:
+            scope = category.get("v8_search_vs_admission")
+            require(isinstance(scope, dict),
+                    "Revised V8 category lacks original search/admission split")
+            # Do not rewrite the original search-stage verdict or cutoff;
+            # only the after-correction evidence-admission fact can weaken.
+            scope["admission_result"] = (
+                "PROVISIONAL_EVIDENCE_REQUIRES_DUAL_REVIEW"
+                if admitted else "NO_ORIGINAL_OBSERVATION_ADMITTED")
         if not admitted and prior_outcome == "eligible_reporting_found":
             category["outcome"] = "inaccessible_or_incomplete"
             qualifier = (" Original links retained for audit only; no "
