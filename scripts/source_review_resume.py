@@ -335,8 +335,10 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                        "Unknown review request identity is missing; no paid retry")
         response, _ = reviewer(prompt, False)
     issues = _review_issues(response, role)
+    tracking_aliases = []
     if live:
-        validate_source_review(response, quality, role)
+        tracking_aliases = validate_source_review(
+            response, quality, role, return_aliases=True)
         _check(response == _matching_completed_response(folder, prompt, model),
                "Completed review lacks identical response and transport journals")
     result = {
@@ -350,6 +352,10 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                          else now().isoformat()),
         "superseded_unknown_requests": sorted(new_superseded),
         "publication": "NOT AUTHORIZED"}
+    if tracking_aliases:
+        # Do not rewrite the reviewer response: explicitly checkpoint every
+        # redundant query-string variant and its existing canonical source.
+        result["tracking_only_url_aliases"] = tracking_aliases
     if prior is not None:
         _check(prior == result,
                "Saved source-review checkpoint differs from validated result")
@@ -359,6 +365,8 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
                "source_reviews": result["source_reviews"],
                "completed_at": result["completed_at"], "draft_sha256": input_sha,
                "superseded_unknown_requests": result["superseded_unknown_requests"]}
+    if tracking_aliases:
+        summary["tracking_only_url_aliases"] = tracking_aliases
     # The V5 query-balance audit is reviewer-authored response content.
     # Pass through unchanged for deterministic validation without changing
     # the historical saved review checkpoint or any previous prompt.
