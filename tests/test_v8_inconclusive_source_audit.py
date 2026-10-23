@@ -243,7 +243,9 @@ class V8AuditedButInconclusiveTests(unittest.TestCase):
         for why in ("missing_review", "false_access", "incomplete",
                     "wrong_source_count", "wrong_original_asof",
                     "wrong_historical_scope", "false_first_published",
-                    "post_snapshot_search", "tampered_quality"):
+                    "post_snapshot_search", "tampered_quality",
+                    "misstated_current_role", "misstated_after_screen",
+                    "misstated_original_search"):
             packet = copy.deepcopy(self.packet)
             res = role_response(packet)
             if why == "missing_review":
@@ -269,10 +271,25 @@ class V8AuditedButInconclusiveTests(unittest.TestCase):
             elif why == "tampered_quality":
                 packet["source_quality_audit"]["sources"][0][
                     "v8_source_inspection_scope"] = "FULL_TEXT_VERIFIED"
+            elif why == "misstated_current_role":
+                packet["source_quality_audit"]["sources"][0][
+                    "v8_current_event_status"] = (
+                    "PROVISIONAL_CURRENT_OBSERVATION_REQUIRES_DUAL_REVIEW")
+            elif why == "misstated_after_screen":
+                packet["coverage"][0]["v8_search_vs_admission"][
+                    "admission_result"] = (
+                    "PROVISIONAL_EVIDENCE_REQUIRES_DUAL_REVIEW")
+            elif why == "misstated_original_search":
+                packet["coverage"][0]["v8_search_vs_admission"][
+                    "original_search_outcome"] = (
+                    "eligible_reporting_found")
             with self.subTest(why=why):
                 issues = reviews.v4_required_interpretation_issues(
                     packet, "critical", res["source_reviews"], res)
-                if why not in ("incomplete", "tampered_quality"):
+                if why not in (
+                        "incomplete", "tampered_quality",
+                        "misstated_current_role", "misstated_after_screen",
+                        "misstated_original_search"):
                     self.assertTrue(issues, why)
                 approved = role_response(packet)
                 self.assertFalse(reviews.v8_complete_but_inconclusive(
