@@ -200,6 +200,69 @@ class AuditRecoveryTests(unittest.TestCase):
             self.assertEqual(first["draft_sha256"], "input-hash-one")
         self.assertEqual(len(calls), 2)
 
+    def test_completed_paid_review_with_tracking_alias_resumes_without_post(self):
+        # Regression for diagnostic 39873418079: the affirmative reviewer
+        # inspected each canonical URL but added tracking-parameter rows.
+        quality = source_quality_audit(study(), metadata(), cutoff=NOW)
+        prompt = "Archived paid reviewer with tracking URL aliases"
+        response = {
+            "approved": False,
+            "issues": [{
+                "type": "insufficient_for_geopolitical_inference",
+                "location": "source_adequacy_review",
+                "reason": ("The original article alone cannot establish "
+                           "a substantive national-instability inference."),
+            }],
+            "source_reviews": [{
+                "url": URL,
+                "assessment": ("Exact original article was inspected with "
+                               "attributed claims and uncertainty retained."),
+                "disposition": "supported_as_qualified",
+            }, {
+                "url": URL + "?utm_source=chatgpt.com",
+                "assessment": ("Tracking parameters link to the same article; "
+                               "no new source or corroboration is asserted."),
+                "disposition": "supported_as_qualified",
+            }],
+        }
+        (self.dir / "response-8.json").write_text(json.dumps({
+            "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+            "search": False, "model": "gpt-6.1-sol",
+            "response_id": "resp_archivedreview123", "result": response,
+        }))
+        (self.dir / "api-request-complete.json").write_text(json.dumps({
+            "phase": "non-search assessment/review", "post_attempts": 1,
+            "status": "api_completed_output_not_yet_validated",
+            "response_id": "resp_archivedreview123",
+            "request_sha256": sha(pipeline.responses_payload(prompt, False)),
+        }))
+        old_response = (self.dir / "response-8.json").read_bytes()
+        old_journal = (self.dir / "api-request-complete.json").read_bytes()
+        def forbid_post(*args, **kwargs):
+            self.fail("Completed paid reviewer must never POST again")
+        opts = dict(role="affirmative", prompt=prompt,
+                    input_sha="frozen-review-packet", quality=quality,
+                    reviewer=forbid_post, now=lambda: NOW)
+        with patch.object(recovery, "LIVE_RESEARCHER", forbid_post):
+            first = recovery.review_with_checkpoint(self.dir, **opts)
+            self.assertFalse(first["approved"])
+            self.assertEqual(len(first["issues"]), 1)
+            self.assertEqual(len(first["tracking_only_url_aliases"]), 1)
+            self.assertEqual(
+                first["tracking_only_url_aliases"][0]["canonical_url"], URL)
+            second = recovery.review_with_checkpoint(self.dir, **opts)
+        self.assertEqual(first, second)
+        checkpoint = json.loads(
+            (self.dir / "source-review-affirmative.json").read_text())
+        self.assertEqual(checkpoint["response"], response)
+        self.assertEqual(checkpoint["tracking_only_url_aliases"],
+                         first["tracking_only_url_aliases"])
+        self.assertEqual(checkpoint["publication"], "NOT AUTHORIZED")
+        self.assertEqual((self.dir / "response-8.json").read_bytes(),
+                         old_response)
+        self.assertEqual((self.dir / "api-request-complete.json").read_bytes(),
+                         old_journal)
+
     def test_unknown_foreground_post_never_auto_retried(self):
         quality = source_quality_audit(study(), metadata(), cutoff=NOW)
         (self.dir / "api-request-unknown.json").write_text(json.dumps({
