@@ -253,7 +253,6 @@ def verify_all_chatgpt_source_dossiers(root, history):
     prefix that a prospective Sunday receipt bound. No API calls or external
     fetching occur. This is integrity checking, not external fact proof.
     """
-    from chatgpt_handoff import validate_optional_dossier
     root = Path(root)
     evidence_dir = root / "data" / "source-dossiers"
     receipts_dir = root / "data" / "review-receipts"
@@ -277,6 +276,7 @@ def verify_all_chatgpt_source_dossiers(root, history):
         before = dict(history, updates=rows[:index])
         after = dict(history, updates=rows[:index + 1])
         dossier = json.loads(path.read_bytes())
+        from chatgpt_handoff import validate_optional_dossier
         validate_optional_dossier(before, after, receipt, dossier)
         count += 1
     for path in sorted(receipts_dir.glob("*.json")):
