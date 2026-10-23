@@ -24,6 +24,7 @@ from source_claim_reliability import (
 from test_v10_claim_reliability import sample_claims, reviewer_rows
 from test_alternating_chat_receipt import AlternatingReviewTests
 import submit_reviewed_assessment
+from review_receipt import verify_all_chatgpt_source_dossiers
 
 CUTOFF="2026-10-25T08:45:00-04:00"
 REVIEW="2026-10-25T08:52:00-04:00"
@@ -218,6 +219,46 @@ class ChatGPTFirstNoAPITests(unittest.TestCase):
                 receipt["research_mode"]="openai_api"
             with self.subTest(why=why),self.assertRaises(ValueError):
                 validate_optional_dossier(before,after,receipt,dossier)
+
+    def test_code_only_changes_cannot_silently_rewrite_old_dossier(self):
+        before,after,dossier=bundle()
+        date=after["updates"][-1]["date"]
+        receipt={"version":3,"research_mode":"chatgpt_first_no_api",
+                 "source_dossier_sha256":digest(dossier)}
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            (root/"data/source-dossiers").mkdir(parents=True)
+            (root/"data/review-receipts").mkdir()
+            path=root/"data/source-dossiers"/(date+".json")
+            review=root/"data/review-receipts"/(date+".json")
+            path.write_text(json.dumps(dossier))
+            review.write_text(json.dumps(receipt))
+            self.assertEqual(
+                verify_all_chatgpt_source_dossiers(root,after),1)
+            damaged=copy.deepcopy(dossier)
+            damaged["coverage"][0]["limitations"] += (
+                " Unreviewed attempted source-status change.")
+            path.write_text(json.dumps(damaged))
+            with self.assertRaisesRegex(ValueError,
+                                        "source dossier|dossier"):
+                verify_all_chatgpt_source_dossiers(root,after)
+            path.write_text(json.dumps(dossier))
+            review.unlink()
+            with self.assertRaisesRegex(ValueError,
+                                        "matching review receipt"):
+                verify_all_chatgpt_source_dossiers(root,after)
+            review.write_text(json.dumps({
+                "version":3,"research_mode":"different_handoff",
+                "source_dossier_sha256":digest(dossier),
+            }))
+            with self.assertRaisesRegex(ValueError,
+                                        "detached"):
+                verify_all_chatgpt_source_dossiers(root,after)
+            path.unlink()
+            review.write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError,
+                                        "Missing bound"):
+                verify_all_chatgpt_source_dossiers(root,after)
 
     def test_modern_v3_chat_handoff_validates_without_api_and_needs_draft(self):
         case=AlternatingReviewTests("test_one_clean_cycle_accepted")
