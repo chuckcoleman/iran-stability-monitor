@@ -378,6 +378,18 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
             "limitations":"No Sunday forecasts, actual issuance, dashboard browser render, "
                           "public deployment or social posting were tested. "
                           "A model-reported category audit does not prove every query ran."}
+    if snapshot and snapshot["version"] == 8:
+        # Two deliberately independent results: whether the exact source
+        # AUDIT was complete, and whether those records support an inference.
+        # A completed inconclusive audit NEVER exercises or certifies any
+        # scored forecasts, GitHub publication, or social actions.
+        report["source_audit_status"] = cycles["source_audit_status"]
+        report["geopolitical_inference_status"] = cycles["forecast_inference_status"]
+        report["publication"] = "NOT AUTHORIZED"
+        report["audit_only_conclusion"] = (
+            "COMPLETE_INCONCLUSIVE_NO_FORECAST_AUTHORIZED"
+            if status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
+            else "AUDIT_NOT_CERTIFIED_COMPLETE")
     dest=folder/"research-dry-run.json"
     if dest.exists():
         original_report = json.loads(dest.read_text(encoding="utf-8"))
@@ -423,7 +435,13 @@ def main(argv=None):
     # evidence gates, missing directions, insufficient source counts,
     # incomplete corrections and other invariant failures MUST produce a
     # nonzero Actions exit status even if both reviewers said approved.
-    if summary["status"] != "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE":
+    if summary["status"] == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE":
+        print("COMPLETE SOURCE AUDIT WITH DISCLOSED LIMITATIONS; "
+              "INSUFFICIENT GEOPOLITICAL INFERENCE. NO FORECASTS TESTED, "
+              "NO PUBLICATION AUTHORIZED.", flush=True)
+    if summary["status"] not in (
+            "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE",
+            "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"):
         raise SystemExit(1)
 
 
