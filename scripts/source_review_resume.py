@@ -404,4 +404,10 @@ def review_with_checkpoint(folder, *, role, prompt, input_sha, quality,
         # separately from its inferential evidence verdict. The original
         # response/checkpoint is never rewritten or promoted to approval.
         summary["audit_integrity_review"] = response["audit_integrity_review"]
+    if isinstance(response, dict) and "claim_reliability_reviews" in response:
+        # V10: Preserve the exact original reviewer-authored factual-quality
+        # assessments; a later deterministic certificate is derived from BOTH
+        # perspectives and never rewrites an archived paid model response.
+        summary["claim_reliability_reviews"] = response[
+            "claim_reliability_reviews"]
     return summary

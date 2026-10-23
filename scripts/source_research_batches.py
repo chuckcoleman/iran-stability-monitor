@@ -107,7 +107,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
     reference = prior_index(prior)
     if path.exists():
         snap = read_json(path)
-        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6, 7, 8, 9)
+        if (not isinstance(snap, dict) or snap.get("version") not in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
                 or snap.get("history_sha256") != baseline_sha
                 or snap.get("prior_sha256") != sha(prior)
                 or snap.get("model") != model
@@ -129,7 +129,7 @@ def research_snapshot(folder, *, day, prior, baseline_sha, started_at, model,
         raise ValueError("Resume requires a staged research snapshot; legacy monolithic run cannot be replayed")
     if started_at.tzinfo is None or started_at.utcoffset() is None:
         raise ValueError("Research cutoff must be timezone-aware")
-    if fresh_version not in (2, 3, 4, 5, 6, 7, 8, 9):
+    if fresh_version not in (2, 3, 4, 5, 6, 7, 8, 9, 10):
         raise ValueError("Unsupported new research snapshot protocol")
     snap = {"version": fresh_version, "date": day, "cutoff_at": started_at.isoformat(),
             "history_sha256": baseline_sha, "prior_sha256": sha(prior),
@@ -320,7 +320,7 @@ def batch_prompt(category, snapshot):
         "from inferred geopolitical sign. Do not score a forecast.")
     if snapshot["version"] == 5:
         return v5  # Preserve the exact V5 prompt and its paid request fingerprint.
-    if snapshot["version"] not in (6, 7, 8, 9):
+    if snapshot["version"] not in (6, 7, 8, 9, 10):
         raise ValueError("Unsupported source-research prompt version")
     v6 = v5 + (
         "\nV6 FORWARD-ONLY ADMISSION-READY ORIGINAL SOURCE RESEARCH. "
@@ -387,7 +387,7 @@ def batch_prompt(category, snapshot):
         "attribution, source trace or publication prohibition.")
     if snapshot["version"] == 7:
         return v7  # Do not change already-paid V7 request fingerprints.
-    if snapshot["version"] not in (8, 9):
+    if snapshot["version"] not in (8, 9, 10):
         raise ValueError("Unsupported forward source research version")
     v8 = v7 + (
         "\nV8 TWO DISTINCT QUESTIONS: did the six-category source AUDIT "
@@ -416,7 +416,7 @@ def batch_prompt(category, snapshot):
         "No forecast or publication may be inferred from an audit outcome.")
     if snapshot["version"] == 8:
         return v8  # Exact historical V8 paid request and prompt fingerprint.
-    return v8 + (
+    v9 = v8 + (
         "\nV9 ACCESS PROVENANCE IS CHANNEL-SPECIFIC. The web-search research "
         "model's statement that a publisher article body was readable, partly "
         "readable, blocked with HTTP 403, or failed with an internal error is "
@@ -443,6 +443,40 @@ def batch_prompt(category, snapshot):
         "source access and limitations are documented accurately. The "
         "source audit itself must fail if a material access discrepancy "
         "remains unresolved. No forecasts and never publish.")
+    if snapshot["version"] == 9:
+        return v9  # Old V9 research prompt and paid request fingerprint frozen.
+    if snapshot["version"] != 10:
+        raise ValueError("Unsupported prospective source-quality protocol")
+    return v9 + (
+        "\nV10 CLAIM-SPECIFIC FACTUAL RELIABILITY, NOT PUBLISHER-ONLY GRADES: "
+        "Cover all materially relevant relevant sources and contrary findings "
+        "using the SAME six-category actual web-search traces; there is NO "
+        "minimum number of accepted observations or publishers. Do not "
+        "rank a claim as High solely because Reuters, AP, a think tank or "
+        "any prestigious institution reported it. For EACH proposed claim, "
+        "distinguish original primary measurement/document, first-hand "
+        "reporting, attributed testimony, commentary and unknown methods; "
+        "record original publisher, methodology, precise witness scope, "
+        "possible partisan/institutional interests, contrary evidence, "
+        "and the strength of actual original source support. Separate "
+        "an original public-body passage from a search snippet or publisher "
+        "metadata and never pretend first-publication time is independently "
+        "certified. Cite corroborating ORIGINAL documents by their canonical "
+        "URLs, but do NOT call two syndicated reports or two stories from "
+        "the same reporting chain independent confirmations. A cited "
+        "corroborating URL is a CLAIM, not verified confirmation until "
+        "the independent evidence is actually inspected and BOTH review "
+        "perspectives establish the same claim and genuinely separate "
+        "reporting chains. Explicitly seek and retain material contrary "
+        "facts. The model-suggested reliability label (Low, Medium, "
+        "Medium-high, High) is provisional only: a deterministic rubric "
+        "with affirmative and critical factual-source reviews will assign "
+        "the final supported grade. Factual reliability and uncertainty "
+        "about the effect on regime stability are DIFFERENT axes: a "
+        "well-established real incident may still have an ambiguous effect. "
+        "Record uncertain direction as ambiguous, and never use source "
+        "quality to infer a geopolitical probability mechanically. "
+        "No forecasts or publication in this stage.")
 
 
 def _normalize_limitation_lists(original):
@@ -502,7 +536,7 @@ def _normalize_grouped_query_disclosures(original, search_calls, *, version):
         raise ValueError("Research stage has no original JSON object")
     effective = copy.deepcopy(original)
     changes = []
-    if version not in (5, 6, 7, 8, 9):
+    if version not in (5, 6, 7, 8, 9, 10):
         return effective, changes
     rows = effective.get("coverage_audit")
     if not isinstance(rows, list):
@@ -890,7 +924,7 @@ def batched_research(*, researcher, folder, prior, day, baseline_sha,
     snapshot = research_snapshot(
         folder, day=day, prior=prior, baseline_sha=baseline_sha,
         started_at=started_at, model=model, resume=resume,
-        fresh_version=(9 if researcher is LIVE_RESEARCHER else 2))
+        fresh_version=(10 if researcher is LIVE_RESEARCHER else 2))
     stages = {}
     for category in CATEGORIES:
         prompt = batch_prompt(category, snapshot)

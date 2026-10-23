@@ -190,7 +190,7 @@ class StageNormalizationTests(unittest.TestCase):
             return self._response(prompt, search)
         result, cited, trace, snapshot = self._run(finish, resume=True, clock=LATER)
         self.assertEqual(self.calls, list(CATEGORIES)[3:])
-        self.assertEqual(snapshot["version"], 9)  # new live V9; original V1-V8 paid fingerprints stay unchanged
+        self.assertEqual(snapshot["version"], 10)  # new live V9; original V1-V8 paid fingerprints stay unchanged
         self.assertEqual(len(result["coverage_audit"]), 6)
         self.assertEqual(len(cited), 6)
         self.assertEqual(len(trace), 6)
@@ -287,7 +287,7 @@ class StageNormalizationTests(unittest.TestCase):
             return obj, urls
 
         result, _, _, snapshot = self._run(original_paid_response)
-        self.assertEqual(snapshot["version"], 9)
+        self.assertEqual(snapshot["version"], 10)
         original_path = self.folder / "response-1.json"
         original_bytes = original_path.read_bytes()
         stage = read_json(self.folder / "research-batch-primary_data.json")
@@ -431,7 +431,7 @@ class StageNormalizationTests(unittest.TestCase):
             return obj, citations
 
         result, _, _, snap = self._run(synthetic_paid_research)
-        self.assertEqual(snap["version"], 9)
+        self.assertEqual(snap["version"], 10)
         original_path = self.folder / "response-1.json"
         original_bytes = original_path.read_bytes()
         journal_path = self.folder / "api-request-test-0.json"
@@ -541,7 +541,7 @@ class StageNormalizationTests(unittest.TestCase):
             return obj, urls
 
         result, _, _, snap = self._run(recorded_research)
-        self.assertEqual(snap["version"], 9)
+        self.assertEqual(snap["version"], 10)
         response_path = self.folder / "response-2.json"
         response_bytes = response_path.read_bytes()
         journal_path = self.folder / "api-request-test-1.json"

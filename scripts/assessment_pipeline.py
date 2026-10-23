@@ -1003,6 +1003,138 @@ def _fully_validated_candidate(history,analysis,evidence,cutoff,opened,issued,va
     return candidate
 
 
+def _certify_v10_factual_reliability_before_forecast(
+        *, research, frozen, citations, search_calls, coverage, quality,
+        historical_evidence, history_sha, snapshot, date, now, reviewer,
+        audit_dir):
+    """Prospective V10 source reviews MUST pass before the ONE forecast draw.
+
+    Uses the same durable original research stage, individual body-passage
+    register and original-source screening as the source-only diagnostic.
+    Both independently authored perspectives must approve the unchanged
+    source packet before their conservatively reconciled factual grades can
+    replace the model-proposed grades. A complete yet inconclusive source
+    audit is NOT enough to elicit forecast probabilities. All previously
+    carried evidence remains unchanged, never reconfirmed or graded anew.
+    """
+    from source_research_batches import read_json, save_new, sha
+    from source_review_resume import load_or_create_review_input
+    from source_passage_audit import build_claim_register
+    from source_pre_review_admissibility import screen_or_restore
+    from source_review_cycles import run_alternating_review_cycles
+    from source_claim_reliability import (apply_reviewed_reliability,
+                                          reconcile_dual_reliability)
+    from read_only_research_dry_run import SOURCE_REVIEW_COMMON
+
+    check(isinstance(snapshot, dict) and snapshot.get("version") == 10
+          and reviewer is LIVE_RESEARCHER
+          and audit_dir is not None,
+          "Prospective V10 requires durable actual dual source review")
+    frozen_new = [copy.deepcopy(e) for e in frozen
+                  if e.get("evidence_status") == "new"]
+    sample, initial_sha, _ = load_or_create_review_input(
+        audit_dir, result=research, citations=citations, coverage=coverage,
+        quality=quality, baseline_sha=history_sha, snapshot=snapshot,
+        archive={"evidence": historical_evidence}, date=date, now=now,
+        freeze=lambda *_: copy.deepcopy(frozen_new),
+        claim_register_builder=lambda new: build_claim_register(
+            audit_dir, research=research, frozen=new,
+            baseline_sha=history_sha, snapshot=snapshot))
+    screen = screen_or_restore(
+        audit_dir, sample, research, baseline_sha=history_sha,
+        snapshot=snapshot, search_calls=search_calls)
+    check(screen["status"] == "PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY"
+          and screen.get("source_review_requests") == "PERMITTED_AFTER_SCREEN",
+          "Original-source reliability admission failed before forecast; "
+          "never elicit probabilities from rejected material")
+    packet = screen["screened_packet"]
+    digest = screen["screened_review_input_sha256"]
+    check(sha(packet) == digest, "Source-quality review input was modified")
+    common = SOURCE_REVIEW_COMMON + (
+        "\nV10 SOURCE RELIABILITY BEFORE FORECAST ELICITATION: "
+        "This stage determines individual factual evidence grades only, "
+        "under the closed original-source packet and separately retained "
+        "original and later HTTP access provenance. Include each original "
+        "URL in source_reviews plus source_query_balance_review, "
+        "source_adequacy_review, audit_integrity_review and "
+        "claim_reliability_reviews. Assess EACH new claim's original body "
+        "passage, directness, independent confirmation chain and specific "
+        "counterevidence. Two reviewer perspectives cannot manufacture "
+        "a third-party observation. Unsupported/stale facts must be "
+        "excluded or the review must reject. No forecast, score, probability "
+        "or publication is authorized at this preforecast stage.")
+    result = run_alternating_review_cycles(
+        folder=audit_dir, sample=packet, input_sha=digest,
+        reviewer=reviewer, now=now, common=common,
+        original_cutoff=snapshot["cutoff_at"],
+        allow_new_after_unknown=(
+            os.getenv("IRAN_ALLOW_NEW_REVIEW_AFTER_UNKNOWN") == "1"),
+        enable_corrections=True, enforce_guards=True)
+    check(result["status"] == "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE",
+          "Source-only reviews did not jointly approve sufficient "
+          "claim reliability; no geopolitical forecast elicited. "
+          "A complete but inconclusive audit is NOT forecast authorization")
+    count = result["rounds"]
+    final_packet = (
+        packet if count == 1 else
+        read_json(audit_dir / f"source-review-round-{count:02d}-input.json")[
+            "sample"])
+    check(sha(final_packet) == result["final_review_input_sha256"],
+          "Final review evidence differs from approved source quality")
+    ratings = result.get("claim_reliability")
+    check(isinstance(ratings, list), "Dual factual-grade certificate missing")
+    reviewers = result.get("final_reviewers")
+    check(isinstance(reviewers, dict)
+          and "affirmative" in reviewers and "critical" in reviewers,
+          "Dual source reviewer provenance missing from grade certificate")
+    check(ratings == reconcile_dual_reliability(
+        final_packet, reviewers["affirmative"], reviewers["critical"]),
+        "Derived reliability grades do not reproduce from the immutable "
+        "affirmative and critical source responses")
+    retained_rows = final_packet.get("evidence")
+    check(isinstance(retained_rows, list),
+          "Reviewed evidence list is missing")
+    retained = {e["id"]: e for e in retained_rows}
+    check(len(retained) == len(retained_rows),
+          "Duplicated new evidence after source-only reviews")
+    original_new = {e["id"]: e for e in frozen
+                    if e.get("evidence_status") == "new"}
+    check(set(retained) <= set(original_new)
+          and all(original_new[ident] == item
+                  for ident, item in retained.items()),
+          "A corrected source review narrowed or changed a frozen claim. "
+          "It cannot certify the original observation for a new forecast; "
+          "fresh source research or a distinct separately reviewed claim "
+          "is required instead.")
+    combined = [copy.deepcopy(e if e.get("evidence_status") ==
+                              "carried_forward" else retained[e["id"]])
+                for e in frozen if e.get("evidence_status") ==
+                "carried_forward" or e["id"] in retained]
+    adjusted = apply_reviewed_reliability(combined, frozen, ratings)
+    # Never overwrite a transport journal, original source packet, original
+    # model-reported grade, earlier historical evidence or audit decisions.
+    certificate = {
+        "version": 10,
+        "status": "DUAL_FACTUAL_RELIABILITY_REVIEWED_BEFORE_FORECAST",
+        "source_review_input_sha256": result["final_review_input_sha256"],
+        "research_snapshot_sha256": snapshot["snapshot_sha256"],
+        "original_frozen_evidence_sha256": sha(frozen),
+        "reviewed_factual_evidence_sha256": sha(adjusted),
+        "claim_reliability": ratings,
+        "historical_carry_forward_unchanged": True,
+        "factual_reliability_not_geopolitical_direction": True,
+        "source_only_not_a_forecast": True,
+        "publication": "NOT AUTHORIZED",
+    }
+    filename = audit_dir / "claim-reliability-preforecast-certificate.json"
+    if filename.exists():
+        check(read_json(filename) == certificate,
+              "Prior preforecast reliability certificate differs")
+    else:
+        save_new(filename, certificate)
+    return adjusted
+
+
 def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=capture_metadata,reviewer=None):
     baseline=json.dumps(history,sort_keys=True,ensure_ascii=False)
     today=now().date().isoformat()
@@ -1082,9 +1214,21 @@ def produce(history,researcher=llm,assessor=llm,now=clock,metadata_reader=captur
         verify_claimed_source_links(coverage,search_calls)
     evidence=freeze_evidence(
         result,sources,evidence_history,today,cutoff,metadata,
-        # Only NEW live source gathering uses V7 zero-quota admission.
-        # Synthetic fixtures and historical default behavior stay unchanged.
+        # All new live runs retain the V7 removal of numerical quotas.
+        # Historic records and synthetic fixture contracts remain intact.
         no_accepted_evidence_quota=(researcher is llm))
+    original_frozen_evidence = copy.deepcopy(evidence)
+    if researcher is LIVE_RESEARCHER and snapshot.get("version") == 10:
+        # FACTUAL reliability is derived from reviewed source/methodology/
+        # claim-specific independent corroboration, NOT the research model's
+        # unchecked publisher grade. Source review occurs BEFORE forecast
+        # elicitation and a failure always prevents publication.
+        evidence = _certify_v10_factual_reliability_before_forecast(
+            research=result, frozen=original_frozen_evidence,
+            citations=sources, search_calls=search_calls, coverage=coverage,
+            quality=quality, historical_evidence=evidence_history["evidence"],
+            history_sha=baseline_sha, snapshot=snapshot, date=today,
+            now=now, reviewer=reviewer, audit_dir=audit_dir)
     if audit_dir is not None:
         audit_dir.mkdir(parents=True,exist_ok=True)
         (audit_dir/"frozen-evidence.json").write_text(json.dumps({

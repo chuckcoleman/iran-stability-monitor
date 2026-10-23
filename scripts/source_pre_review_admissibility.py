@@ -159,7 +159,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                            search_calls=None):
     """Create an immutable source-by-source, claim-by-claim pre-review screen."""
     require(isinstance(packet, dict) and isinstance(snapshot, dict)
-            and snapshot.get("version") in (3, 4, 5, 6, 7, 8, 9),
+            and snapshot.get("version") in (3, 4, 5, 6, 7, 8, 9, 10),
             "Pre-review admission requires new v3 research snapshot")
     require(packet.get("published_history_sha256") == baseline_sha
             and packet.get("research_as_of") == snapshot.get("cutoff_at"),
@@ -391,7 +391,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
     amended["pre_review_claim_decisions"] = decisions
     amended["pre_review_original_input_sha256"] = sha(packet)
     amended["pre_review_admission_version"] = (
-        6 if version >= 9 else 5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
+        7 if version >= 10 else 6 if version >= 9 else 5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
         else 2 if version >= 4 else GATE_VERSION)
     amended["pre_review_limitations"] = (
         "Text overlap and page dates are necessary screening features only. "
@@ -497,6 +497,45 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
             "material same-stage or unresolved source-access conflict must "
             "be individually assessed by both reviewers; neither can waive "
             "it to declare a complete audit.")
+    if version >= 10:
+        # Reliability is evaluated for EACH CLAIM, not mechanically assigned
+        # from a source name or the number of linked documents. The model's
+        # own proposed grade is NOT treated as an audited result.
+        amended["pre_review_reliability_policy_v10"] = {
+            "version": 1,
+            "factual_grade_scale": [
+                "Low", "Medium", "Medium-high", "High"],
+            "quality_dimensions": [
+                "source_reporting_quality", "claim_directness",
+                "exact_original_source_passage", "genuinely_independent"
+                "_claim_specific_confirmation", "material_contradictions"],
+            "reviewers": ["affirmative", "critical"],
+            "publisher_reputation_alone_not_a_grade": True,
+            "source_urls_alone_not_independent_confirmation": True,
+            "factual_reliability_not_geopolitical_direction": True,
+            "no_minimum_corroborator_count_for_admission": True,
+            "legacy_history": "IMMUTABLE",
+            "publication": "NOT AUTHORIZED",
+        }
+        amended["pre_review_limitations"] += (
+            " V10 computes conservative factual reliability from supported "
+            "source quality, observed claim directness, separately captured "
+            "article passage, genuinely separate reporting-chain "
+            "corroboration jointly recognized by both reviewers, and "
+            "material contradictions. Source reputation alone is never "
+            "a reliability grade. No specific number of confirmations or "
+            "accepted observations is required. Historical evidence grades "
+            "are immutable. Confidence in the geopolitical effect is "
+            "a DISTINCT axis, not inferred from factual credibility.")
+        for decision in decisions:
+            if decision["id"] not in [row["id"] for row in admitted]:
+                continue
+            original_item = next(row for row in admitted
+                                 if row["id"] == decision["id"])
+            decision["v10_model_proposed_factual_reliability"] = (
+                original_item.get("reliability"))
+            decision["v10_reliability_review_status"] = (
+                "PROVISIONAL_SOURCE_REVIEW_REQUIRED_NOT_FACT_PROOF")
     # Preserve every original URL; update only the reviewed packet's
     # classification of which sources support currently admitted evidence.
     quality = amended["source_quality_audit"]
@@ -604,7 +643,7 @@ def screen_original_packet(packet, research, *, baseline_sha, snapshot,
                 "directional observation passed the pre-review screen.")
     count = eligibility(amended)
     outcome = {
-        "version": (6 if version >= 9 else 5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
+        "version": (7 if version >= 10 else 6 if version >= 9 else 5 if version >= 8 else 4 if version >= 7 else 3 if version >= 5
                     else 2 if version >= 4 else GATE_VERSION),
         "status": ("PRE_REVIEW_DIRECTIONAL_CANDIDATES_READY" if
                    not count["failures"] else
