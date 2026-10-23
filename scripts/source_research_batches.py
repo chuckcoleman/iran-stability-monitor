@@ -320,7 +320,7 @@ def batch_prompt(category, snapshot):
         "from inferred geopolitical sign. Do not score a forecast.")
     if snapshot["version"] == 5:
         return v5  # Preserve the exact V5 prompt and its paid request fingerprint.
-    if snapshot["version"] not in (6, 7, 8):
+    if snapshot["version"] not in (6, 7, 8, 9):
         raise ValueError("Unsupported source-research prompt version")
     v6 = v5 + (
         "\nV6 FORWARD-ONLY ADMISSION-READY ORIGINAL SOURCE RESEARCH. "
