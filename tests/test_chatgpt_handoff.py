@@ -63,7 +63,9 @@ def bundle():
             })
         coverage.append({
             "category":cat,
-            "queries":[f"Iran {cat} independent improving and worsening news"],
+            "queries":[
+                f"Iran {cat} independent reporting of worsening risks",
+                f"Iran {cat} independent reporting of stabilizing trends"],
             "outcome":"eligible_reporting_found",
             "original_urls":[url],
             "limitations":"Relevant original access and publisher release are not independently proven.",
@@ -78,6 +80,46 @@ def bundle():
             "disposition":("supported_as_qualified" if s["role"]=="new_evidence"
                            else "background_only"),
         } for s in packet["source_quality_audit"]["sources"]]
+        response["audit_integrity_review"]={
+            "audit_status":"complete_with_disclosed_limitations",
+            "source_count":len(coverage),
+            "coverage_categories":sorted(CATEGORIES),
+            "research_as_of":CUTOFF,
+            "metadata_access_scope":"metadata_only_not_full_article",
+            "first_publication_verified":False,
+            "historical_context_is_current_evidence":False,
+            "post_snapshot_search":"NOT_SEARCHED",
+            "assessment":(
+                "Every synthetic original URL and all six source search "
+                "categories were inspected as a strictly bounded audit, "
+                "with rejected observations excluded."),
+            "limitations":(
+                "Search descriptions and publisher clocks are ChatGPT-reported "
+                "and neither full article access nor event truth can be "
+                "independently certified solely from the dossier."),
+        }
+        response["source_adequacy_review"]={
+            "admitted_evidence_ids":[e["id"] for e in packet["evidence"]],
+            "observation_count":len(packet["evidence"]),
+            "conclusion":"supported_limited_inference",
+            "assessment":(
+                "The synthetic primary measurement supports at most a "
+                "limited attributed factual claim, not a precise causal "
+                "or probabilistic stability outcome."),
+            "limitations":(
+                "Material uncertainty remains about unmeasured national "
+                "effects, original source timing and opposing facts "
+                "outside the bounded research window."),
+        }
+        response["source_query_balance_review"]={
+            "raises_queries":[coverage[0]["queries"][0]],
+            "lowers_queries":[coverage[0]["queries"][1]],
+            "ambiguous_queries":[],
+            "assessment":(
+                "The disclosed source queries separately seek worsening "
+                "and improving explanations, while treating unidentified "
+                "or inaccessible reports as limitations."),
+        }
     result=reconcile_dual_reliability(packet,affirm,critical)
     issued_new=apply_reviewed_reliability(
         packet["evidence"],packet["evidence"],result)
