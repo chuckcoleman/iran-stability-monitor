@@ -404,6 +404,8 @@ def research_rehearsal(*, root=ROOT, output=None, researcher=llm, reviewer=llm,
         report["audit_only_conclusion"] = (
             "COMPLETE_INCONCLUSIVE_NO_FORECAST_AUTHORIZED"
             if status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
+            else "SOURCE_REVIEW_CLEAN_FORECAST_NOT_TESTED"
+            if status == "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE"
             else "AUDIT_NOT_CERTIFIED_COMPLETE")
     dest=folder/"research-dry-run.json"
     if dest.exists():
