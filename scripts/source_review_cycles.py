@@ -915,6 +915,64 @@ def save_terminal_evidence_gate(folder, round_number, parent_sha,
     }
 
 
+def v8_complete_but_inconclusive(packet, reviewers, deterministic_issues,
+                                  *, enforce_guards=True):
+    """A fully documented source audit is not a verified geopolitical forecast.
+
+    Only a new V8 snapshot with two explicit and internally consistent
+    reviewer audit-completeness confirmations may use this outcome. Any
+    substantive audit-integrity issue remains a failure, never a caveat that
+    permits an approval or publication.
+    """
+    if (not enforce_guards or
+            packet.get("pre_review_admission_version") != 5 or
+            deterministic_issues or
+            not packet.get("claim_evidence_register")):
+        return False
+    scope = packet.get("pre_review_research_scope_v8")
+    if (not isinstance(scope, dict)
+            or scope.get("research_as_of") != packet.get("research_as_of")
+            or scope.get("post_research_window") != "NOT_SEARCHED"
+            or scope.get("metadata_inspection") !=
+                "LATER_PROCESSING_NOT_NEW_SOURCE_RESEARCH"
+            or scope.get("past_events") !=
+                "HISTORICAL_CONTEXT_NOT_CURRENT_OBSERVATIONS"):
+        return False
+    rows = packet.get("source_quality_audit", {}).get("sources")
+    categories = packet.get("coverage")
+    if (not isinstance(rows, list) or not isinstance(categories, list)
+            or len(categories) != 6
+            or len({row.get("category") for row in categories}) != 6
+            or any(row.get("v8_source_inspection_scope") !=
+                       "HTML_METADATA_ONLY_NOT_VERIFIED_FULL_ARTICLE"
+                   or row.get("v8_first_publication_verified") is not False
+                   for row in rows)):
+        return False
+    for role in ("affirmative", "critical"):
+        row = reviewers.get(role)
+        if not isinstance(row, dict) or row.get("approved") is not False:
+            return False
+        issues = row.get("issues")
+        if (not isinstance(issues, list) or len(issues) != 1
+                or issues[0].get("type") != "insufficient_for_inference"
+                or issues[0].get("location") != "source_adequacy_review"
+                or not isinstance(issues[0].get("reason"), str)
+                or len(issues[0]["reason"].strip()) < 40):
+            return False
+        adequacy = row.get("source_adequacy_review")
+        audit = row.get("audit_integrity_review")
+        if (not isinstance(adequacy, dict)
+                or adequacy.get("conclusion") != "insufficient_for_inference"
+                or not isinstance(audit, dict)
+                or audit.get("audit_status") !=
+                    "complete_with_disclosed_limitations"):
+            return False
+        if any(entry.get("conflict_status") for entry
+               in row.get("tracking_only_url_aliases", [])):
+            return False
+    return True
+
+
 def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                                   now, common, original_cutoff=None,
                                   allow_new_after_unknown=False,
@@ -1036,13 +1094,24 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                             if enforce_guards else [])
         clean = (all(r["approved"] and not r["issues"] for r in result.values())
                  and not invariant_issues)
+        inconclusive_audit = v8_complete_but_inconclusive(
+            packet, result, invariant_issues, enforce_guards=enforce_guards)
         record = {"round": number, "input_sha256": digest,
                   "deterministic_issues": invariant_issues,
                   "affirmative": result["affirmative"],
                   "critical": result["critical"], "both_clean": clean,
-                  "status": "DUAL_REVIEW_CLEAN_NOT_PUBLISHABLE" if clean
-                            else "REJECTED_NOT_PUBLISHABLE",
+                  "status": (
+                      "DUAL_REVIEW_CLEAN_NOT_PUBLISHABLE" if clean else
+                      "SOURCE_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
+                      if inconclusive_audit else "REJECTED_NOT_PUBLISHABLE"),
                   "publication": "NOT AUTHORIZED"}
+        if packet.get("pre_review_admission_version") == 5:
+            record["source_audit_status"] = (
+                "COMPLETE_WITH_DISCLOSED_LIMITATIONS" if inconclusive_audit
+                else "NOT_CERTIFIED_COMPLETE")
+            record["inference_status"] = (
+                "INSUFFICIENT_FOR_GEOPOLITICAL_FORECAST"
+                if inconclusive_audit else "NOT_CERTIFIED")
         path = folder / f"source-review-round-{number:02d}.json"
         if path.exists():
             require(read_json(path) == record,
@@ -1052,6 +1121,11 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
         rounds.append(record)
         if clean:
             status = "RESEARCH_ONLY_REVIEW_CLEAN_NOT_PUBLISHABLE"
+            break
+        if inconclusive_audit:
+            # This is a completed source-audit report, NOT an approval of any
+            # geopolitical inference. Stop without further paid review rounds.
+            status = "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
             break
         if not enable_corrections or number == max_rounds:
             status = "RESEARCH_ONLY_REVIEW_ISSUES_NOT_PUBLISHABLE"
@@ -1115,6 +1189,15 @@ def run_alternating_review_cycles(*, folder, sample, input_sha, reviewer,
                "original_review_input_sha256": input_sha,
                "original_research_cutoff": original_cutoff,
                "publication": "NOT AUTHORIZED",
+               "source_audit_status": (
+                   "COMPLETE_WITH_DISCLOSED_LIMITATIONS" if
+                   status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
+                   else "NOT_CERTIFIED_COMPLETE"),
+               "forecast_inference_status": (
+                   "INSUFFICIENT_FOR_GEOPOLITICAL_FORECAST" if
+                   status == "RESEARCH_AUDIT_COMPLETE_INCONCLUSIVE_NOT_PUBLISHABLE"
+                   else "NOT_CERTIFIED"),
+               "prospective_forecasts": "NOT TESTED",
                "limitations": "All rejected review versions are preserved. "
                    "Only conservative exclusions and qualifications, not new "
                    "research verification, were permitted."}
