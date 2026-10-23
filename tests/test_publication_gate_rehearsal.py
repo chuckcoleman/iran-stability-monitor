@@ -149,6 +149,60 @@ class PublicationGateRehearsalTests(unittest.TestCase):
         self.assertNotEqual(gate.returncode,0)
         self.assertIn("digest mismatch",gate.stderr)
 
+    def test_git_baseline_review_artifacts_cannot_be_deleted_as_a_pair(self):
+        # A code-only diff which deleted BOTH a prior receipt AND its
+        # source dossier previously bypassed per-file cross-checks because
+        # neither file remained in the current checkout. Git object
+        # comparison must catch the paired deletion before publication.
+        from review_receipt import verify_review_artifact_immutability
+        (self.repo/"data/history.json").write_text(json.dumps(self.before))
+        receipt=self.repo/"data/review-receipts"/"2026-10-04.json"
+        dossier=self.repo/"data/source-dossiers"/"2026-10-04.json"
+        dossier.parent.mkdir(parents=True)
+        receipt.write_text('{"legacy":"test historical receipt"}')
+        dossier.write_text('{"historic":"test source dossier"}')
+        self.git("add","data/history.json","data/review-receipts",
+                 "data/source-dossiers")
+        self.git("commit","-qm","Frozen historical handoff artifacts")
+        base=self.git("rev-parse","HEAD").stdout.strip()
+        self.assertIn("match Git baseline",
+                      verify_review_artifact_immutability(
+                          base,self.repo,self.before,self.before))
+        receipt.unlink()
+        dossier.unlink()
+        with self.assertRaisesRegex(ValueError,"was removed"):
+            verify_review_artifact_immutability(
+                base,self.repo,self.before,self.before)
+
+    def test_git_baseline_rejects_edits_and_backdated_artifacts(self):
+        from review_receipt import verify_review_artifact_immutability
+        (self.repo/"data/history.json").write_text(json.dumps(self.before))
+        receipt=self.repo/"data/review-receipts"/"2026-10-04.json"
+        receipt.write_text('{"immutable":true}')
+        self.git("add","data/history.json","data/review-receipts")
+        self.git("commit","-qm","Frozen historic review receipt")
+        base=self.git("rev-parse","HEAD").stdout.strip()
+        receipt.write_text('{"immutable":false}')
+        with self.assertRaisesRegex(ValueError,"was modified"):
+            verify_review_artifact_immutability(
+                base,self.repo,self.before,self.before)
+        receipt.write_text('{"immutable":true}')
+        invented=self.repo/"data/review-reports"/"2026-09-27.md"
+        invented.parent.mkdir()
+        invented.write_text("Backdated report was not in original checkout")
+        with self.assertRaisesRegex(ValueError,"Historical review artifacts"):
+            verify_review_artifact_immutability(
+                base,self.repo,self.before,self.before)
+        invented.unlink()
+        upcoming=self.repo/"data/review-reports"/(self.date+".md")
+        upcoming.write_text("Newly reviewed prospective report")
+        self.assertIn("match Git baseline",
+                      verify_review_artifact_immutability(
+                          base,self.repo,self.before,self.after))
+        with self.assertRaisesRegex(ValueError,"Historical review artifacts"):
+            verify_review_artifact_immutability(
+                base,self.repo,self.before,self.before)
+
     def test_unchanged_history_requires_no_new_review(self):
         (self.repo/"data/history.json").write_text(
             json.dumps(self.before,ensure_ascii=False,indent=2)+"\n",
