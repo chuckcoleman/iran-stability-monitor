@@ -299,6 +299,58 @@ def v4_required_interpretation_issues(packet, role, source_reviews,
                 "location": "closed_source_evidence",
                 "reason": role + " reviewer cannot approve a packet they "
                           "themselves judged insufficient for inference"})
+    if review_version == 5:
+        # Exact source-by-source reviews are independently checked by
+        # validate_source_review(). This separate reviewer-authored matrix
+        # certifies only the audit's completeness and acknowledged limits,
+        # NEVER factual truth or forecast adequacy.
+        audit = (review_response.get("audit_integrity_review")
+                 if isinstance(review_response, dict) else None)
+        expected_categories = sorted(row["category"]
+                                     for row in packet.get("coverage", []))
+        expected_sources = packet.get("source_quality_audit", {}).get("sources", [])
+        valid = (isinstance(audit, dict)
+                 and audit.get("audit_status") in (
+                     "complete_with_disclosed_limitations", "incomplete")
+                 and type(audit.get("source_count")) is int
+                 and audit["source_count"] == len(expected_sources)
+                 and audit.get("coverage_categories") == expected_categories
+                 and len(expected_categories) == 6
+                 and len(set(expected_categories)) == 6
+                 and audit.get("research_as_of") == packet.get("research_as_of")
+                 and audit.get("metadata_access_scope") ==
+                     "metadata_only_not_full_article"
+                 and audit.get("first_publication_verified") is False
+                 and audit.get("historical_context_is_current_evidence") is False
+                 and audit.get("post_snapshot_search") == "NOT_SEARCHED"
+                 and isinstance(audit.get("assessment"), str)
+                 and len(audit["assessment"].strip()) >= 80
+                 and isinstance(audit.get("limitations"), str)
+                 and len(audit["limitations"].strip()) >= 80)
+        if not valid:
+            issues.append({
+                "type": "v8_source_audit_completeness_not_independently_reviewed",
+                "location": "six_category_original_source_audit",
+                "reason": role + " reviewer must separately check six-category "
+                          "search completeness, all original URLs, metadata-only "
+                          "access, first-publication claims, historical context "
+                          "and post-snapshot search limits"})
+        elif audit["audit_status"] == "incomplete":
+            if review_response.get("approved") is not False:
+                issues.append({
+                    "type": "v8_incomplete_audit_cannot_be_approved",
+                    "location": "six_category_original_source_audit",
+                    "reason": role + " reviewer judged the source audit "
+                              "incomplete but also claimed overall approval"})
+        elif any(item.get("type") != "insufficient_for_inference"
+                 or item.get("location") != "source_adequacy_review"
+                 for item in review_response.get("issues", [])):
+            issues.append({
+                "type": "v8_audit_complete_claim_conflicts_with_review_objections",
+                "location": "six_category_original_source_audit",
+                "reason": role + " reviewer claimed a complete source audit "
+                          "while reporting unresolved provenance, access, "
+                          "source-quality or other non-inferential objections"})
     for decision in packet.get("pre_review_claim_decisions", []):
         if decision.get("id") not in active:
             continue
