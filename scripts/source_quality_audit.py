@@ -212,15 +212,16 @@ def _review_tracking_alias(original, canonical):
         return False
 
 
-def validate_source_review(decision, quality, role, *, return_aliases=False):
+def validate_source_review(decision, quality, role, *, return_aliases=False,
+                           record_rejected_conflicts=False):
     """Require an explicit substantive review of EVERY canonical source.
 
-    A completed reviewer may mention a source again with tracking-only query
-    parameters. Recognize that row as a *redundant alias*, never a new source,
-    provided the exact canonical source also has a separate review with the
-    same disposition. Keep both raw rows in the original response. All
-    missing, contradictory, content-changing or duplicate canonical reviews
-    still fail. The alias ledger is returned only when explicitly requested.
+    Extra tracking-only rows can never count as additional sources. Normally
+    conflicting quality dispositions fail immediately. V7 may separately
+    record a *completed and explicitly rejected* review's conflicting alias
+    as an unresolved source-credibility issue, not as a valid agreement or an
+    approval. Legacy/default callers remain strictly rejecting. Preserve
+    the original paid response and original model verdict unchanged.
     """
     urls = {row["url"] for row in quality["sources"]}
     reviews = (decision.get("source_reviews")
@@ -265,6 +266,14 @@ def validate_source_review(decision, quality, role, *, return_aliases=False):
     _check(set(canonical) == urls,
            role + " source reviews omit quality audit URLs")
     for row in aliases:
-        _check(row["disposition"] == canonical[row["canonical_url"]]["disposition"],
-               role + " tracking alias contradicts canonical source disposition")
+        canonical_disposition = canonical[row["canonical_url"]]["disposition"]
+        if row["disposition"] != canonical_disposition:
+            _check(record_rejected_conflicts is True
+                   and decision.get("approved") is False
+                   and isinstance(decision.get("issues"), list)
+                   and len(decision["issues"]) > 0,
+                   role + " tracking alias contradicts canonical source disposition")
+            row["canonical_disposition"] = canonical_disposition
+            row["conflict_status"] = (
+                "UNRESOLVED_REJECTED_REVIEW_SOURCE_DISPOSITION_CONFLICT")
     return aliases if return_aliases else True
