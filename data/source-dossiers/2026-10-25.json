@@ -1,0 +1,1698 @@
+{
+  "affirmative_source_review": {
+    "approved": true,
+    "audit_integrity_review": {
+      "assessment": "Affirmative: The six named categories and sixteen selected canonical original/context URLs have source-status inventories, explicit gaps, and two retained raw-body witnesses; claims from inaccessible and shell pages were excluded.",
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "limitations": "Search queries and publisher access were observed in ChatGPT or its tools, but not through an independently authenticated Responses API trace; page metadata and reporting chains remain provisional.",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "post_snapshot_search": "NOT_SEARCHED",
+      "research_as_of": "2026-10-25T14:46:33.304514+00:00",
+      "source_count": 16
+    },
+    "claim_reliability_reviews": [
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Other sources show some vessel commerce continues, which limits the geopolitical inference but does not contradict the IMO dated cumulative total.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No genuinely independent claim-matched original was admitted; Lloyd’s transit counts are a different denominator, not a factual match to the IMO incident tally.",
+        "direction_confidence": "qualified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261025-01",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "The issuer presents dated named-vessel incident rows, locations and a clearly limited cumulative confirmed count, sufficient for a qualified primary observation."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Traffic is below the preceding comparison week yet above the August average; neither a full reopening nor a uniform operational collapse follows.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "The IMO incident counts involve another population and must not be called independent confirmation of Lloyd’s precise 104/126 transit measurements.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261025-02",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "The specialist reporter defined consecutive comparison weeks and a selected non-Iranian-linked vessel group, but raw AIS inclusion methods are proprietary."
+      }
+    ],
+    "issues": [],
+    "promising_followup_reviews": [
+      {
+        "approved": true,
+        "assessment": "Affirmative review of IMO: The IMO itemized register and explicit 22 October closing date establish a factual cumulative confirmed-incident tally, not attribution to Iran. The frozen follow-up status ready_for_v10_source_review keeps the specified source limited to its original reporting chain.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "1a1f894748baeec13bf37ea6bc65ea2acae82149913a3dbec2b1899587c2c620",
+        "limitations": "The source remains subject to these documented boundaries: It is neither a vessel exposure denominator nor October-only attack count; completeness and later correction policy are not externally certified. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of LLOYDS: The publisher directly supplies two comparison weeks, direction totals and a non-Iranian-linked ship selection, so a narrow transit trend is admissible. The frozen follow-up status ready_for_v10_source_review keeps the specified source limited to its original reporting chain.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "5f9c9d3c00a0c071eedb607c6511a387c1c1acab89adfc367a408b4bdb8a78bf",
+        "limitations": "The source remains subject to these documented boundaries: Opaque AIS classification, 10,000-dwt cutoffs and selective Iran-linked exclusions prevent equating this count with all regional passages or full economic access. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of UK_R4: The British government original communiqué supports the existence of eight-country calls for dialogue and a future diplomatic process. The frozen follow-up status context_only keeps the specified source limited to its original reporting chain.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "eebdbd5f262b166e0a70cbdbfe17d52be93cf6d80dc5afc577e4bd27ad2a89a1",
+        "limitations": "The source remains subject to these documented boundaries: It provides no executed ceasefire, agreement on reopening, or verifiable Iranian or US implementation. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of TURKIYE_R4: This second official host provides contextual evidence that the ministers endorsed negotiations and de-escalation. The frozen follow-up status excluded keeps the specified source limited to its original reporting chain.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "596adae392db01d08d49df5fddae5f8ba36bafc8a4a6848317ea1d7837bff665",
+        "limitations": "The source remains subject to these documented boundaries: The directly captured ministry HTML did not expose an exact eligible passage to the project parser; it repeats joint signatory intent. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of YEMEN_SABA: The Yemeni government agency served as a relevant upstream lead for its transport ministry allegation about Aden. The frozen follow-up status excluded keeps the specified source limited to its original reporting chain.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "0011f8eb915d44e03a3f2a969c807ac826106caf04f35b1201a61cef4bc26866",
+        "limitations": "The source remains subject to these documented boundaries: HTTP 200 retrieved a shell without the original article paragraph, and the ministry itself is a conflict party. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.sabanew.net/story/en/154565",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of ANADOLU_YEMEN: Anadolu’s correspondent-heard explosions and separated ministerial allegations help trace the reporting origin. The frozen follow-up status context_only keeps the specified source limited to its original reporting chain.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "7f7cf5a4ba47da9a2f6f724f58055de8108749fa35b9e3dda90d59c57c1f582b",
+        "limitations": "The source remains subject to these documented boundaries: Hearing explosions does not independently establish missiles, targets or damage; it shares ministry content with wire coverage. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of GUARDIAN: The Guardian’s journalist reported ministers arguing against renewed Iran strikes, consistent with a governmental communiqué. The frozen follow-up status held_unverified keeps the specified source limited to its original reporting chain.",
+        "disposition": "held_unverified",
+        "issues": [],
+        "lead_sha256": "e95cadd21bb45c770dea266e92ff68d68647142fe096a16a9c794d485f07f096",
+        "limitations": "The source remains subject to these documented boundaries: An appeal to diplomacy is an observed statement of intent, not proof that negotiations succeeded or naval passage resumed. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of ALJAZEERA: The Al Jazeera page records contextual claims of escalating Houthi attacks and explicitly attributes Aden details to officials. The frozen follow-up status held_unverified keeps the specified source limited to its original reporting chain.",
+        "disposition": "held_unverified",
+        "issues": [],
+        "lead_sha256": "5e1f934588017a0e394b4f80fc9840fe99a4259acdacaa71d9121b965cc749d7",
+        "limitations": "The source remains subject to these documented boundaries: Byline includes AFP, and Yemeni government claims plus Houthi claims cannot confirm Saudi oil-facility hits. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of IRANINTL: Iran International sets out both an envoy’s conditional exchange proposal and objections described from IRGC-aligned media. The frozen follow-up status held_unverified keeps the specified source limited to its original reporting chain.",
+        "disposition": "held_unverified",
+        "issues": [],
+        "lead_sha256": "d2b6092e19c0b0d94d8dcf8c95395046fe7ae9474a1b4dcfed5c34958963317c",
+        "limitations": "The source remains subject to these documented boundaries: AP is an underlying reporting chain for the envoy, while US assent and an actual reopening were not observed. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.iranintl.com/en/202610252197",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of CTP: CTP/ISW identifies strategic risks and distinguishes Houthi claims from assessed future military threats. The frozen follow-up status context_only keeps the specified source limited to its original reporting chain.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "de4af72d7ecc5d03c92412926f77fc8407137a68893c697a5216b9fa5b1bbcba",
+        "limitations": "The source remains subject to these documented boundaries: Secondary intelligence reporting about undisclosed memos cannot independently prove Iranian plans or military readiness. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of CARNEGIE: The Carnegie event notice supplies competing expert incentives for protracted conflict and possible negotiation. The frozen follow-up status context_only keeps the specified source limited to its original reporting chain.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "87ddf40492090e5cf2f86e00c7b95a0b37f004bbefa89210a9ab446dfa339ba3",
+        "limitations": "The source remains subject to these documented boundaries: An analytical event description is not a newly measured indicator of elite defection, oil payments or Hanke inflation. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://carnegieendowment.org/events/2026/10/the-state-and-fate-of-americas-war-with-iran",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of UN_OCHA: The UN humanitarian page provides a defensible pointer to the September bulletin and reporting organization. The frozen follow-up status context_only keeps the specified source limited to its original reporting chain.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "fef950390d6f0a6c5e5af4f6dba5b00592dda3838fbac423e01e8ead7d350238",
+        "limitations": "The source remains subject to these documented boundaries: It does not expose the underlying PDF tables, October impacts or validated beneficiary populations for this snapshot. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://iran.un.org/en/324668-islamic-republic-iran-humanitarian-update-no-09-30-september-2026",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of IMF_WEO: The IMF page identifies current WEO data releases and explicitly announced temporary technical maintenance. The frozen follow-up status context_only keeps the specified source limited to its original reporting chain.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "48632434fc606e1da7e03dd3fd65b47519450b7f6d7f79518ba45c298b92dfcc",
+        "limitations": "The source remains subject to these documented boundaries: Country series were not extracted; do not infer Iranian FX levels, monthly inflation or payments failure from a portal notice. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://data.imf.org/datasets/WEO",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of REUTERS: The search stage identified a potentially relevant original reporting URL for the conflict. The frozen follow-up status excluded keeps the specified source limited to its original reporting chain.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "041bd364c363620f3dfd37f35f35e3a60bd0e47508263f9645c93653643613e0",
+        "limitations": "The source remains subject to these documented boundaries: Direct original HTTPS returned 401; search excerpts are not original-body bytes and cannot authenticate any quote. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of AP: An AP story was a plausible upstream original for the Iranian envoy’s statements carried by other outlets. The frozen follow-up status excluded keeps the specified source limited to its original reporting chain.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "96c79b204fa09fe6f01c5d81b0baa64717452c8194b255fffc34285f9565af67",
+        "limitations": "The source remains subject to these documented boundaries: Direct original HTTPS returned 403 and reprinted copies of AP are not independent confirmation. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative review of IAEA: The original agency news channel was actively checked for direct nuclear-safeguards reporting. The frozen follow-up status excluded keeps the specified source limited to its original reporting chain.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "db0f16b62fafa8f0764b306bc530e55ddd4f2427c1de6c89b76310e284a2e131",
+        "limitations": "The source remains subject to these documented boundaries: Direct HTTPS returned 403, so no verification of a current inspection or agency measurement is available. Independent originals and first-publication clocks are not implied.",
+        "source_url": "https://www.iaea.org/newscenter",
+        "triage": "excluded"
+      }
+    ],
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261025-01",
+        "E-20261025-02"
+      ],
+      "assessment": "The two original-body-backed maritime observations, combined with the unchanged October 18 historical evidence, permit only restrained forecasting inference about regional escalation and commerce. They do not certify new Iranian currency, sanctions-payment, nuclear or humanitarian events. Forecasting may continue only if every unsupported metric remains explicitly unverified, prior records are immutable, and all subsequent full-report gates actually pass.",
+      "conclusion": "supported_limited_inference",
+      "limitations": "Both authentic publishers lack independently authenticated first-release times and independent claim-matched confirmers; stronger interpretations of other lead sources were held. Empty macroeconomic fields must not be disguised as negative signals.",
+      "observation_count": 2
+    },
+    "source_query_balance_review": {
+      "ambiguous_queries": [],
+      "assessment": "Affirmative: The IMO original-incident search raised conflict-risk indicators, while the Istanbul R4 original-communiqué search investigated negotiating pathways; both were conducted before the documented cutoff.",
+      "lowers_queries": [
+        "site:mfa.gov.tr joint statement Istanbul 23 October 2026 Pakistan Iran dialogue support Islamabad MoU"
+      ],
+      "raises_queries": [
+        "site:imo.org Middle East highlighted confirmed incidents 120 October 22 methods incident classifications"
+      ]
+    },
+    "source_reviews": [
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The IMO itemized register and explicit 22 October closing date establish a factual cumulative confirmed-incident tally, not attribution to Iran. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The publisher directly supplies two comparison weeks, direction totals and a non-Iranian-linked ship selection, so a narrow transit trend is admissible. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The British government original communiqué supports the existence of eight-country calls for dialogue and a future diplomatic process. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: This second official host provides contextual evidence that the ministers endorsed negotiations and de-escalation. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The Yemeni government agency served as a relevant upstream lead for its transport ministry allegation about Aden. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.sabanew.net/story/en/154565"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: Anadolu’s correspondent-heard explosions and separated ministerial allegations help trace the reporting origin. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The Guardian’s journalist reported ministers arguing against renewed Iran strikes, consistent with a governmental communiqué. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The Al Jazeera page records contextual claims of escalating Houthi attacks and explicitly attributes Aden details to officials. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: Iran International sets out both an envoy’s conditional exchange proposal and objections described from IRGC-aligned media. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iranintl.com/en/202610252197"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: CTP/ISW identifies strategic risks and distinguishes Houthi claims from assessed future military threats. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The Carnegie event notice supplies competing expert incentives for protracted conflict and possible negotiation. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://carnegieendowment.org/events/2026/10/the-state-and-fate-of-americas-war-with-iran"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The UN humanitarian page provides a defensible pointer to the September bulletin and reporting organization. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://iran.un.org/en/324668-islamic-republic-iran-humanitarian-update-no-09-30-september-2026"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The IMF page identifies current WEO data releases and explicitly announced temporary technical maintenance. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://data.imf.org/datasets/WEO"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The search stage identified a potentially relevant original reporting URL for the conflict. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: An AP story was a plausible upstream original for the Iranian envoy’s statements carried by other outlets. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22"
+      },
+      {
+        "access_stage_assessment": "Compared search-stage link discovery, direct HTTP metadata, and eligible raw-body availability independently; original capture is admitted only for the exact two witnessed claims.",
+        "assessment": "Affirmative perspective: The original agency news channel was actively checked for direct nuclear-safeguards reporting. Status is restricted to the audit’s qualified disposition.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iaea.org/newscenter"
+      }
+    ]
+  },
+  "baseline_sha256": "8f09b73c44bdf909aa402dc93a2b8684d924a76a99839105e7817b519fc019c2",
+  "candidate_sha256": "a46462c339421891be1992eef5da3ab40930c2683ec8f8cdc9af57742f3015ef",
+  "claim_reliability": [
+    {
+      "affirmative_original_grade": "Medium-high",
+      "critical_original_grade": "Medium-high",
+      "evidence_id": "E-20261025-01",
+      "factual_reliability": "Medium-high",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "evidence_id": "E-20261025-02",
+      "factual_reliability": "Medium",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "unverified"
+    }
+  ],
+  "coverage": [
+    {
+      "category": "primary_data",
+      "limitations": "The IMO original cumulative register was usable; the UK communiqué is a governmental appeal. Türkiye and Yemeni press portals returned page shells under the exact-body parser; IAEA HTTP returned 403.",
+      "original_urls": [
+        "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul",
+        "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa",
+        "https://www.sabanew.net/story/en/154565",
+        "https://www.iaea.org/newscenter"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:imo.org Middle East highlighted confirmed incidents 120 October 22 methods incident classifications",
+        "site:mfa.gov.tr joint statement Istanbul 23 October 2026 Pakistan Iran dialogue support Islamabad MoU",
+        "Yemen transportation ministry October 24 2026 Aden airport two Houthi ballistic missiles government statement",
+        "site:iaea.org Iran October 2026 inspections agency Grossi safeguards Oct 2026"
+      ]
+    },
+    {
+      "category": "international_media",
+      "limitations": "Guardian original reporting was inspected; Al Jazeera includes AFP attribution; direct Reuters 401 and AP 403. Their syndications do not constitute independent confirmation.",
+      "original_urls": [
+        "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel",
+        "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden",
+        "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22",
+        "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "2026 October 24 25 Iran United States negotiations envoy Pakistan Qatar blockade ceasefire original",
+        "2026 October 23 Istanbul eight foreign ministers Iran diplomacy caution strikes government announcement stabilizing",
+        "Saudi defense ministry October 24 2026 Houthi three airports pipeline claims confirmed intercepted missiles actual targets"
+      ]
+    },
+    {
+      "category": "regional_multilingual_media",
+      "limitations": "Regional sources were reviewed in English or translated summaries; Persian/Arabic original audio or transcripts were not authenticated. Anadolu independently heard explosions but not missile attribution.",
+      "original_urls": [
+        "https://www.iranintl.com/en/202610252197",
+        "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden",
+        "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652",
+        "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa",
+        "https://www.sabanew.net/story/en/154565"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:iranintl.com/en/202610252197 Iran offer Hormuz blockade IRGC denial",
+        "Yemen transportation ministry October 24 2026 Aden airport two Houthi ballistic missiles government statement",
+        "2026 October 24 25 Persian Arabic Gulf media Iran protests security regime attacks shipping Arabic Persian reports"
+      ]
+    },
+    {
+      "category": "specialist_investigative",
+      "limitations": "Lloyd defines 10,000 dwt cargo-carrying non-Iranian-linked ships; IMO confirmed incidents cover broader geography and time. The denominators cannot be combined into an attack frequency.",
+      "original_urls": [
+        "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+        "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026 \"104\" \"28\" \"31%\"",
+        "site:windward.ai October 2026 Hormuz non Iranian linked transits October traffic sanctions counting caveat",
+        "site:imo.org Middle East highlighted confirmed incidents 120 October 22 methods incident classifications"
+      ]
+    },
+    {
+      "category": "think_tanks",
+      "limitations": "Critical Threats and Carnegie are analyses rather than claim-matched primary confirmation. Intelligence memo claims and strategic judgments were not independently authenticated.",
+      "original_urls": [
+        "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf",
+        "https://carnegieendowment.org/events/2026/10/the-state-and-fate-of-americas-war-with-iran"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:criticalthreats.org/analysis/iran-update-october-24-2026 Houthis claims corroboration source links",
+        "2026 October 23 Istanbul eight foreign ministers Iran diplomacy caution strikes government announcement stabilizing",
+        "2026 October Iran Hormuz attacks shipping Chinese oil credit satellite investigation Windward Lloyd's expert"
+      ]
+    },
+    {
+      "category": "economic_humanitarian_academic",
+      "limitations": "The IMF portal displayed an outage warning; UN landing page identified an older September bulletin, not the PDF numerical tables. No current Hanke inflation, rial rate or two-category payment disruption was verified.",
+      "original_urls": [
+        "https://iran.un.org/en/324668-islamic-republic-iran-humanitarian-update-no-09-30-september-2026",
+        "https://data.imf.org/datasets/WEO"
+      ],
+      "outcome": "inaccessible_or_incomplete",
+      "queries": [
+        "2026 October Iran currency rial inflation IMF World Bank humanitarian health medicine food prices",
+        "site:reliefweb.int Iran humanitarian update October 2026 medicine food shortages OCHA",
+        "site:imf.org October 2026 Iran growth 2026 7.6 percent contraction Iran WEO data"
+      ]
+    }
+  ],
+  "critical_source_review": {
+    "approved": true,
+    "audit_integrity_review": {
+      "assessment": "Critical: The inventory covers exactly the six declared categories while acknowledging no external authentication of first-release clocks, no exhaustive search, no recorded response-API trace and no proof of original content beyond two preserved byte checks.",
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "limitations": "Search queries and publisher access were observed in ChatGPT or its tools, but not through an independently authenticated Responses API trace; page metadata and reporting chains remain provisional.",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "post_snapshot_search": "NOT_SEARCHED",
+      "research_as_of": "2026-10-25T14:46:33.304514+00:00",
+      "source_count": 16
+    },
+    "claim_reliability_reviews": [
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Adversarial finding: Other sources show some vessel commerce continues, which limits the geopolitical inference but does not contradict the IMO dated cumulative total. The direction remains a separate conservative judgment.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "Critical challenge: No genuinely independent claim-matched original was admitted; Lloyd’s transit counts are a different denominator, not a factual match to the IMO incident tally. No wire-chain aliases count as corroborators.",
+        "direction_confidence": "qualified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261025-01",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "Critical assessment: The issuer presents dated named-vessel incident rows, locations and a clearly limited cumulative confirmed count, sufficient for a qualified primary observation. The grade is capped by method transparency and source scope, not by the publisher’s reputation."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Adversarial finding: Traffic is below the preceding comparison week yet above the August average; neither a full reopening nor a uniform operational collapse follows. The direction remains a separate conservative judgment.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "Critical challenge: The IMO incident counts involve another population and must not be called independent confirmation of Lloyd’s precise 104/126 transit measurements. No wire-chain aliases count as corroborators.",
+        "direction_confidence": "unverified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261025-02",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "Critical assessment: The specialist reporter defined consecutive comparison weeks and a selected non-Iranian-linked vessel group, but raw AIS inclusion methods are proprietary. The grade is capped by method transparency and source scope, not by the publisher’s reputation."
+      }
+    ],
+    "issues": [],
+    "promising_followup_reviews": [
+      {
+        "approved": true,
+        "assessment": "Critical review of IMO: It is neither a vessel exposure denominator nor October-only attack count; completeness and later correction policy are not externally certified. I checked that the recorded ready_for_v10_source_review excludes any disputed or untraceable event claim.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "1a1f894748baeec13bf37ea6bc65ea2acae82149913a3dbec2b1899587c2c620",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The IMO itemized register and explicit 22 October closing date establish a factual cumulative confirmed-incident tally, not attribution to Iran. No chain-count inflation is allowed.",
+        "source_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of LLOYDS: Opaque AIS classification, 10,000-dwt cutoffs and selective Iran-linked exclusions prevent equating this count with all regional passages or full economic access. I checked that the recorded ready_for_v10_source_review excludes any disputed or untraceable event claim.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "5f9c9d3c00a0c071eedb607c6511a387c1c1acab89adfc367a408b4bdb8a78bf",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The publisher directly supplies two comparison weeks, direction totals and a non-Iranian-linked ship selection, so a narrow transit trend is admissible. No chain-count inflation is allowed.",
+        "source_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of UK_R4: It provides no executed ceasefire, agreement on reopening, or verifiable Iranian or US implementation. I checked that the recorded context_only excludes any disputed or untraceable event claim.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "eebdbd5f262b166e0a70cbdbfe17d52be93cf6d80dc5afc577e4bd27ad2a89a1",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The British government original communiqué supports the existence of eight-country calls for dialogue and a future diplomatic process. No chain-count inflation is allowed.",
+        "source_url": "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of TURKIYE_R4: The directly captured ministry HTML did not expose an exact eligible passage to the project parser; it repeats joint signatory intent. I checked that the recorded excluded excludes any disputed or untraceable event claim.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "596adae392db01d08d49df5fddae5f8ba36bafc8a4a6848317ea1d7837bff665",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: This second official host provides contextual evidence that the ministers endorsed negotiations and de-escalation. No chain-count inflation is allowed.",
+        "source_url": "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of YEMEN_SABA: HTTP 200 retrieved a shell without the original article paragraph, and the ministry itself is a conflict party. I checked that the recorded excluded excludes any disputed or untraceable event claim.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "0011f8eb915d44e03a3f2a969c807ac826106caf04f35b1201a61cef4bc26866",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The Yemeni government agency served as a relevant upstream lead for its transport ministry allegation about Aden. No chain-count inflation is allowed.",
+        "source_url": "https://www.sabanew.net/story/en/154565",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of ANADOLU_YEMEN: Hearing explosions does not independently establish missiles, targets or damage; it shares ministry content with wire coverage. I checked that the recorded context_only excludes any disputed or untraceable event claim.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "7f7cf5a4ba47da9a2f6f724f58055de8108749fa35b9e3dda90d59c57c1f582b",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: Anadolu’s correspondent-heard explosions and separated ministerial allegations help trace the reporting origin. No chain-count inflation is allowed.",
+        "source_url": "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of GUARDIAN: An appeal to diplomacy is an observed statement of intent, not proof that negotiations succeeded or naval passage resumed. I checked that the recorded held_unverified excludes any disputed or untraceable event claim.",
+        "disposition": "held_unverified",
+        "issues": [],
+        "lead_sha256": "e95cadd21bb45c770dea266e92ff68d68647142fe096a16a9c794d485f07f096",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The Guardian’s journalist reported ministers arguing against renewed Iran strikes, consistent with a governmental communiqué. No chain-count inflation is allowed.",
+        "source_url": "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of ALJAZEERA: Byline includes AFP, and Yemeni government claims plus Houthi claims cannot confirm Saudi oil-facility hits. I checked that the recorded held_unverified excludes any disputed or untraceable event claim.",
+        "disposition": "held_unverified",
+        "issues": [],
+        "lead_sha256": "5e1f934588017a0e394b4f80fc9840fe99a4259acdacaa71d9121b965cc749d7",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The Al Jazeera page records contextual claims of escalating Houthi attacks and explicitly attributes Aden details to officials. No chain-count inflation is allowed.",
+        "source_url": "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of IRANINTL: AP is an underlying reporting chain for the envoy, while US assent and an actual reopening were not observed. I checked that the recorded held_unverified excludes any disputed or untraceable event claim.",
+        "disposition": "held_unverified",
+        "issues": [],
+        "lead_sha256": "d2b6092e19c0b0d94d8dcf8c95395046fe7ae9474a1b4dcfed5c34958963317c",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: Iran International sets out both an envoy’s conditional exchange proposal and objections described from IRGC-aligned media. No chain-count inflation is allowed.",
+        "source_url": "https://www.iranintl.com/en/202610252197",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of CTP: Secondary intelligence reporting about undisclosed memos cannot independently prove Iranian plans or military readiness. I checked that the recorded context_only excludes any disputed or untraceable event claim.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "de4af72d7ecc5d03c92412926f77fc8407137a68893c697a5216b9fa5b1bbcba",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: CTP/ISW identifies strategic risks and distinguishes Houthi claims from assessed future military threats. No chain-count inflation is allowed.",
+        "source_url": "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of CARNEGIE: An analytical event description is not a newly measured indicator of elite defection, oil payments or Hanke inflation. I checked that the recorded context_only excludes any disputed or untraceable event claim.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "87ddf40492090e5cf2f86e00c7b95a0b37f004bbefa89210a9ab446dfa339ba3",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The Carnegie event notice supplies competing expert incentives for protracted conflict and possible negotiation. No chain-count inflation is allowed.",
+        "source_url": "https://carnegieendowment.org/events/2026/10/the-state-and-fate-of-americas-war-with-iran",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of UN_OCHA: It does not expose the underlying PDF tables, October impacts or validated beneficiary populations for this snapshot. I checked that the recorded context_only excludes any disputed or untraceable event claim.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "fef950390d6f0a6c5e5af4f6dba5b00592dda3838fbac423e01e8ead7d350238",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The UN humanitarian page provides a defensible pointer to the September bulletin and reporting organization. No chain-count inflation is allowed.",
+        "source_url": "https://iran.un.org/en/324668-islamic-republic-iran-humanitarian-update-no-09-30-september-2026",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of IMF_WEO: Country series were not extracted; do not infer Iranian FX levels, monthly inflation or payments failure from a portal notice. I checked that the recorded context_only excludes any disputed or untraceable event claim.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "48632434fc606e1da7e03dd3fd65b47519450b7f6d7f79518ba45c298b92dfcc",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The IMF page identifies current WEO data releases and explicitly announced temporary technical maintenance. No chain-count inflation is allowed.",
+        "source_url": "https://data.imf.org/datasets/WEO",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of REUTERS: Direct original HTTPS returned 401; search excerpts are not original-body bytes and cannot authenticate any quote. I checked that the recorded excluded excludes any disputed or untraceable event claim.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "041bd364c363620f3dfd37f35f35e3a60bd0e47508263f9645c93653643613e0",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The search stage identified a potentially relevant original reporting URL for the conflict. No chain-count inflation is allowed.",
+        "source_url": "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of AP: Direct original HTTPS returned 403 and reprinted copies of AP are not independent confirmation. I checked that the recorded excluded excludes any disputed or untraceable event claim.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "96c79b204fa09fe6f01c5d81b0baa64717452c8194b255fffc34285f9565af67",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: An AP story was a plausible upstream original for the Iranian envoy’s statements carried by other outlets. No chain-count inflation is allowed.",
+        "source_url": "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22",
+        "triage": "excluded"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical review of IAEA: Direct HTTPS returned 403, so no verification of a current inspection or agency measurement is available. I checked that the recorded excluded excludes any disputed or untraceable event claim.",
+        "disposition": "excluded",
+        "issues": [],
+        "lead_sha256": "db0f16b62fafa8f0764b306bc530e55ddd4f2427c1de6c89b76310e284a2e131",
+        "limitations": "Even where a publisher was reachable, source reputation alone cannot cure weak coverage: The original agency news channel was actively checked for direct nuclear-safeguards reporting. No chain-count inflation is allowed.",
+        "source_url": "https://www.iaea.org/newscenter",
+        "triage": "excluded"
+      }
+    ],
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261025-01",
+        "E-20261025-02"
+      ],
+      "assessment": "Only two fresh quantitative maritime claims are defensible. Although that is not a forbidden numerical quota and the historical record retains older economic evidence, all four forecasts would have to be reported as limited judgments with broad uncertainty. No newly observed regime collapse, 25 percent 30-day rial depreciation, or two-essential-category payment failure is supported. This narrow approval cannot license any missing report, model review or publication check.",
+      "conclusion": "supported_limited_inference",
+      "limitations": "This does not authorize a comprehensive 15-section October 25 assessment on two maritime observations alone: full contextual fields, historical carried evidence, revision math and warning/status consistency need their own completed prepublication reviews.",
+      "observation_count": 2
+    },
+    "source_query_balance_review": {
+      "ambiguous_queries": [],
+      "assessment": "Critical: Incident escalation and governmental diplomacy were searched separately, but the signal remains mixed and missing monetary sources may not be scored as evidence of stabilization.",
+      "lowers_queries": [
+        "site:mfa.gov.tr joint statement Istanbul 23 October 2026 Pakistan Iran dialogue support Islamabad MoU"
+      ],
+      "raises_queries": [
+        "site:imo.org Middle East highlighted confirmed incidents 120 October 22 methods incident classifications"
+      ]
+    },
+    "source_reviews": [
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: It is neither a vessel exposure denominator nor October-only attack count; completeness and later correction policy are not externally certified. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Opaque AIS classification, 10,000-dwt cutoffs and selective Iran-linked exclusions prevent equating this count with all regional passages or full economic access. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: It provides no executed ceasefire, agreement on reopening, or verifiable Iranian or US implementation. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: The directly captured ministry HTML did not expose an exact eligible passage to the project parser; it repeats joint signatory intent. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: HTTP 200 retrieved a shell without the original article paragraph, and the ministry itself is a conflict party. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.sabanew.net/story/en/154565"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Hearing explosions does not independently establish missiles, targets or damage; it shares ministry content with wire coverage. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: An appeal to diplomacy is an observed statement of intent, not proof that negotiations succeeded or naval passage resumed. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Byline includes AFP, and Yemeni government claims plus Houthi claims cannot confirm Saudi oil-facility hits. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: AP is an underlying reporting chain for the envoy, while US assent and an actual reopening were not observed. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iranintl.com/en/202610252197"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Secondary intelligence reporting about undisclosed memos cannot independently prove Iranian plans or military readiness. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: An analytical event description is not a newly measured indicator of elite defection, oil payments or Hanke inflation. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://carnegieendowment.org/events/2026/10/the-state-and-fate-of-americas-war-with-iran"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: It does not expose the underlying PDF tables, October impacts or validated beneficiary populations for this snapshot. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://iran.un.org/en/324668-islamic-republic-iran-humanitarian-update-no-09-30-september-2026"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Country series were not extracted; do not infer Iranian FX levels, monthly inflation or payments failure from a portal notice. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://data.imf.org/datasets/WEO"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Direct original HTTPS returned 401; search excerpts are not original-body bytes and cannot authenticate any quote. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Direct original HTTPS returned 403 and reprinted copies of AP are not independent confirmation. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22"
+      },
+      {
+        "access_stage_assessment": "Challenged the direct HTTP status separately from search visibility and inspected the original-body witness boundary; blocked or shell pages cannot be silently upgraded.",
+        "assessment": "Critical perspective: Direct HTTPS returned 403, so no verification of a current inspection or agency measurement is available. The recorded qualified or contextual disposition is the highest defensible one.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iaea.org/newscenter"
+      }
+    ]
+  },
+  "mode": "chatgpt_first_no_api",
+  "post_snapshot_interval": "NOT_SEARCHED",
+  "preforecast_certificate": {
+    "affirmative_source_review_sha256": "932f5945da0f835d1f4c8f7de081d51b2cee27d71fb9c295d5451610155fc8a2",
+    "baseline_sha256": "8f09b73c44bdf909aa402dc93a2b8684d924a76a99839105e7817b519fc019c2",
+    "claim_reliability_sha256": "071561749bedaf4ebb0f7823ce9e8c58b334865e0c6a9a3fb5af12c1fa0ab796",
+    "critical_source_review_sha256": "0008307dc5fd4daf0aa8ab379afd185819efc166a2471717426e3d14f8a7eb45",
+    "research_as_of": "2026-10-25T14:46:33.304514+00:00",
+    "source_packet_sha256": "fa0f468896720369d501e621a383f0d60c167d968e6d232bbad1b2c3d702a073",
+    "source_review_completed_at": "2026-10-25T11:22:43-04:00",
+    "status": "DUAL_SOURCE_REVIEW_CLEAN_LIMITED_INFERENCE",
+    "version": 1
+  },
+  "provenance_limitations": "Actual six-category research and publisher retrieval was conducted through the connected browser and recorded before the 2026-10-25 14:46:33Z cutoff. Publisher first-release clocks cannot be independently authenticated, direct Reuters/AP/IAEA endpoints failed, and official Yemen/Turkish sites returned page shells. Two source reviews were successive affirmative and critical perspectives from ONE ChatGPT conversation, NOT two independent model invocations. Two original-body witnesses survived byte-hash verification, but this report does not assert that external publisher authenticity or truth is proved by local hashes. No post-cutoff material has been added to the research snapshot; full current-main validator, final editorial approvals, owner merge and public deployment remain untested.",
+  "research_as_of": "2026-10-25T14:46:33.304514+00:00",
+  "research_provenance": "CHATGPT_RESEARCH_REPORTED_NOT_API_WEB_SEARCH_TRACE",
+  "source_review_completed_at": "2026-10-25T11:22:43-04:00",
+  "source_review_packet": {
+    "evidence": [
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Maritime / regional economic security",
+        "date": "2026-10-25",
+        "direction": "raises",
+        "event_date": "2026-10-22",
+        "evidence_status": "new",
+        "id": "E-20261025-01",
+        "impact_magnitude": "moderate",
+        "observation": "The IMO listed 120 highlighted confirmed maritime incidents in the Strait of Hormuz and wider Middle East cumulatively as of October 22, not 120 in October alone.",
+        "publisher": "International Maritime Organization",
+        "reliability": "Medium",
+        "source": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "source_publication_status": "date_only_not_independently_authenticated",
+        "source_title": "Middle East - Highlighted (Confirmed) incidents"
+      },
+      {
+        "affects": [
+          "regional_escalation_90d",
+          "external_payments_crisis_12m"
+        ],
+        "category": "Maritime / regional economic security",
+        "date": "2026-10-25",
+        "direction": "ambiguous",
+        "event_date": "2026-10-11",
+        "evidence_status": "new",
+        "id": "E-20261025-02",
+        "impact_magnitude": "moderate",
+        "observation": "Lloyd’s List counted 104 non-Iranian-linked transits through Hormuz in October 5–11 versus 126 in September 28–October 4, a 17% weekly decline, although this cohort remained 31% above the August weekly average.",
+        "publisher": "Lloyd's List Intelligence",
+        "reliability": "Medium",
+        "source": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+        "source_publication_status": "date_only_not_independently_authenticated",
+        "source_title": "Strait of Hormuz Brief: 22 October, 2026"
+      }
+    ],
+    "pre_review_admission_version": 7,
+    "pre_review_claim_decisions": [
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+          "original_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+          "passage": "Number of confirmed incidents as at 22 October 2026: 120",
+          "passage_offset": 79,
+          "retrieved_at": "2026-10-25T14:20:08.168741+00:00",
+          "source_body_sha256": "1ee12c9e29ae8301a874314848e48c1694447070ca1a77ac6a83aba89277fb37",
+          "visible_text_sha256": "7c2b086f5c4f22b6aeb95fcc7aefac225a0d41521b94a3ec220ec8a44055c0f5"
+        },
+        "capture_verification_sha256": "c9fbc7dba67f8524fbc2a0029dc3160a46b31ae53f6b9d5d2d76f9fdd75bb456",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261025-01",
+        "original_passage": "Number of confirmed incidents as at 22 October 2026: 120",
+        "original_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "1ee12c9e29ae8301a874314848e48c1694447070ca1a77ac6a83aba89277fb37"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+          "original_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+          "passage": "Total transits: 104 vs 126 (28 September – 4 October)",
+          "passage_offset": 129,
+          "retrieved_at": "2026-10-25T14:20:00.385194+00:00",
+          "source_body_sha256": "902228ac45a503ee9d0c0d3be1447e231292e75bf58308d0608b8d4673996e39",
+          "visible_text_sha256": "29344dbf38b7af0065561d01726ebc6b6152e9fb578bf5e322705455d9944d70"
+        },
+        "capture_verification_sha256": "4dee47b564576020838fde108b54acea8cf62f948c1e94450da983798c66d120",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261025-02",
+        "original_passage": "Total transits: 104 vs 126 (28 September – 4 October)",
+        "original_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "902228ac45a503ee9d0c0d3be1447e231292e75bf58308d0608b8d4673996e39"
+      }
+    ],
+    "promising_evidence_followup": {
+      "leads": [
+        {
+          "admitted_evidence_ids": [
+            "E-20261025-01"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+              "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026"
+            ],
+            "contrary_source_urls": [
+              "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026"
+            ],
+            "counter_queries": [
+              "site:windward.ai October 2026 Hormuz non Iranian linked transits October traffic sanctions counting caveat"
+            ],
+            "counterevidence_findings": "Lloyd’s independent measure shows maritime traffic remains active; differing incident and passage populations cannot yield a ship attack frequency.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "First-publication moment and full incident inclusion criteria were not independently verified; cumulative geographic scope is wider than the strait. The performed_at timestamp marks completion of this bounded follow-up by the actual logged cutoff, not the time of an individual query.",
+            "performed_at": "2026-10-25T14:46:33.304514+00:00",
+            "reporting_chain": "IMO directly publishes an itemized primary highlighted-incident register; its tally is not a new-wire synthesis or statement from Iran.",
+            "scope": {
+              "geography": "Strait of Hormuz and surrounding Middle East maritime waters",
+              "method_and_inclusions": "Reported confirmed incident register and ship/location descriptions; not all attacks uniquely caused by Iran",
+              "population_or_denominator": "Confirmed highlighted ship incidents; no count of all vessel passages as denominator",
+              "time_window": "Highlighted confirmed incident ledger cumulative through October 22 2026"
+            },
+            "supporting_findings": "Original HTML and the precise original incident-tally passage were locally preserved and matched with byte-level hashes before cutoff.",
+            "upstream_queries": [
+              "site:imo.org Middle East highlighted confirmed incidents 120 October 22 methods incident classifications"
+            ],
+            "upstream_source_urls": [
+              "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17"
+            ]
+          },
+          "priority": "high",
+          "relevance": "IMO original register gives a date-bounded cumulative count of highlighted confirmed incidents, including vessel names and locations. Not an October-only tally, attack denominator, proof of Iran attribution, or a controlled full-population incidence rate.",
+          "source_url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261025-02"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+              "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+              "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+            ],
+            "contrary_source_urls": [
+              "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17"
+            ],
+            "counter_queries": [
+              "site:imo.org Middle East highlighted confirmed incidents 120 October 22 methods incident classifications"
+            ],
+            "counterevidence_findings": "The 17 percent week-on-week fall and IMO’s numerous confirmed incidents challenge any interpretation that continued traffic means Hormuz is safe.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "Detailed AIS detection rules, shadow fleet ownership and completeness were not externally audited; counts cannot support import-payment conclusions. The performed_at timestamp marks completion of this bounded follow-up by the actual logged cutoff, not the time of an individual query.",
+            "performed_at": "2026-10-25T14:46:33.304514+00:00",
+            "reporting_chain": "Original Lloyd’s List Intelligence analyst team provides the transit monitoring numbers directly, with the source method and limits described.",
+            "scope": {
+              "geography": "Cargo vessel movements through the Strait of Hormuz",
+              "method_and_inclusions": "Proprietary AIS/market intelligence selection; not all ship types, tankers or Iranian-linked voyages",
+              "population_or_denominator": "Non-Iranian-linked cargo-carrying ships above 10,000 dwt as selected by Lloyd’s owner/sanctions criteria",
+              "time_window": "October 5–11 versus September 28–October 4 2026, compared also with an August weekly baseline"
+            },
+            "supporting_findings": "Original publisher-body passage confirms 104 versus 126, and the same article reports 31 percent above the August weekly average.",
+            "upstream_queries": [
+              "site:lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026 \"104\" \"28\" \"31%\""
+            ],
+            "upstream_source_urls": [
+              "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026"
+            ]
+          },
+          "priority": "high",
+          "relevance": "Lloyd original intelligence team reports two week-specific non-Iranian-linked transit totals and 31% above the August average. Commercial-proprietary methods and ship cohort differ from IMO; neither vessel activity nor AIS observations imply safety or restored payments.",
+          "source_url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "British government communiqué documents the eight-minister meeting and endorsement of dialogue and de-escalation. Signed diplomatic language is advocacy, not an implemented ceasefire, and republications by the same signatories are not independent.",
+          "source_url": "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Turkish foreign-ministry official communiqué is the upstream policy statement for the Istanbul meeting. The direct HTML exposed no visible paragraphs under the repository parser; do not cite it as a raw original-body witness.",
+          "source_url": "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa",
+          "triage": "excluded"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Yemeni government agency article was located as the alleged transport-ministry upstream statement on Aden airport. The direct HTML returned only navigation/shell text despite HTTP 200, so no original-body claim or impact was admitted.",
+          "source_url": "https://www.sabanew.net/story/en/154565",
+          "triage": "excluded"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Anadolu described Yemeni official missile allegations and correspondent-heard explosions in Aden. No independent ballistic identification, verified launch position or damage assessment was obtained from that report.",
+          "source_url": "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": {
+            "checked_urls": [
+              "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel",
+              "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul",
+              "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa",
+              "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+            ],
+            "contrary_source_urls": [
+              "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+            ],
+            "counter_queries": [
+              "site:criticalthreats.org/analysis/iran-update-october-24-2026 Houthis claims corroboration source links"
+            ],
+            "counterevidence_findings": "The CTP risk assessment and persistent maritime incidents show no completed ceasefire; urging diplomacy cannot be equated with stopping attacks.",
+            "disposition": "held_unverified",
+            "limitations": "No authentic agreement signed by Iran and the US or demonstrated free shipping; held as contextual stabilizing diplomacy rather than counted as an implemented event. The performed_at timestamp marks completion of this bounded follow-up by the actual logged cutoff, not the time of an individual query.",
+            "performed_at": "2026-10-25T14:46:33.304514+00:00",
+            "reporting_chain": "Guardian reported the summit; UK and Turkish websites reproduce a single collectively authored governmental diplomatic statement.",
+            "scope": {
+              "geography": "Foreign ministers meeting in Istanbul and wider Middle East",
+              "method_and_inclusions": "Original governmental joint statement and reporting of ministerial remarks; no follow-through measure",
+              "population_or_denominator": "Eight signatory governments and statements of intent, not negotiated parties implementing a new ceasefire",
+              "time_window": "October 23–24 2026, within the closed source window"
+            },
+            "supporting_findings": "UK original official release establishes the meeting and support for diplomatic de-escalation as genuine stated policy.",
+            "upstream_queries": [
+              "2026 October 23 Istanbul eight foreign ministers Iran diplomacy caution strikes government announcement stabilizing"
+            ],
+            "upstream_source_urls": [
+              "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul"
+            ]
+          },
+          "priority": "high",
+          "relevance": "Guardian reporter quoted foreign ministers urging diplomacy at Istanbul, compatible with government joint statement. Officials urging negotiation is not evidence of operational agreement, and the meeting coverage shares an underlying public event.",
+          "source_url": "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": {
+            "checked_urls": [
+              "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden",
+              "https://www.sabanew.net/story/en/154565",
+              "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652",
+              "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/"
+            ],
+            "contrary_source_urls": [
+              "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/"
+            ],
+            "counter_queries": [
+              "Saudi defense ministry October 24 2026 Houthi three airports pipeline claims confirmed intercepted missiles actual targets"
+            ],
+            "counterevidence_findings": "The Yemeni government original Saba HTML was a shell; Reuters text acknowledged Saudi strikes unconfirmed, so target hits remain unproven.",
+            "disposition": "held_unverified",
+            "limitations": "No independently authenticated missile-impact records or technical confirmation, and two outlets reuse official allegations; claim is held. The performed_at timestamp marks completion of this bounded follow-up by the actual logged cutoff, not the time of an individual query.",
+            "performed_at": "2026-10-25T14:46:33.304514+00:00",
+            "reporting_chain": "Yemen ministry allegation circulated through Saba/AFP and Al Jazeera; Anadolu supplies distinct local explosion context but not target identification.",
+            "scope": {
+              "geography": "Aden, Yemen and reported targets in Saudi Arabia",
+              "method_and_inclusions": "Yemeni transport-ministry accusations, Al Jazeera/AFP repetition and Anadolu eyewitness explosions",
+              "population_or_denominator": "Reported missiles, targets and government claims, without verified damage denominator",
+              "time_window": "Alleged attacks around October 24 2026"
+            },
+            "supporting_findings": "Anadolu reports ministry allegations and reporter-heard explosions; the Al Jazeera page body carries a readable account.",
+            "upstream_queries": [
+              "Yemen transportation ministry October 24 2026 Aden airport two Houthi ballistic missiles government statement"
+            ],
+            "upstream_source_urls": [
+              "https://www.sabanew.net/story/en/154565",
+              "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652"
+            ]
+          },
+          "priority": "normal",
+          "relevance": "Al Jazeera/AFP reported Houthi-related attack allegations and the Yemeni ministry account with original site HTML. AFP, official Yemeni authorities and repeated articles are connected reporting chains, not independent verification of Saudi strikes.",
+          "source_url": "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": {
+            "checked_urls": [
+              "https://www.iranintl.com/en/202610252197",
+              "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul",
+              "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf",
+              "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22"
+            ],
+            "contrary_source_urls": [
+              "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+            ],
+            "counter_queries": [
+              "October 24 2026 Iran ambassador Islamabad offer Hormuz blockade IRGC outlet denies official statements"
+            ],
+            "counterevidence_findings": "An IRGC-affiliated outlet reportedly rejected the exchange and the CTP warning indicates continued military risk; AP original blocked.",
+            "disposition": "held_unverified",
+            "limitations": "The reported reopening offer is conditional and contested; no verified US acceptance, reopening, or operating ceasefire exists. The performed_at timestamp marks completion of this bounded follow-up by the actual logged cutoff, not the time of an individual query.",
+            "performed_at": "2026-10-25T14:46:33.304514+00:00",
+            "reporting_chain": "Tehran’s envoy remarks appear through the AP reporting chain; Iran International reports another domestic outlet rejecting an exchange.",
+            "scope": {
+              "geography": "Iran, Pakistan mediation and the Strait of Hormuz",
+              "method_and_inclusions": "AP-derived ambassador remarks and Iran International reporting of IRGC-affiliated opposition",
+              "population_or_denominator": "Envoy and government statements, not an executed US-Iran agreement",
+              "time_window": "October 23–25 2026 preceding this research cutoff"
+            },
+            "supporting_findings": "The public R4 communiqué favors dialogue, consistent with there being diplomatic effort, not an actual deal.",
+            "upstream_queries": [
+              "site:iranintl.com/en/202610252197 Iran offer Hormuz blockade IRGC denial"
+            ],
+            "upstream_source_urls": [
+              "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul"
+            ]
+          },
+          "priority": "normal",
+          "relevance": "Iran International covered the envoy willingness-to-negotiate claim and a conflicting IRGC-affiliated outlet position. Ambassador remarks partly rely on an AP chain that was not authentically retrieved; no US-Iran agreement was established.",
+          "source_url": "https://www.iranintl.com/en/202610252197",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "CTP/ISW October 24 assessment summarizes military warnings and says the Houthis claimed Saudi strikes. Strategic estimates and reported classified US intelligence memo are not original authenticated measurements.",
+          "source_url": "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Carnegie expert-event notice describes risks of conflict continuing and negotiation incentives. Analytical event-page commentary does not independently verify nuclear progress, political defections or monthly economic data.",
+          "source_url": "https://carnegieendowment.org/events/2026/10/the-state-and-fate-of-americas-war-with-iran",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "UN landing page confirms a humanitarian update covering September 2026 from OCHA. Underlying PDF, denominator and October household statistics were not directly assessed and cannot support new humanitarian rates.",
+          "source_url": "https://iran.un.org/en/324668-islamic-republic-iran-humanitarian-update-no-09-30-september-2026",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "IMF WEO portal advertises October 2026 datasets but reports scheduled maintenance. Portal HTML does not establish country-specific growth, monthly inflation, parallel FX or failed international settlements.",
+          "source_url": "https://data.imf.org/datasets/WEO",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Reuters original URL was discovered as a relevant news lead in the search stage. Original HTTPS returned HTTP 401; any syndication is not an authenticated original-body witness.",
+          "source_url": "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/",
+          "triage": "excluded"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "AP original URL was discovered as a relevant Iran diplomatic lead during the research stage. Direct original HTTP returned 403; other publications copy AP and must not be counted as independent.",
+          "source_url": "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22",
+          "triage": "excluded"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Agency original news-center URL was checked as a primary nuclear-inspection lead. Direct original HTTP returned 403, so no current inspection finding or original passage was admitted.",
+          "source_url": "https://www.iaea.org/newscenter",
+          "triage": "excluded"
+        }
+      ],
+      "research_as_of": "2026-10-25T14:46:33.304514+00:00",
+      "version": 1
+    },
+    "published_history_sha256": "8f09b73c44bdf909aa402dc93a2b8684d924a76a99839105e7817b519fc019c2",
+    "research_as_of": "2026-10-25T14:46:33.304514+00:00",
+    "source_quality_audit": {
+      "source_count": 16,
+      "sources": [
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261025-01"
+              ],
+              "limitations": "Original HTML preserved and checked for eligible passage, not a publisher-authenticated first-release clock.",
+              "status": "captured"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "IMO original register gives a date-bounded cumulative count of highlighted confirmed incidents, including vessel names and locations.",
+          "classification": "direct_observation",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Not an October-only tally, attack denominator, proof of Iran attribution, or a controlled full-population incidence rate.",
+          "new_evidence_indices": [
+            0
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261025-02"
+              ],
+              "limitations": "Original HTML preserved and checked for eligible passage, not a publisher-authenticated first-release clock.",
+              "status": "captured"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Lloyd original intelligence team reports two week-specific non-Iranian-linked transit totals and 31% above the August average.",
+          "classification": "direct_observation",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Commercial-proprietary methods and ship cohort differ from IMO; neither vessel activity nor AIS observations imply safety or restored payments.",
+          "new_evidence_indices": [
+            1
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "British government communiqué documents the eight-minister meeting and endorsement of dialogue and de-escalation.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Signed diplomatic language is advocacy, not an implemented ceasefire, and republications by the same signatories are not independent.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "background_context",
+          "url": "https://www.gov.uk/government/news/joint-press-release-on-the-r4-ministerial-meeting-in-istanbul"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Turkish foreign-ministry official communiqué is the upstream policy statement for the Istanbul meeting.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "The direct HTML exposed no visible paragraphs under the repository parser; do not cite it as a raw original-body witness.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "background_context",
+          "url": "https://www.mfa.gov.tr/joint-statement-on-the-r4-ministerial-meeting-istanbul-23-october-2026.en.mfa"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Yemeni government agency article was located as the alleged transport-ministry upstream statement on Aden airport.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "The direct HTML returned only navigation/shell text despite HTTP 200, so no original-body claim or impact was admitted.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "background_context",
+          "url": "https://www.sabanew.net/story/en/154565"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Anadolu described Yemeni official missile allegations and correspondent-heard explosions in Aden.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "No independent ballistic identification, verified launch position or damage assessment was obtained from that report.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "background_context",
+          "url": "https://www.aa.com.tr/en/middle-east/yemen-says-houthis-target-aden-airport-port-and-coast-guard-facilities-with-ballistic-missiles/4099652"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "Original HTML preserved and checked for eligible passage, not a publisher-authenticated first-release clock.",
+              "status": "captured"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Guardian reporter quoted foreign ministers urging diplomacy at Istanbul, compatible with government joint statement.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Officials urging negotiation is not evidence of operational agreement, and the meeting coverage shares an underlying public event.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "background_context",
+          "url": "https://www.theguardian.com/world/2026/oct/23/european-middle-eastern-ministers-summit-iran-us-israel"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "Original HTML preserved and checked for eligible passage, not a publisher-authenticated first-release clock.",
+              "status": "captured"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Al Jazeera/AFP reported Houthi-related attack allegations and the Yemeni ministry account with original site HTML.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "AFP, official Yemeni authorities and repeated articles are connected reporting chains, not independent verification of Saudi strikes.",
+          "new_evidence_indices": [],
+          "origin": "syndicated_reprint",
+          "role": "background_context",
+          "url": "https://www.aljazeera.com/news/2026/10/24/houthis-launch-attacks-on-saudi-arabia-and-yemens-aden"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Iran International covered the envoy willingness-to-negotiate claim and a conflicting IRGC-affiliated outlet position.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Ambassador remarks partly rely on an AP chain that was not authentically retrieved; no US-Iran agreement was established.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "background_context",
+          "url": "https://www.iranintl.com/en/202610252197"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "CTP/ISW October 24 assessment summarizes military warnings and says the Houthis claimed Saudi strikes.",
+          "classification": "analysis",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Strategic estimates and reported classified US intelligence memo are not original authenticated measurements.",
+          "new_evidence_indices": [],
+          "origin": "analytical_secondary",
+          "role": "background_context",
+          "url": "https://www.criticalthreats.org/analysis/iran-update-october-24-2026-6add17463a4cf"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Carnegie expert-event notice describes risks of conflict continuing and negotiation incentives.",
+          "classification": "analysis",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Analytical event-page commentary does not independently verify nuclear progress, political defections or monthly economic data.",
+          "new_evidence_indices": [],
+          "origin": "analytical_secondary",
+          "role": "background_context",
+          "url": "https://carnegieendowment.org/events/2026/10/the-state-and-fate-of-americas-war-with-iran"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "UN landing page confirms a humanitarian update covering September 2026 from OCHA.",
+          "classification": "background_only",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Underlying PDF, denominator and October household statistics were not directly assessed and cannot support new humanitarian rates.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "background_context",
+          "url": "https://iran.un.org/en/324668-islamic-republic-iran-humanitarian-update-no-09-30-september-2026"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 200,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "IMF WEO portal advertises October 2026 datasets but reports scheduled maintenance.",
+          "classification": "background_only",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Portal HTML does not establish country-specific growth, monthly inflation, parallel FX or failed international settlements.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "background_context",
+          "url": "https://data.imf.org/datasets/WEO"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 401,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "failed"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_unavailable",
+          "assessment": "Reuters original URL was discovered as a relevant news lead in the search stage.",
+          "classification": "unverified",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Original HTTPS returned HTTP 401; any syndication is not an authenticated original-body witness.",
+          "new_evidence_indices": [],
+          "origin": "unknown",
+          "role": "background_context",
+          "url": "https://www.reuters.com/world/middle-east/saudi-civil-defense-says-danger-passed-after-brief-alerts-mecca-jeddah-taif-2026-10-24/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 403,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "failed"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_unavailable",
+          "assessment": "AP original URL was discovered as a relevant Iran diplomatic lead during the research stage.",
+          "classification": "unverified",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Direct original HTTP returned 403; other publications copy AP and must not be counted as independent.",
+          "new_evidence_indices": [],
+          "origin": "unknown",
+          "role": "background_context",
+          "url": "https://apnews.com/article/45161652890bf4f3d570347b8aae6b22"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "No eligible new claim has a durable original-body witness at this source; context/metadata only.",
+              "status": "failed"
+            },
+            "metadata": {
+              "http_status": 403,
+              "limitations": "Direct HTTP endpoint status, separate from search accessibility and exact article-body proof.",
+              "status": "failed"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Public search result was encountered before the cutoff; this is not authenticated response-body capture.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_unavailable",
+          "assessment": "Agency original news-center URL was checked as a primary nuclear-inspection lead.",
+          "classification": "unverified",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Direct original HTTP returned 403, so no current inspection finding or original passage was admitted.",
+          "new_evidence_indices": [],
+          "origin": "unknown",
+          "role": "background_context",
+          "url": "https://www.iaea.org/newscenter"
+        }
+      ]
+    }
+  },
+  "version": 1
+}
