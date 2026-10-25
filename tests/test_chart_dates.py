@@ -33,13 +33,13 @@ function canvas(height){
 globalThis.chart=canvas(300);
 globalThis.haircutChart=canvas(240);
 vm.runInThisContext(source.slice(start));
-const input=JSON.parse(process.argv[1]);
+const input=JSON.parse(fs.readFileSync(0,'utf8'));
 drawForecasts(input);
 drawHaircut(input);
 console.log(JSON.stringify({forecast:chart.out,haircut:haircutChart.out}));
 """
         result = subprocess.run(
-            ["node", "-e", js, json.dumps(records)], cwd=ROOT,
+            ["node", "-e", js], cwd=ROOT, input=json.dumps(records),
             text=True, capture_output=True, check=False, timeout=20)
         self.assertEqual(result.returncode, 0, result.stderr)
         return json.loads(result.stdout.strip())
