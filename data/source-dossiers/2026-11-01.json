@@ -1,0 +1,1851 @@
+{
+  "affirmative_source_review": {
+    "approved": true,
+    "audit_integrity_review": {
+      "assessment": "All six required source categories have actual queries, nonempty URL sets, specific results and dated limits. All sixteen distinct source URL chains were inventoried and four exact publisher HTTP bodies were retained as claims.",
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "limitations": "Searches are ChatGPT-reported rather than authenticated API search traces. The source first-release instant and all underlying merchant/custody informants remain unverified; the direct byte captures establish bounded publisher page contents, not independent absolute source authenticity.",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "post_snapshot_search": "NOT_SEARCHED",
+      "research_as_of": "2026-11-01T14:59:04.114405+00:00",
+      "source_count": 16
+    },
+    "claim_reliability_reviews": [
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "UKMTO notices describe similar reports and can share merchant-vessel or company origins; descriptions differ on cause, so no distinct and independently verified incident count is asserted.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261101-01",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://mscio.eu/alerts/194",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "The issuing maritime security centre gives a specific dated original notification of a reported tanker incident, but it cannot independently demonstrate the physical cause, actor or vessel identity."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "UKMTO notices describe similar reports and can share merchant-vessel or company origins; descriptions differ on cause, so no distinct and independently verified incident count is asserted.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261101-02",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://mscio.eu/alerts/195",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "The issuing maritime security centre gives a specific dated original notification of a reported tanker incident, but it cannot independently demonstrate the physical cause, actor or vessel identity."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Reuters reports rejection of Qatari proposals and unresolved terms; this contradicts a claim of implemented agreement, but not the narrower statement that Qatar made this positive assessment.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "qualified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261101-03",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "Original Qatari Ministry of Foreign Affairs dated release directly supports only that the ministry publicly described mediation as moving positively, not that a peace agreement was attained."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The precise circumstances and attribution of death are unresolved; preserving that uncertainty avoids contradicting the original narrowly attributed UN institutional statement.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "unverified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261101-04",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "The UN original spokesperson statement is first-party evidence of the UN condemning a reported death of its own OHCHR colleague held by Houthi authorities, with circumstances explicitly uncertain."
+      }
+    ],
+    "issues": [],
+    "promising_followup_reviews": [
+      {
+        "approved": true,
+        "assessment": "Affirmative original follow-up: The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. Original MSCIO alert 158/26 publishes receipt of the October 29 16:00 UTC unknown-projectile report. Restrict admission to its exact dated original body and upstream source; treat counterevidence as qualifications.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "6b8d6bd5be16fc0f55de3b33d7c2c8ec72e6016b0303d88e4d74ce922a74f64b",
+        "limitations": "Received report, not proof of the physical incident or a named attacker; UKMTO may share the same vessel/company chain. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://mscio.eu/alerts/194",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative original follow-up: The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. Original MSCIO alert 159/26 publishes receipt of the 22:12 UTC October 29 small-boat explosives report, later extinguished fire and resumed voyage. Restrict admission to its exact dated original body and upstream source; treat counterevidence as qualifications.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "fcb02e5d323a2dc67cd59ef52ced355123637cbea733801a7d201220ff85d6ad",
+        "limitations": "Exact incident identity and independent attack attribution remain unknown; UKMTO #187 may share the same original company source. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://mscio.eu/alerts/195",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative original follow-up: The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. Original October 27 Qatar foreign ministry statement records a cautiously positive view of mediation and appeals for Iran to show action. Restrict admission to its exact dated original body and upstream source; treat counterevidence as qualifications.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "864efd67d27e84f4d2eb70ad2edcca9194385dbef6c05e06a4a501751f421848",
+        "limitations": "An official description of talks is a reported intention, not a verified accepted accord, ceasefire, or reopened Hormuz route. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative original follow-up: The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. The October 31 original UN statement condemns the reported death of an OHCHR colleague in Houthi detention and says circumstances are unclear. Restrict admission to its exact dated original body and upstream source; treat counterevidence as qualifications.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "99c9a60bad7031c9c7fb6868840995eb23dd0abc96b249368ccdcb500559e669",
+        "limitations": "The exact cause and time of death are unclear; no evidence of current Iranian material, technical or financial Houthi support follows. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: IAEA newscenter was searched for official October nuclear safeguards updates. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "07d423b36000da2b4f81012e388f1701916493472602adf407bb4d5ce8553c40",
+        "limitations": "No current original safeguards release was recovered and verified. Missing public information does not imply stable inspections. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.iaea.org/newscenter",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: Reuters original October 31 article describes continued talks, rejected mediation options and simultaneous military warnings. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "a15407d94c291854479ba38490e23f78dd2ee61a0122595da19b48e631cf908c",
+        "limitations": "Original body bytes inaccessible in this session; search-stage reporting cannot independently authenticate a precise treaty or origin chain. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: Reuters original November 1 dispatch says mediators continued talks without a final agreement and amid continued military threats. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "ee02418c704809d7d835343515ab2054b358c7aba4eb22a63252d5bb53a1b808",
+        "limitations": "Original article-body bytes not locally captured and no date-specific same-stage independent source chain verified. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.reuters.com/world/middle-east/iranian-negotiators-doha-continue-talks-end-us-iran-war-official-says-2026-11-01/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: Al Jazeera interview reports Iranian foreign minister considered US outreach positive but did not plan direct meetings. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "100b2b543d2c653a31c8139a8373edfd22c263fcddfa1261a73d22c582b1e7eb",
+        "limitations": "A politician interview records his statements, not that the United States accepted conditions or that a bargain is concluded. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: Tasnim October 31 account repeats foreign-minister remarks originally made in Al Jazeera interview. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "bba512d3c0c61300df18ca384e10f333a419ab39a1286195f382ae51bb2b538c",
+        "limitations": "Not independently authored interview, and repeating the interview is not independent corroboration of a diplomatic result. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.tasnimnews.ir/en/news/2026/10/31/3736889/araqchi-us-bid-to-open-dialogue-with-iran-a-positive-step",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: Iran International October 28 reports SCI 4.4 percent monthly and 88.7 percent year-on-year CPI inflation through October 22. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "5f8aed7f3988738c4cd5f29c80aa7c882ae330b090341c00f7b5bc567ea657e2",
+        "limitations": "Primary SCI instrument/release not directly captured; year-on-year CPI differs from Hanke 30-day rate. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.iranintl.com/en/202610286929",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "140ebd095dee57e5c73b77f1c91c79c138bbc2bffe52db09671d7a83537f38fe",
+        "limitations": "Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.ukmto.org/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: CSIS October 6 discusses Gulf energy infrastructure vulnerability, Hormuz coercion and security adaptations. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "2a37f060551770c02607247df4c894b1418285226d31062464d45b9bb7880c92",
+        "limitations": "The essay is analytical, not a newly confirmed October 29 attack or objective evidence of attacker identity. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.csis.org/analysis/postwar-threat-gulf-energy-infrastructure",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: CFR October 23 expert commentary examines escalation and negotiation choices after the midterm vote. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "1346fae8503555be72e81a007ea8aa841dc7584a6b7b212dc2e7318788d31717",
+        "limitations": "A contingent analysis cannot authenticate a negotiated outcome or test exact Protocol v1 forecast event. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.cfr.org/topics/iran-war-analysis-and-updates",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: Chatham House September analysis argues durable reopening needs technically verifiable operating rules and reciprocity. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "154feca49fccc1e208939dda89747599744816b6acfd91624184d39688b76859",
+        "limitations": "September modelling and proposals are not proof that conditions were implemented by November 1. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.chathamhouse.org/2026/09/escaping-hormuz-trap-what-should-agreement-reopen-strait-look",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: ACAPS September Iran brief describes high food and medicine costs, import disruption and severe humanitarian strain. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "1fef4909fd706c8e39b08c10d9fdb8fe155f066dbe904d10d27a53c3eba1d270",
+        "limitations": "Latest dated country narrative is September; October dashboard updates do not provide new verified national affordability denominators. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.acaps.org/en/countries/iran",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Affirmative context triage: IMF October World Economic Outlook includes risks from geopolitical conflict and Iran macroeconomic estimates. Retain this URL only for interpretation, negative research results, or secondary context; no independent factual confirmation is credited.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "361c3f6045d0eaa6628598035dcfb35712ca4ecbd50a646dd9db0c81c510d6d6",
+        "limitations": "Its chapter information cutoff is October 1, and projections are not a verified real-time parallel FX or external-payments stream. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.imf.org/en/Publications/WEO/Issues/2026/10/13/world-economic-outlook-october-2026",
+        "triage": "context_only"
+      }
+    ],
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261101-01",
+        "E-20261101-02",
+        "E-20261101-03",
+        "E-20261101-04"
+      ],
+      "assessment": "Two new original maritime notices, one original Qatar diplomatic statement and one original UN custody statement can support only a cautious current report with no specific new Iran macro thresholds. The existing verified October 25 history remains its prior information.",
+      "conclusion": "supported_limited_inference",
+      "limitations": "Causal source-of-attack and vessel identities are missing. Reuters was searched but not captured as original HTML; external-payments settlement streams, fresh Hanke monthly inflation, fiscal cashflow, independently confirmed security defections and medicine availability remain unknown.",
+      "observation_count": 4
+    },
+    "source_query_balance_review": {
+      "ambiguous_queries": [],
+      "assessment": "Actual worsening maritime and countervailing mediation queries are disclosed. The Qatar optimism remains a qualified possibility while UKMTO and Reuters indicate unresolved attacks and negotiations.",
+      "lowers_queries": [
+        "site:mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27 regional security Qatar Iran mediation \"positive direction\""
+      ],
+      "raises_queries": [
+        "site:mscio.eu/alerts/ October 29 30 2026 tanker 158 159 163 projectile small boat Strait Hormuz"
+      ]
+    },
+    "source_reviews": [
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Original MSCIO alert 158/26 publishes receipt of the October 29 16:00 UTC unknown-projectile report. Scope: Received report, not proof of the physical incident or a named attacker; UKMTO may share the same vessel/company chain. Evidence handling: publisher HTML saved with exact 4-25-word passage.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://mscio.eu/alerts/194"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Original MSCIO alert 159/26 publishes receipt of the 22:12 UTC October 29 small-boat explosives report, later extinguished fire and resumed voyage. Scope: Exact incident identity and independent attack attribution remain unknown; UKMTO #187 may share the same original company source. Evidence handling: publisher HTML saved with exact 4-25-word passage.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://mscio.eu/alerts/195"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Original October 27 Qatar foreign ministry statement records a cautiously positive view of mediation and appeals for Iran to show action. Scope: An official description of talks is a reported intention, not a verified accepted accord, ceasefire, or reopened Hormuz route. Evidence handling: publisher HTML saved with exact 4-25-word passage.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: The October 31 original UN statement condemns the reported death of an OHCHR colleague in Houthi detention and says circumstances are unclear. Scope: The exact cause and time of death are unclear; no evidence of current Iranian material, technical or financial Houthi support follows. Evidence handling: publisher HTML saved with exact 4-25-word passage.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: IAEA newscenter was searched for official October nuclear safeguards updates. Scope: No current original safeguards release was recovered and verified. Missing public information does not imply stable inspections. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iaea.org/newscenter"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Reuters original October 31 article describes continued talks, rejected mediation options and simultaneous military warnings. Scope: Original body bytes inaccessible in this session; search-stage reporting cannot independently authenticate a precise treaty or origin chain. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Reuters original November 1 dispatch says mediators continued talks without a final agreement and amid continued military threats. Scope: Original article-body bytes not locally captured and no date-specific same-stage independent source chain verified. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/iranian-negotiators-doha-continue-talks-end-us-iran-war-official-says-2026-11-01/"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Al Jazeera interview reports Iranian foreign minister considered US outreach positive but did not plan direct meetings. Scope: A politician interview records his statements, not that the United States accepted conditions or that a bargain is concluded. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Tasnim October 31 account repeats foreign-minister remarks originally made in Al Jazeera interview. Scope: Not independently authored interview, and repeating the interview is not independent corroboration of a diplomatic result. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.tasnimnews.ir/en/news/2026/10/31/3736889/araqchi-us-bid-to-open-dialogue-with-iran-a-positive-step"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Iran International October 28 reports SCI 4.4 percent monthly and 88.7 percent year-on-year CPI inflation through October 22. Scope: Primary SCI instrument/release not directly captured; year-on-year CPI differs from Hanke 30-day rate. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iranintl.com/en/202610286929"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively. Scope: Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.ukmto.org/"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: CSIS October 6 discusses Gulf energy infrastructure vulnerability, Hormuz coercion and security adaptations. Scope: The essay is analytical, not a newly confirmed October 29 attack or objective evidence of attacker identity. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.csis.org/analysis/postwar-threat-gulf-energy-infrastructure"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: CFR October 23 expert commentary examines escalation and negotiation choices after the midterm vote. Scope: A contingent analysis cannot authenticate a negotiated outcome or test exact Protocol v1 forecast event. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.cfr.org/topics/iran-war-analysis-and-updates"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: Chatham House September analysis argues durable reopening needs technically verifiable operating rules and reciprocity. Scope: September modelling and proposals are not proof that conditions were implemented by November 1. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.chathamhouse.org/2026/09/escaping-hormuz-trap-what-should-agreement-reopen-strait-look"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: ACAPS September Iran brief describes high food and medicine costs, import disruption and severe humanitarian strain. Scope: Latest dated country narrative is September; October dashboard updates do not provide new verified national affordability denominators. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.acaps.org/en/countries/iran"
+      },
+      {
+        "access_stage_assessment": "I separated observed search-stage accessibility, actual direct urllib HTTP status, and original-body bytes. Exact bytes and quote are available only when the body access row enumerates a newly admitted evidence ID.",
+        "assessment": "Affirmative: IMF October World Economic Outlook includes risks from geopolitical conflict and Iran macroeconomic estimates. Scope: Its chapter information cutoff is October 1, and projections are not a verified real-time parallel FX or external-payments stream. Evidence handling: only contextual search-stage source, not a new original-body witness.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.imf.org/en/Publications/WEO/Issues/2026/10/13/world-economic-outlook-october-2026"
+      }
+    ]
+  },
+  "baseline_sha256": "a46462c339421891be1992eef5da3ab40930c2683ec8f8cdc9af57742f3015ef",
+  "candidate_sha256": "d90315bb4ce162ecc48e9e70aa9b0b5cc07b950adbfa6724ae4626e82f36c7bc",
+  "claim_reliability": [
+    {
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "evidence_id": "E-20261101-01",
+      "factual_reliability": "Medium",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "evidence_id": "E-20261101-02",
+      "factual_reliability": "Medium",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium-high",
+      "critical_original_grade": "Medium-high",
+      "evidence_id": "E-20261101-03",
+      "factual_reliability": "Medium-high",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium-high",
+      "critical_original_grade": "Medium-high",
+      "evidence_id": "E-20261101-04",
+      "factual_reliability": "Medium-high",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "unverified"
+    }
+  ],
+  "coverage": [
+    {
+      "category": "primary_data",
+      "limitations": "Three independently posted institutional originals plus original UN HTML were captured; no updated IAEA safeguards dataset could be authenticated.",
+      "original_urls": [
+        "https://mscio.eu/alerts/194",
+        "https://mscio.eu/alerts/195",
+        "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+        "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+        "https://www.iaea.org/newscenter"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:mscio.eu/alerts/ October 29 30 2026 tanker 158 159 163 projectile small boat Strait Hormuz",
+        "site:iaea.org November 2026 Iran safeguards verification 2026 October latest",
+        "site:mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27 regional security Qatar Iran mediation \"positive direction\"",
+        "site:yemen.un.org/en/325563 statement attributable spokesman death OHCHR staff detention October 31 2026"
+      ]
+    },
+    {
+      "category": "international_media",
+      "limitations": "Reuters and Al Jazeera originals were located by search. Reuters was not recovered as original HTML, so its body cannot witness an admitted claim.",
+      "original_urls": [
+        "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/",
+        "https://www.reuters.com/world/middle-east/iranian-negotiators-doha-continue-talks-end-us-iran-war-official-says-2026-11-01/",
+        "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:reuters.com October 31 2026 Iran Qatar talks Araqchi Vance mediation Hormuz tanker October 30 2026",
+        "site:apnews.com October 31 2026 Iran Hormuz attacks mediators diplomacy",
+        "Qatar Iran October 31 2026 peace proposal rejected agreement no deal mediators Doha counterevidence"
+      ]
+    },
+    {
+      "category": "regional_multilingual_media",
+      "limitations": "Original Iranian and regional reporting inspected at search stage. Tasnim repeats Al Jazeera rather than independently corroborating the same interview.",
+      "original_urls": [
+        "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks",
+        "https://www.tasnimnews.ir/en/news/2026/10/31/3736889/araqchi-us-bid-to-open-dialogue-with-iran-a-positive-step",
+        "https://www.iranintl.com/en/202610286929"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:aljazeera.net 31 أكتوبر 2026 عراقجي مباحثات قطر فانس الحوار",
+        "site:tasnimnews.ir October 31 2026 Iran dialogue positive Araqchi",
+        "site:iranintl.com/en/202611010519 November 1 2026 Iran economy wage arrears prices"
+      ]
+    },
+    {
+      "category": "specialist_investigative",
+      "limitations": "MSCIO original statements and UKMTO incident summaries located. No separately audited matched vessel denominator or commercial satellite evidence.",
+      "original_urls": [
+        "https://mscio.eu/alerts/194",
+        "https://mscio.eu/alerts/195",
+        "https://www.ukmto.org/"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:lloydslist.com 2026 October 30 Hormuz tanker explosives incident maritime traffic insurance",
+        "site:windward.ai october 2026 hormuz ship transits iran tanker",
+        "Oct 29 2026 MSCIO Alert 158 159 separate tanker incidents same vessel correction October 30"
+      ]
+    },
+    {
+      "category": "think_tanks",
+      "limitations": "CSIS and Chatham House provide distinct serious interpretations of war leverage, technical settlement mechanisms and constraints, not original event captures.",
+      "original_urls": [
+        "https://www.csis.org/analysis/postwar-threat-gulf-energy-infrastructure",
+        "https://www.cfr.org/topics/iran-war-analysis-and-updates",
+        "https://www.chathamhouse.org/2026/09/escaping-hormuz-trap-what-should-agreement-reopen-strait-look"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "CSIS analysis Iran Gulf October 2026 Iran regional conflict 2026",
+        "Chatham House Iran 2026 war Hormuz diplomacy analysis",
+        "site:chathamhouse.org Iran diplomacy war sanctions October 2026 analysis"
+      ]
+    },
+    {
+      "category": "economic_humanitarian_academic",
+      "limitations": "ACAPS reports serious humanitarian hardship and IMF gives macro forecasts, but no authenticated October Hanke monthly rate or Iran settlement/medicine denominators.",
+      "original_urls": [
+        "https://www.acaps.org/en/countries/iran",
+        "https://www.imf.org/en/Publications/WEO/Issues/2026/10/13/world-economic-outlook-october-2026",
+        "https://www.iranintl.com/en/202610286929",
+        "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "site:imf.org 2026 Iran October 2026 World Economic Outlook inflation GDP",
+        "Hanke Iran 2026 October monthly inflation 2026 November 1 Hanke 30-day",
+        "site:acaps.org Iran September October 2026 medicine food poverty affordability crisis",
+        "Iran October 2026 inflation Statistical Center Iran 88.7%"
+      ]
+    }
+  ],
+  "critical_source_review": {
+    "approved": true,
+    "audit_integrity_review": {
+      "assessment": "The bounded six-category survey was cross-checked for direct original article bytes, reused interviews, source-stage conflicts, old analysis, unverified data and unreliable independent-corroboration claims before scoring.",
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "limitations": "Searches are ChatGPT-reported rather than authenticated API search traces. The source first-release instant and all underlying merchant/custody informants remain unverified; the direct byte captures establish bounded publisher page contents, not independent absolute source authenticity.",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "post_snapshot_search": "NOT_SEARCHED",
+      "research_as_of": "2026-11-01T14:59:04.114405+00:00",
+      "source_count": 16
+    },
+    "claim_reliability_reviews": [
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "MSCIO and UKMTO at similar times might share the same vessel; UKMTO #187 reported a fire of unknown cause while MSCIO #159 described devices. No resolution or perpetrator claim is admitted.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261101-01",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://mscio.eu/alerts/194",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "I challenged whether an original MSCIO alert should count as first-hand physical event proof. It is reliable evidence that MSCIO received a report, not independent inspection of the ship; the detail must remain attributed."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "MSCIO and UKMTO at similar times might share the same vessel; UKMTO #187 reported a fire of unknown cause while MSCIO #159 described devices. No resolution or perpetrator claim is admitted.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261101-02",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://mscio.eu/alerts/195",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "I challenged whether an original MSCIO alert should count as first-hand physical event proof. It is reliable evidence that MSCIO received a report, not independent inspection of the ship; the detail must remain attributed."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The rejected proposals materially defeat an inference that talks have concluded, though they do not falsify the original date-stamped record of Qatar expressing cautious hope.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "qualified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261101-03",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "A first-party published ministry statement is primary documentation of its own words, but optimism is an interested government viewpoint and its predicted outcome remains unverified."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Potential independent medical or custody evidence is unavailable; the claim deliberately excludes causation, timing of death and all conjectures concerning Iranian resupply.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No separate claim-matched and original-byte-witnessed independent reporting chain is established. Reuters and UKMTO may report from the same vessel or diplomat, and Tasnim repeats Al Jazeera, so no independent confirmation IDs are allowed.",
+        "direction_confidence": "unverified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261101-04",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "A primary UN spokesperson statement is adequate to establish what the UN reported about its own colleague; it cannot independently prove cause of death or Iranian operational assistance."
+      }
+    ],
+    "issues": [],
+    "promising_followup_reviews": [
+      {
+        "approved": true,
+        "assessment": "Critical upstream/counterevidence test: The 16:00 UTC MSCIO report has no vessel IMO number or incident-investigation closeout. UKMTO #186 may derive from the same company security officer; it is not independently verified Iranian attribution. UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively. Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks. The exact quote cannot certify the source issuer or infer cause.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "6b8d6bd5be16fc0f55de3b33d7c2c8ec72e6016b0303d88e4d74ce922a74f64b",
+        "limitations": "Received report, not proof of the physical incident or a named attacker; UKMTO may share the same vessel/company chain. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://mscio.eu/alerts/194",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical upstream/counterevidence test: The 22:12 UTC small-boat account is more specific than UKMTO #187, which originally described only a fire with cause unknown. These are potentially sequential descriptions, not independently verified distinct incidents. UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively. Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks. The exact quote cannot certify the source issuer or infer cause.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "fcb02e5d323a2dc67cd59ef52ced355123637cbea733801a7d201220ff85d6ad",
+        "limitations": "Exact incident identity and independent attack attribution remain unknown; UKMTO #187 may share the same original company source. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://mscio.eu/alerts/195",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical upstream/counterevidence test: The actual original foreign ministry press line reports a diplomatic aspiration. Reuters October 31–November 1 documented rejected offers and no final agreement, so optimism has only conditional stabilizing weight. Reuters original October 31 article describes continued talks, rejected mediation options and simultaneous military warnings. Original body bytes inaccessible in this session; search-stage reporting cannot independently authenticate a precise treaty or origin chain. The exact quote cannot certify the source issuer or infer cause.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "864efd67d27e84f4d2eb70ad2edcca9194385dbef6c05e06a4a501751f421848",
+        "limitations": "An official description of talks is a reported intention, not a verified accepted accord, ceasefire, or reopened Hormuz route. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical upstream/counterevidence test: The UN statement says death circumstances remain unclear. A report of death in detention cannot establish the perpetrator of the death or current Iranian technical supply to Houthis. ACAPS September Iran brief describes high food and medicine costs, import disruption and severe humanitarian strain. Latest dated country narrative is September; October dashboard updates do not provide new verified national affordability denominators. The exact quote cannot certify the source issuer or infer cause.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "99c9a60bad7031c9c7fb6868840995eb23dd0abc96b249368ccdcb500559e669",
+        "limitations": "The exact cause and time of death are unclear; no evidence of current Iranian material, technical or financial Houthi support follows. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: A searched newscenter without a specific inspected and dated safeguards report does not establish a stable Iranian nuclear program or monitoring access. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "07d423b36000da2b4f81012e388f1701916493472602adf407bb4d5ce8553c40",
+        "limitations": "No current original safeguards release was recovered and verified. Missing public information does not imply stable inspections. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.iaea.org/newscenter",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: Reuters news was original reporting but no raw body was captured, so no exact article passage or claimed independent confirmation can be authenticated. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "a15407d94c291854479ba38490e23f78dd2ee61a0122595da19b48e631cf908c",
+        "limitations": "Original body bytes inaccessible in this session; search-stage reporting cannot independently authenticate a precise treaty or origin chain. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: A third day of mediation is not a binding ceasefire and no original article-body was retained for an admissible fresh claim. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "ee02418c704809d7d835343515ab2054b358c7aba4eb22a63252d5bb53a1b808",
+        "limitations": "Original article-body bytes not locally captured and no date-specific same-stage independent source chain verified. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.reuters.com/world/middle-east/iranian-negotiators-doha-continue-talks-end-us-iran-war-official-says-2026-11-01/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: The published Iranian minister interview is original news attribution but is a political negotiating statement, not external evidence of US acquiescence. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "100b2b543d2c653a31c8139a8373edfd22c263fcddfa1261a73d22c582b1e7eb",
+        "limitations": "A politician interview records his statements, not that the United States accepted conditions or that a bargain is concluded. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: Tasnim excerpts repeat the Al Jazeera interview; multiple URLs cannot be counted as two independent first-hand sources. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "bba512d3c0c61300df18ca384e10f333a419ab39a1286195f382ae51bb2b538c",
+        "limitations": "Not independently authored interview, and repeating the interview is not independent corroboration of a diplomatic result. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.tasnimnews.ir/en/news/2026/10/31/3736889/araqchi-us-bid-to-open-dialogue-with-iran-a-positive-step",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: The SCI figures are attributed through a secondary outlet. Annual CPI 88.7 percent cannot substitute for a Hanke 30-day hyperinflation estimate or payment-flow proof. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "5f8aed7f3988738c4cd5f29c80aa7c882ae330b090341c00f7b5bc567ea657e2",
+        "limitations": "Primary SCI instrument/release not directly captured; year-on-year CPI differs from Hanke 30-day rate. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.iranintl.com/en/202610286929",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: UKMTO numbers #186 and #187 are not the same numbering as MSCIO 158/159. Exact times imply probable overlapping maritime notices, not four additive attacks. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "140ebd095dee57e5c73b77f1c91c79c138bbc2bffe52db09671d7a83537f38fe",
+        "limitations": "Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.ukmto.org/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: CSIS documents vulnerability pathways but its analysis cannot authenticate a new ship impact, residual fuel outage or actor attribution. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "2a37f060551770c02607247df4c894b1418285226d31062464d45b9bb7880c92",
+        "limitations": "The essay is analytical, not a newly confirmed October 29 attack or objective evidence of attacker identity. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.csis.org/analysis/postwar-threat-gulf-energy-infrastructure",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: CFR weighs negotiating and military options after midterms; the expert commentary is a scenario, not a dated first-hand event. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "1346fae8503555be72e81a007ea8aa841dc7584a6b7b212dc2e7318788d31717",
+        "limitations": "A contingent analysis cannot authenticate a negotiated outcome or test exact Protocol v1 forecast event. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.cfr.org/topics/iran-war-analysis-and-updates",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: The technical Hormuz agreement proposal predates this week. Its absence of an implemented jointly monitored corridor undermines claims that mediation equalled reopening. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "154feca49fccc1e208939dda89747599744816b6acfd91624184d39688b76859",
+        "limitations": "September modelling and proposals are not proof that conditions were implemented by November 1. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.chathamhouse.org/2026/09/escaping-hormuz-trap-what-should-agreement-reopen-strait-look",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: ACAPS most recent text dates to September, while some 27 October severity indicators are updated. Neither independently counts November medical prescriptions filled. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "1fef4909fd706c8e39b08c10d9fdb8fe155f066dbe904d10d27a53c3eba1d270",
+        "limitations": "Latest dated country narrative is September; October dashboard updates do not provide new verified national affordability denominators. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.acaps.org/en/countries/iran",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical context triage: WEO country macro forecasts use information through October 1 and cannot close the October 29–November 1 high-frequency fiscal, FX and essential-import observation gaps. A source without admitted original passage remains context-only despite any informative headline.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "361c3f6045d0eaa6628598035dcfb35712ca4ecbd50a646dd9db0c81c510d6d6",
+        "limitations": "Its chapter information cutoff is October 1, and projections are not a verified real-time parallel FX or external-payments stream. No secondary item is treated as a second original independently witnessed statement.",
+        "source_url": "https://www.imf.org/en/Publications/WEO/Issues/2026/10/13/world-economic-outlook-october-2026",
+        "triage": "context_only"
+      }
+    ],
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261101-01",
+        "E-20261101-02",
+        "E-20261101-03",
+        "E-20261101-04"
+      ],
+      "assessment": "These observations warrant at most restricted discussion of ongoing maritime danger, possible diplomatic de-escalation and Houthi detention coercion. They cannot support new Hanke numbers, sovereign default claims, regime collapse or a confirmed 72-hour interstate campaign.",
+      "conclusion": "supported_limited_inference",
+      "limitations": "Causal source-of-attack and vessel identities are missing. Reuters was searched but not captured as original HTML; external-payments settlement streams, fresh Hanke monthly inflation, fiscal cashflow, independently confirmed security defections and medicine availability remain unknown.",
+      "observation_count": 4
+    },
+    "source_query_balance_review": {
+      "ambiguous_queries": [],
+      "assessment": "I tested whether reassuring diplomatic material was equally sought alongside incident reports. This balance prevents the presence of talks from overriding the absence of an accepted navigation agreement.",
+      "lowers_queries": [
+        "site:mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27 regional security Qatar Iran mediation \"positive direction\""
+      ],
+      "raises_queries": [
+        "site:mscio.eu/alerts/ October 29 30 2026 tanker 158 159 163 projectile small boat Strait Hormuz"
+      ]
+    },
+    "source_reviews": [
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. publisher HTML saved with exact 4-25-word passage.",
+        "assessment": "Critical: The 16:00 UTC MSCIO report has no vessel IMO number or incident-investigation closeout. UKMTO #186 may derive from the same company security officer; it is not independently verified Iranian attribution. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://mscio.eu/alerts/194"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. publisher HTML saved with exact 4-25-word passage.",
+        "assessment": "Critical: The 22:12 UTC small-boat account is more specific than UKMTO #187, which originally described only a fire with cause unknown. These are potentially sequential descriptions, not independently verified distinct incidents. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://mscio.eu/alerts/195"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. publisher HTML saved with exact 4-25-word passage.",
+        "assessment": "Critical: The actual original foreign ministry press line reports a diplomatic aspiration. Reuters October 31–November 1 documented rejected offers and no final agreement, so optimism has only conditional stabilizing weight. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. publisher HTML saved with exact 4-25-word passage.",
+        "assessment": "Critical: The UN statement says death circumstances remain unclear. A report of death in detention cannot establish the perpetrator of the death or current Iranian technical supply to Houthis. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: A searched newscenter without a specific inspected and dated safeguards report does not establish a stable Iranian nuclear program or monitoring access. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iaea.org/newscenter"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: Reuters news was original reporting but no raw body was captured, so no exact article passage or claimed independent confirmation can be authenticated. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: A third day of mediation is not a binding ceasefire and no original article-body was retained for an admissible fresh claim. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/iranian-negotiators-doha-continue-talks-end-us-iran-war-official-says-2026-11-01/"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: The published Iranian minister interview is original news attribution but is a political negotiating statement, not external evidence of US acquiescence. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: Tasnim excerpts repeat the Al Jazeera interview; multiple URLs cannot be counted as two independent first-hand sources. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.tasnimnews.ir/en/news/2026/10/31/3736889/araqchi-us-bid-to-open-dialogue-with-iran-a-positive-step"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: The SCI figures are attributed through a secondary outlet. Annual CPI 88.7 percent cannot substitute for a Hanke 30-day hyperinflation estimate or payment-flow proof. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.iranintl.com/en/202610286929"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: UKMTO numbers #186 and #187 are not the same numbering as MSCIO 158/159. Exact times imply probable overlapping maritime notices, not four additive attacks. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.ukmto.org/"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: CSIS documents vulnerability pathways but its analysis cannot authenticate a new ship impact, residual fuel outage or actor attribution. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.csis.org/analysis/postwar-threat-gulf-energy-infrastructure"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: CFR weighs negotiating and military options after midterms; the expert commentary is a scenario, not a dated first-hand event. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.cfr.org/topics/iran-war-analysis-and-updates"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: The technical Hormuz agreement proposal predates this week. Its absence of an implemented jointly monitored corridor undermines claims that mediation equalled reopening. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.chathamhouse.org/2026/09/escaping-hormuz-trap-what-should-agreement-reopen-strait-look"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: ACAPS most recent text dates to September, while some 27 October severity indicators are updated. Neither independently counts November medical prescriptions filled. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.acaps.org/en/countries/iran"
+      },
+      {
+        "access_stage_assessment": "I challenged the supposed agreement between snippets, metadata requests and exact article-body witnesses; no later HTTP success was backdated to an earlier search or used to elevate unverified claims. only contextual search-stage source, not a new original-body witness.",
+        "assessment": "Critical: WEO country macro forecasts use information through October 1 and cannot close the October 29–November 1 high-frequency fiscal, FX and essential-import observation gaps. The core original claim cannot be widened beyond the recorded observation and source limitations.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.imf.org/en/Publications/WEO/Issues/2026/10/13/world-economic-outlook-october-2026"
+      }
+    ]
+  },
+  "mode": "chatgpt_first_no_api",
+  "post_snapshot_interval": "NOT_SEARCHED",
+  "preforecast_certificate": {
+    "affirmative_source_review_sha256": "6e79f574618cbd6c82d7a663ef7e1a890edd96588f24f07e23a31cb2ad1ac741",
+    "baseline_sha256": "a46462c339421891be1992eef5da3ab40930c2683ec8f8cdc9af57742f3015ef",
+    "claim_reliability_sha256": "093d51634fef48edf2486e3e9cab068bc93763867d31f848c8402f4a99c1a660",
+    "critical_source_review_sha256": "23715eaadaf0ffa2c4ad5a10cf3b0838c1de55ee9d8c5eb5f5051516bbfe847d",
+    "research_as_of": "2026-11-01T14:59:04.114405+00:00",
+    "source_packet_sha256": "cc5d3c0b66ad92ec7f18c22aefb70079d8224646090e951ba6bc26fbe49b6d9a",
+    "source_review_completed_at": "2026-11-01T15:00:48.878197+00:00",
+    "status": "DUAL_SOURCE_REVIEW_CLEAN_LIMITED_INFERENCE",
+    "version": 1
+  },
+  "provenance_limitations": "This is a bounded six-class search actually run in one ChatGPT session and reported by ChatGPT, not an authenticated Responses API trace. Bounded original HTTP bytes were saved and verified locally. Source publisher first-release instants, independently authenticated remote authenticity, and the truth of unobserved attack, custody and financial events are not established by the JSON structure or by model review alone. Both perspectives are sequential in one session, not independent invocations.",
+  "research_as_of": "2026-11-01T14:59:04.114405+00:00",
+  "research_provenance": "CHATGPT_RESEARCH_REPORTED_NOT_API_WEB_SEARCH_TRACE",
+  "source_review_completed_at": "2026-11-01T15:00:48.878197+00:00",
+  "source_review_packet": {
+    "evidence": [
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Maritime / Strait of Hormuz",
+        "date": "2026-11-01",
+        "direction": "raises",
+        "event_date": "2026-10-29",
+        "evidence_status": "new",
+        "id": "E-20261101-01",
+        "impact_magnitude": "moderate",
+        "observation": "MSCIO alert 158/26 records receiving a report that an outbound tanker was struck by an unknown projectile at approximately 16:00 UTC October 29, without reported crew injuries or environmental damage. Attribution and vessel identity are unverified.",
+        "publisher": "Maritime Security Centre – Indian Ocean",
+        "reliability": "Medium",
+        "source": "https://mscio.eu/alerts/194",
+        "source_publication_status": "date_only_not_independently_authenticated",
+        "source_title": "Alert 158/26 – Attack"
+      },
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Maritime / Strait of Hormuz",
+        "date": "2026-11-01",
+        "direction": "raises",
+        "event_date": "2026-10-29",
+        "evidence_status": "new",
+        "id": "E-20261101-02",
+        "impact_magnitude": "moderate",
+        "observation": "MSCIO alert 159/26 records a report of a small boat attaching explosive devices to a tanker at 22:12 UTC October 29; the fire was reportedly extinguished and voyage resumed. Perpetrator and unique vessel identity are unverified.",
+        "publisher": "Maritime Security Centre – Indian Ocean",
+        "reliability": "Medium",
+        "source": "https://mscio.eu/alerts/195",
+        "source_publication_status": "date_only_not_independently_authenticated",
+        "source_title": "Alert 159/26 – Attack"
+      },
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Diplomacy / regional mediation",
+        "date": "2026-11-01",
+        "direction": "lowers",
+        "event_date": "2026-10-27",
+        "evidence_status": "new",
+        "id": "E-20261101-03",
+        "impact_magnitude": "minor",
+        "observation": "Qatar’s October 27 original official statement described mediation as moving positively toward reducing tensions, while making no claim that a mutually implemented ceasefire or accepted navigation agreement existed.",
+        "publisher": "Qatar Ministry of Foreign Affairs",
+        "reliability": "Medium",
+        "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+        "source_publication_status": "date_only_not_independently_authenticated",
+        "source_title": "Qatar Calls for New Regional Security Framework"
+      },
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Yemen / humanitarian coercion",
+        "date": "2026-11-01",
+        "direction": "ambiguous",
+        "event_date": "2026-10-31",
+        "evidence_status": "new",
+        "id": "E-20261101-04",
+        "impact_magnitude": "minor",
+        "observation": "The UN Secretary-General’s spokesman condemned the death of OHCHR colleague Mohammad el Shami while held by Houthi de facto authorities, while explicitly saying circumstances remain unclear. This does not establish current Iranian arms resupply.",
+        "publisher": "United Nations in Yemen",
+        "reliability": "Medium",
+        "source": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+        "source_publication_status": "date_only_not_independently_authenticated",
+        "source_title": "Statement on death of OHCHR staff member in detention"
+      }
+    ],
+    "pre_review_admission_version": 7,
+    "pre_review_claim_decisions": [
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://mscio.eu/alerts/194",
+          "original_url": "https://mscio.eu/alerts/194",
+          "passage": "A tanker was reportedly struck by an unknown projectile while completing an outbound transit through the Strait of Hormuz.",
+          "passage_offset": 198,
+          "retrieved_at": "2026-11-01T14:43:20.936112+00:00",
+          "source_body_sha256": "a9e355e35030ccb954402ad01d3943b46292afccff09589e313a34108c9ff3de",
+          "visible_text_sha256": "3360f6bb19505216609d40a5c963d7393ea829bf552ebbfc70d6b78345d804c3"
+        },
+        "capture_verification_sha256": "318a39385c6ea1157c553e85c606656b68e1e4faf867d58f89554638ce5a39c9",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261101-01",
+        "original_passage": "A tanker was reportedly struck by an unknown projectile while completing an outbound transit through the Strait of Hormuz.",
+        "original_url": "https://mscio.eu/alerts/194",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "a9e355e35030ccb954402ad01d3943b46292afccff09589e313a34108c9ff3de"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://mscio.eu/alerts/195",
+          "original_url": "https://mscio.eu/alerts/195",
+          "passage": "A tanker was reportedly approached by a small boat, which attached two explosive devices to its hull.",
+          "passage_offset": 208,
+          "retrieved_at": "2026-11-01T14:43:21.435105+00:00",
+          "source_body_sha256": "9f7333f5da1ab5b6bc42bd1b2f473394df36a128af4c6eceb9779425f1edfc55",
+          "visible_text_sha256": "bf9354784d2ac5d54389002790b231d62e77d9f0e8fe007bec07d6831ba7ccab"
+        },
+        "capture_verification_sha256": "ed199889c9fced6861348b33f59848c912e4dca35e73441e150f40e8a5e86ad7",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261101-02",
+        "original_passage": "A tanker was reportedly approached by a small boat, which attached two explosive devices to its hull.",
+        "original_url": "https://mscio.eu/alerts/195",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "9f7333f5da1ab5b6bc42bd1b2f473394df36a128af4c6eceb9779425f1edfc55"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+          "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+          "passage": "He described the process as moving in a positive direction, with the primary aim of reducing tensions and preventing further escalation.",
+          "passage_offset": 1857,
+          "retrieved_at": "2026-11-01T14:43:22.726022+00:00",
+          "source_body_sha256": "4450960698e831d920d541848fbc5b4bacefafbe7121b3993bef60b731582baa",
+          "visible_text_sha256": "4e816eb6557f4c8f5f10cfaecf7086c03e1421b051ab27a0746102013687dbd1"
+        },
+        "capture_verification_sha256": "1c9bca837b7a7ca42611f134ce713683bdd216059fd491e4c2d5b57dd2188ef2",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261101-03",
+        "original_passage": "He described the process as moving in a positive direction, with the primary aim of reducing tensions and preventing further escalation.",
+        "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "4450960698e831d920d541848fbc5b4bacefafbe7121b3993bef60b731582baa"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+          "original_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+          "passage": "the death of a United Nations colleague, Mohammad el Shami, while in the custody of the Houthi de facto authorities in Yemen.",
+          "passage_offset": 349,
+          "retrieved_at": "2026-11-01T14:43:22.802120+00:00",
+          "source_body_sha256": "7b92d37284059d4615186088ce3c2d0e6bf530c65c1255f37582d3593ca70e33",
+          "visible_text_sha256": "a3a246fc5d211b0e8ffe5a32416b449969a73b200d922ff31910da4e22b406ed"
+        },
+        "capture_verification_sha256": "5fd3f23748ea4031600faf0b1cf083a9f3adb9ab3e6db4e267e39bb986ec6318",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261101-04",
+        "original_passage": "the death of a United Nations colleague, Mohammad el Shami, while in the custody of the Houthi de facto authorities in Yemen.",
+        "original_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "7b92d37284059d4615186088ce3c2d0e6bf530c65c1255f37582d3593ca70e33"
+      }
+    ],
+    "promising_evidence_followup": {
+      "leads": [
+        {
+          "admitted_evidence_ids": [
+            "E-20261101-01"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://mscio.eu/alerts/194",
+              "https://www.ukmto.org/"
+            ],
+            "contrary_source_urls": [
+              "https://www.ukmto.org/"
+            ],
+            "counter_queries": [
+              "Oct 29 2026 small boat explosive devices Hormuz tanker insurance shipping still moving safe crew vessel resumed"
+            ],
+            "counterevidence_findings": "UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively. Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "Received report, not proof of the physical incident or a named attacker; UKMTO may share the same vessel/company chain. Source first release and external issuer authenticity were not independently verified to cryptographic certainty.",
+            "performed_at": "2026-11-01T14:59:04.114271+00:00",
+            "reporting_chain": "Original MSCIO alert 158/26 publishes receipt of the October 29 16:00 UTC unknown-projectile report. The named original issuing body speaks on its own record; the contextual source is not counted as independent corroboration of the same underlying fact.",
+            "scope": {
+              "geography": "Hormuz near the Oman-Iran shipping lane",
+              "method_and_inclusions": "Original incident-monitoring alert repeats reported vessel observations; responsibility unverified",
+              "population_or_denominator": "One maritime warning per claim, no all-vessel denominator",
+              "time_window": "October 29–30 2026 reporting"
+            },
+            "supporting_findings": "The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. Original MSCIO alert 158/26 publishes receipt of the October 29 16:00 UTC unknown-projectile report.",
+            "upstream_queries": [
+              "site:mscio.eu/alerts/ October 29 30 2026 tanker 158 159 163 projectile small boat Strait Hormuz"
+            ],
+            "upstream_source_urls": [
+              "https://mscio.eu/alerts/194"
+            ]
+          },
+          "priority": "high",
+          "relevance": "Original MSCIO alert 158/26 publishes receipt of the October 29 16:00 UTC unknown-projectile report. Received report, not proof of the physical incident or a named attacker; UKMTO may share the same vessel/company chain.",
+          "source_url": "https://mscio.eu/alerts/194",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261101-02"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://mscio.eu/alerts/195",
+              "https://www.ukmto.org/"
+            ],
+            "contrary_source_urls": [
+              "https://www.ukmto.org/"
+            ],
+            "counter_queries": [
+              "Oct 29 2026 small boat explosive devices Hormuz tanker insurance shipping still moving safe crew vessel resumed"
+            ],
+            "counterevidence_findings": "UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively. Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "Exact incident identity and independent attack attribution remain unknown; UKMTO #187 may share the same original company source. Source first release and external issuer authenticity were not independently verified to cryptographic certainty.",
+            "performed_at": "2026-11-01T14:59:04.114371+00:00",
+            "reporting_chain": "Original MSCIO alert 159/26 publishes receipt of the 22:12 UTC October 29 small-boat explosives report, later extinguished fire and resumed voyage. The named original issuing body speaks on its own record; the contextual source is not counted as independent corroboration of the same underlying fact.",
+            "scope": {
+              "geography": "Hormuz near the Oman-Iran shipping lane",
+              "method_and_inclusions": "Original incident-monitoring alert repeats reported vessel observations; responsibility unverified",
+              "population_or_denominator": "One maritime warning per claim, no all-vessel denominator",
+              "time_window": "October 29–30 2026 reporting"
+            },
+            "supporting_findings": "The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. Original MSCIO alert 159/26 publishes receipt of the 22:12 UTC October 29 small-boat explosives report, later extinguished fire and resumed voyage.",
+            "upstream_queries": [
+              "site:mscio.eu/alerts/ October 29 30 2026 tanker 158 159 163 projectile small boat Strait Hormuz"
+            ],
+            "upstream_source_urls": [
+              "https://mscio.eu/alerts/195"
+            ]
+          },
+          "priority": "high",
+          "relevance": "Original MSCIO alert 159/26 publishes receipt of the 22:12 UTC October 29 small-boat explosives report, later extinguished fire and resumed voyage. Exact incident identity and independent attack attribution remain unknown; UKMTO #187 may share the same original company source.",
+          "source_url": "https://mscio.eu/alerts/195",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261101-03"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+              "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/"
+            ],
+            "contrary_source_urls": [
+              "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/"
+            ],
+            "counter_queries": [
+              "Qatar Iran October 31 2026 peace proposal rejected agreement no deal mediators Doha counterevidence"
+            ],
+            "counterevidence_findings": "Reuters original October 31 article describes continued talks, rejected mediation options and simultaneous military warnings. Original body bytes inaccessible in this session; search-stage reporting cannot independently authenticate a precise treaty or origin chain.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "An official description of talks is a reported intention, not a verified accepted accord, ceasefire, or reopened Hormuz route. Source first release and external issuer authenticity were not independently verified to cryptographic certainty.",
+            "performed_at": "2026-11-01T14:59:04.114380+00:00",
+            "reporting_chain": "Original October 27 Qatar foreign ministry statement records a cautiously positive view of mediation and appeals for Iran to show action. The named original issuing body speaks on its own record; the contextual source is not counted as independent corroboration of the same underlying fact.",
+            "scope": {
+              "geography": "Persian Gulf bilateral and regional diplomacy",
+              "method_and_inclusions": "Dated original government institutional statement, not independently certified outcome",
+              "population_or_denominator": "One ministry record with no denominator of implemented deals",
+              "time_window": "October 27–31 2026 statements"
+            },
+            "supporting_findings": "The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. Original October 27 Qatar foreign ministry statement records a cautiously positive view of mediation and appeals for Iran to show action.",
+            "upstream_queries": [
+              "site:mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27 regional security Qatar Iran mediation \"positive direction\""
+            ],
+            "upstream_source_urls": [
+              "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect"
+            ]
+          },
+          "priority": "high",
+          "relevance": "Original October 27 Qatar foreign ministry statement records a cautiously positive view of mediation and appeals for Iran to show action. An official description of talks is a reported intention, not a verified accepted accord, ceasefire, or reopened Hormuz route.",
+          "source_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261101-04"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+              "https://www.acaps.org/en/countries/iran"
+            ],
+            "contrary_source_urls": [
+              "https://www.acaps.org/en/countries/iran"
+            ],
+            "counter_queries": [
+              "October 2026 Iran protests strike security forces leadership split financial payments teachers wages strikes verified"
+            ],
+            "counterevidence_findings": "ACAPS September Iran brief describes high food and medicine costs, import disruption and severe humanitarian strain. Latest dated country narrative is September; October dashboard updates do not provide new verified national affordability denominators.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "The exact cause and time of death are unclear; no evidence of current Iranian material, technical or financial Houthi support follows. Source first release and external issuer authenticity were not independently verified to cryptographic certainty.",
+            "performed_at": "2026-11-01T14:59:04.114387+00:00",
+            "reporting_chain": "The October 31 original UN statement condemns the reported death of an OHCHR colleague in Houthi detention and says circumstances are unclear. The named original issuing body speaks on its own record; the contextual source is not counted as independent corroboration of the same underlying fact.",
+            "scope": {
+              "geography": "Yemen Houthi-controlled detention facilities",
+              "method_and_inclusions": "Original UN spokesperson statement, not autopsy or military-support measurement",
+              "population_or_denominator": "One named OHCHR staff member; no population-wide incidence measure",
+              "time_window": "October 27–31 2026 statements"
+            },
+            "supporting_findings": "The original HTTP HTML bytes and named quoted passage were captured and persisted locally prior to the source cutoff. The October 31 original UN statement condemns the reported death of an OHCHR colleague in Houthi detention and says circumstances are unclear.",
+            "upstream_queries": [
+              "site:yemen.un.org/en/325563 statement attributable spokesman death OHCHR staff detention October 31 2026"
+            ],
+            "upstream_source_urls": [
+              "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention"
+            ]
+          },
+          "priority": "high",
+          "relevance": "The October 31 original UN statement condemns the reported death of an OHCHR colleague in Houthi detention and says circumstances are unclear. The exact cause and time of death are unclear; no evidence of current Iranian material, technical or financial Houthi support follows.",
+          "source_url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "IAEA newscenter was searched for official October nuclear safeguards updates. No current original safeguards release was recovered and verified. Missing public information does not imply stable inspections.",
+          "source_url": "https://www.iaea.org/newscenter",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Reuters original October 31 article describes continued talks, rejected mediation options and simultaneous military warnings. Original body bytes inaccessible in this session; search-stage reporting cannot independently authenticate a precise treaty or origin chain.",
+          "source_url": "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Reuters original November 1 dispatch says mediators continued talks without a final agreement and amid continued military threats. Original article-body bytes not locally captured and no date-specific same-stage independent source chain verified.",
+          "source_url": "https://www.reuters.com/world/middle-east/iranian-negotiators-doha-continue-talks-end-us-iran-war-official-says-2026-11-01/",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Al Jazeera interview reports Iranian foreign minister considered US outreach positive but did not plan direct meetings. A politician interview records his statements, not that the United States accepted conditions or that a bargain is concluded.",
+          "source_url": "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Tasnim October 31 account repeats foreign-minister remarks originally made in Al Jazeera interview. Not independently authored interview, and repeating the interview is not independent corroboration of a diplomatic result.",
+          "source_url": "https://www.tasnimnews.ir/en/news/2026/10/31/3736889/araqchi-us-bid-to-open-dialogue-with-iran-a-positive-step",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Iran International October 28 reports SCI 4.4 percent monthly and 88.7 percent year-on-year CPI inflation through October 22. Primary SCI instrument/release not directly captured; year-on-year CPI differs from Hanke 30-day rate.",
+          "source_url": "https://www.iranintl.com/en/202610286929",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively. Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks.",
+          "source_url": "https://www.ukmto.org/",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "CSIS October 6 discusses Gulf energy infrastructure vulnerability, Hormuz coercion and security adaptations. The essay is analytical, not a newly confirmed October 29 attack or objective evidence of attacker identity.",
+          "source_url": "https://www.csis.org/analysis/postwar-threat-gulf-energy-infrastructure",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "CFR October 23 expert commentary examines escalation and negotiation choices after the midterm vote. A contingent analysis cannot authenticate a negotiated outcome or test exact Protocol v1 forecast event.",
+          "source_url": "https://www.cfr.org/topics/iran-war-analysis-and-updates",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Chatham House September analysis argues durable reopening needs technically verifiable operating rules and reciprocity. September modelling and proposals are not proof that conditions were implemented by November 1.",
+          "source_url": "https://www.chathamhouse.org/2026/09/escaping-hormuz-trap-what-should-agreement-reopen-strait-look",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "ACAPS September Iran brief describes high food and medicine costs, import disruption and severe humanitarian strain. Latest dated country narrative is September; October dashboard updates do not provide new verified national affordability denominators.",
+          "source_url": "https://www.acaps.org/en/countries/iran",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "IMF October World Economic Outlook includes risks from geopolitical conflict and Iran macroeconomic estimates. Its chapter information cutoff is October 1, and projections are not a verified real-time parallel FX or external-payments stream.",
+          "source_url": "https://www.imf.org/en/Publications/WEO/Issues/2026/10/13/world-economic-outlook-october-2026",
+          "triage": "context_only"
+        }
+      ],
+      "research_as_of": "2026-11-01T14:59:04.114405+00:00",
+      "version": 1
+    },
+    "published_history_sha256": "a46462c339421891be1992eef5da3ab40930c2683ec8f8cdc9af57742f3015ef",
+    "research_as_of": "2026-11-01T14:59:04.114405+00:00",
+    "source_quality_audit": {
+      "source_count": 16,
+      "sources": [
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261101-01"
+              ],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-01T14:43:20.936112+00:00",
+              "http_status": 200,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Original MSCIO alert 158/26 publishes receipt of the October 29 16:00 UTC unknown-projectile report.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Received report, not proof of the physical incident or a named attacker; UKMTO may share the same vessel/company chain.",
+          "new_evidence_indices": [
+            0
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://mscio.eu/alerts/194"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261101-02"
+              ],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-01T14:43:21.435105+00:00",
+              "http_status": 200,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Original MSCIO alert 159/26 publishes receipt of the 22:12 UTC October 29 small-boat explosives report, later extinguished fire and resumed voyage.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Exact incident identity and independent attack attribution remain unknown; UKMTO #187 may share the same original company source.",
+          "new_evidence_indices": [
+            1
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://mscio.eu/alerts/195"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261101-03"
+              ],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-01T14:43:22.726022+00:00",
+              "http_status": 200,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Original October 27 Qatar foreign ministry statement records a cautiously positive view of mediation and appeals for Iran to show action.",
+          "classification": "direct_observation",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "An official description of talks is a reported intention, not a verified accepted accord, ceasefire, or reopened Hormuz route.",
+          "new_evidence_indices": [
+            2
+          ],
+          "origin": "official_or_advocacy_claim",
+          "role": "new_evidence",
+          "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261101-04"
+              ],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-01T14:43:22.802120+00:00",
+              "http_status": 200,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "The October 31 original UN statement condemns the reported death of an OHCHR colleague in Houthi detention and says circumstances are unclear.",
+          "classification": "direct_observation",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "The exact cause and time of death are unclear; no evidence of current Iranian material, technical or financial Houthi support follows.",
+          "new_evidence_indices": [
+            3
+          ],
+          "origin": "official_or_advocacy_claim",
+          "role": "new_evidence",
+          "url": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "unknown"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "IAEA newscenter was searched for official October nuclear safeguards updates.",
+          "classification": "unverified",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "No current original safeguards release was recovered and verified. Missing public information does not imply stable inspections.",
+          "new_evidence_indices": [],
+          "origin": "unknown",
+          "role": "background_context",
+          "url": "https://www.iaea.org/newscenter"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "Reuters original October 31 article describes continued talks, rejected mediation options and simultaneous military warnings.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Original body bytes inaccessible in this session; search-stage reporting cannot independently authenticate a precise treaty or origin chain.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "background_context",
+          "url": "https://www.reuters.com/world/middle-east/iranian-envoys-meet-qatari-mediators-threat-looms-us-strikes-after-midterms-2026-10-31/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "Reuters original November 1 dispatch says mediators continued talks without a final agreement and amid continued military threats.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Original article-body bytes not locally captured and no date-specific same-stage independent source chain verified.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "background_context",
+          "url": "https://www.reuters.com/world/middle-east/iranian-negotiators-doha-continue-talks-end-us-iran-war-official-says-2026-11-01/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "Al Jazeera interview reports Iranian foreign minister considered US outreach positive but did not plan direct meetings.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "A politician interview records his statements, not that the United States accepted conditions or that a bargain is concluded.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "background_context",
+          "url": "https://www.aljazeera.com/amp/news/2026/10/31/iran-fm-says-us-outreach-a-positive-step-as-delegation-in-qatar-for-talks"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "Tasnim October 31 account repeats foreign-minister remarks originally made in Al Jazeera interview.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Not independently authored interview, and repeating the interview is not independent corroboration of a diplomatic result.",
+          "new_evidence_indices": [],
+          "origin": "syndicated_reprint",
+          "role": "background_context",
+          "url": "https://www.tasnimnews.ir/en/news/2026/10/31/3736889/araqchi-us-bid-to-open-dialogue-with-iran-a-positive-step"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "Iran International October 28 reports SCI 4.4 percent monthly and 88.7 percent year-on-year CPI inflation through October 22.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Primary SCI instrument/release not directly captured; year-on-year CPI differs from Hanke 30-day rate.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "background_context",
+          "url": "https://www.iranintl.com/en/202610286929"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "UKMTO October 29 notices #186 and #187 include a projectile report and a 22:12 UTC vessel fire, respectively.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Likely overlap with MSCIO incidents, unverified vessel keys, and separate agency numbering; cannot count as two more attacks.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "background_context",
+          "url": "https://www.ukmto.org/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "CSIS October 6 discusses Gulf energy infrastructure vulnerability, Hormuz coercion and security adaptations.",
+          "classification": "analysis",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "The essay is analytical, not a newly confirmed October 29 attack or objective evidence of attacker identity.",
+          "new_evidence_indices": [],
+          "origin": "analytical_secondary",
+          "role": "background_context",
+          "url": "https://www.csis.org/analysis/postwar-threat-gulf-energy-infrastructure"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "CFR October 23 expert commentary examines escalation and negotiation choices after the midterm vote.",
+          "classification": "analysis",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "A contingent analysis cannot authenticate a negotiated outcome or test exact Protocol v1 forecast event.",
+          "new_evidence_indices": [],
+          "origin": "analytical_secondary",
+          "role": "background_context",
+          "url": "https://www.cfr.org/topics/iran-war-analysis-and-updates"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "Chatham House September analysis argues durable reopening needs technically verifiable operating rules and reciprocity.",
+          "classification": "analysis",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "September modelling and proposals are not proof that conditions were implemented by November 1.",
+          "new_evidence_indices": [],
+          "origin": "analytical_secondary",
+          "role": "background_context",
+          "url": "https://www.chathamhouse.org/2026/09/escaping-hormuz-trap-what-should-agreement-reopen-strait-look"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "ACAPS September Iran brief describes high food and medicine costs, import disruption and severe humanitarian strain.",
+          "classification": "analysis",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Latest dated country narrative is September; October dashboard updates do not provide new verified national affordability denominators.",
+          "new_evidence_indices": [],
+          "origin": "analytical_secondary",
+          "role": "background_context",
+          "url": "https://www.acaps.org/en/countries/iran"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "The exact original raw HTML file is durably held outside the public repository for each admitted claim. Other URLs remain context, even when searchable.",
+              "status": "not_attempted"
+            },
+            "metadata": {
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Direct original publisher HTTP response was stored only where performed. No metadata-only result is represented as a body witness or authenticated publication time.",
+              "status": "not_attempted"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "limitations": "Actual ChatGPT searches supplied this original/context link; source text or snippets at the search stage do not authenticate a byte-exact body.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_not_retrieved",
+          "assessment": "IMF October World Economic Outlook includes risks from geopolitical conflict and Iran macroeconomic estimates.",
+          "classification": "background_only",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "unknown",
+          "limitations": "Its chapter information cutoff is October 1, and projections are not a verified real-time parallel FX or external-payments stream.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "background_context",
+          "url": "https://www.imf.org/en/Publications/WEO/Issues/2026/10/13/world-economic-outlook-october-2026"
+        }
+      ]
+    }
+  },
+  "version": 1
+}
