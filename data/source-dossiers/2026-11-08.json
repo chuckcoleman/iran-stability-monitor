@@ -1,0 +1,1649 @@
+{
+  "version": 1,
+  "mode": "chatgpt_first_no_api",
+  "research_provenance": "CHATGPT_RESEARCH_REPORTED_NOT_API_WEB_SEARCH_TRACE",
+  "baseline_sha256": "d90315bb4ce162ecc48e9e70aa9b0b5cc07b950adbfa6724ae4626e82f36c7bc",
+  "candidate_sha256": "4b90ff6e62ae86581edf12962aef5f51561d3bd8470b2ceb465a0ca83b587012",
+  "research_as_of": "2026-11-08T17:20:24.221801+00:00",
+  "source_review_completed_at": "2026-11-08T17:20:24.275854+00:00",
+  "post_snapshot_interval": "NOT_SEARCHED",
+  "provenance_limitations": "This is a reported ChatGPT search, not authenticated API telemetry. Four complete raw original HTML captures substantiate only narrow original article/institutional assertions, not their physical event truth or first-release instant. CENTCOM, Reuters, AP, UKMTO, IAEA and Stimson publisher originals were access blocked. Clearwater possible crew news shares an uncertain tanker-company chain, no independent verification. No current Hanke/FX, food/medicine, payment, Chinese oil-credit or Houthi transfer data authenticated. Affirmative and critical editorial perspectives are one ChatGPT session, not two independently invoked models.",
+  "coverage": [
+    {
+      "category": "primary_data",
+      "queries": [
+        "Iran November 8 2026 IAEA official Oman foreign ministry Qatar November 2026 Hormuz mediation sources",
+        "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks",
+        "November 4 2026 tanker 50nm north Madinat ash Shamal MSCIO 170/26 UKMTO warning same incident duplicate"
+      ],
+      "original_urls": [
+        "https://mscio.eu/alerts/206",
+        "https://www.fm.gov.om/en/64014/",
+        "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "https://www.ukmto.org/recent-incidents",
+        "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+        "https://www.iaea.org/newscenter"
+      ],
+      "outcome": "eligible_reporting_found",
+      "limitations": "Institutional MSCIO, Oman and Qatar original HTML bodies were captured. CENTCOM, UKMTO and IAEA direct originals returned HTTP 403 and cannot establish distinct corroboration, direct military event or implemented agreement."
+    },
+    {
+      "category": "international_media",
+      "queries": [
+        "Iran November 8 2026 Reuters AP AFP Tehran Gulf Hormuz events vessel attacks",
+        "November 7 2026 CENTCOM Huda disabled ship Khor Fakkan original press release crew source military independent verification"
+      ],
+      "original_urls": [
+        "https://www.reuters.com/world/middle-east/iran-suggests-blasts-are-not-us-attacks-both-sides-report-ships-hit-2026-11-08/",
+        "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b"
+      ],
+      "outcome": "inaccessible_or_incomplete",
+      "limitations": "Original Reuters returned 401 and AP 403; original article-body proof was not obtained, and their shared official-source stories cannot qualify as independent corroboration."
+    },
+    {
+      "category": "regional_multilingual_media",
+      "queries": [
+        "site:aljazeera.net/news/2026/11 إيران هرمز الوساطة واشنطن قطر عمان",
+        "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks"
+      ],
+      "original_urls": [
+        "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+        "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran"
+      ],
+      "outcome": "searched_no_eligible_evidence",
+      "limitations": "Arabic Al Jazeera source reports official Qatari statements and overlaps the ministry chain; no separately original admitted Persian or new independent regional event witness."
+    },
+    {
+      "category": "specialist_investigative",
+      "queries": [
+        "November 8 2026 Strait of Hormuz maritime MSCIO UKMTO Lloyds List satellite oil cargo ship Huda",
+        "November 4 2026 tanker 50nm north Madinat ash Shamal MSCIO 170/26 UKMTO warning same incident duplicate"
+      ],
+      "original_urls": [
+        "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "https://mscio.eu/alerts/206",
+        "https://www.cwdynamics.com/alerts/alert/33577?page=6",
+        "https://www.ukmto.org/recent-incidents"
+      ],
+      "outcome": "eligible_reporting_found",
+      "limitations": "The Maritime Executive edited original documents a CENTCOM attributed claim, while MSCIO issues one reported incident. Clearwater later possible crew update is context and should not be silently treated as current verified casualty or contradict earlier uncertainty."
+    },
+    {
+      "category": "think_tanks",
+      "queries": [
+        "November 2026 International Crisis Group Stimson Chatham House Iran war diplomacy de-escalation analysis"
+      ],
+      "original_urls": [
+        "https://www.stimson.org/2026/the-lame-duck-period-is-full-of-peril-in-the-war-on-iran/"
+      ],
+      "outcome": "inaccessible_or_incomplete",
+      "limitations": "Original Stimson publisher HTTP 403. Scenario interpretations can challenge forecasts but do not constitute independently witnessed attacks or sovereign stabilization."
+    },
+    {
+      "category": "economic_humanitarian_academic",
+      "queries": [
+        "Iran November 2026 ACAPS WFP WHO humanitarian food medicine Hanke inflation banking payments foreign exchange",
+        "Iran November 2026 Hanke monthly inflation latest verified market rial 30-day parallel source official",
+        "Iran November 2026 China oil credit tanker blockade discounts independent transactions sanctions oil shipments",
+        "Iran November 2026 Houthi weapons materiel technical financial support independent manufacturing shipping investigations"
+      ],
+      "original_urls": [
+        "https://www.acaps.org/en/countries/iran"
+      ],
+      "outcome": "searched_no_eligible_evidence",
+      "limitations": "Original ACAPS background exists, but no method-comparable new Hanke monthly observation, 30-day parallel FX rate series, two-category 14-day settlement test, primary current oil-credit terms, verified food/medicine sampling or Houthi arms origins was found."
+    }
+  ],
+  "source_review_packet": {
+    "pre_review_admission_version": 7,
+    "research_as_of": "2026-11-08T17:20:24.221801+00:00",
+    "published_history_sha256": "d90315bb4ce162ecc48e9e70aa9b0b5cc07b950adbfa6724ae4626e82f36c7bc",
+    "evidence": [
+      {
+        "id": "E-20261108-01",
+        "date": "2026-11-08",
+        "event_date": "2026-11-04",
+        "source": "https://mscio.eu/alerts/206",
+        "source_title": "MSCIO Alert 170/26 – Attack",
+        "publisher": "Maritime Security Centre – Indian Ocean",
+        "category": "Maritime / Arabian Gulf",
+        "observation": "MSCIO issued a November 5 alert recording a received report that a tanker 50 nautical miles north of Madinat ash Shamal was reportedly struck by two unidentified projectiles on November 4. The alert did not know crew status, damage, or perpetrator.",
+        "direction": "raises",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "minor",
+        "reliability": "Medium",
+        "evidence_status": "new",
+        "source_publication_status": "date_only_not_independently_authenticated"
+      },
+      {
+        "id": "E-20261108-02",
+        "date": "2026-11-08",
+        "event_date": "2026-11-05",
+        "source": "https://www.fm.gov.om/en/64014/",
+        "source_title": "Minister in phone call with Iranian counterpart",
+        "publisher": "Oman Ministry of Foreign Affairs",
+        "category": "Diplomacy / navigation",
+        "observation": "Oman’s Foreign Ministry published a November 5 account of ministerial discussions with Iran about arrangements for potentially resuming safe navigation through Hormuz. The call is not an implemented reopening.",
+        "direction": "lowers",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "minor",
+        "reliability": "Medium-high",
+        "evidence_status": "new",
+        "source_publication_status": "date_only_not_independently_authenticated"
+      },
+      {
+        "id": "E-20261108-03",
+        "date": "2026-11-08",
+        "event_date": "2026-11-03",
+        "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "source_title": "Qatar Continues Its Efforts to Bridge Gap between Washington, Tehran",
+        "publisher": "Qatar Ministry of Foreign Affairs",
+        "category": "Diplomacy / mediation",
+        "observation": "Qatar’s Foreign Ministry published a November 3 briefing that mediators exchanged proposals and a Qatari delegation met counterparts in Tehran for about three hours, while expressly saying no specific breakthrough had occurred.",
+        "direction": "lowers",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "minor",
+        "reliability": "Medium-high",
+        "evidence_status": "new",
+        "source_publication_status": "date_only_not_independently_authenticated"
+      },
+      {
+        "id": "E-20261108-04",
+        "date": "2026-11-08",
+        "event_date": "2026-11-07",
+        "source": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "source_title": "US Forces Disable First Cargo Ship in a Month Sailing from Iranian Port",
+        "publisher": "The Maritime Executive",
+        "category": "Maritime / Gulf of Oman",
+        "observation": "The Maritime Executive reported November 7 that CENTCOM asserted U.S. forces disabled the St. Kitts-flagged M/V Huda after repeated warnings. This is an attributed claim rather than independent physical verification of crew safety, legality or vessel damage.",
+        "direction": "raises",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "moderate",
+        "reliability": "Medium",
+        "evidence_status": "new",
+        "source_publication_status": "date_only_not_independently_authenticated"
+      }
+    ],
+    "pre_review_claim_decisions": [
+      {
+        "id": "E-20261108-01",
+        "original_url": "https://mscio.eu/alerts/206",
+        "original_passage": "A tanker was reportedly struck by two unidentified projectiles.",
+        "source_body_sha256": "25469bb4e3695295cc367f339fc2e387682b49d3807f1591939a3ee09916b688",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://mscio.eu/alerts/206",
+          "final_url": "https://mscio.eu/alerts/206",
+          "retrieved_at": "2026-11-08T17:20:17.528506+00:00",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "25469bb4e3695295cc367f339fc2e387682b49d3807f1591939a3ee09916b688",
+          "visible_text_sha256": "afe38d5559bd1234bf9e6692ecc76e59965163c50d92a1da1864c8e9ec6a363f",
+          "passage_offset": 212,
+          "passage": "A tanker was reportedly struck by two unidentified projectiles."
+        },
+        "capture_verification_sha256": "654de057839f4a5fdd84455d4f84978345ccc61e1fdbc6e60253dbac04f8de62"
+      },
+      {
+        "id": "E-20261108-02",
+        "original_url": "https://www.fm.gov.om/en/64014/",
+        "original_passage": "The Ministers reviewed the latest diplomatic contacts and discussions aimed at reaching practical, political and technical understandings",
+        "source_body_sha256": "6b17d42edbdfe0dd2ce7aff8f6212424f3125c0e531e6e779820cdfd6ad280b4",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://www.fm.gov.om/en/64014/",
+          "final_url": "https://www.fm.gov.om/en/64014/",
+          "retrieved_at": "2026-11-08T17:20:19.248955+00:00",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "6b17d42edbdfe0dd2ce7aff8f6212424f3125c0e531e6e779820cdfd6ad280b4",
+          "visible_text_sha256": "5c948f46b91f5a8a06bc39ecd062979219a9478df842b3e0914c5dc6be085483",
+          "passage_offset": 211,
+          "passage": "The Ministers reviewed the latest diplomatic contacts and discussions aimed at reaching practical, political and technical understandings"
+        },
+        "capture_verification_sha256": "f44dfa0cde07331319d9527887be17291fbd636ecdc15958706940fb7bcfb10e"
+      },
+      {
+        "id": "E-20261108-03",
+        "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "original_passage": "the State of Qatar continues its efforts to bridge the gap between the United States and the Islamic Republic of Iran",
+        "source_body_sha256": "cae41e2f5212938f26786678a3c51f2d38487f2e6da6ad02fc0b762757472537",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+          "final_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+          "retrieved_at": "2026-11-08T17:20:20.442242+00:00",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "cae41e2f5212938f26786678a3c51f2d38487f2e6da6ad02fc0b762757472537",
+          "visible_text_sha256": "651f92054b3ce66eeb8fcee6d7b21b705af879c8dec297b2170b756877450055",
+          "passage_offset": 445,
+          "passage": "the State of Qatar continues its efforts to bridge the gap between the United States and the Islamic Republic of Iran"
+        },
+        "capture_verification_sha256": "15bcd834583fd1b53e476673fa3f9b47c22a75cbca780ae482f9382cf33587aa"
+      },
+      {
+        "id": "E-20261108-04",
+        "original_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "original_passage": "U.S. Central Command asserted the vessel’s crew ignored repeated warnings and attempted to violate the naval blockade.",
+        "source_body_sha256": "24b4cc03e299b4c742fbb0b49102f552da72f23a5fa4c3de428488bc0dc5b16b",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+          "final_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+          "retrieved_at": "2026-11-08T17:20:20.512821+00:00",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "24b4cc03e299b4c742fbb0b49102f552da72f23a5fa4c3de428488bc0dc5b16b",
+          "visible_text_sha256": "bdc9bc33b8c3f2c8418b8ed0857492b40231d4dcba7b566846ba56548c1baf02",
+          "passage_offset": 260,
+          "passage": "U.S. Central Command asserted the vessel’s crew ignored repeated warnings and attempted to violate the naval blockade."
+        },
+        "capture_verification_sha256": "411f78e2d653c5ec97218a40cfaf1cd383b4d3e8959ee862e8a8172a52158066"
+      }
+    ],
+    "source_quality_audit": {
+      "source_count": 13,
+      "sources": [
+        {
+          "url": "https://mscio.eu/alerts/206",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            0
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "MSCIO first-party November 5 alert records a reported tanker attack north of Qatar on November 4.",
+          "limitations": "No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-08T17:20:17.528506+00:00",
+              "http_status": 200,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:17.528506+00:00 yielded 200; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261108-01"
+              ],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.fm.gov.om/en/64014/",
+          "classification": "direct_observation",
+          "origin": "official_or_advocacy_claim",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            1
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Oman ministry first-party November 5 ministerial statement reports diplomatic discussions over future safe Hormuz navigation.",
+          "limitations": "Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-08T17:20:19.248955+00:00",
+              "http_status": 200,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:19.248955+00:00 yielded 200; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261108-02"
+              ],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+          "classification": "direct_observation",
+          "origin": "official_or_advocacy_claim",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            2
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Qatar foreign ministry November 3 briefing reports a Tehran intermediary meeting and continued bilateral proposal exchanges.",
+          "limitations": "The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-08T17:20:20.442242+00:00",
+              "http_status": 200,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:20.442242+00:00 yielded 200; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261108-03"
+              ],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            3
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Edited Maritime Executive first-party November 7 report attributes the disabling of M/V Huda to CENTCOM.",
+          "limitations": "Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-08T17:20:20.512821+00:00",
+              "http_status": 200,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:20.512821+00:00 yielded 200; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261108-04"
+              ],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.cwdynamics.com/alerts/alert/33577?page=6",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "Clearwater Dynamics own published alert supplies a later possible missing-seafarer status for a possibly corresponding tanker.",
+          "limitations": "It cites prior UKMTO or industry reporting and may share the same vessel informant; no independently verified original ship-owner finding was captured.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-08T17:20:21.799483+00:00",
+              "http_status": 200,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:21.799483+00:00 yielded 200; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.ukmto.org/recent-incidents",
+          "classification": "attributed_claim",
+          "origin": "official_or_advocacy_claim",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_unavailable",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "UKMTO incident summary appears to match MSCIO tanker location, time and two unidentified projectiles.",
+          "limitations": "Original UKMTO portal HTTP 403, and likely shared company reporting cannot be counted as two independent matching incidents.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "failed",
+              "checked_at": "2026-11-08T17:20:21.885634+00:00",
+              "http_status": 403,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:21.885634+00:00 yielded 403; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.reuters.com/world/middle-east/iran-suggests-blasts-are-not-us-attacks-both-sides-report-ships-hit-2026-11-08/",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_unavailable",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "Reuters November 8 reporting covers disputed shipping incidents and unresolved negotiations.",
+          "limitations": "Original publisher HTTP 401; a search-stage excerpt or syndicated copy is not an authenticated exact Reuters original body.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "failed",
+              "checked_at": "2026-11-08T17:20:21.965759+00:00",
+              "http_status": 401,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:21.965759+00:00 yielded 401; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_unavailable",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "AP published original coverage referencing Gulf shipping and military claims.",
+          "limitations": "Original publisher HTTP 403, and repetition of the CENTCOM account is not a separate physical strike witness.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "failed",
+              "checked_at": "2026-11-08T17:20:22.004360+00:00",
+              "http_status": 403,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:22.004360+00:00 yielded 403; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "Al Jazeera Arabic November 7 report describes Qatar denial that talks had definitively collapsed.",
+          "limitations": "The item quotes Qatar official statements and thus is not an independent acceptance-of-agreement or successful-mediation witness.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-08T17:20:22.851571+00:00",
+              "http_status": 200,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:22.851571+00:00 yielded 200; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.stimson.org/2026/the-lame-duck-period-is-full-of-peril-in-the-war-on-iran/",
+          "classification": "analysis",
+          "origin": "analytical_secondary",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_unavailable",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "Stimson analysis argues that renewed major attacks could be an important future strategic danger.",
+          "limitations": "Original publisher HTTP 403. Analyst contingent interpretations are not realized events or evidence of troop movement.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "failed",
+              "checked_at": "2026-11-08T17:20:22.905128+00:00",
+              "http_status": 403,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:22.905128+00:00 yielded 403; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.acaps.org/en/countries/iran",
+          "classification": "analysis",
+          "origin": "analytical_secondary",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "ACAPS Iran country analysis supplies previously dated price and humanitarian conditions as context.",
+          "limitations": "Historical food and medicine availability cannot substitute for a fresh November national basket, Hanke monthly inflation or settlement failure duration.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-08T17:20:24.027646+00:00",
+              "http_status": 200,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:24.027646+00:00 yielded 200; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.iaea.org/newscenter",
+          "classification": "background_only",
+          "origin": "official_or_advocacy_claim",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_unavailable",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "IAEA newscenter was searched for any current Iran nuclear verification original publication.",
+          "limitations": "Original HTTP 403; no date-matched new monitoring inspection original was admitted.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "failed",
+              "checked_at": "2026-11-08T17:20:24.091118+00:00",
+              "http_status": 403,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:24.091118+00:00 yielded 403; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+          "classification": "attributed_claim",
+          "origin": "official_or_advocacy_claim",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_unavailable",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "CENTCOM direct official release endpoint was sought to verify the alleged M/V Huda blockade action.",
+          "limitations": "Original publisher HTTP 403; specialist report of military statements is not equivalent to independently verified original military response bytes.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": null,
+              "limitations": "A real ChatGPT public web search found the URL or publisher extract; the search stage is self-reported and never authenticates byte-exact original body."
+            },
+            "metadata": {
+              "status": "failed",
+              "checked_at": "2026-11-08T17:20:24.221653+00:00",
+              "http_status": 403,
+              "limitations": "A distinct direct HTTP request at 2026-11-08T17:20:24.221653+00:00 yielded 403; differences from search-stage excerpts are not same-stage contradictions, and first release remains unproved."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "Only admitted new claims have independently preserved actual publisher response raw HTML. No metadata, secondary reserialization or search extract is called a body witness."
+            },
+            "same_stage_conflicts": []
+          }
+        }
+      ]
+    },
+    "promising_evidence_followup": {
+      "version": 1,
+      "research_as_of": "2026-11-08T17:20:24.221801+00:00",
+      "leads": [
+        {
+          "source_url": "https://mscio.eu/alerts/206",
+          "triage": "promising",
+          "priority": "high",
+          "relevance": "MSCIO first-party November 5 alert records a reported tanker attack north of Qatar on November 4. No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report.",
+          "admitted_evidence_ids": [
+            "E-20261108-01"
+          ],
+          "followup": {
+            "disposition": "ready_for_v10_source_review",
+            "performed_at": "2026-11-08T17:20:24.221801+00:00",
+            "upstream_queries": [
+              "November 4 2026 tanker 50nm north Madinat ash Shamal MSCIO 170/26 UKMTO warning same incident duplicate"
+            ],
+            "counter_queries": [
+              "November 7 2026 CENTCOM Huda disabled ship Khor Fakkan original press release crew source military independent verification"
+            ],
+            "checked_urls": [
+              "https://mscio.eu/alerts/206",
+              "https://www.ukmto.org/recent-incidents",
+              "https://www.cwdynamics.com/alerts/alert/33577?page=6"
+            ],
+            "upstream_source_urls": [
+              "https://mscio.eu/alerts/206"
+            ],
+            "contrary_source_urls": [
+              "https://www.ukmto.org/recent-incidents",
+              "https://www.cwdynamics.com/alerts/alert/33577?page=6"
+            ],
+            "scope": {
+              "geography": "Arabian Gulf near Qatar, 50 nautical miles north of Madinat ash Shamal",
+              "time_window": "November 4 event to November 8 cutoff",
+              "population_or_denominator": "One received tanker report, no fleet/vessel count denominator",
+              "method_and_inclusions": "Original maritime incident advice and later possible common company updates"
+            },
+            "reporting_chain": "MSCIO first-party November 5 alert records a reported tanker attack north of Qatar on November 4. Underlying agency and company repetition may be dependent; links to context do not independently corroborate the physical event or implementation.",
+            "supporting_findings": "The first-party publisher HTML was retrieved before the frozen cutoff as complete raw bytes, with exact 4–25-word passage and recorded visible-text position and raw/visible SHA-256. MSCIO first-party November 5 alert records a reported tanker attack north of Qatar on November 4.",
+            "counterevidence_findings": "No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. Opposing public reporting and potentially stabilizing statements were sought before freeze; unresolved contradictions remain context rather than being silently promoted.",
+            "limitations": "No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. No unverified event or publisher first-release clock is treated as independently proven by the HTML witness alone."
+          }
+        },
+        {
+          "source_url": "https://www.fm.gov.om/en/64014/",
+          "triage": "promising",
+          "priority": "high",
+          "relevance": "Oman ministry first-party November 5 ministerial statement reports diplomatic discussions over future safe Hormuz navigation. Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified.",
+          "admitted_evidence_ids": [
+            "E-20261108-02"
+          ],
+          "followup": {
+            "disposition": "ready_for_v10_source_review",
+            "performed_at": "2026-11-08T17:20:24.221801+00:00",
+            "upstream_queries": [
+              "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks"
+            ],
+            "counter_queries": [
+              "November 8 2026 Strait of Hormuz maritime MSCIO UKMTO Lloyds List satellite oil cargo ship Huda"
+            ],
+            "checked_urls": [
+              "https://www.fm.gov.om/en/64014/",
+              "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+              "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port"
+            ],
+            "upstream_source_urls": [
+              "https://www.fm.gov.om/en/64014/"
+            ],
+            "contrary_source_urls": [
+              "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port"
+            ],
+            "scope": {
+              "geography": "Oman and Iran ministerial Hormuz diplomatic contact",
+              "time_window": "November 5 to 8 2026",
+              "population_or_denominator": "One ministerial call; no transit-volume denominator",
+              "method_and_inclusions": "Direct institutional notice of proposed future arrangements, not actual navigation"
+            },
+            "reporting_chain": "Oman ministry first-party November 5 ministerial statement reports diplomatic discussions over future safe Hormuz navigation. Underlying agency and company repetition may be dependent; links to context do not independently corroborate the physical event or implementation.",
+            "supporting_findings": "The first-party publisher HTML was retrieved before the frozen cutoff as complete raw bytes, with exact 4–25-word passage and recorded visible-text position and raw/visible SHA-256. Oman ministry first-party November 5 ministerial statement reports diplomatic discussions over future safe Hormuz navigation.",
+            "counterevidence_findings": "Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. Opposing public reporting and potentially stabilizing statements were sought before freeze; unresolved contradictions remain context rather than being silently promoted.",
+            "limitations": "Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. No unverified event or publisher first-release clock is treated as independently proven by the HTML witness alone."
+          }
+        },
+        {
+          "source_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+          "triage": "promising",
+          "priority": "high",
+          "relevance": "Qatar foreign ministry November 3 briefing reports a Tehran intermediary meeting and continued bilateral proposal exchanges. The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved.",
+          "admitted_evidence_ids": [
+            "E-20261108-03"
+          ],
+          "followup": {
+            "disposition": "ready_for_v10_source_review",
+            "performed_at": "2026-11-08T17:20:24.221801+00:00",
+            "upstream_queries": [
+              "Iran November 8 2026 IAEA official Oman foreign ministry Qatar November 2026 Hormuz mediation sources"
+            ],
+            "counter_queries": [
+              "November 7 2026 CENTCOM Huda disabled ship Khor Fakkan original press release crew source military independent verification"
+            ],
+            "checked_urls": [
+              "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+              "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+              "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port"
+            ],
+            "upstream_source_urls": [
+              "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran"
+            ],
+            "contrary_source_urls": [
+              "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port"
+            ],
+            "scope": {
+              "geography": "Qatar, Iran and United States indirect diplomatic contacts",
+              "time_window": "November 3 to 8 2026",
+              "population_or_denominator": "One dated public intermediary briefing without verified agreement count",
+              "method_and_inclusions": "First-party Qatar press briefing, not documentary bilateral acceptance"
+            },
+            "reporting_chain": "Qatar foreign ministry November 3 briefing reports a Tehran intermediary meeting and continued bilateral proposal exchanges. Underlying agency and company repetition may be dependent; links to context do not independently corroborate the physical event or implementation.",
+            "supporting_findings": "The first-party publisher HTML was retrieved before the frozen cutoff as complete raw bytes, with exact 4–25-word passage and recorded visible-text position and raw/visible SHA-256. Qatar foreign ministry November 3 briefing reports a Tehran intermediary meeting and continued bilateral proposal exchanges.",
+            "counterevidence_findings": "The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. Opposing public reporting and potentially stabilizing statements were sought before freeze; unresolved contradictions remain context rather than being silently promoted.",
+            "limitations": "The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. No unverified event or publisher first-release clock is treated as independently proven by the HTML witness alone."
+          }
+        },
+        {
+          "source_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+          "triage": "promising",
+          "priority": "high",
+          "relevance": "Edited Maritime Executive first-party November 7 report attributes the disabling of M/V Huda to CENTCOM. Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality.",
+          "admitted_evidence_ids": [
+            "E-20261108-04"
+          ],
+          "followup": {
+            "disposition": "ready_for_v10_source_review",
+            "performed_at": "2026-11-08T17:20:24.221801+00:00",
+            "upstream_queries": [
+              "November 7 2026 CENTCOM Huda disabled ship Khor Fakkan original press release crew source military independent verification"
+            ],
+            "counter_queries": [
+              "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks"
+            ],
+            "checked_urls": [
+              "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+              "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+              "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+              "https://www.fm.gov.om/en/64014/"
+            ],
+            "upstream_source_urls": [
+              "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port"
+            ],
+            "contrary_source_urls": [
+              "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+              "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+              "https://www.fm.gov.om/en/64014/"
+            ],
+            "scope": {
+              "geography": "Gulf of Oman cargo vessel military enforcement report",
+              "time_window": "November 7 to November 8 2026",
+              "population_or_denominator": "One M/V Huda military assertion without casualty/damage denominator",
+              "method_and_inclusions": "Edited specialist original reporting of claimed U.S. military action"
+            },
+            "reporting_chain": "Edited Maritime Executive first-party November 7 report attributes the disabling of M/V Huda to CENTCOM. Underlying agency and company repetition may be dependent; links to context do not independently corroborate the physical event or implementation.",
+            "supporting_findings": "The first-party publisher HTML was retrieved before the frozen cutoff as complete raw bytes, with exact 4–25-word passage and recorded visible-text position and raw/visible SHA-256. Edited Maritime Executive first-party November 7 report attributes the disabling of M/V Huda to CENTCOM.",
+            "counterevidence_findings": "Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. Opposing public reporting and potentially stabilizing statements were sought before freeze; unresolved contradictions remain context rather than being silently promoted.",
+            "limitations": "Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. No unverified event or publisher first-release clock is treated as independently proven by the HTML witness alone."
+          }
+        },
+        {
+          "source_url": "https://www.cwdynamics.com/alerts/alert/33577?page=6",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "Clearwater Dynamics own published alert supplies a later possible missing-seafarer status for a possibly corresponding tanker. It cites prior UKMTO or industry reporting and may share the same vessel informant; no independently verified original ship-owner finding was captured. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.ukmto.org/recent-incidents",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "UKMTO incident summary appears to match MSCIO tanker location, time and two unidentified projectiles. Original UKMTO portal HTTP 403, and likely shared company reporting cannot be counted as two independent matching incidents. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.reuters.com/world/middle-east/iran-suggests-blasts-are-not-us-attacks-both-sides-report-ships-hit-2026-11-08/",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "Reuters November 8 reporting covers disputed shipping incidents and unresolved negotiations. Original publisher HTTP 401; a search-stage excerpt or syndicated copy is not an authenticated exact Reuters original body. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "AP published original coverage referencing Gulf shipping and military claims. Original publisher HTTP 403, and repetition of the CENTCOM account is not a separate physical strike witness. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "Al Jazeera Arabic November 7 report describes Qatar denial that talks had definitively collapsed. The item quotes Qatar official statements and thus is not an independent acceptance-of-agreement or successful-mediation witness. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.stimson.org/2026/the-lame-duck-period-is-full-of-peril-in-the-war-on-iran/",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "Stimson analysis argues that renewed major attacks could be an important future strategic danger. Original publisher HTTP 403. Analyst contingent interpretations are not realized events or evidence of troop movement. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.acaps.org/en/countries/iran",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "ACAPS Iran country analysis supplies previously dated price and humanitarian conditions as context. Historical food and medicine availability cannot substitute for a fresh November national basket, Hanke monthly inflation or settlement failure duration. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.iaea.org/newscenter",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "IAEA newscenter was searched for any current Iran nuclear verification original publication. Original HTTP 403; no date-matched new monitoring inspection original was admitted. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "CENTCOM direct official release endpoint was sought to verify the alleged M/V Huda blockade action. Original publisher HTTP 403; specialist report of military statements is not equivalent to independently verified original military response bytes. No original-body claim is newly admitted from this source.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        }
+      ]
+    }
+  },
+  "affirmative_source_review": {
+    "approved": true,
+    "issues": [],
+    "source_reviews": [
+      {
+        "url": "https://mscio.eu/alerts/206",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative assessment: MSCIO first-party November 5 alert records a reported tanker attack north of Qatar on November 4. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.fm.gov.om/en/64014/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative assessment: Oman ministry first-party November 5 ministerial statement reports diplomatic discussions over future safe Hormuz navigation. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative assessment: Qatar foreign ministry November 3 briefing reports a Tehran intermediary meeting and continued bilateral proposal exchanges. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative assessment: Edited Maritime Executive first-party November 7 report attributes the disabling of M/V Huda to CENTCOM. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.cwdynamics.com/alerts/alert/33577?page=6",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: Clearwater Dynamics own published alert supplies a later possible missing-seafarer status for a possibly corresponding tanker. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.ukmto.org/recent-incidents",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: UKMTO incident summary appears to match MSCIO tanker location, time and two unidentified projectiles. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/iran-suggests-blasts-are-not-us-attacks-both-sides-report-ships-hit-2026-11-08/",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: Reuters November 8 reporting covers disputed shipping incidents and unresolved negotiations. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 401, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: AP published original coverage referencing Gulf shipping and military claims. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: Al Jazeera Arabic November 7 report describes Qatar denial that talks had definitively collapsed. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.stimson.org/2026/the-lame-duck-period-is-full-of-peril-in-the-war-on-iran/",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: Stimson analysis argues that renewed major attacks could be an important future strategic danger. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.acaps.org/en/countries/iran",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: ACAPS Iran country analysis supplies previously dated price and humanitarian conditions as context. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.iaea.org/newscenter",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: IAEA newscenter was searched for any current Iran nuclear verification original publication. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+        "disposition": "background_only",
+        "assessment": "Affirmative assessment: CENTCOM direct official release endpoint was sought to verify the alleged M/V Huda blockade action. Original-source body is only claimed where a local raw capture supports the exact passage.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      }
+    ],
+    "promising_followup_reviews": [
+      {
+        "source_url": "https://mscio.eu/alerts/206",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "2ff37f192a297bc3dd0f5f06b62bee8b585b205c0e3504a09a12fdee4593c268",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: MSCIO first-party November 5 alert records a reported tanker attack north of Qatar on November 4. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.fm.gov.om/en/64014/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "6a94fa8c1472476c09860f3ad53e0c6b10a70045e4850faade4f3ab9186926d3",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: Oman ministry first-party November 5 ministerial statement reports diplomatic discussions over future safe Hormuz navigation. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "bc289be154f5e4745b866ca290de818192d9b7dcc18bd2f970c912c28265fac2",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: Qatar foreign ministry November 3 briefing reports a Tehran intermediary meeting and continued bilateral proposal exchanges. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "a8f23a55e09d339c1a63af4f297c0667ec1e1c5a1d8f7ed60d730b7078b6cc9c",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: Edited Maritime Executive first-party November 7 report attributes the disabling of M/V Huda to CENTCOM. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.cwdynamics.com/alerts/alert/33577?page=6",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "11526270bed818c4241cd42e66ece5df2ff713e304791d8e649f0336ec324140",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: Clearwater Dynamics own published alert supplies a later possible missing-seafarer status for a possibly corresponding tanker. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "It cites prior UKMTO or industry reporting and may share the same vessel informant; no independently verified original ship-owner finding was captured. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.ukmto.org/recent-incidents",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "8cacd00453b76df9b0ae29c1697ce04a51563143b37ead6f8b8510220d1f29bd",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: UKMTO incident summary appears to match MSCIO tanker location, time and two unidentified projectiles. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Original UKMTO portal HTTP 403, and likely shared company reporting cannot be counted as two independent matching incidents. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/iran-suggests-blasts-are-not-us-attacks-both-sides-report-ships-hit-2026-11-08/",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "851f678cfa2926ea72f0caa7be603360c9e108e47f0559b6c8d943aea37f63fd",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: Reuters November 8 reporting covers disputed shipping incidents and unresolved negotiations. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Original publisher HTTP 401; a search-stage excerpt or syndicated copy is not an authenticated exact Reuters original body. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "9be485bad0c147d5ede3405bb843f65d6106e4145d9863eb79d03751cf31d7d3",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: AP published original coverage referencing Gulf shipping and military claims. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Original publisher HTTP 403, and repetition of the CENTCOM account is not a separate physical strike witness. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "40f02556e110ac8ebe27649c51e541033cee4e342ee0ef672c8ec2d1e258ad16",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: Al Jazeera Arabic November 7 report describes Qatar denial that talks had definitively collapsed. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "The item quotes Qatar official statements and thus is not an independent acceptance-of-agreement or successful-mediation witness. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.stimson.org/2026/the-lame-duck-period-is-full-of-peril-in-the-war-on-iran/",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "a515c6ebcfebe70866e8e9a712bd1ba6c8599fc3330390520f2f65dd92abb4fa",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: Stimson analysis argues that renewed major attacks could be an important future strategic danger. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Original publisher HTTP 403. Analyst contingent interpretations are not realized events or evidence of troop movement. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.acaps.org/en/countries/iran",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "5c4ee70e5615f8a445560d88d4286268a790c02d4fcd7ce5ad27454b6223cf79",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: ACAPS Iran country analysis supplies previously dated price and humanitarian conditions as context. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Historical food and medicine availability cannot substitute for a fresh November national basket, Hanke monthly inflation or settlement failure duration. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.iaea.org/newscenter",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "841041ea0ea4ea6f12e9f22d71e3f407290d2a1a55b3cd23d309476467c43802",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: IAEA newscenter was searched for any current Iran nuclear verification original publication. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Original HTTP 403; no date-matched new monitoring inspection original was admitted. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "c7a27e7b7a87d4eb186e2d05dc12dac5556fbdd435e881ba6d8ec10a947d3094",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative follow-up: CENTCOM direct official release endpoint was sought to verify the alleged M/V Huda blockade action. Its triage conservatively restricts admission to the actual raw-body witness and documented upstream and challenging-source searches.",
+        "limitations": "Original publisher HTTP 403; specialist report of military statements is not equivalent to independently verified original military response bytes. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      }
+    ],
+    "claim_reliability_reviews": [
+      {
+        "evidence_id": "E-20261108-01",
+        "original_url": "https://mscio.eu/alerts/206",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative: MSCIO first-party November 5 alert records a reported tanker attack north of Qatar on November 4. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      },
+      {
+        "evidence_id": "E-20261108-02",
+        "original_url": "https://www.fm.gov.om/en/64014/",
+        "source_quality": "documented_original_method",
+        "directness": "primary_measurement_or_document",
+        "contradiction_status": "none_identified",
+        "factual_reliability": "Medium-high",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative: Oman ministry first-party November 5 ministerial statement reports diplomatic discussions over future safe Hormuz navigation. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      },
+      {
+        "evidence_id": "E-20261108-03",
+        "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "source_quality": "documented_original_method",
+        "directness": "primary_measurement_or_document",
+        "contradiction_status": "none_identified",
+        "factual_reliability": "Medium-high",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative: Qatar foreign ministry November 3 briefing reports a Tehran intermediary meeting and continued bilateral proposal exchanges. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      },
+      {
+        "evidence_id": "E-20261108-04",
+        "original_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative: Edited Maritime Executive first-party November 7 report attributes the disabling of M/V Huda to CENTCOM. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      }
+    ],
+    "audit_integrity_review": {
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "source_count": 13,
+      "research_as_of": "2026-11-08T17:20:24.221801+00:00",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "post_snapshot_search": "NOT_SEARCHED",
+      "assessment": "Affirmative: All six actually queried categories and thirteen original/context source chains were inventoried. Four exact first-party publisher HTML captures support narrow, source-limited statements, without supplying new Hanke or import settlement data.",
+      "limitations": "This is ChatGPT-reported research and one session, not a provider-authenticated API trace or independent model validation. Original captured text does not prove event truth, causal attribution, full-cargo counting or bilateral agreement."
+    },
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261108-01",
+        "E-20261108-02",
+        "E-20261108-03",
+        "E-20261108-04"
+      ],
+      "observation_count": 4,
+      "conclusion": "supported_limited_inference",
+      "assessment": "Four narrow original claims support only a balanced forecast update anchored in the already published assessment: a received tanker warning and an attributed M/V Huda action against Oman/Qatar talks that explicitly have not implemented a settlement.",
+      "limitations": "No claimant supplies independent military strike verification, verified vessel denominator, fresh Iranian elite-command data, a consistent 30-day rial rate series, Hanke monthly rate or a second independent essential-import payment-failure chain."
+    },
+    "source_query_balance_review": {
+      "raises_queries": [
+        "November 4 2026 tanker 50nm north Madinat ash Shamal MSCIO 170/26 UKMTO warning same incident duplicate",
+        "November 8 2026 Strait of Hormuz maritime MSCIO UKMTO Lloyds List satellite oil cargo ship Huda"
+      ],
+      "lowers_queries": [
+        "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks",
+        "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks"
+      ],
+      "ambiguous_queries": [],
+      "assessment": "Worsening original maritime warnings and alleged U.S. blockade enforcement were deliberately searched alongside Omani safety navigation and Qatari mediation process originals. These opposite directions were treated as cautious indicators rather than verified causal successes."
+    }
+  },
+  "critical_source_review": {
+    "approved": true,
+    "issues": [],
+    "source_reviews": [
+      {
+        "url": "https://mscio.eu/alerts/206",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical assessment: No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.fm.gov.om/en/64014/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical assessment: Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical assessment: The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical assessment: Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.cwdynamics.com/alerts/alert/33577?page=6",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: It cites prior UKMTO or industry reporting and may share the same vessel informant; no independently verified original ship-owner finding was captured. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.ukmto.org/recent-incidents",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: Original UKMTO portal HTTP 403, and likely shared company reporting cannot be counted as two independent matching incidents. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/iran-suggests-blasts-are-not-us-attacks-both-sides-report-ships-hit-2026-11-08/",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: Original publisher HTTP 401; a search-stage excerpt or syndicated copy is not an authenticated exact Reuters original body. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 401, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: Original publisher HTTP 403, and repetition of the CENTCOM account is not a separate physical strike witness. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: The item quotes Qatar official statements and thus is not an independent acceptance-of-agreement or successful-mediation witness. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.stimson.org/2026/the-lame-duck-period-is-full-of-peril-in-the-war-on-iran/",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: Original publisher HTTP 403. Analyst contingent interpretations are not realized events or evidence of troop movement. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.acaps.org/en/countries/iran",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: Historical food and medicine availability cannot substitute for a fresh November national basket, Hanke monthly inflation or settlement failure duration. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 200, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.iaea.org/newscenter",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: Original HTTP 403; no date-matched new monitoring inspection original was admitted. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+        "disposition": "background_only",
+        "assessment": "Critical assessment: Original publisher HTTP 403; specialist report of military statements is not equivalent to independently verified original military response bytes. The reporting chain and any unverified contradiction are kept separate from institutional statement provenance.",
+        "access_stage_assessment": "I compared the web-search access description, actual direct publisher HTTP status 403, and the separate claimed original-body witness for any admitted ID. First release remains unknown and no stage discrepancy was promoted to independent verification.",
+        "same_stage_conflicts_resolved": true
+      }
+    ],
+    "promising_followup_reviews": [
+      {
+        "source_url": "https://mscio.eu/alerts/206",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "2ff37f192a297bc3dd0f5f06b62bee8b585b205c0e3504a09a12fdee4593c268",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.fm.gov.om/en/64014/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "6a94fa8c1472476c09860f3ad53e0c6b10a70045e4850faade4f3ab9186926d3",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "bc289be154f5e4745b866ca290de818192d9b7dcc18bd2f970c912c28265fac2",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "a8f23a55e09d339c1a63af4f297c0667ec1e1c5a1d8f7ed60d730b7078b6cc9c",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.cwdynamics.com/alerts/alert/33577?page=6",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "11526270bed818c4241cd42e66ece5df2ff713e304791d8e649f0336ec324140",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: It cites prior UKMTO or industry reporting and may share the same vessel informant; no independently verified original ship-owner finding was captured. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "It cites prior UKMTO or industry reporting and may share the same vessel informant; no independently verified original ship-owner finding was captured. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.ukmto.org/recent-incidents",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "8cacd00453b76df9b0ae29c1697ce04a51563143b37ead6f8b8510220d1f29bd",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Original UKMTO portal HTTP 403, and likely shared company reporting cannot be counted as two independent matching incidents. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Original UKMTO portal HTTP 403, and likely shared company reporting cannot be counted as two independent matching incidents. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/iran-suggests-blasts-are-not-us-attacks-both-sides-report-ships-hit-2026-11-08/",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "851f678cfa2926ea72f0caa7be603360c9e108e47f0559b6c8d943aea37f63fd",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Original publisher HTTP 401; a search-stage excerpt or syndicated copy is not an authenticated exact Reuters original body. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Original publisher HTTP 401; a search-stage excerpt or syndicated copy is not an authenticated exact Reuters original body. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://apnews.com/article/bc902d3400cb5d022f8bafd247ef975b",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "9be485bad0c147d5ede3405bb843f65d6106e4145d9863eb79d03751cf31d7d3",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Original publisher HTTP 403, and repetition of the CENTCOM account is not a separate physical strike witness. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Original publisher HTTP 403, and repetition of the CENTCOM account is not a separate physical strike witness. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.aljazeera.net/news/2026/11/7/%D8%B9%D8%A7%D8%AC%D9%84-%D9%85%D9%83%D8%AA%D8%A8-%D8%A7%D9%84%D8%A5%D8%B9%D9%84%D8%A7%D9%85-%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A-%D9%81%D9%8A-%D9%82%D8%B7%D8%B1-%D8%B1%D8%A6%D9%8A%D8%B3",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "40f02556e110ac8ebe27649c51e541033cee4e342ee0ef672c8ec2d1e258ad16",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: The item quotes Qatar official statements and thus is not an independent acceptance-of-agreement or successful-mediation witness. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "The item quotes Qatar official statements and thus is not an independent acceptance-of-agreement or successful-mediation witness. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.stimson.org/2026/the-lame-duck-period-is-full-of-peril-in-the-war-on-iran/",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "a515c6ebcfebe70866e8e9a712bd1ba6c8599fc3330390520f2f65dd92abb4fa",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Original publisher HTTP 403. Analyst contingent interpretations are not realized events or evidence of troop movement. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Original publisher HTTP 403. Analyst contingent interpretations are not realized events or evidence of troop movement. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.acaps.org/en/countries/iran",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "5c4ee70e5615f8a445560d88d4286268a790c02d4fcd7ce5ad27454b6223cf79",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Historical food and medicine availability cannot substitute for a fresh November national basket, Hanke monthly inflation or settlement failure duration. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Historical food and medicine availability cannot substitute for a fresh November national basket, Hanke monthly inflation or settlement failure duration. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.iaea.org/newscenter",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "841041ea0ea4ea6f12e9f22d71e3f407290d2a1a55b3cd23d309476467c43802",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Original HTTP 403; no date-matched new monitoring inspection original was admitted. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Original HTTP 403; no date-matched new monitoring inspection original was admitted. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      },
+      {
+        "source_url": "https://www.centcom.mil/MEDIA/PUBLIC-RELEASES/Article/4644273/us-forces-disable-cargo-vessel-attempting-to-violate-naval-blockade/",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "c7a27e7b7a87d4eb186e2d05dc12dac5556fbdd435e881ba6d8ec10a947d3094",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical follow-up: Original publisher HTTP 403; specialist report of military statements is not equivalent to independently verified original military response bytes. Underlying informants, chronology and counting denominators were challenged and no unverified secondary fact was admitted.",
+        "limitations": "Original publisher HTTP 403; specialist report of military statements is not equivalent to independently verified original military response bytes. This remains a ChatGPT-reported search and cannot authenticate independent event causes or first publisher-release timing."
+      }
+    ],
+    "claim_reliability_reviews": [
+      {
+        "evidence_id": "E-20261108-01",
+        "original_url": "https://mscio.eu/alerts/206",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical: No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "No ship IMO, source of projectiles, current crew status, damage or casualty denominator was independently authenticated; Clearwater later gave an apparently linked but unverified missing-seafarer report. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      },
+      {
+        "evidence_id": "E-20261108-02",
+        "original_url": "https://www.fm.gov.om/en/64014/",
+        "source_quality": "documented_original_method",
+        "directness": "primary_measurement_or_document",
+        "contradiction_status": "none_identified",
+        "factual_reliability": "Medium-high",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical: Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "Ministry English rendering is an unofficial translation of its Arabic source and neither new traffic volume nor an implemented agreement is verified. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      },
+      {
+        "evidence_id": "E-20261108-03",
+        "original_url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+        "source_quality": "documented_original_method",
+        "directness": "primary_measurement_or_document",
+        "contradiction_status": "none_identified",
+        "factual_reliability": "Medium-high",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical: The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "The ministry says there was no specific breakthrough; independent U.S. or Iranian acceptance of any terms remains unobserved. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      },
+      {
+        "evidence_id": "E-20261108-04",
+        "original_url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical: Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. This bound quote proves only the publisher statement, and the remaining competing claims or outcomes have no independent original witness.",
+        "corroboration_assessment": "Zero separate genuinely independent, claim-matched original-body proof reports are established. Multiple media outlets repeating CENTCOM, a ministry or the same tanker observer do not constitute independence.",
+        "contradiction_assessment": "Direct CENTCOM press release is access-blocked. Embedded military accounts, repeated wires and tweets share upstream attribution and do not prove casualties or legality. The negative, contrary or later reported evidence is retained as context rather than silently treated as corroboration or disproof of the original timestamp-bound statement."
+      }
+    ],
+    "audit_integrity_review": {
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "source_count": 13,
+      "research_as_of": "2026-11-08T17:20:24.221801+00:00",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "post_snapshot_search": "NOT_SEARCHED",
+      "assessment": "Critical: Every thirteen-source provenance stage was challenged, including blocked CENTCOM/Reuters/AP/UKMTO/IAEA/Stimson originals and Clearwater later casualty claims that may share a ship-company chain. No authenticated first-publication timing or physical military causation is asserted.",
+      "limitations": "The unavailable military originals, changed later ship reporting, missing Hanke monthly series, critical medicine/food stock measures and China/Houthi provenance prevent strong geopolitical inferences and warrant only supported limited inference."
+    },
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261108-01",
+        "E-20261108-02",
+        "E-20261108-03",
+        "E-20261108-04"
+      ],
+      "observation_count": 4,
+      "conclusion": "supported_limited_inference",
+      "assessment": "The most consequential Huda military story relies on CENTCOM claims repeated by a specialist reporter rather than a direct official original, and the MSCIO alert is one received report; these can support only guarded situational inference, not independent confirmation or an asserted 72-hour major interstate war.",
+      "limitations": "Further current shipping-source and bargaining verification would be necessary for any stronger assessment. Later Clearwater status has not been independently confirmed or assumed to contradict original MSCIO at-time uncertainty. No new domestic trigger is established."
+    },
+    "source_query_balance_review": {
+      "raises_queries": [
+        "November 4 2026 tanker 50nm north Madinat ash Shamal MSCIO 170/26 UKMTO warning same incident duplicate",
+        "November 8 2026 Strait of Hormuz maritime MSCIO UKMTO Lloyds List satellite oil cargo ship Huda"
+      ],
+      "lowers_queries": [
+        "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks",
+        "November 5 2026 Oman Iranian Foreign Ministers Hormuz navigational agreement implementation traffic vs talks"
+      ],
+      "ambiguous_queries": [],
+      "assessment": "The review challenged an overly alarmist reading of single-ship allegations and an overly reassuring reading of negotiation chatter. Material unverified first-party military details and absent traffic implementation prevent either side from deciding event thresholds."
+    }
+  },
+  "claim_reliability": [
+    {
+      "evidence_id": "E-20261108-01",
+      "factual_reliability": "Medium",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    },
+    {
+      "evidence_id": "E-20261108-02",
+      "factual_reliability": "Medium-high",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium-high",
+      "critical_original_grade": "Medium-high",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    },
+    {
+      "evidence_id": "E-20261108-03",
+      "factual_reliability": "Medium-high",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium-high",
+      "critical_original_grade": "Medium-high",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    },
+    {
+      "evidence_id": "E-20261108-04",
+      "factual_reliability": "Medium",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    }
+  ],
+  "preforecast_certificate": {
+    "version": 1,
+    "status": "DUAL_SOURCE_REVIEW_CLEAN_LIMITED_INFERENCE",
+    "research_as_of": "2026-11-08T17:20:24.221801+00:00",
+    "source_review_completed_at": "2026-11-08T17:20:24.275854+00:00",
+    "baseline_sha256": "d90315bb4ce162ecc48e9e70aa9b0b5cc07b950adbfa6724ae4626e82f36c7bc",
+    "source_packet_sha256": "23a048d24d184eaa32e599a83d1c47a9b0cb997c5648f5b575a9aaf026a33bfa",
+    "affirmative_source_review_sha256": "8ee2b998612df31e489cb4895cebd61c4e1815b344fcb6cfe29f93bab0be9ffe",
+    "critical_source_review_sha256": "0c919a0851ffe58c245952043c3c1dc55057fdd4408e1c63ad3596a901c69b9b",
+    "claim_reliability_sha256": "2e89a002460f8962259698068a4a365a853622cb4da53c204479e7bb1f400e59"
+  }
+}
