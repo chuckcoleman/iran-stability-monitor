@@ -1,5 +1,6 @@
 """Regression: only frozen Protocol v1 event definitions appear in the public thresholds card."""
 import json
+from html import unescape
 from pathlib import Path
 import shutil
 import subprocess
@@ -54,11 +55,12 @@ class ThresholdDefinitionsOnlyTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         output = json.loads(result.stdout)
         html = output["html"]
+        visible_text = unescape(html)
         self.assertEqual(html.count("<p>"), 4)
         self.assertEqual(html.count("</p>"), 4)
         for rule in rules:
-            self.assertIn(rule["event"], html)
-            self.assertIn(rule["resolution"], html)
+            self.assertIn(rule["event"], visible_text)
+            self.assertIn(rule["resolution"], visible_text)
         self.assertNotIn("Continue documenting", html)
         self.assertNotIn("Lower upon", html)
         self.assertNotIn("Seek actual", html)
