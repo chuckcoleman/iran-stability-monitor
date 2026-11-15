@@ -234,7 +234,7 @@ if(process.argv[1]==='svg'){
             out=self.render([self.sample("2027-04-01")],mode)
             for key in ("forecast","haircut"):
                 dates=out[key]["labels"] if mode=="svg" else [
-                    x for x in out[key]["labels"] if x["text"]=="2027-04-01"]
+                    x for x in out[key]["labels"] if x["text"]=="2027-04-01"
                 ]
                 self.assertEqual(len(dates),1)
                 self.assertAlmostEqual(float(dates[0]["x"]),450)
