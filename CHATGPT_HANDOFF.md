@@ -245,6 +245,27 @@ must match original history exactly apart from status. The original
 quality audit, claims, factual grades, source identifiers, and cutoff
 are never rewritten to manufacture agreement.
 
+## Thresholds-to-watch publication contract
+
+The dashboard **Thresholds to watch** card is a definitions-only display:
+the four frozen Protocol v1.0 `protocol.core_scored_set` event labels
+and resolution definitions, in their protocol order, and no other prose.
+Never use the free-text `next_threshold` narrative to populate this
+public card. Research priorities ("Seek", "Continue documenting"),
+stabilizing or lowering conditions ("Lower upon"), current
+interpretation, source caveats and forecasts belong in their own fields.
+Retain the full `next_threshold` string in the immutable historical
+ledger; never rewrite a prior record merely to clean the UI.
+For future assessment drafts, author the stored `next_threshold` field
+as operational threshold definitions only, without unrelated paragraphs.
+
+Before any protected PR/owner-authorized publication, run the dashboard
+regression and DOM review: exactly four paragraphs, matching the
+canonical frozen event definitions, with zero non-definition paragraphs.
+Verify the published Pages copy independently after permitted deployment.
+Any social graphic containing this card must be a faithful rendering of
+the four-definition panel, not an earlier screenshot.
+
 ## Validation and submission
 
 On a trusted checkout containing the `main` baseline, run:
