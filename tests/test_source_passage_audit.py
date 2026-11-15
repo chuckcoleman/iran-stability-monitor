@@ -101,6 +101,28 @@ class PassageWitnessTests(unittest.TestCase):
         self.assertFalse(result["first_publication_verified"])
         self.assertTrue(result["inspection_after_original_cutoff"])
 
+    def test_only_explicit_reuters_article_divs_become_visible_passages(self):
+        html = (
+            '<html><head><script>Fake attack story in metadata.</script></head>'
+            '<body><nav><div data-testid="paragraph-0" '
+            'class="article-body-module__paragraph__x">Navigation decoy</div></nav>'
+            '<div data-testid="paragraph-0" '
+            'class="article-body-module__paragraph__x">'
+            'The official said two drones were intercepted without damage.</div>'
+            '<div data-testid="paragraph-1" '
+            'class="article-body-module__paragraph__y">'
+            'A separate government disputed the reported radar damage.</div>'
+            '<div data-testid="paragraph-2">'
+            'A generic div cannot satisfy a publisher witness.</div>'
+            '</body></html>'
+        )
+        text = visible_text(html.encode())
+        self.assertIn('The official said two drones were intercepted', text)
+        self.assertIn('A separate government disputed', text)
+        self.assertNotIn('Navigation decoy', text)
+        self.assertNotIn('A generic div cannot', text)
+        self.assertNotIn('Fake attack story', text)
+
     def test_metadata_only_or_no_quote_never_counts_as_source_witness(self):
         no_quote = capture_claim_passage(
             URL, None, observation=OBS,
