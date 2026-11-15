@@ -663,6 +663,29 @@ fails. The historical forecast lock, frozen evidence, explicit oil-credit
 source justifications and fail-closed protected-branch safeguards remain.
 
 
+## Website 12-month scored binary forecasts (November 15, 2026)
+
+The public **12-month scored binary forecasts** list displays precisely the
+three Protocol v1.0 core scored outcomes with 12-month horizons:
+`regime_end_12m`, `currency_crisis_12m`, and
+`external_payments_crisis_12m`, in frozen protocol order. Read their
+probabilities directly from the current assessment's scored `forecasts`
+objects and their labels from `protocol.core_scored_set`; do NOT infer
+scoring from the older `binary_political` presentation field or the
+legacy `fx_crisis_12m` metric. The 90-day regional escalation forecast
+belongs in its own scored forecast display, not in the 12-month subset.
+Never include unscored Hanke inflation or Houthi-support diagnostics in
+this list.
+
+This is a website presentation change only. Leave all already published
+`data/history.json` records, `binary_political` legacy compatibility,
+forecast IDs, event definitions, probabilities, horizons and resolution
+deadlines untouched. Before owner-authorized publication and after Pages
+deployment, verify the rendered table has exactly three distinct scored
+rows and matches the current ledger. Future Sunday updates must preserve
+this display rule; missing, duplicated or invalid scored entries block
+the dashboard rather than silently reverting to a partial list.
+
 ## Website thresholds card: frozen definitions only (November 15, 2026)
 
 The public **Thresholds to watch** card is a four-item definition panel, not
