@@ -37,7 +37,8 @@ class ThresholdDefinitionsOnlyTests(unittest.TestCase):
         latest = data["updates"][-1]
         rules = data["protocol"]["core_scored_set"]
         self.assertEqual(tuple(r["id"] for r in rules), EXPECTED_IDS)
-        self.assertIn("Continue documenting", latest["next_threshold"])
+        november_15 = next(u for u in data["updates"] if u["date"] == "2026-11-15")
+        self.assertIn("Continue documenting", november_15["next_threshold"])
         test_cases = {
             "protocol": data["protocol"],
             "published_narrative": latest["next_threshold"],
