@@ -663,31 +663,46 @@ fails. The historical forecast lock, frozen evidence, explicit oil-credit
 source justifications and fail-closed protected-branch safeguards remain.
 
 
-## Website prose: thresholds to watch
+## Website thresholds card: frozen definitions only (November 15, 2026)
 
-The dashboard card is titled **Thresholds to watch**. It displays one
-short declarative sentence for each distinct event or monitoring
-threshold, without recurring "We are watching" language, questions,
-or semicolon lists.
+The public **Thresholds to watch** card is a four-item definition panel, not
+a weekly narrative or a research agenda. It renders directly from the
+immutable `data/history.json` root
+`protocol.core_scored_set[]`, using ONLY the `event` label and the
+`resolution` text of each of the four frozen Protocol v1.0 scored
+events, in protocol order: regional escalation, regime-ending transition,
+currency crisis and external-payments crisis. Exclusions that delimit
+resolution count as part of the corresponding definition. Do not publish
+`next_threshold`, `raise`, `lower`, `summary`, `stabilizer`,
+`limitations`, source-research priorities, evidence-collection requests,
+current-event interpretations or general commentary in this card.
 
-The archived `next_threshold` strings remain **byte-for-byte unchanged**
-in `data/history.json`. Exact-match, presentation-only editorial
-overrides render the three archived fragmentary strings as short,
-separate declarative sentences. A future assessment already written as
-sentences is displayed one sentence per paragraph. These descriptions
-identify events or conditions to monitor; they do not assert that a
-threshold has been crossed or replace its full resolution definition.
+The archival weekly `next_threshold` values are preserved **byte-for-byte**
+for reproducibility, including older extraneous research copy, but they
+are NEVER the public panel's input. The frozen `core_scored_set` must
+contain exactly four expected event IDs with a nonempty label and resolution;
+missing, duplicated, reordered or extra events fail closed. Never edit
+historical ledger rows or Protocol v1.0 event definitions merely to remove
+display prose.
 
-Future assessor instructions require concise declaratives, one complete
-sentence per distinct threshold event, with an optional introductory
-declarative. A deterministic candidate guard rejects first-person
-monitoring phrasing, questions, semicolon-combined events, leading
-"Whether" fragments, or missing terminal punctuation. The independent
-review also checks sentence structure. These are **editorial**
-requirements only; the frozen Protocol v1.0, event definitions,
-forecast probabilities, historical records, and publication gates
-remain unchanged. Regression tests cover both archived display and
-new-candidate style.
+Future assessor copy for `next_threshold`, still retained for schema and
+historical provenance, should contain only concise operational trigger
+definitions; research instructions, requests to "Seek" or "Continue",
+stabilizer/lower-risk updates and narrative qualifications belong in
+appropriate separate fields or private source-watchlist records. The
+dashboard's structural source restriction, rather than a fragile
+first-word filter or editorial judgment, enforces the four-definition
+public contract.
+
+Before proposing or publishing an update, verify in a browser DOM/render
+test and a regression test that **exactly four** threshold paragraphs are
+shown, each matching the frozen `core_scored_set[].resolution`, and
+that no extraneous paragraph appears. In particular reject "Seek actual
+Hanke ...", "Continue documenting ..." and "Lower upon ..." additions
+to this block even when they do not begin with "Seek". Ensure the companion
+social-media screenshot of the Change / Stabilizer / Thresholds cards shows
+the same four definitions only. The review and protected-PR/owner-authorized
+merge/Pages checks remain in force.
 
 ## October 12: live API-probe rejected web-search JSON format
 
