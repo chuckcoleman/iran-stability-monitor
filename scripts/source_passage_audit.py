@@ -46,9 +46,20 @@ class VisiblePassages(HTMLParser):
         self.active = []
 
     def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        # Reuters articles render their visible body paragraphs as <div>s.
+        # Admit ONLY explicitly marked article paragraphs, not arbitrary divs,
+        # embedded scripts, page descriptions, related links or navigation.
+        body_div = (
+            tag == "div"
+            and re.fullmatch(r"paragraph-\d+",
+                             attributes.get("data-testid", "")) is not None
+            and any(part.startswith("article-body-module__paragraph__")
+                    for part in attributes.get("class", "").split())
+        )
         if tag in SKIPPED:
             self.excluded.append(tag)
-        elif tag in BLOCKS and not self.excluded:
+        elif (tag in BLOCKS or body_div) and not self.excluded:
             self.active.append([tag, []])
 
     def handle_data(self, value):
