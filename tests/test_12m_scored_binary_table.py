@@ -29,14 +29,14 @@ class TwelveMonthBinaryTableTests(unittest.TestCase):
         prefix = source.split(marker, 1)[0]
         code = (
             prefix + "\n"
-            + "const cases=" + json.dumps(cases) + ";\n"
+            + "const cases=JSON.parse(require('fs').readFileSync(0,'utf8'));\n"
             + "console.log(JSON.stringify(cases.map(c=>{"
             + "try{return {rows:scored12MonthBinaryRows(c.update,c.protocol)}}"
             + "catch(e){return {error:e.message}}})));\n"
         )
         return subprocess.run(
             ["node", "-e", code], cwd=ROOT, capture_output=True,
-            text=True, timeout=20, check=False,
+            input=json.dumps(cases), text=True, timeout=20, check=False,
         )
 
     def test_public_heading_and_core_source(self):
