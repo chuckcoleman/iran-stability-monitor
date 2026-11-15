@@ -43,30 +43,73 @@ function scored12MonthBinaryRows(update, protocol){
     return [escapeThresholdText(rule.event),pct(f.p),'Scored'];
   });
 }
- fetch('data/history.json').then(r=>{if(!r.ok)throw new Error('history unavailable');return r.json()}).then(d=>{const x=d.updates.at(-1),p=d.updates.at(-2);revisionDate.textContent='Latest assessment: '+x.date+' · Methodology revised: '+(x.methodology_revision_date||'not recorded');freshness.innerHTML='<strong>Assessment date:</strong> '+x.date+' · <strong>Evidence cutoff:</strong> '+(x.assessment_evidence_cutoff||'not recorded')+' · <strong>Methodology/page revised:</strong> '+(x.methodology_revision_date||'—')+' · <strong>Next scheduled:</strong> '+(x.next_scheduled_update||'not recorded');limitations.textContent=x.limitations||'';protocolStatus.innerHTML='<strong>Protocol:</strong> '+(x.protocol_version_for_assessment||'v1.0')+(x.protocol_version_for_assessment&&x.protocol_version_for_assessment.includes('legacy')?' · this assessment predates frozen v1':'');changed.innerHTML='<div class="change-point change-card"><strong>Change</strong><p>'+(x.what_changed||"See revision drivers below.")+'</p></div><div class="change-point change-card"><strong>Most important stabilizer</strong><p>'+(x.stabilizer||"—")+'</p></div><div class="change-point change-card"><strong>Thresholds to watch</strong>'+renderThresholdDefinitions(d.protocol)+'</div>';const cond=[['Hormuz','Severely restricted; limited transit continues',(x.metrics.hormuz||'')+' · '+(x.conditions?.hormuz||'Observation · confidence unknown')],['Energy system',x.metrics.energy_stress,x.conditions?.energy||"Inference · confidence unknown"],['Elite cohesion','Continuity observed; fracture unverified',x.conditions?.elite||"Inference · confidence limited"],['Coercive apparatus','Status unknown',x.conditions?.coercion||"Inference · confidence Low due to data gaps"]];cond.forEach(c=>conditionCards.insertAdjacentHTML('beforeend',card(c[0],c[1],c[2])));(x.forecasts||[]).forEach(f=>{const previous=[...d.updates.slice(0,-1)].reverse().find(r=>(r.forecasts||[]).some(q=>q.event_id===f.event_id&&q.scored===f.scored));const prior=previous?.forecasts?.find(q=>q.event_id===f.event_id&&q.scored===f.scored);const change=prior&&typeof prior.p==='number'&&typeof f.p==='number'?' · Change since '+previous.date+': '+dlt(f.p-prior.p):' · Change since prior matching forecast: unavailable';forecastCards.insertAdjacentHTML('beforeend',card(f.label,pct(f.p),f.horizon+change+' · confidence '+f.confidence+(f.resolution_deadline?' · resolves '+f.resolution_deadline.slice(0,10):'')+(f.range?' · uncertainty '+f.range[0]+'–'+f.range[1]+'%':'')+(f.scored===false?' · RETROSPECTIVE — NOT SCORED':'')));forecastTriggers.insertAdjacentHTML('beforeend','<div class="panel forecast-detail"><strong>'+f.label+'</strong><div><b>Event definition:</b> '+f.event_definition+'</div><div class="triggergrid"><span><b>Would raise:</b> '+(f.raise||"Not specified")+'</span><span><b>Would lower:</b> '+(f.lower||"Not specified")+'</span></div></div>')});forecastAudit.innerHTML='<div class="panel small"><strong>Forecast IDs:</strong> '+(x.forecasts||[]).filter(f=>f.scored).map(f=>(f.forecast_id||'legacy')+' → '+(f.resolution_deadline||'deadline not recorded')).join(' · ')+'<br><strong>Revision attribution:</strong> '+(x.revision_attribution_status||'Prospective signed contribution audit applies under Protocol v1.')+'</div>';regionalNote.textContent=x.regional_resolution_note||'';regional.innerHTML=tab(x.regional.map(z=>[z.name,pct(z.p),p?dlt(z.p-(p.regional.find(q=>q.name===z.name)?.p??z.p)):'—']),['Scenario','Current','Change']);politicalNote.textContent=x.political_resolution_note||'';political.innerHTML=tab(x.political.map(z=>[z.name,pct(z.p),p?dlt(z.p-(p.political.find(q=>q.name===z.name)?.p??z.p)):'—']),['Legacy descriptive outcome','Current','Change']);binaryPolitical.innerHTML=tab(scored12MonthBinaryRows(x,d.protocol),['Event','Probability','Status']);Object.entries(x.warning||{}).forEach(([k,v])=>warningGrid.insertAdjacentHTML('beforeend','<div class="item '+v.level+'"><div class="head"><span><span class="signal '+v.level+'">●</span> '+k+'</span><span class="dir '+(v.direction||"unknown")+'">'+(arrows[v.direction]||"?")+'</span></div><div>'+v.text+'</div><div class="small">Evidence: '+(v.coverage||"Unknown")+' · '+(v.role||"mixed")+'</div></div>'));(x.chains||[]).forEach(c=>chains.insertAdjacentHTML('beforeend','<div class="chain"><strong>'+c.name+'</strong><div class="small">'+c.note+'</div><div class="steps">'+c.steps.map((s,i)=>'<span class="step '+(i<c.confirmed?'done ':'')+(i===c.current?'current '+c.level:'')+'">'+s+'</span>').join('')+'</div><div class="small">'+(c.pathway_note||'')+'</div></div>'));(x.absence_indicators||[]).forEach(a=>absence.insertAdjacentHTML('beforeend','<div class="item '+(a.status||"normal")+'"><div class="head"><span><span class="signal '+(a.status||"normal")+'">●</span> '+a.label+'</span></div><div>'+a.text+'</div><div class="small">Coverage: '+a.coverage+'</div></div>'));haircut.innerHTML=card("Model estimate",pct(x.metrics.china_oil_credit_haircut),(x.haircut?.range?'Judgmental range '+x.haircut.range[0]+'–'+x.haircut.range[1]+'%. ':'')+(x.haircut?.note||"Not an observed contract term."));haircutMethod.innerHTML=x.haircut?.method?'<div class="panel"><strong>Reproducible rule</strong><p>'+x.haircut.method.rule+'</p>'+tab(x.haircut.method.components.map(z=>[z[0],z[1]+' pp',z[2]+' pp']),['Component','Current','Cap'])+'</div>':'';houthi.innerHTML='<p class="small"><strong>Unscored judgmental diagnostics — not part of the four scored forecasts.</strong> Historical estimates carried forward; current evidence does not establish fresh Iranian support.</p>'+tab([['6 months',pct(x.houthi?.m6)],['12 months',pct(x.metrics.houthi_support_12m)],['24 months',pct(x.houthi?.m24)]],['Horizon','Estimated probability strategically meaningful Iranian support continues (unscored)']);houthiDetail.innerHTML='<div class="panel"><p>'+((x.houthi||{}).definition||'')+'</p>'+tab([['Iranian matériel support, 12m',pct(x.houthi?.material_support_12m)],['Iranian technical/financial support, 12m',pct(x.houthi?.technical_financial_support_12m)],['Houthi independent/local capability, 12m',pct(x.houthi?.independent_capability_12m)]],['Component (events may overlap; not a probability partition)','Unscored probability'])+'<p class="small">'+(x.houthi?.diagnostic_note||'Houthi support estimates are unscored and judgmental.')+'</p></div>';[...(x.evidence||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.id||'').localeCompare(String(a.id||''))).forEach(e=>evidenceLedger.insertAdjacentHTML('beforeend','<article class="news"><span class="tag">'+e.category+'</span><h3>'+e.id+' · '+e.date+'</h3><div>'+e.observation+'</div><div class="small">Reliability: '+e.reliability+' · Status: '+(e.evidence_status||'unclassified')+' · Direction: '+(e.direction||'unclassified')+' · Impact: '+(e.impact_magnitude||'unrated')+' · affects: '+e.affects.join(', ')+' · <a href="'+e.source+'" rel="noopener">source</a></div></article>'));correctionLedger.innerHTML=(x.corrections&&x.corrections.length)?x.corrections.map(q=>'<article class="news">'+q+'</article>').join(''):'<div class="empty">No published corrections.</div>';(x.news||[]).forEach(n=>news.insertAdjacentHTML('beforeend','<article class="news"><span class="tag">'+(n.revision_type||n.type)+'</span><h3>'+n.title+'</h3><div>'+n.impact+'</div><div class="small">Revision: '+(n.revision_date||x.date)+(n.event_date?' · Source/event: '+n.event_date:'')+(n.url?' · <a href="'+n.url+'" rel="noopener">source</a>':'')+'</div>'+(n.source_note?'<div class="source-note"><strong>Source supports:</strong> '+n.source_note+'</div>':'')+'</article>'));d.updates.slice().reverse().slice(0,4).forEach((a,i)=>archive.insertAdjacentHTML('beforeend','<article class="archive"><h3>'+a.date+(a.forecasts?'':' <span class="legacy">legacy record</span>')+'</h3><div>Escalation '+pct(a.metrics.regional_escalation_90d)+' · Regime-ending event '+pct(a.metrics.regime_end_12m)+' · Legacy FX composite (unscored) '+pct(a.metrics.fx_crisis_12m)+'</div><div class="small">'+a.summary+'</div></article>'));drawForecasts(d.updates);drawHaircut(d.updates);renderAccessibleSvgCharts(d.updates)}).catch(e=>{document.querySelector('main').innerHTML='<div class="failure"><h2>Data temporarily unavailable</h2><p>The dashboard could not load its validated assessment. Please use the forecast history or return later.</p></div>'});function axes(c,max=100){const g=c.getContext('2d'),W=c.width,H=c.height,p=42;g.clearRect(0,0,W,H);g.strokeStyle='#cfd6dc';g.fillStyle='#64717d';g.font='12px sans-serif';for(let y=0;y<=max;y+=max/4){const py=H-p-(H-2*p)*y/max;g.beginPath();g.moveTo(p,py);g.lineTo(W-p,py);g.stroke();g.fillText(Math.round(y)+'%',6,py+4)}return[g,W,H,p]}
-function datedAxis(c,records,max=100){
-  const [g,W,H,p]=axes(c,max);
+ fetch('data/history.json').then(r=>{if(!r.ok)throw new Error('history unavailable');return r.json()}).then(d=>{const x=d.updates.at(-1),p=d.updates.at(-2);revisionDate.textContent='Latest assessment: '+x.date+' · Methodology revised: '+(x.methodology_revision_date||'not recorded');freshness.innerHTML='<strong>Assessment date:</strong> '+x.date+' · <strong>Evidence cutoff:</strong> '+(x.assessment_evidence_cutoff||'not recorded')+' · <strong>Methodology/page revised:</strong> '+(x.methodology_revision_date||'—')+' · <strong>Next scheduled:</strong> '+(x.next_scheduled_update||'not recorded');limitations.textContent=x.limitations||'';protocolStatus.innerHTML='<strong>Protocol:</strong> '+(x.protocol_version_for_assessment||'v1.0')+(x.protocol_version_for_assessment&&x.protocol_version_for_assessment.includes('legacy')?' · this assessment predates frozen v1':'');changed.innerHTML='<div class="change-point change-card"><strong>Change</strong><p>'+(x.what_changed||"See revision drivers below.")+'</p></div><div class="change-point change-card"><strong>Most important stabilizer</strong><p>'+(x.stabilizer||"—")+'</p></div><div class="change-point change-card"><strong>Thresholds to watch</strong>'+renderThresholdDefinitions(d.protocol)+'</div>';const cond=[['Hormuz','Severely restricted; limited transit continues',(x.metrics.hormuz||'')+' · '+(x.conditions?.hormuz||'Observation · confidence unknown')],['Energy system',x.metrics.energy_stress,x.conditions?.energy||"Inference · confidence unknown"],['Elite cohesion','Continuity observed; fracture unverified',x.conditions?.elite||"Inference · confidence limited"],['Coercive apparatus','Status unknown',x.conditions?.coercion||"Inference · confidence Low due to data gaps"]];cond.forEach(c=>conditionCards.insertAdjacentHTML('beforeend',card(c[0],c[1],c[2])));(x.forecasts||[]).forEach(f=>{const previous=[...d.updates.slice(0,-1)].reverse().find(r=>(r.forecasts||[]).some(q=>q.event_id===f.event_id&&q.scored===f.scored));const prior=previous?.forecasts?.find(q=>q.event_id===f.event_id&&q.scored===f.scored);const change=prior&&typeof prior.p==='number'&&typeof f.p==='number'?' · Change since '+previous.date+': '+dlt(f.p-prior.p):' · Change since prior matching forecast: unavailable';forecastCards.insertAdjacentHTML('beforeend',card(f.label,pct(f.p),f.horizon+change+' · confidence '+f.confidence+(f.resolution_deadline?' · resolves '+f.resolution_deadline.slice(0,10):'')+(f.range?' · uncertainty '+f.range[0]+'–'+f.range[1]+'%':'')+(f.scored===false?' · RETROSPECTIVE — NOT SCORED':'')));forecastTriggers.insertAdjacentHTML('beforeend','<div class="panel forecast-detail"><strong>'+f.label+'</strong><div><b>Event definition:</b> '+f.event_definition+'</div><div class="triggergrid"><span><b>Would raise:</b> '+(f.raise||"Not specified")+'</span><span><b>Would lower:</b> '+(f.lower||"Not specified")+'</span></div></div>')});forecastAudit.innerHTML='<div class="panel small"><strong>Forecast IDs:</strong> '+(x.forecasts||[]).filter(f=>f.scored).map(f=>(f.forecast_id||'legacy')+' → '+(f.resolution_deadline||'deadline not recorded')).join(' · ')+'<br><strong>Revision attribution:</strong> '+(x.revision_attribution_status||'Prospective signed contribution audit applies under Protocol v1.')+'</div>';regionalNote.textContent=x.regional_resolution_note||'';regional.innerHTML=tab(x.regional.map(z=>[z.name,pct(z.p),p?dlt(z.p-(p.regional.find(q=>q.name===z.name)?.p??z.p)):'—']),['Scenario','Current','Change']);politicalNote.textContent=x.political_resolution_note||'';political.innerHTML=tab(x.political.map(z=>[z.name,pct(z.p),p?dlt(z.p-(p.political.find(q=>q.name===z.name)?.p??z.p)):'—']),['Legacy descriptive outcome','Current','Change']);binaryPolitical.innerHTML=tab(scored12MonthBinaryRows(x,d.protocol),['Event','Probability','Status']);Object.entries(x.warning||{}).forEach(([k,v])=>warningGrid.insertAdjacentHTML('beforeend','<div class="item '+v.level+'"><div class="head"><span><span class="signal '+v.level+'">●</span> '+k+'</span><span class="dir '+(v.direction||"unknown")+'">'+(arrows[v.direction]||"?")+'</span></div><div>'+v.text+'</div><div class="small">Evidence: '+(v.coverage||"Unknown")+' · '+(v.role||"mixed")+'</div></div>'));(x.chains||[]).forEach(c=>chains.insertAdjacentHTML('beforeend','<div class="chain"><strong>'+c.name+'</strong><div class="small">'+c.note+'</div><div class="steps">'+c.steps.map((s,i)=>'<span class="step '+(i<c.confirmed?'done ':'')+(i===c.current?'current '+c.level:'')+'">'+s+'</span>').join('')+'</div><div class="small">'+(c.pathway_note||'')+'</div></div>'));(x.absence_indicators||[]).forEach(a=>absence.insertAdjacentHTML('beforeend','<div class="item '+(a.status||"normal")+'"><div class="head"><span><span class="signal '+(a.status||"normal")+'">●</span> '+a.label+'</span></div><div>'+a.text+'</div><div class="small">Coverage: '+a.coverage+'</div></div>'));haircut.innerHTML=card("Model estimate",pct(x.metrics.china_oil_credit_haircut),(x.haircut?.range?'Judgmental range '+x.haircut.range[0]+'–'+x.haircut.range[1]+'%. ':'')+(x.haircut?.note||"Not an observed contract term."));haircutMethod.innerHTML=x.haircut?.method?'<div class="panel"><strong>Reproducible rule</strong><p>'+x.haircut.method.rule+'</p>'+tab(x.haircut.method.components.map(z=>[z[0],z[1]+' pp',z[2]+' pp']),['Component','Current','Cap'])+'</div>':'';houthi.innerHTML='<p class="small"><strong>Unscored judgmental diagnostics — not part of the four scored forecasts.</strong> Historical estimates carried forward; current evidence does not establish fresh Iranian support.</p>'+tab([['6 months',pct(x.houthi?.m6)],['12 months',pct(x.metrics.houthi_support_12m)],['24 months',pct(x.houthi?.m24)]],['Horizon','Estimated probability strategically meaningful Iranian support continues (unscored)']);houthiDetail.innerHTML='<div class="panel"><p>'+((x.houthi||{}).definition||'')+'</p>'+tab([['Iranian matériel support, 12m',pct(x.houthi?.material_support_12m)],['Iranian technical/financial support, 12m',pct(x.houthi?.technical_financial_support_12m)],['Houthi independent/local capability, 12m',pct(x.houthi?.independent_capability_12m)]],['Component (events may overlap; not a probability partition)','Unscored probability'])+'<p class="small">'+(x.houthi?.diagnostic_note||'Houthi support estimates are unscored and judgmental.')+'</p></div>';[...(x.evidence||[])].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.id||'').localeCompare(String(a.id||''))).forEach(e=>evidenceLedger.insertAdjacentHTML('beforeend','<article class="news"><span class="tag">'+e.category+'</span><h3>'+e.id+' · '+e.date+'</h3><div>'+e.observation+'</div><div class="small">Reliability: '+e.reliability+' · Status: '+(e.evidence_status||'unclassified')+' · Direction: '+(e.direction||'unclassified')+' · Impact: '+(e.impact_magnitude||'unrated')+' · affects: '+e.affects.join(', ')+' · <a href="'+e.source+'" rel="noopener">source</a></div></article>'));correctionLedger.innerHTML=(x.corrections&&x.corrections.length)?x.corrections.map(q=>'<article class="news">'+q+'</article>').join(''):'<div class="empty">No published corrections.</div>';(x.news||[]).forEach(n=>news.insertAdjacentHTML('beforeend','<article class="news"><span class="tag">'+(n.revision_type||n.type)+'</span><h3>'+n.title+'</h3><div>'+n.impact+'</div><div class="small">Revision: '+(n.revision_date||x.date)+(n.event_date?' · Source/event: '+n.event_date:'')+(n.url?' · <a href="'+n.url+'" rel="noopener">source</a>':'')+'</div>'+(n.source_note?'<div class="source-note"><strong>Source supports:</strong> '+n.source_note+'</div>':'')+'</article>'));d.updates.slice().reverse().slice(0,4).forEach((a,i)=>archive.insertAdjacentHTML('beforeend','<article class="archive"><h3>'+a.date+(a.forecasts?'':' <span class="legacy">legacy record</span>')+'</h3><div>Escalation '+pct(a.metrics.regional_escalation_90d)+' · Regime-ending event '+pct(a.metrics.regime_end_12m)+' · Legacy FX composite (unscored) '+pct(a.metrics.fx_crisis_12m)+'</div><div class="small">'+a.summary+'</div></article>'));drawForecasts(d.updates);drawHaircut(d.updates);renderAccessibleSvgCharts(d.updates)}).catch(e=>{document.querySelector('main').innerHTML='<div class="failure"><h2>Data temporarily unavailable</h2><p>The dashboard could not load its validated assessment. Please use the forecast history or return later.</p></div>'});// Keep every YYYY-MM-DD tick and its 45-degree NW-to-SE date label inside
+// the chart's own drawing box. Longer/dense histories enlarge the chart
+// horizontally and scroll within .chartbox; never omit or overlap dates.
+const dateAxisLayout=Object.freeze({
+  left:52, right:92, top:42, bottom:90, minTickSpacing:74,
+  tickLength:6, labelGap:4
+});
+function chartDateGeometry(records){
   const days=records.map(r=>Date.parse(r.date+'T00:00:00Z'));
-  if(days.some(t=>!Number.isFinite(t)))throw new Error('Invalid assessment date in chart history');
-  const first=days.length?Math.min(...days):0,last=days.length?Math.max(...days):0;
-  const x=i=>p+(W-2*p)*(first===last?.5:(days[i]-first)/(last-first));
-  g.save();g.strokeStyle='#9da9b4';g.fillStyle='#475562';g.font='12px sans-serif';
-  g.textBaseline='alphabetic';
-  records.forEach((r,i)=>{const px=x(i);g.beginPath();g.moveTo(px,H-p);g.lineTo(px,H-p+5);g.stroke()});
-  // Print exact ISO dates where there is room; always keep the first and
-  // last assessment labeled. Short intervals do not overlap their neighbors.
-  let previous=-Infinity;
+  if(days.some(t=>!Number.isFinite(t)))
+    throw new Error('Invalid assessment date in chart history');
+  for(let i=1;i<days.length;i++)
+    if(days[i]<=days[i-1])
+      throw new Error('Non-increasing assessment date in chart history');
+  const first=days[0]||0,last=days.length?days[days.length-1]:first;
+  let minimumStep=Infinity;
+  for(let i=1;i<days.length;i++)
+    minimumStep=Math.min(minimumStep,days[i]-days[i-1]);
+  const span=last-first;
+  const required=days.length>1?
+    dateAxisLayout.left+dateAxisLayout.right+
+    span/minimumStep*dateAxisLayout.minTickSpacing:900;
+  const width=Math.max(900,Math.ceil(required));
+  const x=i=>days.length<2?width/2:
+    dateAxisLayout.left+(width-dateAxisLayout.left-dateAxisLayout.right)*
+    (days[i]-first)/span;
+  return {width,x};
+}
+function axes(c,max=100){
+  const g=c.getContext('2d'),W=c.width,H=c.height;
+  const base=H-dateAxisLayout.bottom,plotHeight=base-dateAxisLayout.top;
+  g.clearRect(0,0,W,H);
+  g.strokeStyle='#cfd6dc';g.fillStyle='#64717d';g.font='12px sans-serif';
+  for(let t=0;t<=4;t++){
+    const value=max*t/4,py=base-plotHeight*t/4;
+    g.beginPath();
+    g.moveTo(dateAxisLayout.left,py);
+    g.lineTo(W-dateAxisLayout.right,py);
+    g.stroke();
+    g.fillText(Math.round(value)+'%',6,py+4);
+  }
+  return {g,W,H,base,plotHeight};
+}
+function datedAxis(c,records,max=100){
+  const geometry=chartDateGeometry(records);
+  if(c.width!==geometry.width)c.width=geometry.width;
+  const {g,W,H,base,plotHeight}=axes(c,max);
+  const x=geometry.x;
+  const y=value=>base-plotHeight*value/max;
+  g.save();
+  g.strokeStyle='#9da9b4';g.fillStyle='#475562';
+  g.font='12px sans-serif';
+  g.textAlign='left';g.textBaseline='top';
   records.forEach((r,i)=>{
-    const px=x(i),isFirst=i===0,isLast=i===records.length-1;
-    if(isFirst||isLast||px-previous>=100&&x(records.length-1)-px>=100){
-      g.textAlign=isFirst?'left':isLast?'right':'center';
-      if(records.length===1)g.textAlign='center';
-      g.fillText(r.date,px,H-12);
-      previous=px;
-    }
+    const px=x(i),top=base+dateAxisLayout.tickLength+dateAxisLayout.labelGap;
+    g.beginPath();
+    g.moveTo(px,base);
+    g.lineTo(px,base+dateAxisLayout.tickLength);
+    g.stroke();
+    g.save();
+    g.translate(px,top);
+    g.rotate(Math.PI/4);
+    g.fillText(r.date,0,0);
+    g.restore();
   });
   g.restore();
-  return {g,W,H,p,x};
+  return {g,W,H,p:dateAxisLayout.left,x,y};
 }
 function drawSeries(ctx,records,x,y,key,color){
   ctx.strokeStyle=color;ctx.lineWidth=3;ctx.beginPath();
@@ -100,8 +143,7 @@ function drawForecasts(records){
     if(rows.length!==4||new Set(rows.map(f=>f.event_id)).size!==4)return null;
     return {date:r.date,metrics:Object.fromEntries(rows.map(f=>[f.event_id,f.p]))};
   }).filter(Boolean);
-  const {g,W,H,p,x}=datedAxis(chart,scored);
-  const y=value=>H-p-(H-2*p)*value/100;
+  const {g,W,H,p,x,y}=datedAxis(chart,scored);
   series.forEach(([key,color,label],i)=>{
     drawSeries(g,scored,x,y,key,color);
     g.fillStyle=color;g.font='12px sans-serif';g.fillText(label,p+i*116,18);
@@ -110,8 +152,8 @@ function drawForecasts(records){
   chart.setAttribute('aria-label','Four Protocol v1.0 scored forecast probabilities by assessment date. '+scored.map(r=>r.date+': '+series.map(([key,,label])=>label+' '+pct(r.metrics?.[key])).join(', ')).join('; '));
 }
 function drawHaircut(records){
-  const max=60,{g,W,H,p,x}=datedAxis(haircutChart,records,max);
-  drawSeries(g,records,x,value=>H-p-(H-2*p)*value/max,'china_oil_credit_haircut','#28734b');
+  const max=60,{g,W,H,p,x,y}=datedAxis(haircutChart,records,max);
+  drawSeries(g,records,x,y,'china_oil_credit_haircut','#28734b');
   g.fillStyle='#28734b';g.font='12px sans-serif';g.fillText('Model estimate',p,18);
   haircutChart.setAttribute('role','img');
   haircutChart.setAttribute('aria-label','Iran–China oil-credit haircut by assessment date. '+records.map(r=>r.date+': '+pct(r.metrics?.china_oil_credit_haircut)).join('; '));
@@ -131,23 +173,40 @@ function renderAccessibleSvgCharts(records){
   }
   function make(canvas,rows,series,max,description){
     if(!canvas||!canvas.parentElement||!rows.length)return;
-    const W=900,H=300,p=48;
-    const dates=rows.map(r=>Date.parse(r.date+'T00:00:00Z'));
-    if(dates.some(t=>!Number.isFinite(t)))return;
-    const first=Math.min(...dates),last=Math.max(...dates);
-    const X=i=>p+(W-2*p)*(first===last?0.5:(dates[i]-first)/(last-first));
-    const Y=v=>H-p-(H-2*p)*v/max;
-    const svg=node('svg',{viewBox:'0 0 900 300',width:'100%',role:'img','aria-label':description});
+    const geometry=chartDateGeometry(rows);
+    const W=geometry.width,H=canvas.height;
+    const X=geometry.x;
+    const base=H-dateAxisLayout.bottom;
+    const plotHeight=base-dateAxisLayout.top;
+    const Y=v=>base-plotHeight*v/max;
+    const svg=node('svg',{
+      viewBox:'0 0 '+W+' '+H,width:W,height:H,
+      role:'img','aria-label':description
+    });
     svg.appendChild(node('title',{},description));
     for(let t=0;t<=4;t++){
       const value=max*t/4,y=Y(value);
-      svg.appendChild(node('line',{x1:p,y1:y,x2:W-p,y2:y,stroke:'#cfd6dc'}));
-      svg.appendChild(node('text',{x:4,y:y+4,fill:'#64717d','font-size':13},Math.round(value)+'%'));
+      svg.appendChild(node('line',{
+        x1:dateAxisLayout.left,y1:y,x2:W-dateAxisLayout.right,y2:y,
+        stroke:'#cfd6dc'
+      }));
+      svg.appendChild(node('text',{
+        x:4,y:y+4,fill:'#64717d','font-size':12
+      },Math.round(value)+'%'));
     }
-    const labelIndices=[0,rows.length-1];
-    if(rows.length>2)for(let i=1;i<rows.length-1;i++)if(X(i)-X(labelIndices.at(-1))>=115&&X(rows.length-1)-X(i)>=115)labelIndices.splice(labelIndices.length-1,0,i);
-    [...new Set(labelIndices)].forEach(i=>{
-      svg.appendChild(node('text',{x:X(i),y:H-12,fill:'#475562','font-size':12,'text-anchor':i===0?'start':i===rows.length-1?'end':'middle'},rows[i].date));
+    rows.forEach((r,i)=>{
+      const px=X(i),top=base+dateAxisLayout.tickLength+dateAxisLayout.labelGap;
+      svg.appendChild(node('line',{
+        class:'date-tick','data-date':r.date,
+        x1:px,y1:base,x2:px,y2:base+dateAxisLayout.tickLength,
+        stroke:'#9da9b4'
+      }));
+      svg.appendChild(node('text',{
+        class:'date-label','data-date':r.date,
+        x:px,y:top,transform:'rotate(45 '+px+' '+top+')',
+        'text-anchor':'start','dominant-baseline':'hanging',
+        fill:'#475562','font-size':12
+      },r.date));
     });
     series.forEach(([key,color,label],j)=>{
       const points=rows.map((r,i)=>({v:r.metrics?.[key],x:X(i)})).filter(z=>typeof z.v==='number'&&Number.isFinite(z.v));
@@ -155,7 +214,7 @@ function renderAccessibleSvgCharts(records){
         svg.appendChild(node('polyline',{points:points.map(z=>z.x+','+Y(z.v)).join(' '),fill:'none',stroke:color,'stroke-width':3}));
         points.forEach(z=>svg.appendChild(node('circle',{cx:z.x,cy:Y(z.v),r:4,fill:color})));
       }
-      svg.appendChild(node('text',{x:p+j*(series.length===1?0:190),y:20,fill:color,'font-size':14},label));
+      svg.appendChild(node('text',{x:dateAxisLayout.left+j*(series.length===1?0:190),y:20,fill:color,'font-size':14},label));
     });
     canvas.parentElement.appendChild(svg);
     canvas.style.display='none';
