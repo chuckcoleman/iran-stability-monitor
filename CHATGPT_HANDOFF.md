@@ -245,6 +245,20 @@ must match original history exactly apart from status. The original
 quality audit, claims, factual grades, source identifiers, and cutoff
 are never rewritten to manufacture agreement.
 
+## Twelve-month scored binary dashboard list
+
+For each prospective Sunday publication, the public twelve-month scored
+binary forecast table must contain the three distinct frozen Protocol v1.0
+scored core events `regime_end_12m`, `currency_crisis_12m`, and
+`external_payments_crisis_12m`. Display their actual scored forecast
+probabilities and the corresponding frozen protocol labels. These are
+binary scored events despite the historic `binary_political` field
+containing only the regime-ending outcome. Do not rewrite that legacy
+field, alter history, or use the old unscored FX composite as a scored
+currency forecast. Validate that exactly three scored rows are rendered
+and that no unscored diagnostic appears in the list. This is a
+presentation-only guarantee, not a new prediction.
+
 ## Thresholds-to-watch publication contract
 
 The dashboard **Thresholds to watch** card is a definitions-only display:
