@@ -1,0 +1,1412 @@
+{
+  "version": 1,
+  "mode": "chatgpt_first_no_api",
+  "research_provenance": "CHATGPT_RESEARCH_REPORTED_NOT_API_WEB_SEARCH_TRACE",
+  "baseline_sha256": "4b90ff6e62ae86581edf12962aef5f51561d3bd8470b2ceb465a0ca83b587012",
+  "candidate_sha256": "ec74495616a8dba3b784cbea550acc7896574d7a1a471b0ef14c7e88b81b02fb",
+  "research_as_of": "2026-11-15T17:30:01.087483+00:00",
+  "source_review_completed_at": "2026-11-15T17:34:51.641073+00:00",
+  "post_snapshot_interval": "NOT_SEARCHED",
+  "provenance_limitations": "Two sequential analytical perspectives in this single ChatGPT session do not constitute independently invoked reviewers. Firecrawl and Google Drive storage readback validate retained text and article-body bytes but not publisher transport authenticity, original first-publication time, underlying military targets or missing macro data.",
+  "coverage": [
+    {
+      "category": "primary_data",
+      "queries": [
+        "Iran Bahrain November 15 2026 official military statements IAEA nuclear UN diplomacy",
+        "Bahrain Defence Force official November 15 2026 Iranian drone interception statement",
+        "Bahrain Foreign Ministry November 15 2026 Iranian drones condemned BNA official statement"
+      ],
+      "original_urls": [
+        "https://irangov.ir/detail/493249"
+      ],
+      "outcome": "searched_no_eligible_evidence",
+      "limitations": "Original Iranian government detail/493249 produced only an interstitial. Issuing-agency Bahrain BNA and direct IAEA November original bodies were not retained; no official claim is upgraded."
+    },
+    {
+      "category": "international_media",
+      "queries": [
+        "Iran war November 15 2026 Reuters AP AFP Bahrain US military attack mediation ceasefire",
+        "Iran Oman Qatar Saudi Turkey mediation pause strikes November 2026 original news"
+      ],
+      "original_urls": [
+        "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/"
+      ],
+      "outcome": "eligible_reporting_found",
+      "limitations": "Four original Reuters pages are retained. Reuters reprints and the November 13/15 military accounts are not independent first-party radar-damage witnesses; source effects remain attributed."
+    },
+    {
+      "category": "regional_multilingual_media",
+      "queries": [
+        "بحرين إيران هجوم مسيرات 15 نوفمبر 2026 مفاوضات وقف إطلاق النار عُمان مصادر عربية وفارسية",
+        "عراقچی عمان ۲۴ آبان ۱۴۰۵ مذاکرات ایران آمریکا خبرگزاری"
+      ],
+      "original_urls": [
+        "https://www.irna.ir/news/86309622/%D8%B9%D8%B1%D8%A7%D9%82%DA%86%DB%8C-%D9%BE%DB%8C%D8%B4%D9%86%D9%87%D8%A7%D8%AF-%D8%A7%D8%B1%D8%A7%D8%A6%D9%87-%D8%B4%D8%AF%D9%87-%DA%A9%D9%86%D9%88%D9%86%DB%8C-%D8%A8%D9%87-%D8%B7%D8%B1%D8%AD-%D9%87%D9%81%D8%AA-%D8%B1%D9%88%D8%B2%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D9%85%D8%B9%D8%B1%D9%88%D9%81-%D8%A7%D8%B3%D8%AA-%D9%81%DB%8C%D9%84%D9%85"
+      ],
+      "outcome": "searched_no_eligible_evidence",
+      "limitations": "Arabic first pass returned only two predominantly historical links; Persian follow-up returned an IRNA lead but the publisher original body was not available and no translated claim was admitted."
+    },
+    {
+      "category": "specialist_investigative",
+      "queries": [
+        "UKMTO November 13 15 2026 Strait of Hormuz tanker incidents maritime security weekly overview original",
+        "UKMTO November 2026 tanker incident Strait Hormuz official recent warning",
+        "Saudi coalition November 15 2026 Houthi missiles Riyadh drones al Maliki independent original report"
+      ],
+      "original_urls": [
+        "https://www.ukmto.org/recent-incidents"
+      ],
+      "outcome": "searched_no_eligible_evidence",
+      "limitations": "UKMTO incident-index search yielded current warnings and derivative tanker reporting but no exact original warning body or vessel identity was retained; incident counts cannot be summed."
+    },
+    {
+      "category": "think_tanks",
+      "queries": [
+        "Chatham House Crisis Group November 2026 Iran return to war ceasefire policy military risks analysis",
+        "Iran ceasefire rearm security implications November 2026 International Crisis Group analysis"
+      ],
+      "original_urls": [
+        "https://www.chathamhouse.org/2026/11/will-us-and-iran-return-war"
+      ],
+      "outcome": "eligible_reporting_found",
+      "limitations": "An original November 9 Chatham House analysis was retained as competing interpretive context, not as independent confirmation of an additional conflict episode."
+    },
+    {
+      "category": "economic_humanitarian_academic",
+      "queries": [
+        "Iran November 2026 Hanke inflation rial parallel currency shortages essential medicine payments oil China UN OCHA",
+        "Steve Hanke Iran November 2026 monthly inflation rial estimate latest"
+      ],
+      "original_urls": [
+        "https://www.unocha.org/publications/report/iran-islamic-republic/islamic-republic-iran-humanitarian-update-no-04-1-may-2026",
+        "https://x.com/steve_hanke/status/2118819462501523631"
+      ],
+      "outcome": "searched_no_eligible_evidence",
+      "limitations": "No current independently verified Hanke 30-day estimate, parallel-market rial series or primary two-category 14-day essential-import payment interruption data were retained."
+    }
+  ],
+  "source_review_packet": {
+    "pre_review_admission_version": 7,
+    "research_as_of": "2026-11-15T17:30:01.087483+00:00",
+    "published_history_sha256": "4b90ff6e62ae86581edf12962aef5f51561d3bd8470b2ceb465a0ca83b587012",
+    "evidence": [
+      {
+        "id": "E-20261115-REU13-ATTR",
+        "date": "2026-11-15",
+        "event_date": "2026-11-13",
+        "source": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "source_title": "US denies Iran's claim it attacked radar in Bahrain",
+        "publisher": "Reuters",
+        "category": "Military / Bahrain",
+        "observation": "Reuters dated 13 November reports the US military denied Iran's claimed radar strike and said it intercepted two drones without damage. This records opposed statements, not a verified absence or presence of damage.",
+        "direction": "raises",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "minor",
+        "reliability": "Medium",
+        "evidence_status": "new",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated"
+      },
+      {
+        "id": "E-20261115-REU14-RESTRAINT",
+        "date": "2026-11-15",
+        "event_date": "2026-11-14",
+        "source": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "source_title": "Trump tells advisers he may hold off on Iran attacks",
+        "publisher": "Reuters",
+        "category": "Diplomacy / military restraint",
+        "observation": "Reuters dated 14 November reports advisers heard a possibility of postponing new strikes; Saudi and Turkish leaders urged restraint. No ceasefire was signed or implemented.",
+        "direction": "lowers",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "minor",
+        "reliability": "Medium",
+        "evidence_status": "new",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated"
+      },
+      {
+        "id": "E-20261115-REU15-ATTR",
+        "date": "2026-11-15",
+        "event_date": "2026-11-15",
+        "source": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "source_title": "Bahrain intercepts Iranian aerial attacks",
+        "publisher": "Reuters",
+        "category": "Military / Bahrain",
+        "observation": "Reuters dated 15 November reports Bahrain said it intercepted Iranian aerial attacks. The IRGC said it targeted a US radar site, with damage unconfirmed; no qualifying 72-hour escalation was established.",
+        "direction": "raises",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "moderate",
+        "reliability": "Medium",
+        "evidence_status": "new",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated"
+      },
+      {
+        "id": "E-20261115-REUTERS-HOUTHIS",
+        "date": "2026-11-15",
+        "event_date": "2026-11-15",
+        "source": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "source_title": "Saudi-led coalition says missiles and drones intercepted",
+        "publisher": "Reuters",
+        "category": "Military / Saudi / Houthis",
+        "observation": "Reuters dated 15 November reports the Saudi-led coalition said it intercepted Houthi missiles and drones; the account does not authenticate Iranian material support or duplicate-incident totals.",
+        "direction": "raises",
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "impact_magnitude": "minor",
+        "reliability": "Medium",
+        "evidence_status": "new",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated"
+      }
+    ],
+    "pre_review_claim_decisions": [
+      {
+        "id": "E-20261115-REU13-ATTR",
+        "original_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "original_passage": "The US military denied Iran's claim",
+        "source_body_sha256": "551ced4e5f5db771d97498ec91488ae461338b367215026b8cb9bcdeefdabebf",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+          "final_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+          "retrieved_at": "2026-11-15T15:31:31.776Z",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "551ced4e5f5db771d97498ec91488ae461338b367215026b8cb9bcdeefdabebf",
+          "visible_text_sha256": "26ccab6e6db0af6a2f6fc160eb4c368f407efb8e4469df663bb04230ef958a41",
+          "passage_offset": 19,
+          "passage": "The US military denied Iran's claim"
+        },
+        "capture_verification_sha256": "36bf2e8552536c150dfebae21a20bea17321007a1a892342d8493f3d391158f6"
+      },
+      {
+        "id": "E-20261115-REU14-RESTRAINT",
+        "original_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "original_passage": "Saudi Arabia, Turkey urged Trump not to resume military strikes",
+        "source_body_sha256": "eb810106ec9d618206f054f4165f080b8706043f37fbdd66e237bfffc2e3b24a",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+          "final_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+          "retrieved_at": "2026-11-15T15:30:20.453Z",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "eb810106ec9d618206f054f4165f080b8706043f37fbdd66e237bfffc2e3b24a",
+          "visible_text_sha256": "239d4a183496a1db010e9879c8c4f6a5a8bec0093b0e677d9eda06c2cfcddee3",
+          "passage_offset": 8,
+          "passage": "Saudi Arabia, Turkey urged Trump not to resume military strikes"
+        },
+        "capture_verification_sha256": "2f2feec1e33c59dec06e1173bfdf12085f3e0d7ecf6da6f7610fe2a9ff5f0ed9"
+      },
+      {
+        "id": "E-20261115-REU15-ATTR",
+        "original_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "original_passage": "Bahrain intercepted and destroyed several Iranian aerial attacks",
+        "source_body_sha256": "712419c02a870353acb22f49a5b3242b2eacd598adbb69d25e1dcfce89dda7df",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+          "final_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+          "retrieved_at": "2026-11-15T15:31:11.656Z",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "712419c02a870353acb22f49a5b3242b2eacd598adbb69d25e1dcfce89dda7df",
+          "visible_text_sha256": "1e6f126b86d99ec019298cdbb5a8874497967e0a6f70092100db74a04006698f",
+          "passage_offset": 19,
+          "passage": "Bahrain intercepted and destroyed several Iranian aerial attacks"
+        },
+        "capture_verification_sha256": "f282cf3fb0b941fb26c46ca78061fbca9319b8f851bde302470ba3dd8fda442c"
+      },
+      {
+        "id": "E-20261115-REUTERS-HOUTHIS",
+        "original_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "original_passage": "it had intercepted two ‌Houthi ballistic missiles launched towards the Saudi capital Riyadh and three drones in ​the kingdom",
+        "source_body_sha256": "499dd49053c07b4ea929442f0b63aa356da2c772c52c5b7ffffcdc7c9a44f011",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "capture_verification": {
+          "original_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+          "final_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+          "retrieved_at": "2026-11-15T17:25:15.861Z",
+          "content_type": "text/html",
+          "charset": "utf-8",
+          "source_body_sha256": "499dd49053c07b4ea929442f0b63aa356da2c772c52c5b7ffffcdc7c9a44f011",
+          "visible_text_sha256": "6f33f8b987dfe0e3d3ee89f26aab85bcf155e865dd4d84e97857fc858b0b5050",
+          "passage_offset": 97,
+          "passage": "it had intercepted two ‌Houthi ballistic missiles launched towards the Saudi capital Riyadh and three drones in ​the kingdom"
+        },
+        "capture_verification_sha256": "f48f5ff7f2cae0e211ff0af17aaa8bd87621d3905dbba964e1414f0fa67b18cc"
+      }
+    ],
+    "source_quality_audit": {
+      "source_count": 10,
+      "sources": [
+        {
+          "url": "https://irangov.ir/detail/493249",
+          "classification": "unverified",
+          "origin": "official_or_advocacy_claim",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "An Iranian government search result suggested a current spokesman/IAEA diplomacy item, but the publisher URL returned only a website-transfer interstitial.",
+          "limitations": "The raw redirect/interstitial contains no claim-bearing original statement; original content, time and editorial attribution cannot be independently verified.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:11:24.793Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; Original Iranian government detail/493249 produced only an interstitial. Issuing-agency Bahrain BNA and direct IAEA November original bodies were not retained; no official claim is upgraded."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-15T17:25:15.861Z",
+              "http_status": 200,
+              "limitations": "An HTTP 200 transfer-interstitial was fetched; this proves only URL response and not access to the original Iranian government statement."
+            },
+            "body": {
+              "status": "failed",
+              "captured_claim_ids": [],
+              "limitations": "No substantive claim-bearing original article body was retrieved; only a redirect or search result is available and no new evidence can be admitted."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            0
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Reuters original reports the U.S. military denying an Iranian claim of successful radar damage on 13 November; the denial itself is observable in the text, not physical evidence of no damage.",
+          "limitations": "A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:12:42.148Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; Four original Reuters pages are retained. Reuters reprints and the November 13/15 military accounts are not independent first-party radar-damage witnesses; source effects remain attributed."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-15T15:31:31.776Z",
+              "http_status": 200,
+              "limitations": "A separately retained original-source rawHTML 200 response was inspected before the frozen cutoff; its publisher-supplied time is not independently authenticated."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261115-REU13-ATTR"
+              ],
+              "limitations": "The exact original Reuters article body was retained privately as local HTML and matched against precise passage offsets and SHA-256, but this alone does not establish the physical event."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            1
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Reuters reports Saudi and Turkish leaders urged postponement of new U.S. strikes, while Trump had not committed to a final decision and a naval blockade remained.",
+          "limitations": "Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:12:42.148Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; Four original Reuters pages are retained. Reuters reprints and the November 13/15 military accounts are not independent first-party radar-damage witnesses; source effects remain attributed."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-15T15:30:20.453Z",
+              "http_status": 200,
+              "limitations": "A separately retained original-source rawHTML 200 response was inspected before the frozen cutoff; its publisher-supplied time is not independently authenticated."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261115-REU14-RESTRAINT"
+              ],
+              "limitations": "The exact original Reuters article body was retained privately as local HTML and matched against precise passage offsets and SHA-256, but this alone does not establish the physical event."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            2
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Reuters directly reports the Bahraini military announcement of intercepted Iranian aerial attacks on 15 November and separately attributes unconfirmed radar-hit claims to the IRGC.",
+          "limitations": "No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:12:42.148Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; Four original Reuters pages are retained. Reuters reprints and the November 13/15 military accounts are not independent first-party radar-damage witnesses; source effects remain attributed."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-15T15:31:11.656Z",
+              "http_status": 200,
+              "limitations": "A separately retained original-source rawHTML 200 response was inspected before the frozen cutoff; its publisher-supplied time is not independently authenticated."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261115-REU15-ATTR"
+              ],
+              "limitations": "The exact original Reuters article body was retained privately as local HTML and matched against precise passage offsets and SHA-256, but this alone does not establish the physical event."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+          "classification": "attributed_claim",
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "new_evidence_indices": [
+            3
+          ],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Reuters original reporting attributes two missile interceptions toward Riyadh and three drone interceptions in Eastern Province to the Saudi-led coalition on 15 November.",
+          "limitations": "Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions.",
+          "access_channels": {
+            "search": {
+              "status": "not_searched",
+              "checked_at": null,
+              "limitations": "This selected context URL was followed through direct navigation or separate historical discovery, not a ranked search result within the fourteen saved Firecrawl responses."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-15T17:25:15.861Z",
+              "http_status": 200,
+              "limitations": "A separately retained original-source rawHTML 200 response was inspected before the frozen cutoff; its publisher-supplied time is not independently authenticated."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [
+                "E-20261115-REUTERS-HOUTHIS"
+              ],
+              "limitations": "The exact original Reuters article body was retained privately as local HTML and matched against precise passage offsets and SHA-256, but this alone does not establish the physical event."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.irna.ir/news/86309622/%D8%B9%D8%B1%D8%A7%D9%82%DA%86%DB%8C-%D9%BE%DB%8C%D8%B4%D9%86%D9%87%D8%A7%D8%AF-%D8%A7%D8%B1%D8%A7%D8%A6%D9%87-%D8%B4%D8%AF%D9%87-%DA%A9%D9%86%D9%88%D9%86%DB%8C-%D8%A8%D9%87-%D8%B7%D8%B1%D8%AD-%D9%87%D9%81%D8%AA-%D8%B1%D9%88%D8%B2%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D9%85%D8%B9%D8%B1%D9%88%D9%81-%D8%A7%D8%B3%D8%AA-%D9%81%DB%8C%D9%84%D9%85",
+          "classification": "unverified",
+          "origin": "unknown",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_not_retrieved",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "Persian-language source discovery returned a named IRNA article about Araghchi and a seven-day proposal, providing a potentially relevant diplomatic lead.",
+          "limitations": "The original Iranian publisher page was not retrievable as a full claim-bearing body in the closed run; no direct quote, first release or translated assertion is admissible.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:15:02.783Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; Arabic first pass returned only two predominantly historical links; Persian follow-up returned an IRNA lead but the publisher original body was not available and no translated claim was admitted."
+            },
+            "metadata": {
+              "status": "not_attempted",
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Publisher-original HTTP metadata was not fetched and is not represented as verified; the search result alone does not supply an HTTP status."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "No substantive claim-bearing original article body was retrieved; only a redirect or search result is available and no new evidence can be admitted."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.ukmto.org/recent-incidents",
+          "classification": "unverified",
+          "origin": "unknown",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_not_retrieved",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "The UK Maritime Trade Operations recent-incidents index was identified in the specialist search, with contemporaneous tanker-event reporting circulating.",
+          "limitations": "The 15 November precise original incident warning, vessel identifiers and whether separate reports describe a common vessel could not be independently captured and deduplicated.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:16:09.341Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; UKMTO incident-index search yielded current warnings and derivative tanker reporting but no exact original warning body or vessel identity was retained; incident counts cannot be summed."
+            },
+            "metadata": {
+              "status": "not_attempted",
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Publisher-original HTTP metadata was not fetched and is not represented as verified; the search result alone does not supply an HTTP status."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "No substantive claim-bearing original article body was retrieved; only a redirect or search result is available and no new evidence can be admitted."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.chathamhouse.org/2026/11/will-us-and-iran-return-war",
+          "classification": "analysis",
+          "origin": "analytical_secondary",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_metadata_captured",
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "corroborating_urls": [],
+          "assessment": "Chatham House original expert analysis dated 9 November describes military risks from Iranian pressure to break the U.S. blockade as well as possible American reluctance.",
+          "limitations": "The article offers interpretive scenarios, not an observed 15 November event or a scored empirical rate; publication time comes from publisher HTML metadata.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:13:30.612Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; An original November 9 Chatham House analysis was retained as competing interpretive context, not as independent confirmation of an additional conflict episode."
+            },
+            "metadata": {
+              "status": "captured",
+              "checked_at": "2026-11-15T17:22:31.679Z",
+              "http_status": 200,
+              "limitations": "A separately retained original-source rawHTML 200 response was inspected before the frozen cutoff; its publisher-supplied time is not independently authenticated."
+            },
+            "body": {
+              "status": "captured",
+              "captured_claim_ids": [],
+              "limitations": "Original analytical HTML was retained for context without any new factual claim admission; reporting-chain independence and event timing remain separately reviewable."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://www.unocha.org/publications/report/iran-islamic-republic/islamic-republic-iran-humanitarian-update-no-04-1-may-2026",
+          "classification": "background_only",
+          "origin": "unknown",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_not_retrieved",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "The UN OCHA May 2026 humanitarian update was identified as historical primary humanitarian context, not a November food-medicine settlement audit.",
+          "limitations": "May humanitarian conditions cannot verify new 14-day payment failures in two essential-import categories during November; body and current denominator unconfirmed.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:13:30.618Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; No current independently verified Hanke 30-day estimate, parallel-market rial series or primary two-category 14-day essential-import payment interruption data were retained."
+            },
+            "metadata": {
+              "status": "not_attempted",
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Publisher-original HTTP metadata was not fetched and is not represented as verified; the search result alone does not supply an HTTP status."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "No substantive claim-bearing original article body was retrieved; only a redirect or search result is available and no new evidence can be admitted."
+            },
+            "same_stage_conflicts": []
+          }
+        },
+        {
+          "url": "https://x.com/steve_hanke/status/2118819462501523631",
+          "classification": "unverified",
+          "origin": "unknown",
+          "role": "coverage_context_only",
+          "new_evidence_indices": [],
+          "access_status": "source_not_retrieved",
+          "first_publication_clock_status": "unknown",
+          "corroborating_urls": [],
+          "assessment": "Steve Hanke social-media source was located in monetary follow-up search for possible new November inflation estimates.",
+          "limitations": "No authenticated consistent 30-day monthly Hanke measurement or parallel-market rial series was captured; annual commentary is not the frozen currency-crisis threshold.",
+          "access_channels": {
+            "search": {
+              "status": "accessible_reported",
+              "checked_at": "2026-11-15T17:16:09.356Z",
+              "limitations": "Actual public search found the URL, but search excerpts are discovery leads only and not independent original article-body evidence; No current independently verified Hanke 30-day estimate, parallel-market rial series or primary two-category 14-day essential-import payment interruption data were retained."
+            },
+            "metadata": {
+              "status": "not_attempted",
+              "checked_at": null,
+              "http_status": null,
+              "limitations": "Publisher-original HTTP metadata was not fetched and is not represented as verified; the search result alone does not supply an HTTP status."
+            },
+            "body": {
+              "status": "not_attempted",
+              "captured_claim_ids": [],
+              "limitations": "No substantive claim-bearing original article body was retrieved; only a redirect or search result is available and no new evidence can be admitted."
+            },
+            "same_stage_conflicts": []
+          }
+        }
+      ]
+    },
+    "promising_evidence_followup": {
+      "version": 1,
+      "research_as_of": "2026-11-15T17:30:01.087483+00:00",
+      "leads": [
+        {
+          "source_url": "https://irangov.ir/detail/493249",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "An Iranian government search result suggested a current spokesman/IAEA diplomacy item, but the publisher URL returned only a website-transfer interstitial. The current source does not contain a qualified new factual observation for admission under the V10 exact-passage rule.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+          "triage": "promising",
+          "priority": "normal",
+          "relevance": "Reuters original reports the U.S. military denying an Iranian claim of successful radar damage on 13 November; the denial itself is observable in the text, not physical evidence of no damage. This qualified reporting may influence the published regional escalation forecast without establishing the protocol event.",
+          "admitted_evidence_ids": [
+            "E-20261115-REU13-ATTR"
+          ],
+          "followup": {
+            "performed_at": "2026-11-15T17:29:06.615Z",
+            "disposition": "ready_for_v10_source_review",
+            "upstream_queries": [
+              "Iran war November 15 2026 Reuters AP AFP Bahrain US military attack mediation ceasefire"
+            ],
+            "counter_queries": [
+              "Bahrain Defence Force official November 15 2026 Iranian drone interception statement"
+            ],
+            "checked_urls": [
+              "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/"
+            ],
+            "contrary_source_urls": [],
+            "scope": {
+              "geography": "Bahrain and Gulf theater",
+              "time_window": "November 13–15 2026 before the 17:30 UTC closed evidence cutoff",
+              "population_or_denominator": "One original Reuters attributed episode or decision; no verified national strike or incident denominator",
+              "method_and_inclusions": "Original Reuters claim-bearing paragraph, contemporaneous opposing reports, attributed actor and chronology"
+            },
+            "reporting_chain": "Reuters original reports the U.S. military denying an Iranian claim of successful radar damage on 13 November; the denial itself is observable in the text, not physical evidence of no damage. Only Reuters-authored source material can support this narrow observation; syndicated repeats and other Reuters articles are not separate claim-matched publishers.",
+            "supporting_findings": "Reuters original reports the U.S. military denying an Iranian claim of successful radar damage on 13 November; the denial itself is observable in the text, not physical evidence of no damage. Original publisher HTML and exact independently saved byte/passage hashes were checked before the research cutoff.",
+            "counterevidence_findings": "A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain. The recorded contrary search did not independently verify damage or implemented de-escalation; no result is being interpreted as conclusive absence.",
+            "limitations": "A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain. Search and publisher clocks are not third-party-signed and the frozen threshold for a 72-hour interstate escalation was not itself met."
+          }
+        },
+        {
+          "source_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+          "triage": "promising",
+          "priority": "high",
+          "relevance": "Reuters reports Saudi and Turkish leaders urged postponement of new U.S. strikes, while Trump had not committed to a final decision and a naval blockade remained. This qualified reporting may influence the published regional escalation forecast without establishing the protocol event.",
+          "admitted_evidence_ids": [
+            "E-20261115-REU14-RESTRAINT"
+          ],
+          "followup": {
+            "performed_at": "2026-11-15T17:29:06.615Z",
+            "disposition": "ready_for_v10_source_review",
+            "upstream_queries": [
+              "Iran Oman Qatar Saudi Turkey mediation pause strikes November 2026 original news"
+            ],
+            "counter_queries": [
+              "Iran war November 15 2026 Reuters AP AFP Bahrain US military attack mediation ceasefire"
+            ],
+            "checked_urls": [
+              "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+              "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/"
+            ],
+            "contrary_source_urls": [
+              "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/"
+            ],
+            "scope": {
+              "geography": "Bahrain and Gulf theater",
+              "time_window": "November 14–15 2026 diplomatic and military restraint reports",
+              "population_or_denominator": "One original Reuters attributed episode or decision; no verified national strike or incident denominator",
+              "method_and_inclusions": "Original Reuters claim-bearing paragraph, contemporaneous opposing reports, attributed actor and chronology"
+            },
+            "reporting_chain": "Reuters reports Saudi and Turkish leaders urged postponement of new U.S. strikes, while Trump had not committed to a final decision and a naval blockade remained. Only Reuters-authored source material can support this narrow observation; syndicated repeats and other Reuters articles are not separate claim-matched publishers.",
+            "supporting_findings": "Reuters reports Saudi and Turkish leaders urged postponement of new U.S. strikes, while Trump had not committed to a final decision and a naval blockade remained. Original publisher HTML and exact independently saved byte/passage hashes were checked before the research cutoff.",
+            "counterevidence_findings": "Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested. The recorded contrary search did not independently verify damage or implemented de-escalation; no result is being interpreted as conclusive absence.",
+            "limitations": "Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested. Search and publisher clocks are not third-party-signed and the frozen threshold for a 72-hour interstate escalation was not itself met."
+          }
+        },
+        {
+          "source_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+          "triage": "promising",
+          "priority": "high",
+          "relevance": "Reuters directly reports the Bahraini military announcement of intercepted Iranian aerial attacks on 15 November and separately attributes unconfirmed radar-hit claims to the IRGC. This qualified reporting may influence the published regional escalation forecast without establishing the protocol event.",
+          "admitted_evidence_ids": [
+            "E-20261115-REU15-ATTR"
+          ],
+          "followup": {
+            "performed_at": "2026-11-15T17:29:06.615Z",
+            "disposition": "ready_for_v10_source_review",
+            "upstream_queries": [
+              "Bahrain Defence Force official November 15 2026 Iranian drone interception statement"
+            ],
+            "counter_queries": [
+              "Iran Oman Qatar Saudi Turkey mediation pause strikes November 2026 original news"
+            ],
+            "checked_urls": [
+              "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+              "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/"
+            ],
+            "contrary_source_urls": [
+              "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/"
+            ],
+            "scope": {
+              "geography": "Bahrain and Gulf theater",
+              "time_window": "November 13–15 2026 before the 17:30 UTC closed evidence cutoff",
+              "population_or_denominator": "One original Reuters attributed episode or decision; no verified national strike or incident denominator",
+              "method_and_inclusions": "Original Reuters claim-bearing paragraph, contemporaneous opposing reports, attributed actor and chronology"
+            },
+            "reporting_chain": "Reuters directly reports the Bahraini military announcement of intercepted Iranian aerial attacks on 15 November and separately attributes unconfirmed radar-hit claims to the IRGC. Only Reuters-authored source material can support this narrow observation; syndicated repeats and other Reuters articles are not separate claim-matched publishers.",
+            "supporting_findings": "Reuters directly reports the Bahraini military announcement of intercepted Iranian aerial attacks on 15 November and separately attributes unconfirmed radar-hit claims to the IRGC. Original publisher HTML and exact independently saved byte/passage hashes were checked before the research cutoff.",
+            "counterevidence_findings": "No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events. The recorded contrary search did not independently verify damage or implemented de-escalation; no result is being interpreted as conclusive absence.",
+            "limitations": "No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events. Search and publisher clocks are not third-party-signed and the frozen threshold for a 72-hour interstate escalation was not itself met."
+          }
+        },
+        {
+          "source_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+          "triage": "promising",
+          "priority": "normal",
+          "relevance": "Reuters original reporting attributes two missile interceptions toward Riyadh and three drone interceptions in Eastern Province to the Saudi-led coalition on 15 November. This qualified reporting may influence the published regional escalation forecast without establishing the protocol event.",
+          "admitted_evidence_ids": [
+            "E-20261115-REUTERS-HOUTHIS"
+          ],
+          "followup": {
+            "performed_at": "2026-11-15T17:29:06.615Z",
+            "disposition": "ready_for_v10_source_review",
+            "upstream_queries": [
+              "Saudi coalition November 15 2026 Houthi missiles Riyadh drones al Maliki independent original report"
+            ],
+            "counter_queries": [
+              "Iran Oman Qatar Saudi Turkey mediation pause strikes November 2026 original news"
+            ],
+            "checked_urls": [
+              "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/"
+            ],
+            "contrary_source_urls": [],
+            "scope": {
+              "geography": "Saudi Arabia and the regional Houthi conflict",
+              "time_window": "November 13–15 2026 before the 17:30 UTC closed evidence cutoff",
+              "population_or_denominator": "One original Reuters attributed episode or decision; no verified national strike or incident denominator",
+              "method_and_inclusions": "Original Reuters claim-bearing paragraph, contemporaneous opposing reports, attributed actor and chronology"
+            },
+            "reporting_chain": "Reuters original reporting attributes two missile interceptions toward Riyadh and three drone interceptions in Eastern Province to the Saudi-led coalition on 15 November. Only Reuters-authored source material can support this narrow observation; syndicated repeats and other Reuters articles are not separate claim-matched publishers.",
+            "supporting_findings": "Reuters original reporting attributes two missile interceptions toward Riyadh and three drone interceptions in Eastern Province to the Saudi-led coalition on 15 November. Original publisher HTML and exact independently saved byte/passage hashes were checked before the research cutoff.",
+            "counterevidence_findings": "Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions. The recorded contrary search did not independently verify damage or implemented de-escalation; no result is being interpreted as conclusive absence.",
+            "limitations": "Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions. Search and publisher clocks are not third-party-signed and the frozen threshold for a 72-hour interstate escalation was not itself met."
+          }
+        },
+        {
+          "source_url": "https://www.irna.ir/news/86309622/%D8%B9%D8%B1%D8%A7%D9%82%DA%86%DB%8C-%D9%BE%DB%8C%D8%B4%D9%86%D9%87%D8%A7%D8%AF-%D8%A7%D8%B1%D8%A7%D8%A6%D9%87-%D8%B4%D8%AF%D9%87-%DA%A9%D9%86%D9%88%D9%86%DB%8C-%D8%A8%D9%87-%D8%B7%D8%B1%D8%AD-%D9%87%D9%81%D8%AA-%D8%B1%D9%88%D8%B2%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D9%85%D8%B9%D8%B1%D9%88%D9%81-%D8%A7%D8%B3%D8%AA-%D9%81%DB%8C%D9%84%D9%85",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "Persian-language source discovery returned a named IRNA article about Araghchi and a seven-day proposal, providing a potentially relevant diplomatic lead. The current source does not contain a qualified new factual observation for admission under the V10 exact-passage rule.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.ukmto.org/recent-incidents",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "The UK Maritime Trade Operations recent-incidents index was identified in the specialist search, with contemporaneous tanker-event reporting circulating. The current source does not contain a qualified new factual observation for admission under the V10 exact-passage rule.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.chathamhouse.org/2026/11/will-us-and-iran-return-war",
+          "triage": "context_only",
+          "priority": "normal",
+          "relevance": "Chatham House original expert analysis dated 9 November describes military risks from Iranian pressure to break the U.S. blockade as well as possible American reluctance. The current source does not contain a qualified new factual observation for admission under the V10 exact-passage rule.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://www.unocha.org/publications/report/iran-islamic-republic/islamic-republic-iran-humanitarian-update-no-04-1-may-2026",
+          "triage": "context_only",
+          "priority": "low",
+          "relevance": "The UN OCHA May 2026 humanitarian update was identified as historical primary humanitarian context, not a November food-medicine settlement audit. The current source does not contain a qualified new factual observation for admission under the V10 exact-passage rule.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        },
+        {
+          "source_url": "https://x.com/steve_hanke/status/2118819462501523631",
+          "triage": "context_only",
+          "priority": "low",
+          "relevance": "Steve Hanke social-media source was located in monetary follow-up search for possible new November inflation estimates. The current source does not contain a qualified new factual observation for admission under the V10 exact-passage rule.",
+          "admitted_evidence_ids": [],
+          "followup": null
+        }
+      ]
+    }
+  },
+  "affirmative_source_review": {
+    "approved": true,
+    "issues": [],
+    "source_reviews": [
+      {
+        "url": "https://irangov.ir/detail/493249",
+        "disposition": "background_only",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: An Iranian government search result suggested a current spokesman/IAEA diplomacy item, but the publisher URL returned only a website-transfer interstitial. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage captured, and the body stage failed. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: Reuters original reports the U.S. military denying an Iranian claim of successful radar damage on 13 November; the denial itself is observable in the text, not physical evidence of no damage. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage captured, and the body stage captured. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: Reuters reports Saudi and Turkish leaders urged postponement of new U.S. strikes, while Trump had not committed to a final decision and a naval blockade remained. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage captured, and the body stage captured. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: Reuters directly reports the Bahraini military announcement of intercepted Iranian aerial attacks on 15 November and separately attributes unconfirmed radar-hit claims to the IRGC. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage captured, and the body stage captured. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: Reuters original reporting attributes two missile interceptions toward Riyadh and three drone interceptions in Eastern Province to the Saudi-led coalition on 15 November. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was not_searched, the separate source metadata stage captured, and the body stage captured. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.irna.ir/news/86309622/%D8%B9%D8%B1%D8%A7%D9%82%DA%86%DB%8C-%D9%BE%DB%8C%D8%B4%D9%86%D9%87%D8%A7%D8%AF-%D8%A7%D8%B1%D8%A7%D8%A6%D9%87-%D8%B4%D8%AF%D9%87-%DA%A9%D9%86%D9%88%D9%86%DB%8C-%D8%A8%D9%87-%D8%B7%D8%B1%D8%AD-%D9%87%D9%81%D8%AA-%D8%B1%D9%88%D8%B2%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D9%85%D8%B9%D8%B1%D9%88%D9%81-%D8%A7%D8%B3%D8%AA-%D9%81%DB%8C%D9%84%D9%85",
+        "disposition": "background_only",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: Persian-language source discovery returned a named IRNA article about Araghchi and a seven-day proposal, providing a potentially relevant diplomatic lead. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage not_attempted, and the body stage not_attempted. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.ukmto.org/recent-incidents",
+        "disposition": "background_only",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: The UK Maritime Trade Operations recent-incidents index was identified in the specialist search, with contemporaneous tanker-event reporting circulating. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage not_attempted, and the body stage not_attempted. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.chathamhouse.org/2026/11/will-us-and-iran-return-war",
+        "disposition": "background_only",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: Chatham House original expert analysis dated 9 November describes military risks from Iranian pressure to break the U.S. blockade as well as possible American reluctance. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage captured, and the body stage captured. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.unocha.org/publications/report/iran-islamic-republic/islamic-republic-iran-humanitarian-update-no-04-1-may-2026",
+        "disposition": "background_only",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: The UN OCHA May 2026 humanitarian update was identified as historical primary humanitarian context, not a November food-medicine settlement audit. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage not_attempted, and the body stage not_attempted. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://x.com/steve_hanke/status/2118819462501523631",
+        "disposition": "background_only",
+        "assessment": "Affirmative evaluated original publication access and claimed factual scope: Steve Hanke social-media source was located in monetary follow-up search for possible new November inflation estimates. No third-party timing or physical confirmation was inferred.",
+        "access_stage_assessment": "The original search stage was accessible_reported, the separate source metadata stage not_attempted, and the body stage not_attempted. No within-stage conflicts were reported, and no stage was used to authenticate another.",
+        "same_stage_conflicts_resolved": true
+      }
+    ],
+    "promising_followup_reviews": [
+      {
+        "source_url": "https://irangov.ir/detail/493249",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "35f48a8658efc82f6a7c4430c94e70d45a35108c0cd7cfadfd007bfd7285f243",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the context triage: An Iranian government search result suggested a current spokesman/IAEA diplomacy item, but the publisher URL returned only a website-transfer interstitial. No new evidence is admitted because the available original, period, or method is inadequate.",
+        "limitations": "The raw redirect/interstitial contains no claim-bearing original statement; original content, time and editorial attribution cannot be independently verified. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "e8d3a474469b71e3fc7fea2e365a78ae71261cc6bf69d3b2e4c8aec9bedb6518",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the source-specific upstream and contrary searches: Reuters original reports the U.S. military denying an Iranian claim of successful radar damage on 13 November; the denial itself is observable in the text, not physical evidence of no damage. The disposition is limited to the narrow qualified Reuters report and does not establish physical target damage.",
+        "limitations": "A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "4114a488dc41a53c007bb1d9f64f940ccf1bdc1050e62b78cdcb79864535457e",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the source-specific upstream and contrary searches: Reuters reports Saudi and Turkish leaders urged postponement of new U.S. strikes, while Trump had not committed to a final decision and a naval blockade remained. The disposition is limited to the narrow qualified Reuters report and does not establish physical target damage.",
+        "limitations": "Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "d0361ebc8caef9e868641ba3a97209c7ef5a055599040a9c40a3c6ae1dfdd471",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the source-specific upstream and contrary searches: Reuters directly reports the Bahraini military announcement of intercepted Iranian aerial attacks on 15 November and separately attributes unconfirmed radar-hit claims to the IRGC. The disposition is limited to the narrow qualified Reuters report and does not establish physical target damage.",
+        "limitations": "No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "14042cfd7d9997a1626859ef3b9432d93fb264678d88e4e9b8ed09c76e7a65c4",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the source-specific upstream and contrary searches: Reuters original reporting attributes two missile interceptions toward Riyadh and three drone interceptions in Eastern Province to the Saudi-led coalition on 15 November. The disposition is limited to the narrow qualified Reuters report and does not establish physical target damage.",
+        "limitations": "Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.irna.ir/news/86309622/%D8%B9%D8%B1%D8%A7%D9%82%DA%86%DB%8C-%D9%BE%DB%8C%D8%B4%D9%86%D9%87%D8%A7%D8%AF-%D8%A7%D8%B1%D8%A7%D8%A6%D9%87-%D8%B4%D8%AF%D9%87-%DA%A9%D9%86%D9%88%D9%86%DB%8C-%D8%A8%D9%87-%D8%B7%D8%B1%D8%AD-%D9%87%D9%81%D8%AA-%D8%B1%D9%88%D8%B2%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D9%85%D8%B9%D8%B1%D9%88%D9%81-%D8%A7%D8%B3%D8%AA-%D9%81%DB%8C%D9%84%D9%85",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "3df39b926603fa7abf1ef440cff727942fd687e7ad2ff76d19aef3cfda8806e2",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the context triage: Persian-language source discovery returned a named IRNA article about Araghchi and a seven-day proposal, providing a potentially relevant diplomatic lead. No new evidence is admitted because the available original, period, or method is inadequate.",
+        "limitations": "The original Iranian publisher page was not retrievable as a full claim-bearing body in the closed run; no direct quote, first release or translated assertion is admissible. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.ukmto.org/recent-incidents",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "a766d885b1926acd937c0fee4b5c1b2551efc7bbf313965f56fa6f5f3be98222",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the context triage: The UK Maritime Trade Operations recent-incidents index was identified in the specialist search, with contemporaneous tanker-event reporting circulating. No new evidence is admitted because the available original, period, or method is inadequate.",
+        "limitations": "The 15 November precise original incident warning, vessel identifiers and whether separate reports describe a common vessel could not be independently captured and deduplicated. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.chathamhouse.org/2026/11/will-us-and-iran-return-war",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "cc4f5b404625a5331c541a83bde0b839c0111c0be4e61a8578fc8902b824e883",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the context triage: Chatham House original expert analysis dated 9 November describes military risks from Iranian pressure to break the U.S. blockade as well as possible American reluctance. No new evidence is admitted because the available original, period, or method is inadequate.",
+        "limitations": "The article offers interpretive scenarios, not an observed 15 November event or a scored empirical rate; publication time comes from publisher HTML metadata. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.unocha.org/publications/report/iran-islamic-republic/islamic-republic-iran-humanitarian-update-no-04-1-may-2026",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "af26f18e7a9cf0ee11f30b4561658c33e60afa19fa0ec2f9d38132daaede3996",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the context triage: The UN OCHA May 2026 humanitarian update was identified as historical primary humanitarian context, not a November food-medicine settlement audit. No new evidence is admitted because the available original, period, or method is inadequate.",
+        "limitations": "May humanitarian conditions cannot verify new 14-day payment failures in two essential-import categories during November; body and current denominator unconfirmed. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://x.com/steve_hanke/status/2118819462501523631",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "8e42d1092eb69a43f57bbde64691ddf027b1ca2e32095db06e545bd0230d1ed5",
+        "approved": true,
+        "issues": [],
+        "assessment": "Affirmative reviewed the context triage: Steve Hanke social-media source was located in monetary follow-up search for possible new November inflation estimates. No new evidence is admitted because the available original, period, or method is inadequate.",
+        "limitations": "No authenticated consistent 30-day monthly Hanke measurement or parallel-market rial series was captured; annual commentary is not the frozen currency-crisis threshold. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      }
+    ],
+    "claim_reliability_reviews": [
+      {
+        "evidence_id": "E-20261115-REU13-ATTR",
+        "original_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative saw a genuine Reuters-authored article body with dated current reporting and exact passage; the original editorial reporting supports only the attributed statement: Reuters original reports the U.S. military denying an Iranian claim of successful radar damage on 13 November; the denial itself is observable in the text, not physical evidence of no damage.",
+        "corroboration_assessment": "I found no second separately captured, claim-matched independent original publisher body; Reuters cross-references and news syndications cannot be counted twice.",
+        "contradiction_assessment": "Contrary reporting and source timing were inspected; the observed military reporting is not the 72-hour protocol event, while the restraint account does not verify an implemented ceasefire. A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain."
+      },
+      {
+        "evidence_id": "E-20261115-REU14-RESTRAINT",
+        "original_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative saw a genuine Reuters-authored article body with dated current reporting and exact passage; the original editorial reporting supports only the attributed statement: Reuters reports Saudi and Turkish leaders urged postponement of new U.S. strikes, while Trump had not committed to a final decision and a naval blockade remained.",
+        "corroboration_assessment": "I found no second separately captured, claim-matched independent original publisher body; Reuters cross-references and news syndications cannot be counted twice.",
+        "contradiction_assessment": "Contrary reporting and source timing were inspected; the observed military reporting is not the 72-hour protocol event, while the restraint account does not verify an implemented ceasefire. Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested."
+      },
+      {
+        "evidence_id": "E-20261115-REU15-ATTR",
+        "original_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative saw a genuine Reuters-authored article body with dated current reporting and exact passage; the original editorial reporting supports only the attributed statement: Reuters directly reports the Bahraini military announcement of intercepted Iranian aerial attacks on 15 November and separately attributes unconfirmed radar-hit claims to the IRGC.",
+        "corroboration_assessment": "I found no second separately captured, claim-matched independent original publisher body; Reuters cross-references and news syndications cannot be counted twice.",
+        "contradiction_assessment": "Contrary reporting and source timing were inspected; the observed military reporting is not the 72-hour protocol event, while the restraint account does not verify an implemented ceasefire. No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events."
+      },
+      {
+        "evidence_id": "E-20261115-REUTERS-HOUTHIS",
+        "original_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Affirmative saw a genuine Reuters-authored article body with dated current reporting and exact passage; the original editorial reporting supports only the attributed statement: Reuters original reporting attributes two missile interceptions toward Riyadh and three drone interceptions in Eastern Province to the Saudi-led coalition on 15 November.",
+        "corroboration_assessment": "I found no second separately captured, claim-matched independent original publisher body; Reuters cross-references and news syndications cannot be counted twice.",
+        "contradiction_assessment": "Contrary reporting and source timing were inspected; the observed military reporting is not the 72-hour protocol event, while the restraint account does not verify an implemented ceasefire. Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions."
+      }
+    ],
+    "audit_integrity_review": {
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "source_count": 10,
+      "research_as_of": "2026-11-15T17:30:01.087483+00:00",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "post_snapshot_search": "NOT_SEARCHED",
+      "assessment": "Affirmative examined 14 authentic Firecrawl response receipts across the six classes, including two real targeted follow-ups and 176 as-returned hits, then inventoried ten selected original/context URLs with five distinct captured article bodies.",
+      "limitations": "The original publisher clocks and Firecrawl transport are not independently authenticated; neither a complete query ledger nor Reuters reports certify military results, 30-day FX series, 14-day essential-import disruptions, or absent elite-security dissent. No later interval was searched."
+    },
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261115-REU13-ATTR",
+        "E-20261115-REU14-RESTRAINT",
+        "E-20261115-REU15-ATTR",
+        "E-20261115-REUTERS-HOUTHIS"
+      ],
+      "observation_count": 4,
+      "conclusion": "supported_limited_inference",
+      "assessment": "Four qualified Reuters-original attributed observations, including opposed November 13 radar accounts, November 14 discussions of restraint, November 15 Bahrain interceptions and the Saudi coalition Houthi account, support a cautious limited update to regional escalation risk while unchanged macro forecasts stay anchored to history.",
+      "limitations": "None of the sources independently establishes radar destruction, a 72-hour interstate military threshold, an implemented ceasefire, current Hanke monthly inflation, fresh rial parallel quotes, or two-stream two-category 14-day payment failures. This is limited prospective inference, not demonstrated calibration."
+    },
+    "source_query_balance_review": {
+      "raises_queries": [
+        "Iran war November 15 2026 Reuters AP AFP Bahrain US military attack mediation ceasefire",
+        "Bahrain Defence Force official November 15 2026 Iranian drone interception statement"
+      ],
+      "lowers_queries": [
+        "Iran Oman Qatar Saudi Turkey mediation pause strikes November 2026 original news"
+      ],
+      "ambiguous_queries": [
+        "Steve Hanke Iran November 2026 monthly inflation rial estimate latest"
+      ],
+      "assessment": "Affirmative compared current Bahrain military and tanker questions with the deliberately distinct Oman/Qatar/Saudi/Turkey mediation pass, and identified non-verifiable monetary claims without treating them as confirming crisis."
+    }
+  },
+  "critical_source_review": {
+    "approved": true,
+    "issues": [],
+    "source_reviews": [
+      {
+        "url": "https://irangov.ir/detail/493249",
+        "disposition": "background_only",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: The raw redirect/interstitial contains no claim-bearing original statement; original content, time and editorial attribution cannot be independently verified. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "disposition": "supported_as_qualified",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.irna.ir/news/86309622/%D8%B9%D8%B1%D8%A7%D9%82%DA%86%DB%8C-%D9%BE%DB%8C%D8%B4%D9%86%D9%87%D8%A7%D8%AF-%D8%A7%D8%B1%D8%A7%D8%A6%D9%87-%D8%B4%D8%AF%D9%87-%DA%A9%D9%86%D9%88%D9%86%DB%8C-%D8%A8%D9%87-%D8%B7%D8%B1%D8%AD-%D9%87%D9%81%D8%AA-%D8%B1%D9%88%D8%B2%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D9%85%D8%B9%D8%B1%D9%88%D9%81-%D8%A7%D8%B3%D8%AA-%D9%81%DB%8C%D9%84%D9%85",
+        "disposition": "background_only",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: The original Iranian publisher page was not retrievable as a full claim-bearing body in the closed run; no direct quote, first release or translated assertion is admissible. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.ukmto.org/recent-incidents",
+        "disposition": "background_only",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: The 15 November precise original incident warning, vessel identifiers and whether separate reports describe a common vessel could not be independently captured and deduplicated. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.chathamhouse.org/2026/11/will-us-and-iran-return-war",
+        "disposition": "background_only",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: The article offers interpretive scenarios, not an observed 15 November event or a scored empirical rate; publication time comes from publisher HTML metadata. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://www.unocha.org/publications/report/iran-islamic-republic/islamic-republic-iran-humanitarian-update-no-04-1-may-2026",
+        "disposition": "background_only",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: May humanitarian conditions cannot verify new 14-day payment failures in two essential-import categories during November; body and current denominator unconfirmed. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      },
+      {
+        "url": "https://x.com/steve_hanke/status/2118819462501523631",
+        "disposition": "background_only",
+        "assessment": "Critical challenged independent corroboration, publicity timing and alternate interpretations: No authenticated consistent 30-day monthly Hanke measurement or parallel-market rial series was captured; annual commentary is not the frozen currency-crisis threshold. The admitted proposition remains only attributable reporting and not event resolution.",
+        "access_stage_assessment": "I independently tested whether search snippets, a later HTTP status and an original passage could be mistaken for one another. Their recorded stages are distinct; missing publisher bytes remain missing and no within-stage contradiction was suppressed.",
+        "same_stage_conflicts_resolved": true
+      }
+    ],
+    "promising_followup_reviews": [
+      {
+        "source_url": "https://irangov.ir/detail/493249",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "35f48a8658efc82f6a7c4430c94e70d45a35108c0cd7cfadfd007bfd7285f243",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical checked whether a contextual source had been silently upgraded to new empirical proof: The raw redirect/interstitial contains no claim-bearing original statement; original content, time and editorial attribution cannot be independently verified. The lack of an eligible original-body witness remains decisive.",
+        "limitations": "The raw redirect/interstitial contains no claim-bearing original statement; original content, time and editorial attribution cannot be independently verified. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "e8d3a474469b71e3fc7fea2e365a78ae71261cc6bf69d3b2e4c8aec9bedb6518",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical questioned the chain and chronology of this promising lead: A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain. The recorded counter-query is not represented as independent confirmation of the underlying target effect.",
+        "limitations": "A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "4114a488dc41a53c007bb1d9f64f940ccf1bdc1050e62b78cdcb79864535457e",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical questioned the chain and chronology of this promising lead: Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested. The recorded counter-query is not represented as independent confirmation of the underlying target effect.",
+        "limitations": "Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "d0361ebc8caef9e868641ba3a97209c7ef5a055599040a9c40a3c6ae1dfdd471",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical questioned the chain and chronology of this promising lead: No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events. The recorded counter-query is not represented as independent confirmation of the underlying target effect.",
+        "limitations": "No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "triage": "promising",
+        "disposition": "ready_for_v10_source_review",
+        "lead_sha256": "14042cfd7d9997a1626859ef3b9432d93fb264678d88e4e9b8ed09c76e7a65c4",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical questioned the chain and chronology of this promising lead: Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions. The recorded counter-query is not represented as independent confirmation of the underlying target effect.",
+        "limitations": "Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.irna.ir/news/86309622/%D8%B9%D8%B1%D8%A7%D9%82%DA%86%DB%8C-%D9%BE%DB%8C%D8%B4%D9%86%D9%87%D8%A7%D8%AF-%D8%A7%D8%B1%D8%A7%D8%A6%D9%87-%D8%B4%D8%AF%D9%87-%DA%A9%D9%86%D9%88%D9%86%DB%8C-%D8%A8%D9%87-%D8%B7%D8%B1%D8%AD-%D9%87%D9%81%D8%AA-%D8%B1%D9%88%D8%B2%D9%87-%D8%A7%DB%8C%D8%B1%D8%A7%D9%86-%D9%85%D8%B9%D8%B1%D9%88%D9%81-%D8%A7%D8%B3%D8%AA-%D9%81%DB%8C%D9%84%D9%85",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "3df39b926603fa7abf1ef440cff727942fd687e7ad2ff76d19aef3cfda8806e2",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical checked whether a contextual source had been silently upgraded to new empirical proof: The original Iranian publisher page was not retrievable as a full claim-bearing body in the closed run; no direct quote, first release or translated assertion is admissible. The lack of an eligible original-body witness remains decisive.",
+        "limitations": "The original Iranian publisher page was not retrievable as a full claim-bearing body in the closed run; no direct quote, first release or translated assertion is admissible. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.ukmto.org/recent-incidents",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "a766d885b1926acd937c0fee4b5c1b2551efc7bbf313965f56fa6f5f3be98222",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical checked whether a contextual source had been silently upgraded to new empirical proof: The 15 November precise original incident warning, vessel identifiers and whether separate reports describe a common vessel could not be independently captured and deduplicated. The lack of an eligible original-body witness remains decisive.",
+        "limitations": "The 15 November precise original incident warning, vessel identifiers and whether separate reports describe a common vessel could not be independently captured and deduplicated. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.chathamhouse.org/2026/11/will-us-and-iran-return-war",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "cc4f5b404625a5331c541a83bde0b839c0111c0be4e61a8578fc8902b824e883",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical checked whether a contextual source had been silently upgraded to new empirical proof: The article offers interpretive scenarios, not an observed 15 November event or a scored empirical rate; publication time comes from publisher HTML metadata. The lack of an eligible original-body witness remains decisive.",
+        "limitations": "The article offers interpretive scenarios, not an observed 15 November event or a scored empirical rate; publication time comes from publisher HTML metadata. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://www.unocha.org/publications/report/iran-islamic-republic/islamic-republic-iran-humanitarian-update-no-04-1-may-2026",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "af26f18e7a9cf0ee11f30b4561658c33e60afa19fa0ec2f9d38132daaede3996",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical checked whether a contextual source had been silently upgraded to new empirical proof: May humanitarian conditions cannot verify new 14-day payment failures in two essential-import categories during November; body and current denominator unconfirmed. The lack of an eligible original-body witness remains decisive.",
+        "limitations": "May humanitarian conditions cannot verify new 14-day payment failures in two essential-import categories during November; body and current denominator unconfirmed. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      },
+      {
+        "source_url": "https://x.com/steve_hanke/status/2118819462501523631",
+        "triage": "context_only",
+        "disposition": "context_only",
+        "lead_sha256": "8e42d1092eb69a43f57bbde64691ddf027b1ca2e32095db06e545bd0230d1ed5",
+        "approved": true,
+        "issues": [],
+        "assessment": "Critical checked whether a contextual source had been silently upgraded to new empirical proof: No authenticated consistent 30-day monthly Hanke measurement or parallel-market rial series was captured; annual commentary is not the frozen currency-crisis threshold. The lack of an eligible original-body witness remains decisive.",
+        "limitations": "No authenticated consistent 30-day monthly Hanke measurement or parallel-market rial series was captured; annual commentary is not the frozen currency-crisis threshold. The reviewed disposition cannot be used as automatic proof of event occurrence, independent corroboration or correct forecast direction."
+      }
+    ],
+    "claim_reliability_reviews": [
+      {
+        "evidence_id": "E-20261115-REU13-ATTR",
+        "original_url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical restricted the factual claim to what the journalists directly attributed to officials; competing military narratives cannot verify target damage: A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain.",
+        "corroboration_assessment": "No independent first-party Bahraini, Iranian, US or coalition original was captured for the same proposition; derivative stories and different Reuters items are not corroboration.",
+        "contradiction_assessment": "I challenged a possible unconfirmed Iranian radar strike against US denials and Bahraini intercept claims; neither side supplied a damage witness, and no unverified threshold is deemed met. A statement about a claimed radar strike and a U.S. denial is not independent damage verification; reports may share an institutional information chain."
+      },
+      {
+        "evidence_id": "E-20261115-REU14-RESTRAINT",
+        "original_url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical restricted the factual claim to what the journalists directly attributed to officials; competing military narratives cannot verify target damage: Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested.",
+        "corroboration_assessment": "No independent first-party Bahraini, Iranian, US or coalition original was captured for the same proposition; derivative stories and different Reuters items are not corroboration.",
+        "contradiction_assessment": "I challenged a possible unconfirmed Iranian radar strike against US denials and Bahraini intercept claims; neither side supplied a damage witness, and no unverified threshold is deemed met. Deliberations are a stabilizing signal but not a signed ceasefire or verifiable change in military posture; sources may be anonymous or interested."
+      },
+      {
+        "evidence_id": "E-20261115-REU15-ATTR",
+        "original_url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical restricted the factual claim to what the journalists directly attributed to officials; competing military narratives cannot verify target damage: No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events.",
+        "corroboration_assessment": "No independent first-party Bahraini, Iranian, US or coalition original was captured for the same proposition; derivative stories and different Reuters items are not corroboration.",
+        "contradiction_assessment": "I challenged a possible unconfirmed Iranian radar strike against US denials and Bahraini intercept claims; neither side supplied a damage witness, and no unverified threshold is deemed met. No independently captured BNA ministry original, U.S. impact confirmation, damage count, or verified radar destruction; November 13 and 15 are distinct events."
+      },
+      {
+        "evidence_id": "E-20261115-REUTERS-HOUTHIS",
+        "original_url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+        "source_quality": "attributed_edited_original",
+        "directness": "firsthand_original_reporting",
+        "contradiction_status": "addressed_with_qualification",
+        "factual_reliability": "Medium",
+        "direction_confidence": "qualified",
+        "exact_passage_witness": true,
+        "independent_confirmation_ids": [],
+        "claim_match_independently_reviewed": false,
+        "source_quality_assessment": "Critical restricted the factual claim to what the journalists directly attributed to officials; competing military narratives cannot verify target damage: Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions.",
+        "corroboration_assessment": "No independent first-party Bahraini, Iranian, US or coalition original was captured for the same proposition; derivative stories and different Reuters items are not corroboration.",
+        "contradiction_assessment": "I challenged a possible unconfirmed Iranian radar strike against US denials and Bahraini intercept claims; neither side supplied a damage witness, and no unverified threshold is deemed met. Saudi spokesman claims are not independently measured attack totals; alleged Iran support to Houthis is not proven by these interceptions."
+      }
+    ],
+    "audit_integrity_review": {
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "source_count": 10,
+      "research_as_of": "2026-11-15T17:30:01.087483+00:00",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "post_snapshot_search": "NOT_SEARCHED",
+      "assessment": "Critical inspected the zero-independent-Bahrain-body and missing-Hanke/essential-payment source gaps, tested derivative reporting-chain collapse, and rejected any inference from the 164 different exact URLs to 164 independent source chains.",
+      "limitations": "The original publisher clocks and Firecrawl transport are not independently authenticated; neither a complete query ledger nor Reuters reports certify military results, 30-day FX series, 14-day essential-import disruptions, or absent elite-security dissent. No later interval was searched."
+    },
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261115-REU13-ATTR",
+        "E-20261115-REU14-RESTRAINT",
+        "E-20261115-REU15-ATTR",
+        "E-20261115-REUTERS-HOUTHIS"
+      ],
+      "observation_count": 4,
+      "conclusion": "supported_limited_inference",
+      "assessment": "Critical found that all new admitted claims are narrow original Reuters accounts without claim-matched independent publisher confirmation; a limited judgmental forecast update anchored to Nov 8 may nevertheless be reviewed if no military damage, elite fracture, FX threshold or payment event is asserted.",
+      "limitations": "None of the sources independently establishes radar destruction, a 72-hour interstate military threshold, an implemented ceasefire, current Hanke monthly inflation, fresh rial parallel quotes, or two-stream two-category 14-day payment failures. This is limited prospective inference, not demonstrated calibration."
+    },
+    "source_query_balance_review": {
+      "raises_queries": [
+        "Iran war November 15 2026 Reuters AP AFP Bahrain US military attack mediation ceasefire",
+        "Bahrain Defence Force official November 15 2026 Iranian drone interception statement"
+      ],
+      "lowers_queries": [
+        "Iran Oman Qatar Saudi Turkey mediation pause strikes November 2026 original news"
+      ],
+      "ambiguous_queries": [
+        "Steve Hanke Iran November 2026 monthly inflation rial estimate latest"
+      ],
+      "assessment": "Critical challenged the risk of overlooking stabilizers by reading the separate mediation query, and challenged the reverse risk of equating talks or postponement deliberations with a signed ceasefire during fresh Bahrain attacks."
+    }
+  },
+  "claim_reliability": [
+    {
+      "evidence_id": "E-20261115-REU13-ATTR",
+      "factual_reliability": "Medium",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    },
+    {
+      "evidence_id": "E-20261115-REU14-RESTRAINT",
+      "factual_reliability": "Medium",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    },
+    {
+      "evidence_id": "E-20261115-REU15-ATTR",
+      "factual_reliability": "Medium",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    },
+    {
+      "evidence_id": "E-20261115-REUTERS-HOUTHIS",
+      "factual_reliability": "Medium",
+      "stability_direction_confidence": "qualified",
+      "independently_confirmed_claim_ids": [],
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "source_confidence_not_geopolitical_effect": true,
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "publication": "NOT AUTHORIZED"
+    }
+  ],
+  "preforecast_certificate": {
+    "version": 1,
+    "status": "DUAL_SOURCE_REVIEW_CLEAN_LIMITED_INFERENCE",
+    "research_as_of": "2026-11-15T17:30:01.087483+00:00",
+    "source_review_completed_at": "2026-11-15T17:34:51.641073+00:00",
+    "baseline_sha256": "4b90ff6e62ae86581edf12962aef5f51561d3bd8470b2ceb465a0ca83b587012",
+    "source_packet_sha256": "4811293c6f987fc14096c9c061b6c5a02bc0a241ee0d0d5337427e875510e494",
+    "affirmative_source_review_sha256": "1ad72c0d54769655b16651450d9b86e12a6315f4ff72de235471576818ffc4eb",
+    "critical_source_review_sha256": "c694e25801d5d6571559d05d2c38ef21e76e5096e8f84d1e082f40a35bb01328",
+    "claim_reliability_sha256": "e0d942cdb3fc2d218d39376553efd7b9fb10f8ddfb2ce1ae606adbc19c3aa672"
+  }
+}
