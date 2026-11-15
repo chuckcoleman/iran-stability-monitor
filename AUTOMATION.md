@@ -663,6 +663,21 @@ fails. The historical forecast lock, frozen evidence, explicit oil-credit
 source justifications and fail-closed protected-branch safeguards remain.
 
 
+## Chart date-axis display rule (November 15, 2026)
+
+Both historical forecast and Iran–China oil-credit haircut graphs must show
+an actual **tick for every assessment date**, labeled with its exact
+`YYYY-MM-DD` date. All date labels tilt 45 degrees **from northwest to
+southeast**, with each label's upper/start point immediately below its own
+vertical tick. Do not hide intermediate dates or truncate the first/last
+labels. The date axis preserves elapsed-calendar-day spacing; as histories
+grow denser, widen the chart and allow horizontal scrolling **inside** its
+bordered chart box. Reserve sufficient bottom and right chart margins so
+every rotated label stays fully inside its own drawing box. Enforce the same
+rule on the SVG normally seen by browsers and the canvas fallback. Preserve
+all forecast history, scored-event selection, probabilities and diagnostics.
+Run the complete chart regression suite for each presentation revision.
+
 ## Website 12-month scored binary forecasts (November 15, 2026)
 
 The public **12-month scored binary forecasts** list displays precisely the
