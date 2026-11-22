@@ -5638,84 +5638,84 @@
           "source_title": "Statement on death of OHCHR staff member in detention"
         },
         {
-          "id": "E-20261108-01",
-          "date": "2026-11-08",
-          "event_date": "2026-11-04",
-          "source": "https://mscio.eu/alerts/206",
-          "source_title": "MSCIO Alert 170/26 – Attack",
-          "publisher": "Maritime Security Centre – Indian Ocean",
+          "affects": [
+            "regional_escalation_90d"
+          ],
           "category": "Maritime / Arabian Gulf",
+          "date": "2026-11-08",
+          "direction": "raises",
+          "event_date": "2026-11-04",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-01",
+          "impact_magnitude": "minor",
           "observation": "MSCIO issued a November 5 alert recording a received report that a tanker 50 nautical miles north of Madinat ash Shamal was reportedly struck by two unidentified projectiles on November 4. The alert did not know crew status, damage, or perpetrator.",
-          "direction": "raises",
+          "publisher": "Maritime Security Centre – Indian Ocean",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://mscio.eu/alerts/206",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "MSCIO Alert 170/26 – Attack"
+        },
+        {
           "affects": [
             "regional_escalation_90d"
           ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium",
-          "evidence_status": "new",
-          "source_publication_status": "date_only_not_independently_authenticated",
-          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
-        },
-        {
-          "id": "E-20261108-02",
-          "date": "2026-11-08",
-          "event_date": "2026-11-05",
-          "source": "https://www.fm.gov.om/en/64014/",
-          "source_title": "Minister in phone call with Iranian counterpart",
-          "publisher": "Oman Ministry of Foreign Affairs",
           "category": "Diplomacy / navigation",
+          "date": "2026-11-08",
+          "direction": "lowers",
+          "event_date": "2026-11-05",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-02",
+          "impact_magnitude": "minor",
           "observation": "Oman’s Foreign Ministry published a November 5 account of ministerial discussions with Iran about arrangements for potentially resuming safe navigation through Hormuz. The call is not an implemented reopening.",
-          "direction": "lowers",
+          "publisher": "Oman Ministry of Foreign Affairs",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.fm.gov.om/en/64014/",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Minister in phone call with Iranian counterpart"
+        },
+        {
           "affects": [
             "regional_escalation_90d"
           ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium-high",
-          "evidence_status": "new",
-          "source_publication_status": "date_only_not_independently_authenticated",
-          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
-        },
-        {
-          "id": "E-20261108-03",
-          "date": "2026-11-08",
-          "event_date": "2026-11-03",
-          "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
-          "source_title": "Qatar Continues Its Efforts to Bridge Gap between Washington, Tehran",
-          "publisher": "Qatar Ministry of Foreign Affairs",
           "category": "Diplomacy / mediation",
-          "observation": "Qatar’s Foreign Ministry published a November 3 briefing that mediators exchanged proposals and a Qatari delegation met counterparts in Tehran for about three hours, while expressly saying no specific breakthrough had occurred.",
+          "date": "2026-11-08",
           "direction": "lowers",
-          "affects": [
-            "regional_escalation_90d"
-          ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium-high",
+          "event_date": "2026-11-03",
           "evidence_status": "new",
-          "source_publication_status": "date_only_not_independently_authenticated",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-03",
+          "impact_magnitude": "minor",
+          "observation": "Qatar’s Foreign Ministry published a November 3 briefing that mediators exchanged proposals and a Qatari delegation met counterparts in Tehran for about three hours, while expressly saying no specific breakthrough had occurred.",
+          "publisher": "Qatar Ministry of Foreign Affairs",
+          "reliability": "Medium-high",
           "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
+          "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Qatar Continues Its Efforts to Bridge Gap between Washington, Tehran"
         },
         {
-          "id": "E-20261108-04",
-          "date": "2026-11-08",
-          "event_date": "2026-11-07",
-          "source": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
-          "source_title": "US Forces Disable First Cargo Ship in a Month Sailing from Iranian Port",
-          "publisher": "The Maritime Executive",
-          "category": "Maritime / Gulf of Oman",
-          "observation": "The Maritime Executive reported November 7 that CENTCOM asserted U.S. forces disabled the St. Kitts-flagged M/V Huda after repeated warnings. This is an attributed claim rather than independent physical verification of crew safety, legality or vessel damage.",
-          "direction": "raises",
           "affects": [
             "regional_escalation_90d"
           ],
-          "impact_magnitude": "moderate",
-          "reliability": "Medium",
+          "category": "Maritime / Gulf of Oman",
+          "date": "2026-11-08",
+          "direction": "raises",
+          "event_date": "2026-11-07",
           "evidence_status": "new",
-          "source_publication_status": "date_only_not_independently_authenticated",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-04",
+          "impact_magnitude": "moderate",
+          "observation": "The Maritime Executive reported November 7 that CENTCOM asserted U.S. forces disabled the St. Kitts-flagged M/V Huda after repeated warnings. This is an attributed claim rather than independent physical verification of crew safety, legality or vessel damage.",
+          "publisher": "The Maritime Executive",
+          "reliability": "Medium",
           "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
+          "source": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "US Forces Disable First Cargo Ship in a Month Sailing from Iranian Port"
         }
       ],
       "evidence_cutoff": "2026-11-08T17:20:24.221801+00:00",
@@ -5979,46 +5979,46 @@
         {
           "date": "2026-11-03",
           "event_date": "2026-11-03",
+          "impact": "Original November 3 Qatar mediator statement reports ongoing proposals and a Tehran meeting but expressly no breakthrough. Judgmental regional -1 pp.",
           "revision_date": "2026-11-08",
+          "revision_type": "New V10 source-closed original claim; signed regional contribution",
+          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established.",
           "title": "Qatar Continues Its Efforts to Bridge Gap between Washington, Tehran",
           "type": "Diplomacy / process",
-          "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
-          "impact": "Original November 3 Qatar mediator statement reports ongoing proposals and a Tehran meeting but expressly no breakthrough. Judgmental regional -1 pp.",
-          "revision_type": "New V10 source-closed original claim; signed regional contribution",
-          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established."
+          "url": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran"
         },
         {
           "date": "2026-11-04",
           "event_date": "2026-11-04",
+          "impact": "November 4 received tanker incident alert. The original does not identify attacker, casualties or the vessel, despite a later potentially overlapping context update. Judgmental regional +1 pp.",
           "revision_date": "2026-11-08",
+          "revision_type": "New V10 source-closed original claim; signed regional contribution",
+          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established.",
           "title": "MSCIO Alert 170/26 – Attack",
           "type": "Maritime / reported warning",
-          "url": "https://mscio.eu/alerts/206",
-          "impact": "November 4 received tanker incident alert. The original does not identify attacker, casualties or the vessel, despite a later potentially overlapping context update. Judgmental regional +1 pp.",
-          "revision_type": "New V10 source-closed original claim; signed regional contribution",
-          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established."
+          "url": "https://mscio.eu/alerts/206"
         },
         {
           "date": "2026-11-05",
           "event_date": "2026-11-05",
+          "impact": "Original November 5 Oman ministerial statement discusses future navigation/peace arrangements without an implementation event. Judgmental regional -1 pp.",
           "revision_date": "2026-11-08",
+          "revision_type": "New V10 source-closed original claim; signed regional contribution",
+          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established.",
           "title": "Minister in phone call with Iranian counterpart",
           "type": "Diplomacy / process",
-          "url": "https://www.fm.gov.om/en/64014/",
-          "impact": "Original November 5 Oman ministerial statement discusses future navigation/peace arrangements without an implementation event. Judgmental regional -1 pp.",
-          "revision_type": "New V10 source-closed original claim; signed regional contribution",
-          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established."
+          "url": "https://www.fm.gov.om/en/64014/"
         },
         {
           "date": "2026-11-07",
           "event_date": "2026-11-07",
+          "impact": "Edited original November 7 Maritime Executive story attributes the Huda action to CENTCOM, whose own full publisher page could not be captured. Judgmental regional +2 pp.",
           "revision_date": "2026-11-08",
+          "revision_type": "New V10 source-closed original claim; signed regional contribution",
+          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established.",
           "title": "US Forces Disable First Cargo Ship in a Month Sailing from Iranian Port",
           "type": "Maritime / attributed military statement",
-          "url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
-          "impact": "Edited original November 7 Maritime Executive story attributes the Huda action to CENTCOM, whose own full publisher page could not be captured. Judgmental regional +2 pp.",
-          "revision_type": "New V10 source-closed original claim; signed regional contribution",
-          "source_note": "Bounded exact publisher HTML captured before cutoff and bound to a verified raw-body SHA-256; first publisher-release instant and event authenticity are not independently established."
+          "url": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port"
         }
       ],
       "next_scheduled_update": "2026-11-15",
@@ -6062,10 +6062,6 @@
       "regional_resolution_note": "Regional scenario weights 7/14/79 sum to 100, but are judgmental partitions, not a separate fifth scored event. The actual 79% Protocol-v1 target requires 72 hours of major interstate strikes or an additional sovereign operational theater; isolated ships and talks do not resolve it.",
       "revision_attribution": [
         {
-          "event_id": "regional_escalation_90d",
-          "prior_p": 78,
-          "new_p": 79,
-          "residual_pp": 0,
           "contributions": [
             {
               "evidence_ids": [
@@ -6095,28 +6091,32 @@
               "label": "Original specialist account attributing M/V Huda disabling to CENTCOM raises confrontation concern without independently authenticating strike or casualties",
               "pp": 2
             }
-          ]
+          ],
+          "event_id": "regional_escalation_90d",
+          "new_p": 79,
+          "prior_p": 78,
+          "residual_pp": 0
         },
         {
+          "contributions": [],
           "event_id": "regime_end_12m",
-          "prior_p": 16,
           "new_p": 16,
-          "residual_pp": 0,
-          "contributions": []
+          "prior_p": 16,
+          "residual_pp": 0
         },
         {
+          "contributions": [],
           "event_id": "currency_crisis_12m",
-          "prior_p": 80,
           "new_p": 80,
-          "residual_pp": 0,
-          "contributions": []
+          "prior_p": 80,
+          "residual_pp": 0
         },
         {
+          "contributions": [],
           "event_id": "external_payments_crisis_12m",
-          "prior_p": 86,
           "new_p": 86,
-          "residual_pp": 0,
-          "contributions": []
+          "prior_p": 86,
+          "residual_pp": 0
         }
       ],
       "revision_attribution_status": "Relative to the verified November 1 publication, scored changes are regional +1, regime 0, currency 0 and essential-import payments 0 percentage points. Signed regional +1 MSCIO -1 Oman -1 Qatar +2 attributed Huda +0 residual; these are transparent judgmental attribution weights, not independent causal estimators.",
@@ -6742,164 +6742,164 @@
           "source_title": "Statement on death of OHCHR staff member in detention"
         },
         {
-          "id": "E-20261108-01",
-          "date": "2026-11-08",
-          "event_date": "2026-11-04",
-          "source": "https://mscio.eu/alerts/206",
-          "source_title": "MSCIO Alert 170/26 – Attack",
-          "publisher": "Maritime Security Centre – Indian Ocean",
+          "affects": [
+            "regional_escalation_90d"
+          ],
           "category": "Maritime / Arabian Gulf",
+          "date": "2026-11-08",
+          "direction": "raises",
+          "event_date": "2026-11-04",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-01",
+          "impact_magnitude": "minor",
           "observation": "MSCIO issued a November 5 alert recording a received report that a tanker 50 nautical miles north of Madinat ash Shamal was reportedly struck by two unidentified projectiles on November 4. The alert did not know crew status, damage, or perpetrator.",
-          "direction": "raises",
+          "publisher": "Maritime Security Centre – Indian Ocean",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://mscio.eu/alerts/206",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "MSCIO Alert 170/26 – Attack"
+        },
+        {
           "affects": [
             "regional_escalation_90d"
           ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium",
-          "evidence_status": "carried_forward",
-          "source_publication_status": "date_only_not_independently_authenticated",
-          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
-        },
-        {
-          "id": "E-20261108-02",
-          "date": "2026-11-08",
-          "event_date": "2026-11-05",
-          "source": "https://www.fm.gov.om/en/64014/",
-          "source_title": "Minister in phone call with Iranian counterpart",
-          "publisher": "Oman Ministry of Foreign Affairs",
           "category": "Diplomacy / navigation",
+          "date": "2026-11-08",
+          "direction": "lowers",
+          "event_date": "2026-11-05",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-02",
+          "impact_magnitude": "minor",
           "observation": "Oman’s Foreign Ministry published a November 5 account of ministerial discussions with Iran about arrangements for potentially resuming safe navigation through Hormuz. The call is not an implemented reopening.",
-          "direction": "lowers",
+          "publisher": "Oman Ministry of Foreign Affairs",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.fm.gov.om/en/64014/",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Minister in phone call with Iranian counterpart"
+        },
+        {
           "affects": [
             "regional_escalation_90d"
           ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium-high",
-          "evidence_status": "carried_forward",
-          "source_publication_status": "date_only_not_independently_authenticated",
-          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
-        },
-        {
-          "id": "E-20261108-03",
-          "date": "2026-11-08",
-          "event_date": "2026-11-03",
-          "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
-          "source_title": "Qatar Continues Its Efforts to Bridge Gap between Washington, Tehran",
-          "publisher": "Qatar Ministry of Foreign Affairs",
           "category": "Diplomacy / mediation",
-          "observation": "Qatar’s Foreign Ministry published a November 3 briefing that mediators exchanged proposals and a Qatari delegation met counterparts in Tehran for about three hours, while expressly saying no specific breakthrough had occurred.",
-          "direction": "lowers",
-          "affects": [
-            "regional_escalation_90d"
-          ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium-high",
-          "evidence_status": "carried_forward",
-          "source_publication_status": "date_only_not_independently_authenticated",
-          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
-        },
-        {
-          "id": "E-20261108-04",
           "date": "2026-11-08",
-          "event_date": "2026-11-07",
-          "source": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
-          "source_title": "US Forces Disable First Cargo Ship in a Month Sailing from Iranian Port",
-          "publisher": "The Maritime Executive",
-          "category": "Maritime / Gulf of Oman",
-          "observation": "The Maritime Executive reported November 7 that CENTCOM asserted U.S. forces disabled the St. Kitts-flagged M/V Huda after repeated warnings. This is an attributed claim rather than independent physical verification of crew safety, legality or vessel damage.",
-          "direction": "raises",
-          "affects": [
-            "regional_escalation_90d"
-          ],
-          "impact_magnitude": "moderate",
-          "reliability": "Medium",
-          "evidence_status": "carried_forward",
-          "source_publication_status": "date_only_not_independently_authenticated",
-          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
-        },
-        {
-          "id": "E-20261115-REU13-ATTR",
-          "date": "2026-11-15",
-          "event_date": "2026-11-13",
-          "source": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
-          "source_title": "US denies Iran's claim it attacked radar in Bahrain",
-          "publisher": "Reuters",
-          "category": "Military / Bahrain",
-          "observation": "Reuters dated 13 November reports the US military denied Iran's claimed radar strike and said it intercepted two drones without damage. This records opposed statements, not a verified absence or presence of damage.",
-          "direction": "raises",
-          "affects": [
-            "regional_escalation_90d"
-          ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium",
-          "evidence_status": "new",
-          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
-          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
-        },
-        {
-          "id": "E-20261115-REU14-RESTRAINT",
-          "date": "2026-11-15",
-          "event_date": "2026-11-14",
-          "source": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
-          "source_title": "Trump tells advisers he may hold off on Iran attacks",
-          "publisher": "Reuters",
-          "category": "Diplomacy / military restraint",
-          "observation": "Reuters dated 14 November reports advisers heard a possibility of postponing new strikes; Saudi and Turkish leaders urged restraint. No ceasefire was signed or implemented.",
           "direction": "lowers",
-          "affects": [
-            "regional_escalation_90d"
-          ],
+          "event_date": "2026-11-03",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-03",
           "impact_magnitude": "minor",
-          "reliability": "Medium",
-          "evidence_status": "new",
-          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "observation": "Qatar’s Foreign Ministry published a November 3 briefing that mediators exchanged proposals and a Qatari delegation met counterparts in Tehran for about three hours, while expressly saying no specific breakthrough had occurred.",
+          "publisher": "Qatar Ministry of Foreign Affairs",
+          "reliability": "Medium-high",
           "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
+          "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Qatar Continues Its Efforts to Bridge Gap between Washington, Tehran"
         },
         {
-          "id": "E-20261115-REU15-ATTR",
-          "date": "2026-11-15",
-          "event_date": "2026-11-15",
-          "source": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
-          "source_title": "Bahrain intercepts Iranian aerial attacks",
-          "publisher": "Reuters",
-          "category": "Military / Bahrain",
-          "observation": "Reuters dated 15 November reports Bahrain said it intercepted Iranian aerial attacks. The IRGC said it targeted a US radar site, with damage unconfirmed; no qualifying 72-hour escalation was established.",
-          "direction": "raises",
           "affects": [
             "regional_escalation_90d"
           ],
+          "category": "Maritime / Gulf of Oman",
+          "date": "2026-11-08",
+          "direction": "raises",
+          "event_date": "2026-11-07",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-04",
           "impact_magnitude": "moderate",
+          "observation": "The Maritime Executive reported November 7 that CENTCOM asserted U.S. forces disabled the St. Kitts-flagged M/V Huda after repeated warnings. This is an attributed claim rather than independent physical verification of crew safety, legality or vessel damage.",
+          "publisher": "The Maritime Executive",
           "reliability": "Medium",
-          "evidence_status": "new",
-          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
           "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
+          "source": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "US Forces Disable First Cargo Ship in a Month Sailing from Iranian Port"
         },
         {
-          "id": "E-20261115-REUTERS-HOUTHIS",
-          "date": "2026-11-15",
-          "event_date": "2026-11-15",
-          "source": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
-          "source_title": "Saudi-led coalition says missiles and drones intercepted",
-          "publisher": "Reuters",
-          "category": "Military / Saudi / Houthis",
-          "observation": "Reuters dated 15 November reports the Saudi-led coalition said it intercepted Houthi missiles and drones; the account does not authenticate Iranian material support or duplicate-incident totals.",
-          "direction": "raises",
           "affects": [
             "regional_escalation_90d"
           ],
-          "impact_magnitude": "minor",
-          "reliability": "Medium",
+          "category": "Military / Bahrain",
+          "date": "2026-11-15",
+          "direction": "raises",
+          "event_date": "2026-11-13",
           "evidence_status": "new",
-          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REU13-ATTR",
+          "impact_magnitude": "minor",
+          "observation": "Reuters dated 13 November reports the US military denied Iran's claimed radar strike and said it intercepted two drones without damage. This records opposed statements, not a verified absence or presence of damage.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
           "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
-          "geopolitical_direction_confidence": "qualified"
+          "source": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "US denies Iran's claim it attacked radar in Bahrain"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Diplomacy / military restraint",
+          "date": "2026-11-15",
+          "direction": "lowers",
+          "event_date": "2026-11-14",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REU14-RESTRAINT",
+          "impact_magnitude": "minor",
+          "observation": "Reuters dated 14 November reports advisers heard a possibility of postponing new strikes; Saudi and Turkish leaders urged restraint. No ceasefire was signed or implemented.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Trump tells advisers he may hold off on Iran attacks"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Military / Bahrain",
+          "date": "2026-11-15",
+          "direction": "raises",
+          "event_date": "2026-11-15",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REU15-ATTR",
+          "impact_magnitude": "moderate",
+          "observation": "Reuters dated 15 November reports Bahrain said it intercepted Iranian aerial attacks. The IRGC said it targeted a US radar site, with damage unconfirmed; no qualifying 72-hour escalation was established.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Bahrain intercepts Iranian aerial attacks"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Military / Saudi / Houthis",
+          "date": "2026-11-15",
+          "direction": "raises",
+          "event_date": "2026-11-15",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REUTERS-HOUTHIS",
+          "impact_magnitude": "minor",
+          "observation": "Reuters dated 15 November reports the Saudi-led coalition said it intercepted Houthi missiles and drones; the account does not authenticate Iranian material support or duplicate-incident totals.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Saudi-led coalition says missiles and drones intercepted"
         }
       ],
       "evidence_cutoff": "2026-11-15T17:30:01.087483+00:00",
@@ -7163,46 +7163,46 @@
         {
           "date": "2026-11-13",
           "event_date": "2026-11-13",
+          "impact": "Reuters dated 13 November reports the US military denied Iran's claimed radar strike and said it intercepted two drones without damage. This records opposed statements, not a verified absence or presence of damage. Judgmental regional allocation: 1 pp.",
           "revision_date": "2026-11-15",
+          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
+          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated.",
           "title": "US denies Iran's claim it attacked radar in Bahrain",
           "type": "Military / Bahrain",
-          "url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
-          "impact": "Reuters dated 13 November reports the US military denied Iran's claimed radar strike and said it intercepted two drones without damage. This records opposed statements, not a verified absence or presence of damage. Judgmental regional allocation: 1 pp.",
-          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
-          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated."
+          "url": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/"
         },
         {
           "date": "2026-11-14",
           "event_date": "2026-11-14",
+          "impact": "Reuters dated 14 November reports advisers heard a possibility of postponing new strikes; Saudi and Turkish leaders urged restraint. No ceasefire was signed or implemented. Judgmental regional allocation: -1 pp.",
           "revision_date": "2026-11-15",
+          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
+          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated.",
           "title": "Trump tells advisers he may hold off on Iran attacks",
           "type": "Diplomacy / military restraint",
-          "url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
-          "impact": "Reuters dated 14 November reports advisers heard a possibility of postponing new strikes; Saudi and Turkish leaders urged restraint. No ceasefire was signed or implemented. Judgmental regional allocation: -1 pp.",
-          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
-          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated."
+          "url": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/"
         },
         {
           "date": "2026-11-15",
           "event_date": "2026-11-15",
+          "impact": "Reuters dated 15 November reports Bahrain said it intercepted Iranian aerial attacks. The IRGC said it targeted a US radar site, with damage unconfirmed; no qualifying 72-hour escalation was established. Judgmental regional allocation: 1 pp.",
           "revision_date": "2026-11-15",
+          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
+          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated.",
           "title": "Bahrain intercepts Iranian aerial attacks",
           "type": "Military / Bahrain",
-          "url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
-          "impact": "Reuters dated 15 November reports Bahrain said it intercepted Iranian aerial attacks. The IRGC said it targeted a US radar site, with damage unconfirmed; no qualifying 72-hour escalation was established. Judgmental regional allocation: 1 pp.",
-          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
-          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated."
+          "url": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/"
         },
         {
           "date": "2026-11-15",
           "event_date": "2026-11-15",
+          "impact": "Reuters dated 15 November reports the Saudi-led coalition said it intercepted Houthi missiles and drones; the account does not authenticate Iranian material support or duplicate-incident totals. Judgmental regional allocation: 1 pp.",
           "revision_date": "2026-11-15",
+          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
+          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated.",
           "title": "Saudi-led coalition says missiles and drones intercepted",
           "type": "Military / Saudi / Houthis",
-          "url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
-          "impact": "Reuters dated 15 November reports the Saudi-led coalition said it intercepted Houthi missiles and drones; the account does not authenticate Iranian material support or duplicate-incident totals. Judgmental regional allocation: 1 pp.",
-          "revision_type": "New V10 original-publisher attributed report with closed source certificate, not independently confirmed military damage",
-          "source_note": "Private original Reuters HTML full SHA-256 and exact 4–25-word passage/offset verified in the offline run before cutoff; first public publisher release instant and world-event truth are not independently authenticated."
+          "url": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/"
         }
       ],
       "next_scheduled_update": "2026-11-22",
@@ -7246,10 +7246,6 @@
       "regional_resolution_note": "Regional scenario weights 7/14/79 sum to 100, but are judgmental partitions, not a separate fifth scored event. The actual 79% Protocol-v1 target requires 72 hours of major interstate strikes or an additional sovereign operational theater; isolated ships and talks do not resolve it.",
       "revision_attribution": [
         {
-          "event_id": "regional_escalation_90d",
-          "prior_p": 79,
-          "new_p": 81,
-          "residual_pp": 0,
           "contributions": [
             {
               "evidence_ids": [
@@ -7279,28 +7275,32 @@
               "label": "Reuters original attributes separate Saudi coalition missile/drone interceptions to Houthi pressure without proving Iranian source supply",
               "pp": 1
             }
-          ]
+          ],
+          "event_id": "regional_escalation_90d",
+          "new_p": 81,
+          "prior_p": 79,
+          "residual_pp": 0
         },
         {
+          "contributions": [],
           "event_id": "regime_end_12m",
-          "prior_p": 16,
           "new_p": 16,
-          "residual_pp": 0,
-          "contributions": []
+          "prior_p": 16,
+          "residual_pp": 0
         },
         {
+          "contributions": [],
           "event_id": "currency_crisis_12m",
-          "prior_p": 80,
           "new_p": 80,
-          "residual_pp": 0,
-          "contributions": []
+          "prior_p": 80,
+          "residual_pp": 0
         },
         {
+          "contributions": [],
           "event_id": "external_payments_crisis_12m",
-          "prior_p": 86,
           "new_p": 86,
-          "residual_pp": 0,
-          "contributions": []
+          "prior_p": 86,
+          "residual_pp": 0
         }
       ],
       "revision_attribution_status": "Relative to November 8 verified publication, regional escalation +2 points: +1 attributed November 13 Iran/US Bahrain episode, -1 attributed November 14 possible restraint, +1 November 15 Bahrain interceptions, +1 distinct Saudi/Houthi interceptions, residual 0. Regime, currency and essential-import payments forecasts unchanged. These are coarse judgmental allocations, not identified causal contributions or event-resolution claims.",
@@ -7382,6 +7382,1305 @@
         }
       },
       "what_changed": "Compared with the verified November 8 assessment, original Reuters November 13 reports an Iranian radar strike claim disputed by the US military, November 14 reports possible restraint after Saudi and Turkish counsel, and November 15 reports Bahrain air-defense interceptions and a distinct Saudi-coalition Houthi missile/drone claim. Do not infer Iranian success damaging radar or that these are a single event. Regional escalation rises judgmentally from 79 to 81 while regime, currency and payments remain 16/80/86. The private original HTML receipts, precise passages and contrary-source limitations were sealed before forecast opening; no new Hanke monthly or verified import settlement observations qualify."
+    },
+    {
+      "absence_indicators": [
+        {
+          "coverage": "Medium",
+          "label": "Security-force defections",
+          "status": "unknown",
+          "text": "No credible new consequential defections were identified in cutoff sources; coverage remains insufficient to establish absence. As of the November 8 source cutoff, original evidence remains insufficient to certify either occurrence or nonoccurrence; absence must not be treated as a stabilizer."
+        },
+        {
+          "coverage": "Low",
+          "label": "Nationwide bazaar shutdown",
+          "status": "unknown",
+          "text": "No original contemporary observation of a nationwide bazaar shutdown has been admitted. As of the November 8 source cutoff, original evidence remains insufficient to certify either occurrence or nonoccurrence; absence must not be treated as a stabilizer."
+        },
+        {
+          "coverage": "Low",
+          "label": "Priority military/security fuel failure",
+          "status": "unknown",
+          "text": "No failure is reported, but public observation is too weak to treat absence as affirmative reassurance. As of the November 8 source cutoff, original evidence remains insufficient to certify either occurrence or nonoccurrence; absence must not be treated as a stabilizer."
+        },
+        {
+          "coverage": "Medium",
+          "label": "Economy-wide high-frequency wage indexation",
+          "status": "unknown",
+          "text": "No generalized high-frequency automatic wage repricing is verified, but observation coverage is insufficient for affirmative Normal status. As of the November 8 source cutoff, original evidence remains insufficient to certify either occurrence or nonoccurrence; absence must not be treated as a stabilizer."
+        },
+        {
+          "coverage": "Low",
+          "label": "Systemically important Chinese-bank cutoff",
+          "status": "unknown",
+          "text": "No primary current record of a systemic Chinese-bank cutoff has been admitted. As of the November 8 source cutoff, original evidence remains insufficient to certify either occurrence or nonoccurrence; absence must not be treated as a stabilizer."
+        }
+      ],
+      "assessment_evidence_cutoff": "2026-11-22T22:24:23.579929Z",
+      "binary_political": [
+        {
+          "created_date": "2026-11-22",
+          "event_id": "regime_end_12m",
+          "label": "Regime-ending transition (Protocol v1 scored binary)",
+          "p": 16,
+          "scored": true
+        }
+      ],
+      "chains": [
+        {
+          "confirmed": 1,
+          "current": 1,
+          "level": "warning",
+          "name": "FX / fiscal",
+          "note": "No new 30-day rial series or independent government arrears and monetization evidence. Historic diagnostic stages are retained without an observed new threshold crossing.",
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism.",
+          "stage": 2,
+          "steps": [
+            "Depreciation",
+            "Intervention strain",
+            "Currency substitution",
+            "Rapid repricing/indexation",
+            "Fiscal monetization"
+          ]
+        },
+        {
+          "confirmed": 2,
+          "current": 2,
+          "level": "critical",
+          "name": "Energy / real economy",
+          "note": "One reported tanker incident and one attributed military enforcement event do not measure nationwide electricity shutdowns, industrial collapse, essential goods shortages or two-category payment interruption; retained pathway stages are not new observed transitions.",
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism.",
+          "stage": 3,
+          "steps": [
+            "Rationing",
+            "Industrial/freight disruption",
+            "Essential-goods shortages",
+            "State arrears",
+            "Priority-allocation failure"
+          ]
+        },
+        {
+          "confirmed": 1,
+          "current": 1,
+          "level": "watch",
+          "name": "Regime / coercion",
+          "note": "No admissible Iranian national coordinated protest, national command refusal or elite rupture. Houthi context cannot be substituted for Iranian coercive security cohesion, and no absence indicator is certified.",
+          "pathway_note": "Diagnostic pathway, not a required causal sequence: stages may be skipped, reversed or reached through another mechanism.",
+          "stage": 1,
+          "steps": [
+            "Economic protest",
+            "Coordinated national protest",
+            "Elite fracture",
+            "Coercive refusal",
+            "Defections"
+          ]
+        }
+      ],
+      "conditions": {
+        "coercion": "No separately captured Iranian first-party nationwide security-unit defection, pay failure or disobedience record. Foreign missile and tanker incidents are not a measure of domestic coercive cohesion; coverage remains low.",
+        "elite": "No verified rival national authority or constitutional/institutional transition. Oil-trustee sanctions and ongoing mediation are not proof of an Iranian elite fracture or its absence.",
+        "energy": "Tanker attack alerts and sanctions increase uncertainty over oil delivery and receipts; no original current nationwide fuel production, industrial electricity outage denominator or actual Chinese oil-credit settlement terms were verified.",
+        "hormuz": "Reuters relays two UKMTO alerts near Khasab on November 21 with an unknown common-vessel relationship; Iranian navy mine attribution is unverified. The observed reports are not a verified aggregate ship damage count or proof of changed general navigation status."
+      },
+      "corrections": [],
+      "date": "2026-11-22",
+      "evidence": [
+        {
+          "affects": [
+            "Sustained major regional escalation",
+            "Houthi support diagnostic"
+          ],
+          "category": "Yemen / regional escalation",
+          "date": "2026-10-11",
+          "direction": "raises",
+          "event_date": "2026-10-10",
+          "evidence_status": "carried_forward",
+          "id": "E-20261011-01",
+          "impact_magnitude": "major",
+          "observation": "Riyadh airport strike killed 12 and injured more than 300; Houthi statements warned further Saudi air traffic targets, with Saudi retaliation expected.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/middle-east/yemens-houthis-renew-warning-over-saudi-airports-after-deadly-riyadh-attack-2026-10-11/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-11T10:23:00+00:00",
+          "source_title": "Yemen’s Houthis renew warning over Saudi airports after deadly Riyadh attack"
+        },
+        {
+          "affects": [
+            "Sustained major regional escalation",
+            "External-payments crisis"
+          ],
+          "category": "Military / shipping",
+          "date": "2026-10-11",
+          "direction": "raises",
+          "event_date": "2026-10-10",
+          "evidence_status": "carried_forward",
+          "id": "E-20261011-02",
+          "impact_magnitude": "moderate",
+          "observation": "US CENTCOM reported disabling a cargo ship by precision strike during Iran blockade enforcement.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/us-military-says-it-disabled-cargo-vessel-trying-run-iran-blockade-2026-10-11/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-11T01:35:00+00:00",
+          "source_title": "US military says it disabled cargo vessel trying to run Iran blockade"
+        },
+        {
+          "affects": [
+            "External-payments crisis",
+            "Iran–China oil-credit haircut"
+          ],
+          "category": "Sanctions / oil exports",
+          "date": "2026-10-08",
+          "direction": "raises",
+          "event_date": "2026-10-08",
+          "evidence_status": "carried_forward",
+          "id": "E-20261011-03",
+          "impact_magnitude": "moderate",
+          "observation": "US Treasury targeted 17 tankers; an independent analyst judged direct effect muted because deliveries of oil already afloat were largely completed.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/middle-east/us-imposes-fresh-iran-related-sanctions-2026-10-08/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-08T16:58:00+00:00",
+          "source_title": "US imposes fresh sanctions on Iran’s shadow fleet"
+        },
+        {
+          "affects": [
+            "Sustained major regional escalation",
+            "Regime-ending transition"
+          ],
+          "category": "Diplomatic offset",
+          "date": "2026-10-08",
+          "direction": "lowers",
+          "event_date": "2026-10-08",
+          "evidence_status": "carried_forward",
+          "id": "E-20261011-04",
+          "impact_magnitude": "moderate",
+          "observation": "US president publicly described discussions with Iran as productive and stated no new US attack before November 3.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/middle-east/us-imposes-fresh-iran-related-sanctions-2026-10-08/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-08T16:58:00+00:00",
+          "source_title": "US imposes fresh sanctions on Iran’s shadow fleet"
+        },
+        {
+          "affects": [
+            "Sustained major regional escalation",
+            "External-payments crisis"
+          ],
+          "category": "Maritime / Hormuz",
+          "date": "2026-10-08",
+          "direction": "raises",
+          "event_date": "2026-10-08",
+          "evidence_status": "carried_forward",
+          "id": "E-20261011-05",
+          "impact_magnitude": "moderate",
+          "observation": "Iran threatened routes outside its authorization as ship attacks reached high levels, discouraging vessel transit.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/asia-pacific/attack-risks-rise-tankers-iran-vows-block-more-hormuz-routes-2026-10-08/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-08T13:17:00+00:00",
+          "source_title": "Attack risks rise for tankers as Iran vows to block more Hormuz routes"
+        },
+        {
+          "affects": [
+            "Regime-ending transition",
+            "External-payments crisis"
+          ],
+          "category": "Fiscal / elite",
+          "date": "2026-10-05",
+          "direction": "raises",
+          "event_date": "2026-10-04",
+          "evidence_status": "carried_forward",
+          "id": "E-20261011-06",
+          "impact_magnitude": "moderate",
+          "observation": "The oil minister resigned amid questions about repayment of export receipts, amid severe economic pressure; reasons given officially were personal.",
+          "publisher": "The Guardian",
+          "reliability": "Medium-high",
+          "source": "https://www.theguardian.com/world/2026/oct/05/iran-oil-minister-resigns-economic-crisis",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-05T14:16:00+00:00",
+          "source_title": "Iran’s oil minister resigns as country’s economic crisis worsens"
+        },
+        {
+          "affects": [
+            "Sustained major regional escalation"
+          ],
+          "category": "Saudi retaliation / regional risk",
+          "date": "2026-10-11",
+          "direction": "raises",
+          "event_date": "2026-10-10",
+          "evidence_status": "carried_forward",
+          "id": "E-20261011-07",
+          "impact_magnitude": "moderate",
+          "observation": "Saudi coalition vowed decisive response; US involvement was being weighed but not yet reported as underway.",
+          "publisher": "Washington Post",
+          "reliability": "High",
+          "source": "https://www.washingtonpost.com/world/2026/10/11/saudi-arabia-vows-retaliation-against-houthis-after-riyadh-airport-strike/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-11T12:19:00+00:00",
+          "source_title": "Saudi Arabia vows major response after Houthi strike on airport kills 12, injures 309"
+        },
+        {
+          "affects": [
+            "Sustained major regional escalation",
+            "External-payments crisis",
+            "Iran–China oil-credit haircut"
+          ],
+          "category": "Maritime",
+          "date": "2026-09-30",
+          "direction": "lowers",
+          "event_date": "2026-09-30",
+          "evidence_status": "carried_forward",
+          "id": "E-20261004-04",
+          "impact_magnitude": "moderate",
+          "observation": "September LNG Hormuz transits reached their highest monthly level since the war began, still well below pre-war normal.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/business/energy/september-lng-shipments-through-hormuz-hit-highest-since-start-us-iran-war-2026-10-02/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-10-02T07:47:00+00:00",
+          "source_title": "September LNG shipments through Hormuz hit highest since start of US-Iran war"
+        },
+        {
+          "affects": [
+            "External-payments crisis",
+            "Food / medicine warning"
+          ],
+          "category": "Food / medicine",
+          "date": "2026-09-30",
+          "direction": "raises",
+          "event_date": "2026-09-30",
+          "evidence_status": "carried_forward",
+          "id": "E-20261004-05",
+          "impact_magnitude": "moderate",
+          "observation": "AP reported sharply higher medicine prices and pharmacy shortages amid import, blockade and payment friction.",
+          "publisher": "Associated Press",
+          "reliability": "High",
+          "source": "https://apnews.com/article/iran-war-blockade-medicine-pharmaceutical-prices-a66f60e950ec47b518a9a8856683ee75",
+          "source_publication_status": "unknown precise time",
+          "source_publication_time": null,
+          "source_title": "Iranians face soaring prices for medicine as the US blockade and sanctions hit hard"
+        },
+        {
+          "affects": [
+            "External-payments crisis",
+            "Iran–China oil-credit haircut"
+          ],
+          "category": "China / external support",
+          "date": "2026-09-10",
+          "direction": "ambiguous",
+          "event_date": "2026-09-10",
+          "evidence_status": "carried_forward",
+          "id": "E-20261004-06",
+          "impact_magnitude": "moderate",
+          "observation": "Reuters documented a China-based oil-credit mechanism but reported blockade constraints on Iranian crude transit to China.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/asia-pacific/how-billion-dollar-sanctions-dodge-kept-chinese-goods-flowing-iran-2026-09-10/",
+          "source_publication_status": "known",
+          "source_publication_time": "2026-09-10T06:05:01+00:00",
+          "source_title": "How a billion-dollar sanctions dodge kept Chinese goods flowing to Iran"
+        },
+        {
+          "affects": [
+            "Currency crisis",
+            "Hanke diagnostic"
+          ],
+          "category": "Inflation diagnostic",
+          "date": "2026-10-04",
+          "direction": "ambiguous",
+          "event_date": "2026-10-04",
+          "evidence_status": "carried_forward",
+          "id": "E-20261004-07",
+          "impact_magnitude": "minor",
+          "observation": "Latest recoverable Hanke estimate was 79.1% annual inflation; precise original publication time was unavailable.",
+          "publisher": "Steve Hanke repost on Binance Square",
+          "reliability": "Medium",
+          "source": "https://www.binance.com/en/square/post/293977348485185",
+          "source_publication_status": "unknown precise time",
+          "source_publication_time": null,
+          "source_title": "Today, I measure Iran's annual inflation at a crushing 79.1%"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d",
+            "houthi_support_12m"
+          ],
+          "category": "Economic / institutional",
+          "date": "2026-10-15",
+          "direction": "raises",
+          "event_date": "2026-10-15",
+          "evidence_status": "carried_forward",
+          "id": "E-20261018-01",
+          "impact_magnitude": "moderate",
+          "observation": "Reuters reported continued Houthi infrastructure attacks and competing Iran/Houthi versus Saudi explanations; Houthi spokesperson denied acting on Iranian instructions.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/middle-east/how-houthis-are-helping-iran-turn-saudi-arabia-into-pressure-point-2026-10-15/",
+          "source_publication_status": "known from publisher timestamp",
+          "source_publication_time": "2026-10-15T13:24:00+00:00",
+          "source_title": "How the Houthis are helping Iran turn Saudi Arabia into a pressure point"
+        },
+        {
+          "affects": [
+            "external_payments_crisis_12m",
+            "china_oil_credit_haircut"
+          ],
+          "category": "Economic / institutional",
+          "date": "2026-10-16",
+          "direction": "ambiguous",
+          "event_date": "2026-10-16",
+          "evidence_status": "carried_forward",
+          "id": "E-20261018-02",
+          "impact_magnitude": "moderate",
+          "observation": "Maritime tracking identified limited Iranian LPG and jet fuel movements despite US blockade; US officials cautioned apparent passages can have alternative explanations and tracking may be spoofed.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/business/energy/iran-ships-some-lpg-jet-fuel-despite-us-blockade-data-shows-2026-10-16/",
+          "source_publication_status": "known from publisher timestamp",
+          "source_publication_time": "2026-10-16T10:45:00+00:00",
+          "source_title": "Iran ships some LPG, jet fuel despite US blockade, data shows"
+        },
+        {
+          "affects": [
+            "regime_end_12m",
+            "regional_escalation_90d"
+          ],
+          "category": "Economic / institutional",
+          "date": "2026-10-18",
+          "direction": "ambiguous",
+          "event_date": "2026-10-18",
+          "evidence_status": "carried_forward",
+          "id": "E-20261018-03",
+          "impact_magnitude": "moderate",
+          "observation": "Parliament confirmed a defense minister after an interim tenure; the appointment demonstrates operating institutions but does not establish military effectiveness or broad institutional cohesion.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/middle-east/irans-parliament-approves-mehrdad-akhlaqi-minister-defence-state-media-2026-10-18/",
+          "source_publication_status": "known from publisher timestamp",
+          "source_publication_time": "2026-10-18T08:23:00+00:00",
+          "source_title": "Iran's parliament approves Mehrdad Akhlaqi as minister of defence"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Economic / institutional",
+          "date": "2026-10-18",
+          "direction": "raises",
+          "event_date": "2026-10-18",
+          "evidence_status": "carried_forward",
+          "id": "E-20261018-04",
+          "impact_magnitude": "moderate",
+          "observation": "Egyptian presidency offered defense support to Saudi Arabia and sought legislative authorization, while diplomatic efforts continued; no Egyptian deployment was confirmed.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/middle-east/egypt-says-ready-give-saudi-arabia-necessary-support-amid-houthi-conflict-2026-10-18/",
+          "source_publication_status": "known from publisher timestamp",
+          "source_publication_time": "2026-10-18T10:17:00+00:00",
+          "source_title": "Egypt says ready to give Saudi Arabia necessary support amid Houthi conflict"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d",
+            "external_payments_crisis_12m"
+          ],
+          "category": "Economic / institutional",
+          "date": "2026-10-18",
+          "direction": "lowers",
+          "event_date": "2026-10-18",
+          "evidence_status": "carried_forward",
+          "id": "E-20261018-05",
+          "impact_magnitude": "moderate",
+          "observation": "Iran reiterated conditional six-to-seven-day reopening offer while reporting stalled talks; reopening and sanction relief were not announced as agreed.",
+          "publisher": "Reuters",
+          "reliability": "High",
+          "source": "https://www.reuters.com/world/middle-east/iran-urges-us-accept-proposal-reopen-strait-hormuz-2026-10-18/",
+          "source_publication_status": "known from publisher timestamp",
+          "source_publication_time": "2026-10-18T10:29:00+00:00",
+          "source_title": "Iran urges US to accept proposal to reopen Strait of Hormuz"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Maritime / regional economic security",
+          "date": "2026-10-25",
+          "direction": "raises",
+          "event_date": "2026-10-22",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261025-01",
+          "impact_magnitude": "moderate",
+          "observation": "The IMO listed 120 highlighted confirmed maritime incidents in the Strait of Hormuz and wider Middle East cumulatively as of October 22, not 120 in October alone.",
+          "publisher": "International Maritime Organization",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.imo.org/en/mediacentre/hottopics/pages/middle-east-highlighted-incidents.aspx?ftag=YHF4eb9d17",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Middle East - Highlighted (Confirmed) incidents"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d",
+            "external_payments_crisis_12m"
+          ],
+          "category": "Maritime / regional economic security",
+          "date": "2026-10-25",
+          "direction": "ambiguous",
+          "event_date": "2026-10-11",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "unverified",
+          "id": "E-20261025-02",
+          "impact_magnitude": "moderate",
+          "observation": "Lloyd’s List counted 104 non-Iranian-linked transits through Hormuz in October 5–11 versus 126 in September 28–October 4, a 17% weekly decline, although this cohort remained 31% above the August weekly average.",
+          "publisher": "Lloyd's List Intelligence",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.lloydslistintelligence.com/resources/blog/strait-of-hormuz-brief-22-october-2026",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Strait of Hormuz Brief: 22 October, 2026"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Maritime / Strait of Hormuz",
+          "date": "2026-11-01",
+          "direction": "raises",
+          "event_date": "2026-10-29",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261101-01",
+          "impact_magnitude": "moderate",
+          "observation": "MSCIO alert 158/26 records receiving a report that an outbound tanker was struck by an unknown projectile at approximately 16:00 UTC October 29, without reported crew injuries or environmental damage. Attribution and vessel identity are unverified.",
+          "publisher": "Maritime Security Centre – Indian Ocean",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://mscio.eu/alerts/194",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Alert 158/26 – Attack"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Maritime / Strait of Hormuz",
+          "date": "2026-11-01",
+          "direction": "raises",
+          "event_date": "2026-10-29",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261101-02",
+          "impact_magnitude": "moderate",
+          "observation": "MSCIO alert 159/26 records a report of a small boat attaching explosive devices to a tanker at 22:12 UTC October 29; the fire was reportedly extinguished and voyage resumed. Perpetrator and unique vessel identity are unverified.",
+          "publisher": "Maritime Security Centre – Indian Ocean",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://mscio.eu/alerts/195",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Alert 159/26 – Attack"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Diplomacy / regional mediation",
+          "date": "2026-11-01",
+          "direction": "lowers",
+          "event_date": "2026-10-27",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261101-03",
+          "impact_magnitude": "minor",
+          "observation": "Qatar’s October 27 original official statement described mediation as moving positively toward reducing tensions, while making no claim that a mutually implemented ceasefire or accepted navigation agreement existed.",
+          "publisher": "Qatar Ministry of Foreign Affairs",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/10/27/qatar-calls-for-new-regional-security-framework-based-on-state-sovereignty-respect",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Qatar Calls for New Regional Security Framework"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Yemen / humanitarian coercion",
+          "date": "2026-11-01",
+          "direction": "ambiguous",
+          "event_date": "2026-10-31",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "unverified",
+          "id": "E-20261101-04",
+          "impact_magnitude": "minor",
+          "observation": "The UN Secretary-General’s spokesman condemned the death of OHCHR colleague Mohammad el Shami while held by Houthi de facto authorities, while explicitly saying circumstances remain unclear. This does not establish current Iranian arms resupply.",
+          "publisher": "United Nations in Yemen",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://yemen.un.org/en/325563-statement-attributable-spokesperson-secretary-general-death-ohchr-staff-member-detention",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Statement on death of OHCHR staff member in detention"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Maritime / Arabian Gulf",
+          "date": "2026-11-08",
+          "direction": "raises",
+          "event_date": "2026-11-04",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-01",
+          "impact_magnitude": "minor",
+          "observation": "MSCIO issued a November 5 alert recording a received report that a tanker 50 nautical miles north of Madinat ash Shamal was reportedly struck by two unidentified projectiles on November 4. The alert did not know crew status, damage, or perpetrator.",
+          "publisher": "Maritime Security Centre – Indian Ocean",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://mscio.eu/alerts/206",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "MSCIO Alert 170/26 – Attack"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Diplomacy / navigation",
+          "date": "2026-11-08",
+          "direction": "lowers",
+          "event_date": "2026-11-05",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-02",
+          "impact_magnitude": "minor",
+          "observation": "Oman’s Foreign Ministry published a November 5 account of ministerial discussions with Iran about arrangements for potentially resuming safe navigation through Hormuz. The call is not an implemented reopening.",
+          "publisher": "Oman Ministry of Foreign Affairs",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.fm.gov.om/en/64014/",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Minister in phone call with Iranian counterpart"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Diplomacy / mediation",
+          "date": "2026-11-08",
+          "direction": "lowers",
+          "event_date": "2026-11-03",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-03",
+          "impact_magnitude": "minor",
+          "observation": "Qatar’s Foreign Ministry published a November 3 briefing that mediators exchanged proposals and a Qatari delegation met counterparts in Tehran for about three hours, while expressly saying no specific breakthrough had occurred.",
+          "publisher": "Qatar Ministry of Foreign Affairs",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://mofa.gov.qa/en/qatar/latest-articles/latest-news/details/2026/11/03/advisor-to-prime-minister--official-spokesperson-for-ministry-of-foreign-affairs--qatar-continues-its-efforts-to-bridge-gap-between-washington--tehran",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "Qatar Continues Its Efforts to Bridge Gap between Washington, Tehran"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Maritime / Gulf of Oman",
+          "date": "2026-11-08",
+          "direction": "raises",
+          "event_date": "2026-11-07",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261108-04",
+          "impact_magnitude": "moderate",
+          "observation": "The Maritime Executive reported November 7 that CENTCOM asserted U.S. forces disabled the St. Kitts-flagged M/V Huda after repeated warnings. This is an attributed claim rather than independent physical verification of crew safety, legality or vessel damage.",
+          "publisher": "The Maritime Executive",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://maritime-executive.com/article/us-forces-disable-first-cargo-ship-in-a-month-sailing-from-iranian-port",
+          "source_publication_status": "date_only_not_independently_authenticated",
+          "source_title": "US Forces Disable First Cargo Ship in a Month Sailing from Iranian Port"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Military / Bahrain",
+          "date": "2026-11-15",
+          "direction": "raises",
+          "event_date": "2026-11-13",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REU13-ATTR",
+          "impact_magnitude": "minor",
+          "observation": "Reuters dated 13 November reports the US military denied Iran's claimed radar strike and said it intercepted two drones without damage. This records opposed statements, not a verified absence or presence of damage.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/irans-guards-say-they-targeted-us-early-warning-radar-bahrain-2026-11-13/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "US denies Iran's claim it attacked radar in Bahrain"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Diplomacy / military restraint",
+          "date": "2026-11-15",
+          "direction": "lowers",
+          "event_date": "2026-11-14",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REU14-RESTRAINT",
+          "impact_magnitude": "minor",
+          "observation": "Reuters dated 14 November reports advisers heard a possibility of postponing new strikes; Saudi and Turkish leaders urged restraint. No ceasefire was signed or implemented.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/trump-tells-advisers-he-may-hold-off-iran-attacks-barring-new-provocations-2026-11-14/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Trump tells advisers he may hold off on Iran attacks"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Military / Bahrain",
+          "date": "2026-11-15",
+          "direction": "raises",
+          "event_date": "2026-11-15",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REU15-ATTR",
+          "impact_magnitude": "moderate",
+          "observation": "Reuters dated 15 November reports Bahrain said it intercepted Iranian aerial attacks. The IRGC said it targeted a US radar site, with damage unconfirmed; no qualifying 72-hour escalation was established.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/bahrains-interior-ministry-issues-alerts-potential-threats-2026-11-15/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Bahrain intercepts Iranian aerial attacks"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Military / Saudi / Houthis",
+          "date": "2026-11-15",
+          "direction": "raises",
+          "event_date": "2026-11-15",
+          "evidence_status": "carried_forward",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261115-REUTERS-HOUTHIS",
+          "impact_magnitude": "minor",
+          "observation": "Reuters dated 15 November reports the Saudi-led coalition said it intercepted Houthi missiles and drones; the account does not authenticate Iranian material support or duplicate-incident totals.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/saudi-led-coalition-intercepts-missiles-towards-riyadh-drones-eastern-province-2026-11-15/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Saudi-led coalition says missiles and drones intercepted"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Military / Oman and Gulf",
+          "date": "2026-11-22",
+          "direction": "raises",
+          "event_date": "2026-11-17",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261122-REU17-EXCHANGE",
+          "impact_magnitude": "moderate",
+          "observation": "Reuters reported that US aircraft struck an Iranian missile-launch site on Qeshm on November 17 after an Iranian claim of striking a Bahrain radar system; US and Iranian officials disagreed on effects. The report establishes attributed accounts of exchanges, not verified target damage or fulfillment of the 72-hour Protocol v1 threshold.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "US, Iran exchange fire despite talks with mediators | Reuters"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Military / Bahrain",
+          "date": "2026-11-22",
+          "direction": "raises",
+          "event_date": "2026-11-21",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261122-REU21-BAHRAIN",
+          "impact_magnitude": "moderate",
+          "observation": "Reuters original reporting says Bahrain attributed a fire at a civilian industrial facility and two injuries on November 21 to an Iranian attack, and separately reported Iranian Revolutionary Guard claims of targeting US bases. The identity of military targets and actual damage are not independently verified.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Bahrain says Iran strikes industrial facility as air defences intercept attacks | Reuters"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d",
+            "external_payments_crisis_12m"
+          ],
+          "category": "Maritime / Strait of Hormuz",
+          "date": "2026-11-22",
+          "direction": "raises",
+          "event_date": "2026-11-21",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261122-REU21-KHASAB",
+          "impact_magnitude": "minor",
+          "observation": "Reuters relayed two UKMTO reports on November 21 of projectiles striking tankers near Khasab, but explicitly said it was unclear whether the two alerts concern the same vessel. An Iranian navy claim of a separate mine incident was not independently verified or matched. No distinct-vessel or confirmed-incident count is asserted.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "UK maritime agency reports two tanker incidents near Oman; Iran says vessel hit mine east of Hormuz | Reuters"
+        },
+        {
+          "affects": [
+            "regional_escalation_90d"
+          ],
+          "category": "Diplomacy / Qatar mediation",
+          "date": "2026-11-22",
+          "direction": "lowers",
+          "event_date": "2026-11-20",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261122-REU21-QATAR",
+          "impact_magnitude": "minor",
+          "observation": "Reuters reported on November 21 that an Iranian deputy foreign minister said a Qatari delegation had visited Tehran Friday and contacts with mediators continued. This documents an attributed diplomatic contact, not a ceasefire, accepted agreement or implemented de-escalation.",
+          "publisher": "Reuters",
+          "reliability": "Medium",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Qatari delegation visits Tehran for talks, Iranian official says | Reuters"
+        },
+        {
+          "affects": [
+            "external_payments_crisis_12m",
+            "regime_end_12m"
+          ],
+          "category": "Sanctions / Oil revenue",
+          "date": "2026-11-22",
+          "direction": "raises",
+          "event_date": "2026-11-20",
+          "evidence_status": "new",
+          "geopolitical_direction_confidence": "qualified",
+          "id": "E-20261122-TREASURY20-OIL",
+          "impact_magnitude": "minor",
+          "observation": "The U.S. Treasury issued a dated November 20 press release designating Iranian oil-trustee networks under stated Executive Order authorities. The official action is directly documented; claimed recovery failures and the economic effect on Iran are unverified policy assertions, not measured losses in export receipts.",
+          "publisher": "U.S. Department of the Treasury",
+          "reliability": "Medium-high",
+          "reliability_basis": "two_perspective_claim_specific_conservative_fact_review",
+          "source": "https://home.treasury.gov/news/press-releases/sb0697",
+          "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+          "source_title": "Operation Economic Outcast Targets Corrupt Regime Insiders Exploiting Iran’s Oil Sector for Personal Gain | U.S. Department of the Treasury"
+        }
+      ],
+      "evidence_cutoff": "2026-11-22T22:24:23.579929Z",
+      "forecasts": [
+        {
+          "confidence": "Medium",
+          "created_date": "2026-11-22",
+          "event_definition": "Sustained major interstate strikes lasting at least 72 hours, or a material expansion of major combat to an additional sovereign state or operational theater. Isolated interceptions, one-off strikes, proxy attacks, and rhetoric alone are excluded unless they initiate the qualifying sustained episode.",
+          "event_id": "regional_escalation_90d",
+          "forecast_id": "regional_escalation_90d_20261122",
+          "forecast_open": "2026-11-22T17:28:44.588780-05:00",
+          "horizon": "within 90 days",
+          "label": "Sustained major regional escalation",
+          "lower": "November 21 Reuters attributes renewed contacts between Qatari mediators and Iranian officials, with earlier Oman engagement; contacts are not an agreed ceasefire or independently verified operational restraint.",
+          "p": 84,
+          "provenance": "Prospectively frozen once after a locally reconciled six-category two-pass source review and sequential affirmative/critical ChatGPT perspectives. The original articles remain privately hashed; this does not establish publisher transport signing or independent dual model invocations. Publication requires separately completed full-report review and protected verification.",
+          "raise": "November 17 Reuters attributes a US strike on a Qeshm launch site; November 21 Bahraini official reporting describes industrial-fire damage and new interceptions, while UKMTO reports near Khasab increase shipping risk without verified distinct-vessel totals. The combination raises regional escalation risk without establishing the frozen 72-hour event.",
+          "range": [
+            65,
+            93
+          ],
+          "resolution_deadline": "2027-02-20T17:28:44.588780-05:00",
+          "scored": true
+        },
+        {
+          "confidence": "Medium",
+          "created_date": "2026-11-22",
+          "event_definition": "Replacement of the Islamic Republic's governing constitutional-institutional order, or loss of its effective national governing authority. Leadership succession, cabinet changes, and factional turnover within the same governing order are excluded.",
+          "event_id": "regime_end_12m",
+          "forecast_id": "regime_end_12m_20261122",
+          "forecast_open": "2026-11-22T17:28:44.588780-05:00",
+          "horizon": "within 12 months",
+          "label": "Regime-ending transition",
+          "lower": "Continuing nationally functional governmental authority and verified priority payments would lower regime-order risk; missing elite/security reporting is unknown rather than affirmative reassurance.",
+          "p": 16,
+          "provenance": "Prospectively frozen once after a locally reconciled six-category two-pass source review and sequential affirmative/critical ChatGPT perspectives. The original articles remain privately hashed; this does not establish publisher transport signing or independent dual model invocations. Publication requires separately completed full-report review and protected verification.",
+          "raise": "A directly documented new Treasury oil-network sanction may increase Iranian economic strain, but no new original national command fracture, rival governing authority or regime-order loss is corroborated.",
+          "range": [
+            9,
+            27
+          ],
+          "resolution_deadline": "2027-11-22T17:28:44.588780-05:00",
+          "scored": true
+        },
+        {
+          "confidence": "Medium",
+          "created_date": "2026-11-22",
+          "event_definition": "Depreciation of the parallel-market rial by at least 25% against the U.S. dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.",
+          "event_id": "currency_crisis_12m",
+          "forecast_id": "currency_crisis_12m_20261122",
+          "forecast_open": "2026-11-22T17:28:44.588780-05:00",
+          "horizon": "within 12 months",
+          "label": "Currency crisis",
+          "lower": "A consistent parallel-rial quote series remaining outside the frozen 25%/30-day criterion and verified functioning FX access would lower the assessed risk; no new original measurement was admitted.",
+          "p": 80,
+          "provenance": "Prospectively frozen once after a locally reconciled six-category two-pass source review and sequential affirmative/critical ChatGPT perspectives. The original articles remain privately hashed; this does not establish publisher transport signing or independent dual model invocations. Publication requires separately completed full-report review and protected verification.",
+          "raise": "Additional verified 30-day parallel-rate depreciation and credible interventions failure would raise this event risk; no fresh common-series rial evidence passed this cutoff.",
+          "range": [
+            65,
+            91
+          ],
+          "resolution_deadline": "2027-11-22T17:28:44.588780-05:00",
+          "scored": true
+        },
+        {
+          "confidence": "Medium-high",
+          "created_date": "2026-11-22",
+          "event_definition": "Corroborated settlement disruption lasting at least 14 days in at least two essential-import categories—food or grain, medicine or medical inputs, or critical energy or industrial inputs—combined with broad emergency foreign-exchange, import, or payment restrictions or a material shift by suppliers to prepayment or cash because established settlement channels are failing. Evidence must come from at least two independent source streams.",
+          "event_id": "external_payments_crisis_12m",
+          "forecast_id": "external_payments_crisis_12m_20261122",
+          "forecast_open": "2026-11-22T17:28:44.588780-05:00",
+          "horizon": "within 12 months",
+          "label": "External-payments crisis",
+          "lower": "Independently verified uninterrupted import settlements over two essential categories and bank payment channels would lower the forecast; present sources do not supply that two-stream denominator.",
+          "p": 87,
+          "provenance": "Prospectively frozen once after a locally reconciled six-category two-pass source review and sequential affirmative/critical ChatGPT perspectives. The original articles remain privately hashed; this does not establish publisher transport signing or independent dual model invocations. Publication requires separately completed full-report review and protected verification.",
+          "raise": "November 20 primary US Treasury designations of oil-trustee facilitators add modest sanctions/payment friction; the actual loss of oil receipts and two-sector 14-day import settlement failure remain unmeasured.",
+          "range": [
+            73,
+            96
+          ],
+          "resolution_deadline": "2027-11-22T17:28:44.588780-05:00",
+          "scored": true
+        }
+      ],
+      "haircut": {
+        "calculation": {
+          "adjusted_headline": 52,
+          "components": [
+            [
+              "Physical delivery/blockade",
+              20,
+              25
+            ],
+            [
+              "Sanctions/payment channels",
+              13,
+              15
+            ],
+            [
+              "Sovereign/counterparty",
+              6,
+              10
+            ],
+            [
+              "Oil-price/basis",
+              5,
+              8
+            ],
+            [
+              "Illiquidity/enforcement",
+              5,
+              8
+            ],
+            [
+              "Political/secondary-sanctions tail",
+              7,
+              8
+            ]
+          ],
+          "overlap_deduction_20pct": 4,
+          "raw_sum": 56,
+          "sensitivity": {
+            "overlap_0pct": 56,
+            "overlap_20pct": 52,
+            "overlap_40pct": 48
+          }
+        },
+        "method": {
+          "component_rationales": [
+            {
+              "component": "Physical delivery/blockade",
+              "evidence_ids": [
+                "E-20261122-REU21-KHASAB"
+              ],
+              "reason": "November 21 Khasab incident alerts reinforce restricted delivery risk, but the vessel deduplication and marginal shipping-volume effect are unverified. Preserve prior component estimate."
+            },
+            {
+              "component": "Sanctions/payment channels",
+              "evidence_ids": [
+                "E-20261122-TREASURY20-OIL"
+              ],
+              "reason": "November 20 US Treasury oil-trustee sanctions increase enforcement pressure, but the actual lost revenue and contract settlement incidence are unverified. Preserve prior component estimate."
+            },
+            {
+              "component": "Sovereign/counterparty",
+              "evidence_ids": [
+                "E-20261011-06",
+                "E-20261018-02"
+              ],
+              "reason": "Severe fiscal constraints increase delayed government/counterparty settlement risk; no sovereign default term is observed."
+            },
+            {
+              "component": "Oil-price/basis",
+              "evidence_ids": [
+                "E-20261018-02"
+              ],
+              "reason": "Changes in market access and routing increase delivered product valuation uncertainty without a verified contract basis."
+            },
+            {
+              "component": "Illiquidity/enforcement",
+              "evidence_ids": [
+                "E-20261018-02"
+              ],
+              "reason": "Limited and irregular transactions face enforcement, liquidity and vessel verification cost."
+            },
+            {
+              "component": "Political/secondary-sanctions tail",
+              "evidence_ids": [
+                "E-20261018-01",
+                "E-20261018-04",
+                "E-20261018-05"
+              ],
+              "reason": "Escalation and sanctions policy create correlated tail risk; political shocks overlap delivery and payment factors."
+            }
+          ],
+          "components": [
+            [
+              "Physical delivery/blockade",
+              20,
+              25
+            ],
+            [
+              "Sanctions/payment channels",
+              13,
+              15
+            ],
+            [
+              "Sovereign/counterparty",
+              6,
+              10
+            ],
+            [
+              "Oil-price/basis",
+              5,
+              8
+            ],
+            [
+              "Illiquidity/enforcement",
+              5,
+              8
+            ],
+            [
+              "Political/secondary-sanctions tail",
+              7,
+              8
+            ]
+          ],
+          "label": "Protocol v1 model estimate",
+          "rule": "Component contributions are not simply interpreted as independent risks. Protocol v1 applies a 20% overlap deduction to the combined delivery + sanctions/payment + political-tail subtotal above 20 percentage points, rounded to the nearest point, to reduce double counting of a common geopolitical shock."
+        },
+        "note": "Retain prior Protocol v1 equivalent haircut because new attacks and sanctions lack verified deal-level realized revenue, shipping-volume or contract spread observations. The estimate is a judgmental mechanism decomposition, not a contract price.",
+        "range": [
+          38,
+          68
+        ]
+      },
+      "hanke_hyperinflation": {
+        "analysis_date": "2026-10-04",
+        "assessment": "The historical October 4 Hanke annual diagnostic and prior unscored probabilities remain contextual. No new independently verified 30-day monthly Hanke estimate or designated parallel-rate 30-day series was admitted at the November 22 cutoff.",
+        "hyperinflation_probability": {
+          "m12": 30,
+          "m3": 10,
+          "m6": 18
+        },
+        "latest_recoverable_annual_inflation_pct": 79.1,
+        "source_publication_time_status": "unknown",
+        "status": "HISTORICAL_UNSCORED_NO_NEW_CURRENT_30DAY_MEASUREMENT"
+      },
+      "houthi": {
+        "definition": "Strategically meaningful Iranian support continues when Iranian matériel assistance or technical and financial support is sufficient to sustain advanced Houthi missile, drone, or maritime capabilities to a measurable degree. Independent Houthi production and locally maintained capabilities, without continuing Iranian assistance, do not qualify as continued Iranian support.",
+        "diagnostic_note": "No new claim-matched original Iranian materiel, technical or finance replenishment to Houthis was observed; November 21 Gulf attacks and Khasab incidents do not prove Houthi supply. Preserve historical independent and Iranian-support diagnostics unchanged.",
+        "independent_capability_12m": 92,
+        "m24": 60,
+        "m6": 90,
+        "material_support_12m": 63,
+        "technical_financial_support_12m": 85
+      },
+      "limitations": "All four newly admitted source observations are qualified attributed Reuters original reporting; historical original evidence and grades remain frozen. US and Iranian competing claims about the November 13 and November 15 Bahrain drone/radar episodes are not independent physical verification of a US target hit; the incidents cannot be conflated. No independent first-party Bahrain ministry/defence-force original was retained in this source packet. Houthi launch/interception claims do not identify Iranian material-support deliveries. Current original Hanke 30-day rates, consistent parallel FX quotations, and independent essential-import settlement sources were missing, not negated. Source SHA-256 readbacks prove saved bytes, not original remote publisher publication authenticity; the two source-review perspectives were sequential in one ChatGPT session.",
+      "methodology_notes": [
+        "Frozen Protocol v1.0; 12 genuine and independently readback-verified search responses across two passes and six categories, 158 returned result entries and 149 distinct exact URLs, cutoff 2026-11-22T22:24:23.579929Z. Provider total hit estimates not reported. Post-snapshot interval: NOT_SEARCHED.",
+        "Five new narrowly attributed or primary-source observations were inspected and captured in original publisher HTML; two additional original source documents were retained as context. Duplicate wire syndications are not independent claims. Original UKMTO incident identifiers and Qatari signed agreements were not captured.",
+        "V10 source packet and separately authored sequential ChatGPT affirmative then critical source reviews were reconciled at 2026-11-22T22:27:06.186178Z; one session, not two independent models. Five exact visible-text passage witnesses with private source-body SHA256 readbacks support only attributed statements and a directly documented US sanction action.",
+        "Coarse judgmental +3 percentage point regional and +1 external-payments adjustments versus the verified November 15 baseline. Reported ministry statements and publisher clocks are qualified, no missing Hanke/FX/import data are treated as evidence of a stable or worsened threshold. Protected publication requires clean report review and actual validation."
+      ],
+      "methodology_revision_date": "2026-10-18",
+      "metrics": {
+        "china_oil_credit_haircut": 52,
+        "currency_crisis_12m": 80,
+        "energy_stress": "High",
+        "external_payments_crisis_12m": 87,
+        "fx_crisis_12m": 82,
+        "fx_crisis_12m_legacy_composite": true,
+        "hormuz": "New November 21 UKMTO-reported tanker alerts near Khasab have uncertain vessel identity. Bahrain and Iran describe additional military strikes; existing restrictions and limited managed traffic remain, without verified full reopening or independently confirmed tanker count.",
+        "houthi_support_12m": 79,
+        "regime_end_12m": 16,
+        "regional_escalation_90d": 84
+      },
+      "news": [
+        {
+          "date": "2026-11-17",
+          "event_date": "2026-11-17",
+          "impact": "Attributed US strike on Iranian Qeshm missile site and Iran radar-attack claim add confrontation risk, with military damage unverified.",
+          "revision_date": "2026-11-22",
+          "revision_type": "New event",
+          "title": "Reuters reports US-Iran exchanges near Qeshm amid Oman and Qatar contacts",
+          "type": "Military / diplomacy",
+          "url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/"
+        },
+        {
+          "date": "2026-11-20",
+          "event_date": "2026-11-20",
+          "impact": "Official US designations affect named oil-linked intermediaries, with Iranian macro revenue loss unquantified.",
+          "revision_date": "2026-11-22",
+          "revision_type": "New event",
+          "title": "US Treasury targets Iran oil-trustee networks",
+          "type": "Sanctions / oil finance",
+          "url": "https://home.treasury.gov/news/press-releases/sb0697"
+        },
+        {
+          "date": "2026-11-21",
+          "event_date": "2026-11-21",
+          "impact": "Bahrain-reported industrial facility fire and injuries raise regional military risk, with IRGC claimed US target damage not independently verified.",
+          "revision_date": "2026-11-22",
+          "revision_type": "New event",
+          "title": "Bahrain reports Iranian strikes on industrial site and interceptions",
+          "type": "Regional military",
+          "url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/"
+        },
+        {
+          "date": "2026-11-21",
+          "event_date": "2026-11-21",
+          "impact": "Two UKMTO tanker alerts support elevated maritime risk but whether they refer to the same vessel is not established.",
+          "revision_date": "2026-11-22",
+          "revision_type": "New event",
+          "title": "UKMTO reports tanker projectile incidents near Khasab",
+          "type": "Maritime / Hormuz",
+          "url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+        },
+        {
+          "date": "2026-11-21",
+          "event_date": "2026-11-20",
+          "impact": "A Qatari delegation was reportedly in Tehran, a limited diplomatic stabilizer without a binding accord.",
+          "revision_date": "2026-11-22",
+          "revision_type": "New event",
+          "title": "Reuters reports Qatar-Iran mediation contact",
+          "type": "Diplomacy / regional stabilizer",
+          "url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/"
+        }
+      ],
+      "next_scheduled_update": "2026-11-29T09:00:00-05:00",
+      "next_threshold": "Sustained major regional escalation: Sustained major interstate strikes lasting at least 72 hours, or a material expansion of major combat to an additional sovereign state or operational theater. Isolated interceptions, one-off strikes, proxy attacks, and rhetoric alone are excluded unless they initiate the qualifying sustained episode.\n\nRegime-ending transition: Replacement of the Islamic Republic's governing constitutional-institutional order, or loss of its effective national governing authority. Leadership succession, cabinet changes, and factional turnover within the same governing order are excluded.\n\nCurrency crisis: Depreciation of the parallel-market rial by at least 25% against the U.S. dollar over any rolling 30-calendar-day window, using the designated consistent parallel-rate series and excluding a single-day quote anomaly that reverses within 48 hours.\n\nExternal-payments crisis: Corroborated settlement disruption lasting at least 14 days in at least two essential-import categories—food or grain, medicine or medical inputs, or critical energy or industrial inputs—combined with broad emergency foreign-exchange, import, or payment restrictions or a material shift by suppliers to prepayment or cash because established settlement channels are failing. Evidence must come from at least two independent source streams.",
+      "political": [
+        {
+          "name": "Hardline/security continuity",
+          "p": 53
+        },
+        {
+          "name": "Continuity + external stabilization",
+          "p": 14
+        },
+        {
+          "name": "Major internal reconfiguration",
+          "p": 17
+        },
+        {
+          "name": "Regime-ending transition",
+          "p": 16
+        }
+      ],
+      "political_resolution_note": "The scored 16% governing-order replacement outcome requires a fundamental constitutional-institutional transition or loss of central effective national governing power, not succession or routine faction reshuffling. Unscored political scenarios retain 53/14/17/16.",
+      "protocol_version": "1.0",
+      "protocol_version_for_assessment": "v1.0",
+      "publication_time": "2026-11-22T17:31:05.786120-05:00",
+      "regional": [
+        {
+          "name": "Negotiated de-escalation / partial reopening",
+          "p": 6
+        },
+        {
+          "name": "Prolonged militarized standoff",
+          "p": 10
+        },
+        {
+          "name": "Wider regional escalation",
+          "p": 84
+        }
+      ],
+      "regional_resolution_note": "Regional scenario weights 7/14/79 sum to 100, but are judgmental partitions, not a separate fifth scored event. The actual 79% Protocol-v1 target requires 72 hours of major interstate strikes or an additional sovereign operational theater; isolated ships and talks do not resolve it.",
+      "revision_attribution": [
+        {
+          "contributions": [
+            {
+              "evidence_ids": [
+                "E-20261122-REU17-EXCHANGE"
+              ],
+              "label": "Reported November 17 US-Iran exchanges near Qeshm; military effects disputed",
+              "pp": 1
+            },
+            {
+              "evidence_ids": [
+                "E-20261122-REU21-BAHRAIN"
+              ],
+              "label": "Bahrain-reported November 21 Iranian attacks, civilian facility fire and injuries with military target damage unverified",
+              "pp": 2
+            },
+            {
+              "evidence_ids": [
+                "E-20261122-REU21-KHASAB"
+              ],
+              "label": "UKMTO tanker warning reports near Khasab with distinct-vessel identity uncertain",
+              "pp": 1
+            },
+            {
+              "evidence_ids": [
+                "E-20261122-REU21-QATAR"
+              ],
+              "label": "Qatar mediation contacts publicly attributed to an Iranian deputy foreign minister, without implemented ceasefire",
+              "pp": -1
+            }
+          ],
+          "event_id": "regional_escalation_90d",
+          "new_p": 84,
+          "prior_p": 81,
+          "residual_pp": 0
+        },
+        {
+          "contributions": [],
+          "event_id": "regime_end_12m",
+          "new_p": 16,
+          "prior_p": 16,
+          "residual_pp": 0
+        },
+        {
+          "contributions": [],
+          "event_id": "currency_crisis_12m",
+          "new_p": 80,
+          "prior_p": 80,
+          "residual_pp": 0
+        },
+        {
+          "contributions": [
+            {
+              "evidence_ids": [
+                "E-20261122-TREASURY20-OIL"
+              ],
+              "label": "Dated US Treasury oil-trustee sanctions modestly increase payment-channel risk without proving realized oil losses",
+              "pp": 1
+            }
+          ],
+          "event_id": "external_payments_crisis_12m",
+          "new_p": 87,
+          "prior_p": 86,
+          "residual_pp": 0
+        }
+      ],
+      "revision_attribution_status": "Prospective frozen Protocol v1 signed coarse judgmental contributions; no unsupported exact causal calibration is implied.",
+      "social_summary": "Regional 84%; regime 16%; FX 80%; payments 87%.",
+      "stabilizer": "Iranian and Qatari officials reportedly remained in talks on November 20 and earlier held exchanges with Oman. Diplomatic contact is real reporting but not an independently verified ceasefire or reopened Hormuz.",
+      "status": {
+        "china": "red",
+        "energy": "red",
+        "fx": "red",
+        "hormuz": "red",
+        "houthi": "red",
+        "regime": "amber",
+        "regional": "red"
+      },
+      "summary": "Renewed Bahraini and maritime attack reports increased judged major regional escalation risk, while Qatar/Oman mediation continued without an implemented ceasefire. A dated US Treasury oil-network sanction adds modest external-payment pressure. No independently verified new Iranian internal command fracture, consistent 30-day rial quotes or two-category 14-day import settlement data met the source standards.",
+      "warning": {
+        "Banking / payments": {
+          "coverage": "Low",
+          "direction": "up",
+          "level": "warning-level",
+          "role": "leading/coincident",
+          "text": "New US oil-network sanctions affect identified trustees but do not establish realized 14-day settlement failures across two essential-import categories or two independent primary streams."
+        },
+        "Coercive apparatus": {
+          "coverage": "Low",
+          "direction": "flat",
+          "level": "unknown",
+          "role": "leading/coincident",
+          "text": "No new contemporaneous primary command cohesion or security-force pay/refusal measure; do not interpret absence of sources as affirmation of coercive stability."
+        },
+        "Elite cohesion": {
+          "coverage": "Medium",
+          "direction": "flat",
+          "level": "watch",
+          "role": "leading/coincident",
+          "text": "No current independently authenticated national elite split, rival constitutional governing authority or security-unit national defection. Coverage is incomplete."
+        },
+        "Energy / industrial": {
+          "coverage": "Low",
+          "direction": "up",
+          "level": "warning-level",
+          "role": "leading/coincident",
+          "text": "Hormuz tanker alerts and military pressures remain serious; no direct current nationwide fuel-output, electricity, logistics or Iranian industrial shutdown denominator was verified."
+        },
+        "External support": {
+          "coverage": "Low",
+          "direction": "flat",
+          "level": "watch",
+          "role": "leading/coincident",
+          "text": "Treasury designations add sanctions pressure to external Iranian oil-related payment networks; independent replacement-credit, China payment or shipment volumes were not observed."
+        },
+        "Fiscal": {
+          "coverage": "Low",
+          "direction": "flat",
+          "level": "warning-level",
+          "role": "leading/coincident",
+          "text": "New U.S. sanctions targeted named Iranian oil intermediaries; fiscal receipts and Iranian priority-payment arrears are not independently measured."
+        },
+        "Food / medicine": {
+          "coverage": "Low",
+          "direction": "flat",
+          "level": "warning-level",
+          "role": "leading/coincident",
+          "text": "No new primary food/medicine settlement or inventory denominator; previously documented stress remains contextual, not a current two-category payment event."
+        },
+        "Monetary / FX": {
+          "coverage": "Low",
+          "direction": "flat",
+          "level": "warning-level",
+          "role": "leading/coincident",
+          "text": "No new consistent 30-day parallel-rial series, Hanke monthly inflation observation or independently verified FX intervention result; historical pressure retained with low current coverage."
+        },
+        "Social / protest": {
+          "coverage": "Low",
+          "direction": "flat",
+          "level": "watch",
+          "role": "leading/coincident",
+          "text": "No newly admitted first-party nationwide coordinated protest incidence; missing or suppressed reporting is not evidence of calm."
+        }
+      },
+      "what_changed": "Compared with November 15, November 17 US-Iran fire was reported near Qeshm with conflicting military effects; November 20 US Treasury designated Iranian oil trustees; November 21 Bahrain reported Iranian attacks on a civilian industrial facility, UKMTO reported uncertain-identity tanker incidents near Khasab, and Iranian officials described Qatar mediation. All claims retain source-chain and denominator limits."
     }
   ]
 }

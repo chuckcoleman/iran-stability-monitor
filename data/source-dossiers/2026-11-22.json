@@ -1,0 +1,1302 @@
+{
+  "affirmative_source_review": {
+    "approved": true,
+    "audit_integrity_review": {
+      "assessment": "I reviewed all twelve actual pre-cutoff Firecrawl query receipts across six classes and seven selected first-party publisher bodies or official sources; the original bodies support only narrow attributed reports and one Treasury action.",
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "limitations": "The actual original publisher first-release clocks and transport authenticity are not signed, the original UKMTO vessel IDs and a separate Bahraini physical-damage survey remain absent, and the six-category search is bounded rather than exhaustive.",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "post_snapshot_search": "NOT_SEARCHED",
+      "research_as_of": "2026-11-22T22:24:23.579929Z",
+      "source_count": 7
+    },
+    "claim_reliability_reviews": [
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU17-EXCHANGE",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "Reuters describes the November 17 US missile-site strike as an attributed US military official account alongside Iranian assertions and denials; it is contemporaneous original reporting of competing descriptions. The original article is editorially authored and cited as a single chain, not source-location-only evidence."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU21-BAHRAIN",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "Reuters reproduces a dated Bahraini Interior Ministry statement about a civilian industrial-site fire and separately records the IRGC claim of striking US positions, without endorsing military success. The original article is editorially authored and cited as a single chain, not source-location-only evidence."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU21-KHASAB",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "The original Reuters article explicitly distinguishes two UKMTO alert descriptions, records separate positions near Khasab and warns that the vessel identities may coincide; it supplies a narrow maritime-risk signal. The original article is editorially authored and cited as a single chain, not source-location-only evidence."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU21-QATAR",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "Reuters gives a dated Iranian official statement that Qatari visitors had held talks and contacts continued, a separate stabilizing lead contemporaneous with fighting and shipping attacks. The original article is editorially authored and cited as a single chain, not source-location-only evidence."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261122-TREASURY20-OIL",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://home.treasury.gov/news/press-releases/sb0697",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "The dated first-party Treasury release states the targeted oil-trustee designations and specifies executive-order authorities; the issuance of U.S. sanctions is directly observable from an official primary document. The original article is editorially authored and cited as a single chain, not source-location-only evidence."
+      }
+    ],
+    "issues": [],
+    "promising_followup_reviews": [
+      {
+        "approved": true,
+        "assessment": "Reuters describes the November 17 US missile-site strike as an attributed US military official account alongside Iranian assertions and denials; it is contemporaneous original reporting of competing descriptions. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "0eab935c2652d8234d5316476ccf7ba5120fd9ca35662b0117ed4040fba00911",
+        "limitations": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Reuters reproduces a dated Bahraini Interior Ministry statement about a civilian industrial-site fire and separately records the IRGC claim of striking US positions, without endorsing military success. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "383b04b93a9832a34abaa537d5bbfb04ed0e82a801e919c0b05f8353bc35e2d8",
+        "limitations": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "The original Reuters article explicitly distinguishes two UKMTO alert descriptions, records separate positions near Khasab and warns that the vessel identities may coincide; it supplies a narrow maritime-risk signal. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "359ca5ce1478bc1a7597a8edf94e23e16027e9d5193a3a0f49c9dc3e729d6c82",
+        "limitations": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Reuters gives a dated Iranian official statement that Qatari visitors had held talks and contacts continued, a separate stabilizing lead contemporaneous with fighting and shipping attacks. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "d7c886fc815435a590847d6321f5101707d94f2ca0c78c4ac2f8743a4c2b53e9",
+        "limitations": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "The dated first-party Treasury release states the targeted oil-trustee designations and specifies executive-order authorities; the issuance of U.S. sanctions is directly observable from an official primary document. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "d761f0ff50641d0d7403dd23de413a33211a43e234d1431ac95cc925352bb25e",
+        "limitations": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://home.treasury.gov/news/press-releases/sb0697",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "e61a896b18a0a2e4d27291ed4048df6e73c685085b3b6047cd391d0acf966dc5",
+        "limitations": "Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "efc14a4d28f115fef63bdfb16a5540bf827b6cee1a6a2f8a304f0a3c50a1f825",
+        "limitations": "The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://vienna.usmission.gov/joint-statement-agenda-item-3f-iaea-board-of-governors-meeting-november-2026/",
+        "triage": "context_only"
+      }
+    ],
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261122-REU17-EXCHANGE",
+        "E-20261122-REU21-BAHRAIN",
+        "E-20261122-REU21-KHASAB",
+        "E-20261122-REU21-QATAR",
+        "E-20261122-TREASURY20-OIL"
+      ],
+      "assessment": "Five narrow current original-source observations support a qualified prospective assessment of increased maritime and military risk with continued mediation and new US oil-linked sanctions. This does not establish any frozen resolution threshold.",
+      "conclusion": "supported_limited_inference",
+      "limitations": "The reports do not independently resolve the required 72-hour sustained escalation event, verify distinct tankers or mine attribution, measure current parallel-rial depreciation over 30 days or prove 14-day settlement disruption in two essential-import categories.",
+      "observation_count": 5
+    },
+    "source_query_balance_review": {
+      "ambiguous_queries": [
+        "Iran November 2026 rial foreign exchange inflation Hanke oil exports China crude payments humanitarian food medicine"
+      ],
+      "assessment": "I compared the Gulf attack queries against separate Qatar/Oman diplomatic de-escalation and possible negotiated corridors questions, while retaining missing macro-series as unknown.",
+      "lowers_queries": [
+        "Oman Qatar Iran November 2026 mediation maritime corridors restraint US talks Reuters",
+        "International Crisis Group Hormuz trigger November 2026 diplomacy MEI escalation ceasefire"
+      ],
+      "raises_queries": [
+        "Iran November 22 2026 Reuters AP AFP US Iran talks mediation pause strikes Bahrain Hormuz",
+        "UKMTO Khasab November 21 2026 two tanker incidents projectile mines ship identity",
+        "Iran rial November 2026 oil revenue US Treasury sanctions Hanke parallel exchange rate food medicine"
+      ]
+    },
+    "source_reviews": [
+      {
+        "access_stage_assessment": "Original URL search stage was accessible_reported; separately captured HTTP 200 metadata and complete original page are recorded, and neither source snippet nor metadata alone is treated as event or publication-time proof.",
+        "assessment": "Reuters describes the November 17 US missile-site strike as an attributed US military official account alongside Iranian assertions and denials; it is contemporaneous original reporting of competing descriptions. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/"
+      },
+      {
+        "access_stage_assessment": "Original URL search stage was accessible_reported; separately captured HTTP 200 metadata and complete original page are recorded, and neither source snippet nor metadata alone is treated as event or publication-time proof.",
+        "assessment": "Reuters reproduces a dated Bahraini Interior Ministry statement about a civilian industrial-site fire and separately records the IRGC claim of striking US positions, without endorsing military success. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/"
+      },
+      {
+        "access_stage_assessment": "Original URL search stage was accessible_reported; separately captured HTTP 200 metadata and complete original page are recorded, and neither source snippet nor metadata alone is treated as event or publication-time proof.",
+        "assessment": "The original Reuters article explicitly distinguishes two UKMTO alert descriptions, records separate positions near Khasab and warns that the vessel identities may coincide; it supplies a narrow maritime-risk signal. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+      },
+      {
+        "access_stage_assessment": "Original URL search stage was not_searched; separately captured HTTP 200 metadata and complete original page are recorded, and neither source snippet nor metadata alone is treated as event or publication-time proof.",
+        "assessment": "Reuters gives a dated Iranian official statement that Qatari visitors had held talks and contacts continued, a separate stabilizing lead contemporaneous with fighting and shipping attacks. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/"
+      },
+      {
+        "access_stage_assessment": "Original URL search stage was not_searched; separately captured HTTP 200 metadata and complete original page are recorded, and neither source snippet nor metadata alone is treated as event or publication-time proof.",
+        "assessment": "The dated first-party Treasury release states the targeted oil-trustee designations and specifies executive-order authorities; the issuance of U.S. sanctions is directly observable from an official primary document. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://home.treasury.gov/news/press-releases/sb0697"
+      },
+      {
+        "access_stage_assessment": "Original URL search stage was accessible_reported; separately captured HTTP 200 metadata and complete original page are recorded, and neither source snippet nor metadata alone is treated as event or publication-time proof.",
+        "assessment": "Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/"
+      },
+      {
+        "access_stage_assessment": "Original URL search stage was accessible_reported; separately captured HTTP 200 metadata and complete original page are recorded, and neither source snippet nor metadata alone is treated as event or publication-time proof.",
+        "assessment": "The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold. Full publisher HTML and precise pre-cutoff capture time were separately reviewed; official claims are presented as attributed rather than adjudicated fact.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://vienna.usmission.gov/joint-statement-agenda-item-3f-iaea-board-of-governors-meeting-november-2026/"
+      }
+    ]
+  },
+  "baseline_sha256": "ec74495616a8dba3b784cbea550acc7896574d7a1a471b0ef14c7e88b81b02fb",
+  "candidate_sha256": "7b65a9298e8b684b9ff28cdab5a2f56e1a67093c8d753805005fce01410b485c",
+  "claim_reliability": [
+    {
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "evidence_id": "E-20261122-REU17-EXCHANGE",
+      "factual_reliability": "Medium",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "evidence_id": "E-20261122-REU21-BAHRAIN",
+      "factual_reliability": "Medium",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "evidence_id": "E-20261122-REU21-KHASAB",
+      "factual_reliability": "Medium",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium",
+      "critical_original_grade": "Medium",
+      "evidence_id": "E-20261122-REU21-QATAR",
+      "factual_reliability": "Medium",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    },
+    {
+      "affirmative_original_grade": "Medium-high",
+      "critical_original_grade": "Medium-high",
+      "evidence_id": "E-20261122-TREASURY20-OIL",
+      "factual_reliability": "Medium-high",
+      "independently_confirmed_claim_ids": [],
+      "publication": "NOT AUTHORIZED",
+      "review_status": "TWO_PERSPECTIVES_NOT_INDEPENDENT_MODEL_INSTANCES",
+      "source_confidence_not_geopolitical_effect": true,
+      "stability_direction_confidence": "qualified"
+    }
+  ],
+  "coverage": [
+    {
+      "category": "primary_data",
+      "limitations": "Dated official Treasury and US diplomatic originals were inspected; both are interested policy communications, and the direct International Atomic Energy Agency independent findings and Bahrain issuing-agency records were not separately captured.",
+      "original_urls": [
+        "https://home.treasury.gov/news/press-releases/sb0697",
+        "https://vienna.usmission.gov/joint-statement-agenda-item-3f-iaea-board-of-governors-meeting-november-2026/"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "Iran Bahrain November 22 2026 IAEA UN official military statements strikes nuclear talks sanctions",
+        "UN Security Council Bahrain Kuwait Iran November 2026 US mission IAEA official statement"
+      ]
+    },
+    {
+      "category": "international_media",
+      "limitations": "Five Reuters originals were captured; reports contain official quotations and one shared Reuters upstream. Bahrainian damage, vessel identities and actual mediation concessions lack independent first-party corroboration.",
+      "original_urls": [
+        "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+        "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+        "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+        "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+        "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "Iran November 22 2026 Reuters AP AFP US Iran talks mediation pause strikes Bahrain Hormuz",
+        "Oman Qatar Iran November 2026 mediation maritime corridors restraint US talks Reuters"
+      ]
+    },
+    {
+      "category": "regional_multilingual_media",
+      "limitations": "Arabic search results and a Qatar mediation topic were identified, but no separate native-language original claim-bearing publisher body was retained for qualified factual admission; do not count Reuters as a distinct regional-language reporting chain.",
+      "original_urls": [],
+      "outcome": "searched_no_eligible_evidence",
+      "queries": [
+        "Iran 22 November 2026 Gulf Arabic Persian Turkish regional diplomatic mediation Bahrain oil maritime strikes",
+        "مفاوضات قطر إيران وساطة الخليج وقف التصعيد نوفمبر ٢٠٢٦ البحرين"
+      ]
+    },
+    {
+      "category": "specialist_investigative",
+      "limitations": "The UKMTO attributed maritime reporting was preserved via Reuters original; individual UKMTO alert IDs, vessel IMO identifiers and same-vessel deduplication were not independently established.",
+      "original_urls": [
+        "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "Iran Hormuz November 2026 UKMTO IMO tanker incidents maritime verification satellite strikes mines ship identity",
+        "UKMTO Khasab November 21 2026 two tanker incidents projectile mines ship identity"
+      ]
+    },
+    {
+      "category": "think_tanks",
+      "limitations": "Think-tank search was executed with targeted de-escalation follow-up, but identified analytical pages or event descriptions were not separately captured as new contemporaneous first-party facts.",
+      "original_urls": [],
+      "outcome": "searched_no_eligible_evidence",
+      "queries": [
+        "Iran November 2026 International Crisis Group Chatham House IISS diplomatic mediation war escalation sanctions stabilizers",
+        "International Crisis Group Hormuz trigger November 2026 diplomacy MEI escalation ceasefire"
+      ]
+    },
+    {
+      "category": "economic_humanitarian_academic",
+      "limitations": "Sanctions issuance was documented by Treasury and Reuters from the same upstream. No consistent current parallel-rial rate series, Hanke 30-day measured inflation, Chinese oil-credit cash-flow evidence, or two independent essential-import settlement disruption streams were verified.",
+      "original_urls": [
+        "https://home.treasury.gov/news/press-releases/sb0697",
+        "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/"
+      ],
+      "outcome": "eligible_reporting_found",
+      "queries": [
+        "Iran November 2026 rial foreign exchange inflation Hanke oil exports China crude payments humanitarian food medicine",
+        "Iran rial November 2026 oil revenue US Treasury sanctions Hanke parallel exchange rate food medicine"
+      ]
+    }
+  ],
+  "critical_source_review": {
+    "approved": true,
+    "audit_integrity_review": {
+      "assessment": "I challenged two-pass completeness, zero/weak regional-language returns, repeated Reuters chains, maritime incident duplication and missing Hanke/FX/payment denominators; these gaps prevent overconfident claims or scores.",
+      "audit_status": "complete_with_disclosed_limitations",
+      "coverage_categories": [
+        "economic_humanitarian_academic",
+        "international_media",
+        "primary_data",
+        "regional_multilingual_media",
+        "specialist_investigative",
+        "think_tanks"
+      ],
+      "first_publication_verified": false,
+      "historical_context_is_current_evidence": false,
+      "limitations": "The actual original publisher first-release clocks and transport authenticity are not signed, the original UKMTO vessel IDs and a separate Bahraini physical-damage survey remain absent, and the six-category search is bounded rather than exhaustive.",
+      "metadata_access_scope": "metadata_only_not_full_article",
+      "post_snapshot_search": "NOT_SEARCHED",
+      "research_as_of": "2026-11-22T22:24:23.579929Z",
+      "source_count": 7
+    },
+    "claim_reliability_reviews": [
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU17-EXCHANGE",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "Reuters describes the November 17 US missile-site strike as an attributed US military official account alongside Iranian assertions and denials; it is contemporaneous original reporting of competing descriptions. I make the conservative distinction between publishing the document and proving the underlying claims."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU21-BAHRAIN",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "Reuters reproduces a dated Bahraini Interior Ministry statement about a civilian industrial-site fire and separately records the IRGC claim of striking US positions, without endorsing military success. I make the conservative distinction between publishing the document and proving the underlying claims."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU21-KHASAB",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "The original Reuters article explicitly distinguishes two UKMTO alert descriptions, records separate positions near Khasab and warns that the vessel identities may coincide; it supplies a narrow maritime-risk signal. I make the conservative distinction between publishing the document and proving the underlying claims."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "addressed_with_qualification",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "firsthand_original_reporting",
+        "evidence_id": "E-20261122-REU21-QATAR",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium",
+        "independent_confirmation_ids": [],
+        "original_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+        "source_quality": "attributed_edited_original",
+        "source_quality_assessment": "Reuters gives a dated Iranian official statement that Qatari visitors had held talks and contacts continued, a separate stabilizing lead contemporaneous with fighting and shipping attacks. I make the conservative distinction between publishing the document and proving the underlying claims."
+      },
+      {
+        "claim_match_independently_reviewed": false,
+        "contradiction_assessment": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. The alternative military, diplomatic, or economic explanation remains disclosed and prevents stronger causal certainty.",
+        "contradiction_status": "none_identified",
+        "corroboration_assessment": "No second separately captured, claim-matched original reporting chain was authenticated for this narrowly described claim; related Reuters reprints and statements reporting a common government announcement are not independent observations.",
+        "direction_confidence": "qualified",
+        "directness": "primary_measurement_or_document",
+        "evidence_id": "E-20261122-TREASURY20-OIL",
+        "exact_passage_witness": true,
+        "factual_reliability": "Medium-high",
+        "independent_confirmation_ids": [],
+        "original_url": "https://home.treasury.gov/news/press-releases/sb0697",
+        "source_quality": "documented_original_method",
+        "source_quality_assessment": "The dated first-party Treasury release states the targeted oil-trustee designations and specifies executive-order authorities; the issuance of U.S. sanctions is directly observable from an official primary document. I make the conservative distinction between publishing the document and proving the underlying claims."
+      }
+    ],
+    "issues": [],
+    "promising_followup_reviews": [
+      {
+        "approved": true,
+        "assessment": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "0eab935c2652d8234d5316476ccf7ba5120fd9ca35662b0117ed4040fba00911",
+        "limitations": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "383b04b93a9832a34abaa537d5bbfb04ed0e82a801e919c0b05f8353bc35e2d8",
+        "limitations": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "359ca5ce1478bc1a7597a8edf94e23e16027e9d5193a3a0f49c9dc3e729d6c82",
+        "limitations": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "d7c886fc815435a590847d6321f5101707d94f2ca0c78c4ac2f8743a4c2b53e9",
+        "limitations": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "ready_for_v10_source_review",
+        "issues": [],
+        "lead_sha256": "d761f0ff50641d0d7403dd23de413a33211a43e234d1431ac95cc925352bb25e",
+        "limitations": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://home.treasury.gov/news/press-releases/sb0697",
+        "triage": "promising"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical evaluation: Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "e61a896b18a0a2e4d27291ed4048df6e73c685085b3b6047cd391d0acf966dc5",
+        "limitations": "Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/",
+        "triage": "context_only"
+      },
+      {
+        "approved": true,
+        "assessment": "Critical evaluation: The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects. This lead has a unique reviewed source ID and recorded source-chain status.",
+        "disposition": "context_only",
+        "issues": [],
+        "lead_sha256": "efc14a4d28f115fef63bdfb16a5540bf827b6cee1a6a2f8a304f0a3c50a1f825",
+        "limitations": "The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold. No assumed causal, event-resolution or independent corroboration status is upgraded merely by presence of a publisher URL.",
+        "source_url": "https://vienna.usmission.gov/joint-statement-agenda-item-3f-iaea-board-of-governors-meeting-november-2026/",
+        "triage": "context_only"
+      }
+    ],
+    "source_adequacy_review": {
+      "admitted_evidence_ids": [
+        "E-20261122-REU17-EXCHANGE",
+        "E-20261122-REU21-BAHRAIN",
+        "E-20261122-REU21-KHASAB",
+        "E-20261122-REU21-QATAR",
+        "E-20261122-TREASURY20-OIL"
+      ],
+      "assessment": "I rejected stronger uncorroborated event claims and limited the review to attributed Reuters reports, an official sanctions announcement and a documented diplomatic visit; opposed accounts remain explicit.",
+      "conclusion": "supported_limited_inference",
+      "limitations": "The reports do not independently resolve the required 72-hour sustained escalation event, verify distinct tankers or mine attribution, measure current parallel-rial depreciation over 30 days or prove 14-day settlement disruption in two essential-import categories.",
+      "observation_count": 5
+    },
+    "source_query_balance_review": {
+      "ambiguous_queries": [
+        "Iran November 2026 rial foreign exchange inflation Hanke oil exports China crude payments humanitarian food medicine"
+      ],
+      "assessment": "I tested whether threat-only queries overweight the recent conflict and checked distinct mediation/stabilizer queries, discounted recycled Reuters statements and declined to infer stability from missing economic data.",
+      "lowers_queries": [
+        "Oman Qatar Iran November 2026 mediation maritime corridors restraint US talks Reuters",
+        "International Crisis Group Hormuz trigger November 2026 diplomacy MEI escalation ceasefire"
+      ],
+      "raises_queries": [
+        "Iran November 22 2026 Reuters AP AFP US Iran talks mediation pause strikes Bahrain Hormuz",
+        "UKMTO Khasab November 21 2026 two tanker incidents projectile mines ship identity",
+        "Iran rial November 2026 oil revenue US Treasury sanctions Hanke parallel exchange rate food medicine"
+      ]
+    },
+    "source_reviews": [
+      {
+        "access_stage_assessment": "I challenged search/metadata/body conflation: the returned web lead, an HTTP 200 response, and the visible claim-bearing publisher body are separate stages, with first-publication time and independently corroborated physical effects unverified.",
+        "assessment": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/"
+      },
+      {
+        "access_stage_assessment": "I challenged search/metadata/body conflation: the returned web lead, an HTTP 200 response, and the visible claim-bearing publisher body are separate stages, with first-publication time and independently corroborated physical effects unverified.",
+        "assessment": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/"
+      },
+      {
+        "access_stage_assessment": "I challenged search/metadata/body conflation: the returned web lead, an HTTP 200 response, and the visible claim-bearing publisher body are separate stages, with first-publication time and independently corroborated physical effects unverified.",
+        "assessment": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+      },
+      {
+        "access_stage_assessment": "I challenged search/metadata/body conflation: the returned web lead, an HTTP 200 response, and the visible claim-bearing publisher body are separate stages, with first-publication time and independently corroborated physical effects unverified.",
+        "assessment": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/"
+      },
+      {
+        "access_stage_assessment": "I challenged search/metadata/body conflation: the returned web lead, an HTTP 200 response, and the visible claim-bearing publisher body are separate stages, with first-publication time and independently corroborated physical effects unverified.",
+        "assessment": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects.",
+        "disposition": "supported_as_qualified",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://home.treasury.gov/news/press-releases/sb0697"
+      },
+      {
+        "access_stage_assessment": "I challenged search/metadata/body conflation: the returned web lead, an HTTP 200 response, and the visible claim-bearing publisher body are separate stages, with first-publication time and independently corroborated physical effects unverified.",
+        "assessment": "Critical evaluation: Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/"
+      },
+      {
+        "access_stage_assessment": "I challenged search/metadata/body conflation: the returned web lead, an HTTP 200 response, and the visible claim-bearing publisher body are separate stages, with first-publication time and independently corroborated physical effects unverified.",
+        "assessment": "Critical evaluation: The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold. A direct publisher response and its date metadata cannot establish an independent evidence stream, unaffected authenticity or the truth of military/economic effects.",
+        "disposition": "background_only",
+        "same_stage_conflicts_resolved": true,
+        "url": "https://vienna.usmission.gov/joint-statement-agenda-item-3f-iaea-board-of-governors-meeting-november-2026/"
+      }
+    ]
+  },
+  "mode": "chatgpt_first_no_api",
+  "post_snapshot_interval": "NOT_SEARCHED",
+  "preforecast_certificate": {
+    "affirmative_source_review_sha256": "0c2bd62546f8281a89d64015195527878cfafe5a2c92b3bab37faa32cd3e09bb",
+    "baseline_sha256": "ec74495616a8dba3b784cbea550acc7896574d7a1a471b0ef14c7e88b81b02fb",
+    "claim_reliability_sha256": "3e1851a4fb13a8d691523d8aeda96ca7a2857860fdd4019e5725bcae02bf4167",
+    "critical_source_review_sha256": "9f927c3fee1c802165ce99518f6c0c906d82767855903442bfcc511b7ca7c340",
+    "research_as_of": "2026-11-22T22:24:23.579929Z",
+    "source_packet_sha256": "11c627cd07f5908baa1d33b094c7cff5bbe499f7be0cf35a251232ceca9e536d",
+    "source_review_completed_at": "2026-11-22T22:27:06.186178Z",
+    "status": "DUAL_SOURCE_REVIEW_CLEAN_LIMITED_INFERENCE",
+    "version": 1
+  },
+  "provenance_limitations": "Actual two-pass web searches and original-page content were saved with complete private Google Drive readbacks and reproducible SHA256; this is not authenticated publisher network-wire provenance, exact first publication-time proof, independent dual model review or independent physical corroboration. Maritime vessel identity, currency denomination and import-payment denominator remain limited.",
+  "research_as_of": "2026-11-22T22:24:23.579929Z",
+  "research_provenance": "CHATGPT_RESEARCH_REPORTED_NOT_API_WEB_SEARCH_TRACE",
+  "source_review_completed_at": "2026-11-22T22:27:06.186178Z",
+  "source_review_packet": {
+    "evidence": [
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Military / Oman and Gulf",
+        "date": "2026-11-22",
+        "direction": "raises",
+        "event_date": "2026-11-17",
+        "evidence_status": "new",
+        "id": "E-20261122-REU17-EXCHANGE",
+        "impact_magnitude": "moderate",
+        "observation": "Reuters reported that US aircraft struck an Iranian missile-launch site on Qeshm on November 17 after an Iranian claim of striking a Bahrain radar system; US and Iranian officials disagreed on effects. The report establishes attributed accounts of exchanges, not verified target damage or fulfillment of the 72-hour Protocol v1 threshold.",
+        "publisher": "Reuters",
+        "reliability": "Medium",
+        "source": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+        "source_title": "US, Iran exchange fire despite talks with mediators | Reuters"
+      },
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Military / Bahrain",
+        "date": "2026-11-22",
+        "direction": "raises",
+        "event_date": "2026-11-21",
+        "evidence_status": "new",
+        "id": "E-20261122-REU21-BAHRAIN",
+        "impact_magnitude": "moderate",
+        "observation": "Reuters original reporting says Bahrain attributed a fire at a civilian industrial facility and two injuries on November 21 to an Iranian attack, and separately reported Iranian Revolutionary Guard claims of targeting US bases. The identity of military targets and actual damage are not independently verified.",
+        "publisher": "Reuters",
+        "reliability": "Medium",
+        "source": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+        "source_title": "Bahrain says Iran strikes industrial facility as air defences intercept attacks | Reuters"
+      },
+      {
+        "affects": [
+          "regional_escalation_90d",
+          "external_payments_crisis_12m"
+        ],
+        "category": "Maritime / Strait of Hormuz",
+        "date": "2026-11-22",
+        "direction": "raises",
+        "event_date": "2026-11-21",
+        "evidence_status": "new",
+        "id": "E-20261122-REU21-KHASAB",
+        "impact_magnitude": "minor",
+        "observation": "Reuters relayed two UKMTO reports on November 21 of projectiles striking tankers near Khasab, but explicitly said it was unclear whether the two alerts concern the same vessel. An Iranian navy claim of a separate mine incident was not independently verified or matched. No distinct-vessel or confirmed-incident count is asserted.",
+        "publisher": "Reuters",
+        "reliability": "Medium",
+        "source": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+        "source_title": "UK maritime agency reports two tanker incidents near Oman; Iran says vessel hit mine east of Hormuz | Reuters"
+      },
+      {
+        "affects": [
+          "regional_escalation_90d"
+        ],
+        "category": "Diplomacy / Qatar mediation",
+        "date": "2026-11-22",
+        "direction": "lowers",
+        "event_date": "2026-11-20",
+        "evidence_status": "new",
+        "id": "E-20261122-REU21-QATAR",
+        "impact_magnitude": "minor",
+        "observation": "Reuters reported on November 21 that an Iranian deputy foreign minister said a Qatari delegation had visited Tehran Friday and contacts with mediators continued. This documents an attributed diplomatic contact, not a ceasefire, accepted agreement or implemented de-escalation.",
+        "publisher": "Reuters",
+        "reliability": "Medium",
+        "source": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+        "source_title": "Qatari delegation visits Tehran for talks, Iranian official says | Reuters"
+      },
+      {
+        "affects": [
+          "external_payments_crisis_12m",
+          "regime_end_12m"
+        ],
+        "category": "Sanctions / Oil revenue",
+        "date": "2026-11-22",
+        "direction": "raises",
+        "event_date": "2026-11-20",
+        "evidence_status": "new",
+        "id": "E-20261122-TREASURY20-OIL",
+        "impact_magnitude": "minor",
+        "observation": "The U.S. Treasury issued a dated November 20 press release designating Iranian oil-trustee networks under stated Executive Order authorities. The official action is directly documented; claimed recovery failures and the economic effect on Iran are unverified policy assertions, not measured losses in export receipts.",
+        "publisher": "U.S. Department of the Treasury",
+        "reliability": "Medium-high",
+        "source": "https://home.treasury.gov/news/press-releases/sb0697",
+        "source_publication_status": "publisher_reported_time_not_first_publication_authenticated",
+        "source_title": "Operation Economic Outcast Targets Corrupt Regime Insiders Exploiting Iran’s Oil Sector for Personal Gain | U.S. Department of the Treasury"
+      }
+    ],
+    "pre_review_admission_version": 7,
+    "pre_review_claim_decisions": [
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+          "original_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+          "passage": "The US and Iran exchanged fire on Tuesday",
+          "passage_offset": 263,
+          "retrieved_at": "2026-11-22T22:13:45.200Z",
+          "source_body_sha256": "e8bb8d8e0c836e8f65940121aa1594ffcfe71a5c35b4c5350614b32bc3e4d22c",
+          "visible_text_sha256": "28c531bb86328d3c6a77fd1a5e7f3d4addaeb331b47b119778fefb6e02821292"
+        },
+        "capture_verification_sha256": "5769379de9f76137e0aae38b88dd5fd7396fa02d40f0a29a0cec8b541e65030d",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261122-REU17-EXCHANGE",
+        "original_passage": "The US and Iran exchanged fire on Tuesday",
+        "original_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "e8bb8d8e0c836e8f65940121aa1594ffcfe71a5c35b4c5350614b32bc3e4d22c"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+          "original_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+          "passage": "Bahrain said an Iranian attack hit a civilian industrial facility",
+          "passage_offset": 19,
+          "retrieved_at": "2026-11-22T22:12:51.277Z",
+          "source_body_sha256": "699abf0a8cbe6d84ab4982ca064717c962c565131f639c31b7ae3bf52972f94f",
+          "visible_text_sha256": "28f5a65613527ac0824fd7a360c066d702b38d6ee72eced74ba8ef98292fd243"
+        },
+        "capture_verification_sha256": "75b27685df621f52ab80a1efb2f6791c82f1bd2210f99326f4f68c07daa85c55",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261122-REU21-BAHRAIN",
+        "original_passage": "Bahrain said an Iranian attack hit a civilian industrial facility",
+        "original_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "699abf0a8cbe6d84ab4982ca064717c962c565131f639c31b7ae3bf52972f94f"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+          "original_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+          "passage": "It was not immediately clear whether the two ​reports involved the same vessel.",
+          "passage_offset": 393,
+          "retrieved_at": "2026-11-22T22:13:22.631Z",
+          "source_body_sha256": "a000c82b2a6ccf0c82434f591dda066f6b81fe4b9156be308200c5016612f1ee",
+          "visible_text_sha256": "e8cfc13d516accf38c19bdfd766df1b490f89c084311b0515f5f46a4a3dc032e"
+        },
+        "capture_verification_sha256": "c10d5c61b9e78d0dae4f5b46305dfb48f7ba07a60b84a2681e080fbd4a0dcc8c",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261122-REU21-KHASAB",
+        "original_passage": "It was not immediately clear whether the two ​reports involved the same vessel.",
+        "original_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "a000c82b2a6ccf0c82434f591dda066f6b81fe4b9156be308200c5016612f1ee"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+          "original_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+          "passage": "A Qatari delegation held talks in Tehran on Friday night",
+          "passage_offset": 19,
+          "retrieved_at": "2026-11-22T22:21:28.538Z",
+          "source_body_sha256": "c928b1d58cbf7e0d700d026d487e631f9b7ad98776a15906a55c54415a6d75df",
+          "visible_text_sha256": "17989292516a5dcf24f81b8b218d028485e9aa6565117426ca64bcde33c4d020"
+        },
+        "capture_verification_sha256": "0a11ac118ee46da283a1e94b46a23907c0f04248abd779b1971f5802d55bbd46",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261122-REU21-QATAR",
+        "original_passage": "A Qatari delegation held talks in Tehran on Friday night",
+        "original_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "c928b1d58cbf7e0d700d026d487e631f9b7ad98776a15906a55c54415a6d75df"
+      },
+      {
+        "capture_verification": {
+          "charset": "utf-8",
+          "content_type": "text/html",
+          "final_url": "https://home.treasury.gov/news/press-releases/sb0697",
+          "original_url": "https://home.treasury.gov/news/press-releases/sb0697",
+          "passage": "the U.S. Department of the Treasury is targeting key “oil trustees”",
+          "passage_offset": 439,
+          "retrieved_at": "2026-11-22T22:17:59.613Z",
+          "source_body_sha256": "5e5359d69b3d1ae2282fd280be2695001b9accb671faface2d08ecb7a4269edb",
+          "visible_text_sha256": "11a94fe9345a9c1a9be669a0bc394a9db9425b20fb773ebcc10966c56086f91c"
+        },
+        "capture_verification_sha256": "ceeeac7c80ce06c902bb22b7893ec111d403208224fcf15016b375c24aa09d54",
+        "decision": "PROVISIONAL_ORIGINAL_OBSERVATION_REQUIRES_DUAL_REVIEW",
+        "id": "E-20261122-TREASURY20-OIL",
+        "original_passage": "the U.S. Department of the Treasury is targeting key “oil trustees”",
+        "original_url": "https://home.treasury.gov/news/press-releases/sb0697",
+        "passage_status": "EXACT_PASSAGE_PRESENT_REVIEW_REQUIRED",
+        "source_body_sha256": "5e5359d69b3d1ae2282fd280be2695001b9accb671faface2d08ecb7a4269edb"
+      }
+    ],
+    "promising_evidence_followup": {
+      "leads": [
+        {
+          "admitted_evidence_ids": [
+            "E-20261122-REU17-EXCHANGE"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/"
+            ],
+            "contrary_source_urls": [],
+            "counter_queries": [
+              "UKMTO Khasab November 21 2026 two tanker incidents projectile mines ship identity"
+            ],
+            "counterevidence_findings": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. Lack of additional claim-matched original witnesses is an explicit uncertainty, not negative evidence.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved. Publisher-controlled release timing is not third-party signed and does not prove the event itself.",
+            "performed_at": "2026-11-22T22:13:45.200Z",
+            "reporting_chain": "Reuters describes the November 17 US missile-site strike as an attributed US military official account alongside Iranian assertions and denials; it is contemporaneous original reporting of competing descriptions. The captured source remains one reporting chain irrespective of syndicated copies.",
+            "scope": {
+              "geography": "Iran, Gulf states and Strait of Hormuz as applicable to the cited original",
+              "method_and_inclusions": "Publisher-original HTML, attributed actor, explicit event chronology, opposing accounts and common-upstream source-chain collapse",
+              "population_or_denominator": "One dated publisher report or official designation; no unsupported national count or duplicate-incident denominator",
+              "time_window": "November 15 to November 22, 2026, with capture before the UTC sealed source cutoff"
+            },
+            "supporting_findings": "Reuters describes the November 17 US missile-site strike as an attributed US military official account alongside Iranian assertions and denials; it is contemporaneous original reporting of competing descriptions. Original source HTML and short exact visible-text excerpt were checked before the cutoff.",
+            "upstream_queries": [
+              "Iran November 22 2026 Reuters AP AFP US Iran talks mediation pause strikes Bahrain Hormuz"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/"
+            ]
+          },
+          "priority": "high",
+          "relevance": "Reuters reported that US aircraft struck an Iranian missile-launch site on Qeshm on November 17 after an Iranian claim of striking a Bahrain radar system; US and Iranian officials disagreed on effects. The report establishes attributed accounts of exchanges, not verified target damage or fulfillment of the 72-hour Protocol v1 threshold. This directly relevant original is evaluated for narrow V10 claim admission rather than treated as proved event resolution.",
+          "source_url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261122-REU21-BAHRAIN"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/"
+            ],
+            "contrary_source_urls": [],
+            "counter_queries": [
+              "UKMTO Khasab November 21 2026 two tanker incidents projectile mines ship identity"
+            ],
+            "counterevidence_findings": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. Lack of additional claim-matched original witnesses is an explicit uncertainty, not negative evidence.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified. Publisher-controlled release timing is not third-party signed and does not prove the event itself.",
+            "performed_at": "2026-11-22T22:12:51.277Z",
+            "reporting_chain": "Reuters reproduces a dated Bahraini Interior Ministry statement about a civilian industrial-site fire and separately records the IRGC claim of striking US positions, without endorsing military success. The captured source remains one reporting chain irrespective of syndicated copies.",
+            "scope": {
+              "geography": "Iran, Gulf states and Strait of Hormuz as applicable to the cited original",
+              "method_and_inclusions": "Publisher-original HTML, attributed actor, explicit event chronology, opposing accounts and common-upstream source-chain collapse",
+              "population_or_denominator": "One dated publisher report or official designation; no unsupported national count or duplicate-incident denominator",
+              "time_window": "November 15 to November 22, 2026, with capture before the UTC sealed source cutoff"
+            },
+            "supporting_findings": "Reuters reproduces a dated Bahraini Interior Ministry statement about a civilian industrial-site fire and separately records the IRGC claim of striking US positions, without endorsing military success. Original source HTML and short exact visible-text excerpt were checked before the cutoff.",
+            "upstream_queries": [
+              "Iran November 22 2026 Reuters AP AFP US Iran talks mediation pause strikes Bahrain Hormuz"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/"
+            ]
+          },
+          "priority": "high",
+          "relevance": "Reuters original reporting says Bahrain attributed a fire at a civilian industrial facility and two injuries on November 21 to an Iranian attack, and separately reported Iranian Revolutionary Guard claims of targeting US bases. The identity of military targets and actual damage are not independently verified. This directly relevant original is evaluated for narrow V10 claim admission rather than treated as proved event resolution.",
+          "source_url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261122-REU21-KHASAB"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+            ],
+            "contrary_source_urls": [],
+            "counter_queries": [
+              "Oman Qatar Iran November 2026 mediation maritime corridors restraint US talks Reuters"
+            ],
+            "counterevidence_findings": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. Lack of additional claim-matched original witnesses is an explicit uncertainty, not negative evidence.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents. Publisher-controlled release timing is not third-party signed and does not prove the event itself.",
+            "performed_at": "2026-11-22T22:13:22.631Z",
+            "reporting_chain": "The original Reuters article explicitly distinguishes two UKMTO alert descriptions, records separate positions near Khasab and warns that the vessel identities may coincide; it supplies a narrow maritime-risk signal. The captured source remains one reporting chain irrespective of syndicated copies.",
+            "scope": {
+              "geography": "Iran, Gulf states and Strait of Hormuz as applicable to the cited original",
+              "method_and_inclusions": "Publisher-original HTML, attributed actor, explicit event chronology, opposing accounts and common-upstream source-chain collapse",
+              "population_or_denominator": "One dated publisher report or official designation; no unsupported national count or duplicate-incident denominator",
+              "time_window": "November 15 to November 22, 2026, with capture before the UTC sealed source cutoff"
+            },
+            "supporting_findings": "The original Reuters article explicitly distinguishes two UKMTO alert descriptions, records separate positions near Khasab and warns that the vessel identities may coincide; it supplies a narrow maritime-risk signal. Original source HTML and short exact visible-text excerpt were checked before the cutoff.",
+            "upstream_queries": [
+              "Iran Hormuz November 2026 UKMTO IMO tanker incidents maritime verification satellite strikes mines ship identity"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+            ]
+          },
+          "priority": "normal",
+          "relevance": "Reuters relayed two UKMTO reports on November 21 of projectiles striking tankers near Khasab, but explicitly said it was unclear whether the two alerts concern the same vessel. An Iranian navy claim of a separate mine incident was not independently verified or matched. No distinct-vessel or confirmed-incident count is asserted. This directly relevant original is evaluated for narrow V10 claim admission rather than treated as proved event resolution.",
+          "source_url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261122-REU21-QATAR"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/"
+            ],
+            "contrary_source_urls": [],
+            "counter_queries": [
+              "International Crisis Group Hormuz trigger November 2026 diplomacy MEI escalation ceasefire"
+            ],
+            "counterevidence_findings": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. Lack of additional claim-matched original witnesses is an explicit uncertainty, not negative evidence.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire. Publisher-controlled release timing is not third-party signed and does not prove the event itself.",
+            "performed_at": "2026-11-22T22:21:28.538Z",
+            "reporting_chain": "Reuters gives a dated Iranian official statement that Qatari visitors had held talks and contacts continued, a separate stabilizing lead contemporaneous with fighting and shipping attacks. The captured source remains one reporting chain irrespective of syndicated copies.",
+            "scope": {
+              "geography": "Iran, Gulf states and Strait of Hormuz as applicable to the cited original",
+              "method_and_inclusions": "Publisher-original HTML, attributed actor, explicit event chronology, opposing accounts and common-upstream source-chain collapse",
+              "population_or_denominator": "One dated publisher report or official designation; no unsupported national count or duplicate-incident denominator",
+              "time_window": "November 15 to November 22, 2026, with capture before the UTC sealed source cutoff"
+            },
+            "supporting_findings": "Reuters gives a dated Iranian official statement that Qatari visitors had held talks and contacts continued, a separate stabilizing lead contemporaneous with fighting and shipping attacks. Original source HTML and short exact visible-text excerpt were checked before the cutoff.",
+            "upstream_queries": [
+              "Oman Qatar Iran November 2026 mediation maritime corridors restraint US talks Reuters"
+            ],
+            "upstream_source_urls": [
+              "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/"
+            ]
+          },
+          "priority": "normal",
+          "relevance": "Reuters reported on November 21 that an Iranian deputy foreign minister said a Qatari delegation had visited Tehran Friday and contacts with mediators continued. This documents an attributed diplomatic contact, not a ceasefire, accepted agreement or implemented de-escalation. This directly relevant original is evaluated for narrow V10 claim admission rather than treated as proved event resolution.",
+          "source_url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [
+            "E-20261122-TREASURY20-OIL"
+          ],
+          "followup": {
+            "checked_urls": [
+              "https://home.treasury.gov/news/press-releases/sb0697"
+            ],
+            "contrary_source_urls": [],
+            "counter_queries": [
+              "Oman Qatar Iran November 2026 mediation maritime corridors restraint US talks Reuters"
+            ],
+            "counterevidence_findings": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. Lack of additional claim-matched original witnesses is an explicit uncertainty, not negative evidence.",
+            "disposition": "ready_for_v10_source_review",
+            "limitations": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold. Publisher-controlled release timing is not third-party signed and does not prove the event itself.",
+            "performed_at": "2026-11-22T22:17:59.613Z",
+            "reporting_chain": "The dated first-party Treasury release states the targeted oil-trustee designations and specifies executive-order authorities; the issuance of U.S. sanctions is directly observable from an official primary document. The captured source remains one reporting chain irrespective of syndicated copies.",
+            "scope": {
+              "geography": "Iran, Gulf states and Strait of Hormuz as applicable to the cited original",
+              "method_and_inclusions": "Publisher-original HTML, attributed actor, explicit event chronology, opposing accounts and common-upstream source-chain collapse",
+              "population_or_denominator": "One dated publisher report or official designation; no unsupported national count or duplicate-incident denominator",
+              "time_window": "November 15 to November 22, 2026, with capture before the UTC sealed source cutoff"
+            },
+            "supporting_findings": "The dated first-party Treasury release states the targeted oil-trustee designations and specifies executive-order authorities; the issuance of U.S. sanctions is directly observable from an official primary document. Original source HTML and short exact visible-text excerpt were checked before the cutoff.",
+            "upstream_queries": [
+              "Iran rial November 2026 oil revenue US Treasury sanctions Hanke parallel exchange rate food medicine"
+            ],
+            "upstream_source_urls": [
+              "https://home.treasury.gov/news/press-releases/sb0697"
+            ]
+          },
+          "priority": "normal",
+          "relevance": "The U.S. Treasury issued a dated November 20 press release designating Iranian oil-trustee networks under stated Executive Order authorities. The official action is directly documented; claimed recovery failures and the economic effect on Iran are unverified policy assertions, not measured losses in export receipts. This directly relevant original is evaluated for narrow V10 claim admission rather than treated as proved event resolution.",
+          "source_url": "https://home.treasury.gov/news/press-releases/sb0697",
+          "triage": "promising"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration. Kept for interpretive background without admission of a new, independent claim or duplicate counts.",
+          "source_url": "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/",
+          "triage": "context_only"
+        },
+        {
+          "admitted_evidence_ids": [],
+          "followup": null,
+          "priority": "normal",
+          "relevance": "The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold. Kept for interpretive background without admission of a new, independent claim or duplicate counts.",
+          "source_url": "https://vienna.usmission.gov/joint-statement-agenda-item-3f-iaea-board-of-governors-meeting-november-2026/",
+          "triage": "context_only"
+        }
+      ],
+      "research_as_of": "2026-11-22T22:24:23.579929Z",
+      "version": 1
+    },
+    "published_history_sha256": "ec74495616a8dba3b784cbea550acc7896574d7a1a471b0ef14c7e88b81b02fb",
+    "research_as_of": "2026-11-22T22:24:23.579929Z",
+    "source_quality_audit": {
+      "source_count": 7,
+      "sources": [
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261122-REU17-EXCHANGE"
+              ],
+              "limitations": "Original claim-bearing HTML was retained privately, SHA256-verified against the retrieved representation, and exact short visible-text witness checked; no transport signature or independently confirmed event truth follows.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-22T22:13:45.200Z",
+              "http_status": 200,
+              "limitations": "HTTP 200 original publisher-page response and publisher-supplied clock were captured; neither authenticates the initial release time or reported event truth.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "checked_at": "2026-11-22T22:07:21.556Z",
+              "limitations": "A genuine retained Firecrawl response included this source URL, but a search hit is not itself original content; separate full publisher retrieval occurred.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Reuters describes the November 17 US missile-site strike as an attributed US military official account alongside Iranian assertions and denials; it is contemporaneous original reporting of competing descriptions.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "limitations": "Neither U.S. nor Iranian damage assertions are independently confirmed from a separate incident body; the reported exchange cannot be double-counted with the November 21 Bahrain incident, and the 72-hour threshold is unresolved.",
+          "new_evidence_indices": [
+            0
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://www.reuters.com/world/middle-east/oman-iran-foreign-ministers-discuss-safeguarding-maritime-corridors-2026-11-17/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261122-REU21-BAHRAIN"
+              ],
+              "limitations": "Original claim-bearing HTML was retained privately, SHA256-verified against the retrieved representation, and exact short visible-text witness checked; no transport signature or independently confirmed event truth follows.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-22T22:12:51.277Z",
+              "http_status": 200,
+              "limitations": "HTTP 200 original publisher-page response and publisher-supplied clock were captured; neither authenticates the initial release time or reported event truth.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "checked_at": "2026-11-22T22:07:21.556Z",
+              "limitations": "A genuine retained Firecrawl response included this source URL, but a search hit is not itself original content; separate full publisher retrieval occurred.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Reuters reproduces a dated Bahraini Interior Ministry statement about a civilian industrial-site fire and separately records the IRGC claim of striking US positions, without endorsing military success.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "limitations": "The industrial fire and two injuries are ministry-attributed; Reuters lacks a separately authenticated independent damage survey, and falling shrapnel may confound attribution. Iranian claims about US bases are unverified.",
+          "new_evidence_indices": [
+            1
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://www.reuters.com/world/middle-east/bahrain-warns-residents-potential-threat-iran-conflict-persists-2026-11-21/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261122-REU21-KHASAB"
+              ],
+              "limitations": "Original claim-bearing HTML was retained privately, SHA256-verified against the retrieved representation, and exact short visible-text witness checked; no transport signature or independently confirmed event truth follows.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-22T22:13:22.631Z",
+              "http_status": 200,
+              "limitations": "HTTP 200 original publisher-page response and publisher-supplied clock were captured; neither authenticates the initial release time or reported event truth.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "checked_at": "2026-11-22T22:07:59.852Z",
+              "limitations": "A genuine retained Firecrawl response included this source URL, but a search hit is not itself original content; separate full publisher retrieval occurred.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "The original Reuters article explicitly distinguishes two UKMTO alert descriptions, records separate positions near Khasab and warns that the vessel identities may coincide; it supplies a narrow maritime-risk signal.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "limitations": "The original UKMTO warning identifiers, IMO numbers and vessel registry were not separately captured, and Reuters could not verify an Iranian mine assertion; the reports must not be summed as two independently confirmed incidents.",
+          "new_evidence_indices": [
+            2
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://www.reuters.com/business/energy/tanker-hit-by-unknown-projectile-near-omans-khasab-ukmto-says-2026-11-21/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261122-REU21-QATAR"
+              ],
+              "limitations": "Original claim-bearing HTML was retained privately, SHA256-verified against the retrieved representation, and exact short visible-text witness checked; no transport signature or independently confirmed event truth follows.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-22T22:21:28.538Z",
+              "http_status": 200,
+              "limitations": "HTTP 200 original publisher-page response and publisher-supplied clock were captured; neither authenticates the initial release time or reported event truth.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "checked_at": null,
+              "limitations": "This publisher original was identified by direct publisher/web navigation rather than appearing in the twelve retained category responses; do not claim as a ranked Firecrawl discovery.",
+              "status": "not_searched"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Reuters gives a dated Iranian official statement that Qatari visitors had held talks and contacts continued, a separate stabilizing lead contemporaneous with fighting and shipping attacks.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "limitations": "The visit is attributed to an Iranian official via Tasnim; no independently captured Qatari transcript or signed proposal establishes actual diplomatic concessions, and the contact is not a ceasefire.",
+          "new_evidence_indices": [
+            3
+          ],
+          "origin": "original_reporting",
+          "role": "new_evidence",
+          "url": "https://www.reuters.com/world/middle-east/qatari-delegation-visits-tehran-talks-iranian-official-says-2026-11-21/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [
+                "E-20261122-TREASURY20-OIL"
+              ],
+              "limitations": "Original claim-bearing HTML was retained privately, SHA256-verified against the retrieved representation, and exact short visible-text witness checked; no transport signature or independently confirmed event truth follows.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-22T22:17:59.613Z",
+              "http_status": 200,
+              "limitations": "HTTP 200 original publisher-page response and publisher-supplied clock were captured; neither authenticates the initial release time or reported event truth.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "checked_at": null,
+              "limitations": "This publisher original was identified by direct publisher/web navigation rather than appearing in the twelve retained category responses; do not claim as a ranked Firecrawl discovery.",
+              "status": "not_searched"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "The dated first-party Treasury release states the targeted oil-trustee designations and specifies executive-order authorities; the issuance of U.S. sanctions is directly observable from an official primary document.",
+          "classification": "direct_observation",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_reported_date_only_not_independently_confirmed",
+          "limitations": "Treasury is an interested enforcement authority: its estimates of oil inventory, payments and uncollected proceeds are not independently audited; observed designation does not establish macro cash-flow impact or the frozen payment-crisis threshold.",
+          "new_evidence_indices": [
+            4
+          ],
+          "origin": "official_or_advocacy_claim",
+          "role": "new_evidence",
+          "url": "https://home.treasury.gov/news/press-releases/sb0697"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "Original claim-bearing HTML was retained privately, SHA256-verified against the retrieved representation, and exact short visible-text witness checked; no transport signature or independently confirmed event truth follows.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-22T22:14:07.014Z",
+              "http_status": 200,
+              "limitations": "HTTP 200 original publisher-page response and publisher-supplied clock were captured; neither authenticates the initial release time or reported event truth.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "checked_at": "2026-11-22T22:11:37.680Z",
+              "limitations": "A genuine retained Firecrawl response included this source URL, but a search hit is not itself original content; separate full publisher retrieval occurred.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration.",
+          "classification": "attributed_claim",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "limitations": "This source supplies context only, not a new independently verified empirical threshold or a separate reporting chain. Reuters independently edited a report describing the same November 20 Treasury sanctions action, but its underlying sanction claims originate from the same Treasury press release; it is not independent oil-revenue corroboration.",
+          "new_evidence_indices": [],
+          "origin": "original_reporting",
+          "role": "coverage_context_only",
+          "url": "https://www.reuters.com/world/middle-east/us-treasury-sanctions-iranian-trustees-collecting-oil-revenues-2026-11-20/"
+        },
+        {
+          "access_channels": {
+            "body": {
+              "captured_claim_ids": [],
+              "limitations": "Original claim-bearing HTML was retained privately, SHA256-verified against the retrieved representation, and exact short visible-text witness checked; no transport signature or independently confirmed event truth follows.",
+              "status": "captured"
+            },
+            "metadata": {
+              "checked_at": "2026-11-22T22:14:55.474Z",
+              "http_status": 200,
+              "limitations": "HTTP 200 original publisher-page response and publisher-supplied clock were captured; neither authenticates the initial release time or reported event truth.",
+              "status": "captured"
+            },
+            "same_stage_conflicts": [],
+            "search": {
+              "checked_at": "2026-11-22T22:10:03.408Z",
+              "limitations": "A genuine retained Firecrawl response included this source URL, but a search hit is not itself original content; separate full publisher retrieval occurred.",
+              "status": "accessible_reported"
+            }
+          },
+          "access_status": "source_metadata_captured",
+          "assessment": "The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold.",
+          "classification": "analysis",
+          "corroborating_urls": [],
+          "first_publication_clock_status": "publisher_supplied_metadata_not_independently_confirmed",
+          "limitations": "This source supplies context only, not a new independently verified empirical threshold or a separate reporting chain. The November 19 E3 joint statement at the IAEA Board of Governors is primary diplomatic advocacy context about safeguards; it is not a separate verified Iranian compliance measurement nor direct evidence of a new military or payments threshold.",
+          "new_evidence_indices": [],
+          "origin": "official_or_advocacy_claim",
+          "role": "coverage_context_only",
+          "url": "https://vienna.usmission.gov/joint-statement-agenda-item-3f-iaea-board-of-governors-meeting-november-2026/"
+        }
+      ]
+    }
+  },
+  "version": 1
+}
